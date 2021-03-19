@@ -19,11 +19,11 @@ import javax.swing.text.JTextComponent;
 import org.apache.log4j.Logger;
 
 import gUI.panels.TextEditor;
+import impl.om.TextEditorOption;
 import maingUI.MainGUI;
 import om.ICommonShortcuts;
 import om.SupportedFileTextEditor;
-import om.TabTextEditorObj;
-import om.TextEditorOption;
+import om.TabTextEditorObject;
 import tabbededitor.ITabbedEditorOwner;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.arch.PanelType;
@@ -66,7 +66,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	public void doAfterTabRefresh() {
 		// create lazy refs for common used objects during current check
 		TextEditorOption txtOpt = textEditor.currentConfiguration.getTextEditorOpt();
-		TabTextEditorObj loadedTabObj = textEditor.getCurrentTabEditor().loadedTabObj;
+		TabTextEditorObject loadedTabObj = textEditor.getCurrentTabEditor().loadedTabObj;
 		
 		if (!textEditor.isPreloading) {
 			
@@ -93,14 +93,14 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 			
 			// Sync map if it's active
 			if (txtOpt.mapViewActive && txtUtils != null && txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
-				txtUtils.getTypedIRightPanel();
-				((MapTextAreaPanel) textEditor.rightSplitContainer).sync();
+//				txtUtils.getTypedIRightPanel();
+				((MapTextAreaPanel) textEditor.rightModulePanel).sync();
 			}
 			
 			// Refresh current style from combo only if different from current actually applied to loaded text area tab
 			txtUtils.findRightSyntaxFromComboNSelect(loadedTabObj.loadedFile, textEditor.currentConfiguration.getTextEditorOpt().defaultAutoSyntaxSync);
 			
-			txtUtils.applySelectedTheme();
+			txtUtils.applySelectedTheme(false);
 		}
 		
 		
@@ -152,9 +152,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	@Override
 	public void doAdditionalStuffOnDocMouseReleased(JTextArea target) {
 		try {
-			if (txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
-				((MapTextAreaPanel) textEditor.rightSplitContainer).safeSyncCaretFromTxtReference();
-			} 
+			txtUtils.syncMiniTextAreaContent();
 		} catch (Exception e) {
 			logger.error("Error trying to sync text area minimap caret", e);
 		}
@@ -173,7 +171,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	@Override
 	public void resyncAddedPanelLight() {
 		if (txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA) && textEditor.currentConfiguration.getTextEditorOpt().mapViewActive) {
-			((MapTextAreaPanel) textEditor.rightSplitContainer).syncLight();
+			((MapTextAreaPanel) textEditor.rightModulePanel).syncLight();
 		} 
 	}
 

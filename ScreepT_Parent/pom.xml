@@ -11,7 +11,6 @@
 	<modules>
 		<module>../AM_Rkanoid</module>
 		<module>../VariousCommonsLight</module>
-		<module>../GenCommons</module>
 		<module>../GeneralResources</module>
 		<module>../OsCommons</module>
 		<module>../ScreepT_Crypter</module>
@@ -82,7 +81,7 @@
 			Launch normally with "clean install -X -U -P free|premium" (see app.properties) -->
 		
 		<!-- Main application version used everyWhere -->
-		<parent.build.version.screept>0.9.28</parent.build.version.screept>
+		<parent.build.version.screept>0.9.43</parent.build.version.screept>
 		
 		<!-- If true, transitive plugins dependencies included in fatjar (provided=excluded : compile=included) -->
 		<plugins.export.scope>provided</plugins.export.scope>
@@ -164,9 +163,9 @@
 							<phase>validate</phase>
 							<configuration>
 								<tasks>
-									<!-- <delete dir="${thrift.dir}" /> -->
 									<mkdir dir="${root.export.dir}" />
 									<mkdir dir="${export.updates.root}" />
+									<delete dir="${export.updates.folder}" />
 									<mkdir dir="${export.updates.folder}" />
 									<mkdir dir="${export.plugins.folder}" />
 									<mkdir dir="${export.directory.fatjar.main}" />
@@ -179,7 +178,6 @@
 						</execution>
 					</executions>
 				</plugin>
-				
 			</plugins>
 		</pluginManagement>
 		<plugins>

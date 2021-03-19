@@ -107,7 +107,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_REMOVECROSS = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/removeCross.png";
 	public static final String ICON_LOOK_INFO = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/look.png";
 	public static final String ICON_CHECKMARK = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/checkmark.png";
-	public static final String ICON_ADD = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/add.png";
+	public static String ICON_ADD = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/add.png";
 	
 	///////////////// TEXT EDITOR ICONS /////////////////
 	/* First shared with Menu Icons */
@@ -122,7 +122,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_LINES_FILE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/fileLines.png";
 	public static final String ICON_LOCKED= GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Crypt_3.png";
 	public static final String ICON_UNLOCKED = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Decrypt_3.png";
-	public static final String ICON_TEXT_CLEAR = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Clear.png";
+	public static String ICON_TEXT_CLEAR = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Clear.png";
 	public static final String ICON_TEXT_BOLD = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Bold.png";
 	public static final String ICON_TEXT_ITALIC = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Italic.png";
 	public static final String ICON_REMOVE_CONTENT = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/deleteContent.png";
@@ -130,11 +130,11 @@ public class IconsPathConfigurator {
 	public static final String ICON_TEXT_COLOR = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/TextColor_2.png";
 	public static final String ICON_TEXT_BG_COLOR = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/BackgroundColor.png";
 	public static final String ICON_TEXT_FONT = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Font_2.png";
-	public static final String ICON_FILE_SAVE_AS = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/saveFileAs.png";
+	public static String ICON_FILE_SAVE_AS = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/saveFileAs.png";
 	public static final String ICON_REMOVE_ALL_DOCS = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/removeAllDocs.png";
-	public static final String ICON_FILE_SAVE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/saveFile.png";
-	public static final String ICON_FILE_LOAD = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/LoadFile.png";
-	public static final String ICON_FILE_NEW = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/NewFile.png";
+	public static String ICON_FILE_SAVE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/saveFile.png";
+	public static String ICON_FILE_LOAD = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/LoadFile.png";
+	public static String ICON_FILE_NEW = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/NewFile.png";
 	public static final String ICON_MAP = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/map.png";
 	public static final String ICON_CLIPBOARD = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/clipboard.png";
 	public static final String ICON_REDO = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Redo.png";
@@ -143,15 +143,16 @@ public class IconsPathConfigurator {
 	public static final String ICON_DECRYPT = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Decrypt.png";
 	public static final String ICON_SPEAKER = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Speaker.png";
 	public static final String ICON_SEARCH = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Search.png";
+	public static final String ICON_SEARCH_TEXT = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/SearchText.png";
 	public static final String ICON_FILE_SEARCH = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/FileSearch.png";
 	public static final String ICON_CONVERT_OCR_IMAGE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/OCR.png";
 	public static final String ICON_CONVERT_ESCAPES = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/convertEscapes.png";
 	public static final String ICON_REPLACE_TXT = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/replace.png";
 	public static final String ICON_GOTO_LINE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/goToLine.png";
 	public static final String ICON_NUMBERED_LINES = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/numberedLines.png";
-	public static final String ICON_PIN_GREEN = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/pin.png";
-	public static final String ICON_PIN_RED = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/pinRed.png";
-	public static final String ICON_UNPIN = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/unpin.png";
+	public static String ICON_PIN_GREEN = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/pin.png";
+	public static String ICON_PIN_RED = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/pinRed.png";
+	public static String ICON_UNPIN = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/unpin.png";
 	public static final String ICON_COLOR_SAMPLER = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/colorDropper.png";
 	public static final String ICON_COLOR_SAMPLER_BIG = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/colorDropperBig.png";
 	public static final String ICON_SPELLCHECKER = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/spellChecker.png";
@@ -235,6 +236,10 @@ public class IconsPathConfigurator {
 	public static final String ICON_UP = GeneralConfig.RESOURCES_DIR + "Icons/General/iconUp.png";
 	public static final String ICON_DOWN_SMALL = GeneralConfig.RESOURCES_DIR + "Icons/General/iconDownSmall.png";
 	public static final String ICON_DOWN = GeneralConfig.RESOURCES_DIR + "Icons/General/iconDown.png";
+
+	public static String ICON_PLAY = GeneralConfig.RESOURCES_DIR + "Icons/General/play.png";
+	public static String ICON_STOP = GeneralConfig.RESOURCES_DIR + "Icons/General/Stop.png";
+	public static String ICON_PAUSE = GeneralConfig.RESOURCES_DIR + "Icons/General/pause.png";
 	
 	// TOGGLES
 	public static final String ST_ICON_HEAD_VISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/Toggles/Head_visible.png";

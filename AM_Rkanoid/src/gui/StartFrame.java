@@ -115,6 +115,8 @@ public class StartFrame extends JFrame {
 			GUIStyelSettings.setLightNimbus(3);
 			GUIStyelSettings.updateAllWindowsLaf();
 		});
+		
+		instance = this;
 	}
 	
 	private void setupMenuBar() {
@@ -149,6 +151,7 @@ public class StartFrame extends JFrame {
 			instance = StartFrame.instance != null ? StartFrame.instance : new StartFrame();
 			instance.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			instance.setTitle(title);
+			instance.setVisible(true);
 			instance.toFront();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -156,4 +159,5 @@ public class StartFrame extends JFrame {
     	
     	return instance;
     }
+	
 }

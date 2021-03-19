@@ -19,6 +19,7 @@ import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.DefaultComboBoxModel;
@@ -40,15 +41,16 @@ import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
 import frameutils.utils.GuiUtilsExtended;
-import mainobj.INItializer;
+import gui.GuiUtils;
+import impl.INItializer;
+import impl.om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
-import om.TextEditorOption;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
 import utils.dialog.ITextAreaDialogs;
 import utils.panels.arch.IParentPanel;
-import utils.panels.arch.ParentPanel;
+import utils.panels.arch.TogglePanelTextArea;
 
 import java.awt.Dimension;
 import javax.swing.JLabel;
@@ -57,7 +59,8 @@ import javax.swing.border.LineBorder;
 import java.awt.Font;
 import java.awt.Insets;
 
-public class ClipboardPanel  extends ParentPanel implements IParentPanel{
+
+public class ClipboardPanel  extends TogglePanelTextArea implements IParentPanel{
 	private static final long serialVersionUID = 4527321717233899589L;
 	
 	// ClipboardPanel logger creation
@@ -65,6 +68,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	JOptionHelperExtended dialogHelper;
 	
 	public static ClipboardPanel singletonInstance = null;
+	public TreeMap<String, File> dataMap;
 
 	public RSyntaxTextArea txtAreaClipboard;
 	private JScrollPane txtAreaContainer;
@@ -265,6 +269,11 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		});
 	}
 	
+	public void refreshDataMap() {
+		GeneralConfig.refreshClipboardMap();
+		dataMap = GeneralConfig.CLIPBOARD_PANEL_MAP;
+	}
+	
 	private void addHandlers() {
 		
 		txtAreaClipboard.addFocusListener(new FocusListener() {
@@ -288,6 +297,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		btnReload.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				refreshDataMap();
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						if (options.getLastFileOpenedClipboard() != null) {
@@ -308,13 +318,14 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (options.getLastFileOpenedClipboard() != null) {
-							try {
-								if (!addNewClipboardGui()) {
-									dialogHelper.error("File not saved, maybe folder it's not acessible or locked by an other program?!", null);
-								}
-							} catch (IOException e1) {
-								dialogHelper.error("IOException while trying to create new File!", null);
+						try {
+							if (!addNewClipboardGui()) {
+								dialogHelper.error("File not saved, maybe folder it's not acessible or locked by an other program?!", (String)null);
+							}
+						} catch (Exception e1) {
+							
+							if (e1 instanceof IOException) {
+								dialogHelper.error("IOException while trying to create new File!", (String) null);
 								logger.error("Error adding new Clipboard panel from scratch.");
 							}
 						}
@@ -329,11 +340,12 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (options.getLastFileOpenedClipboard() != null) {
-							try {
-								doAction(options.getLastFileOpenedClipboard());
-							} catch (IOException e1) {
-								String msg = "Error Saving current changes to file: " + GeneralConfig.CLIPBOARD_PANEL_MAP.get(options.getLastFileOpenedClipboard());
+						try {
+							doAction(options.getLastFileOpenedClipboard());
+						} catch (Exception e1) {
+							if (e1 instanceof IOException) {
+								String msg = "Error Saving current changes to file: "
+										+ GeneralConfig.CLIPBOARD_PANEL_MAP.get(options.getLastFileOpenedClipboard());
 								logger.error(msg);
 								dialogHelper.warn(msg, null);
 							}
@@ -434,6 +446,10 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	public void saveCurrClipboardSilent() {
 		try {
 			File selected = dataMap.get(options.getLastFileOpenedClipboard());
+			if(selected == null) {
+				selected = FileVarious.uniqueJavaObjFile(new File(
+						GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER + comboClipboards.getSelectedItem()));
+			}
 			FileWorker.writeStringToFile(txtAreaClipboard.getText(), selected, true);
 			logger.info(selected + "Written to file.");
 		} catch (Exception e) {
@@ -449,6 +465,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	 */
 	@Override
 	public void reload(String target) throws IOException {
+		GeneralConfig.refreshClipboardMap();
 		if (this.isVisible()) {
 			File selected = dataMap.get(target);
 			// Create fake safe unexisting file to avoid null pointer
@@ -460,9 +477,12 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			if (selected.exists()) {
 				// Update text from file
 				txtAreaClipboard.setText("");
+				int caretPos = txtAreaClipboard.getCaretPosition();
 				FileWorker.appendFileTxtArea(selected, txtAreaClipboard, true);
+				txtAreaClipboard.requestFocus();
+				txtAreaClipboard.setCaretPosition(caretPos);
 				logger.debug("Current clipboard reloaded from file: " + selected);
-				options.setLastFileOpenedClipboard(target);
+				options.setLastFileOpenedClipboard(selected.getName());
 			}
 		}
 	}
@@ -520,7 +540,11 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			txtAreaClipboard.repaint();
 			
 			try {
-				reload(((File)dataMap.values().toArray()[0]).getName());
+				File found = ((File)dataMap.get(options.getLastFileOpenedClipboard()));
+				if(found != null)
+					reload(found.getName());
+				else
+					reload(((File)dataMap.values().toArray()[0]).getName());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -531,6 +555,8 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	
 	public void reloadComboClipboards(File selected) {
 		isReloadingCombo.set(true);
+		
+		refreshDataMap();
 		
 		comboClipboards.removeAllItems();
 		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>( GeneralConfig.getRefreshedClipBoardsMap().keySet().toArray(new String[2]) );
@@ -574,11 +600,16 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		}
 	}
 
-	public void selectFromComboClipboards(String key) {
-		comboClipboards.setSelectedItem(key);
-		((JLabel)comboClipboards.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
-		comboClipboards.revalidate();
-		comboClipboards.repaint();
+	public void selectFromComboClipboards(final String key) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				((JLabel) comboClipboards.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+				comboClipboards.revalidate();
+				int index = GuiUtils.getFirstIndexMatchFromStringCombo(comboClipboards, key);
+				comboClipboards.setSelectedIndex(index);
+				comboClipboards.repaint();
+			}
+		});
 	}
 	
 	public String getCrrentFromCombo() {

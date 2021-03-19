@@ -26,6 +26,16 @@ public class ReflectionUtils {
         return fields;
 	}
 	
+	@SafeVarargs
+	public static <T,E> List<T> retrieveFieldsByType(Class<T> filterType, E... parentObjInstance) throws IllegalArgumentException, IllegalAccessException {
+		List<T> result = new ArrayList<>();
+		
+		for(E instanz : parentObjInstance) {
+			result.addAll(retrieveFieldsByType(instanz, filterType));
+		}
+		
+		return result;
+	}
 	/**
 	 * Search all fields in src class, and filter only the ones that are of generic type T
 	 * @param srcClass

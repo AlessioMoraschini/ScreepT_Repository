@@ -15,16 +15,13 @@ public class PhraseEasterEgg extends EasterEgg {
 	
 	public PhraseEasterEgg(String id, TextRetriever textRetriever, ShortcutFilter shortcutFilter) {
 		super(id, () -> {
-			new JOptionHelper(null).infoScroll(textRetriever.retrieveText(), "You may have just found something special!", defaultDialogSize);
+			new JOptionHelper(null).infoScroll(textRetriever.retrieveText(), "Code can be a poem, or even a nightmare.", defaultDialogSize);
 		}, shortcutFilter);
 		this.textRetriever = textRetriever;
 	}
 	
 	public PhraseEasterEgg(TextRetriever textRetriever) {
-		super(UUID.randomUUID().toString(), () -> {
-			new JOptionHelper(null).infoScroll(textRetriever.retrieveText(), "You may have just found something special!", defaultDialogSize);
-		}, null);
-		this.textRetriever = textRetriever;
+		this(UUID.randomUUID().toString(), textRetriever, null);
 	}
 	
 	public TextRetriever getTextRetriever() {

@@ -6,6 +6,8 @@ import java.awt.event.KeyListener;
 
 import javax.swing.text.JTextComponent;
 
+import utility.manipulation.ConversionUtils;
+
 public class KeyListenerUtils {
 
 	public static KeyListener getKeyListenerHexTxtField(JTextComponent textComponent, String separator, int increment, int min, int max) {

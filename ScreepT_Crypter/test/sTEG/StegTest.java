@@ -12,6 +12,7 @@ import util.ImageEncodingUtils;
 
 public class StegTest {
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testCryptByte_1() throws STEGException {
 		int testTypeImg = BufferedImage.TYPE_3BYTE_BGR;

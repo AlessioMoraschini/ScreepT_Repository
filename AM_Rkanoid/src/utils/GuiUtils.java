@@ -11,8 +11,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
 public class GuiUtils {
 

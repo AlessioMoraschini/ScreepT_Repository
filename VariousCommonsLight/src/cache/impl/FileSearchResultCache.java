@@ -5,7 +5,7 @@ import java.util.List;
 
 import cache.arch.AbstractCachedObject;
 import cache.arch.AbstractResultCache;
-import cache.arch.ICacheRefresher;
+import cache.arch.IResultCacheRefresher;
 
 public class FileSearchResultCache extends AbstractResultCache<List<File>> {
 	
@@ -14,7 +14,7 @@ public class FileSearchResultCache extends AbstractResultCache<List<File>> {
 		super();
 	}
 
-	public FileSearchResultCache(long expiryTime, ICacheRefresher<List<File>> cacheRefresher) {
+	public FileSearchResultCache(long expiryTime, IResultCacheRefresher<List<File>> cacheRefresher) {
 		super(expiryTime, cacheRefresher);
 	}
 

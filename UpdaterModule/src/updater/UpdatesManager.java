@@ -13,6 +13,7 @@ package updater;
 
 import static java.lang.System.out;
 
+import java.awt.Dialog.ModalityType;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -31,10 +32,10 @@ import network.http.HttpHelper;
 import network.http.HttpHelper.HttpRequestMetod;
 import network.utils.DownloadUtils;
 import om.exception.ProgressBarInterruptedException;
-import utility.ConversionUtils;
-import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 import utility.properties.PropertiesManager;
 
 public class UpdatesManager {
@@ -43,7 +44,7 @@ public class UpdatesManager {
 	
 	public static SafeLogger logger = new SafeLogger(UpdatesManager.class);
 	
-	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MainStandAloneUpdater.APP_PROPERTIES_FILE);
+	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MainStandAloneUpdater.MAIN_APP_PROPERTIES_PATH);
 	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_ScreepT/");  
 	public static String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH", "LAUNCHER/Launcher_Configuration.ini");
 	public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR", "UPDATES/");
@@ -94,6 +95,8 @@ public class UpdatesManager {
 			
 			if (!silent) {
 				updateManagerProgbar = new UpdateProgressPanel(true);
+				updateManagerProgbar.setModalType(ModalityType.MODELESS);
+				updateManagerProgbar.dialog.setTitle("Looking for updates...");
 				updateManagerProgbar.getPb().setIndeterminate(true);
 			}
 			
@@ -156,6 +159,8 @@ public class UpdatesManager {
 			}
 			
 			updateProgressBar = new UpdateProgressPanel(true);
+			updateProgressBar.setModalType(ModalityType.MODELESS);
+			updateProgressBar.dialog.setTitle("Downloading files...");
 			updateProgressBar.update(20, "Downloading "+manifestRemoteUrl, true);
 			logger.info(FileVarious.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
 			

@@ -21,9 +21,9 @@ import javax.imageio.ImageIO;
 
 import om.BufferedImageType;
 import util.ImageEncodingUtils;
-import utility.ByteWorker;
-import utility.EntrophyzerUtils;
-import utility.SafeLogger;
+import utility.bytes.ByteWorker;
+import utility.log.SafeLogger;
+import utility.manipulation.EntrophyzerUtils;
 
 /**
  * this class represent the coding/decoding of source byte list or array, implementing simil-steganography
@@ -147,6 +147,7 @@ public class StegCipher {
 	 * @param List<Byte> AES_CODED_OUT  -> lista di byte data dai byte originali codificati tramite AES
 	 * @return BufferedImage codedImg  -> immagine risultante dalla codifica
 	 * */
+	@Deprecated
 	public BufferedImage stegaCrypt(ArrayList<Byte> AES_CODED_OUT) {
 		
 		Iterator<Byte> iter = AES_CODED_OUT.iterator();
@@ -192,6 +193,7 @@ public class StegCipher {
 	 * @param AES_CODED_OUT  -> array di byte data dai byte originali codificati tramite AES
 	 * @return BufferedImage codedImg  -> immagine risultante dalla codifica
 	 * */
+	@Deprecated
 	public StegOmResult stegaCrypt(byte[] AES_CODED_OUT) {
 				
 		BufferedImage sourceImg = keyImage;
@@ -250,6 +252,7 @@ public class StegCipher {
 	 * @param AES_CODED_OUT  -> array di byte data dai byte originali codificati tramite AES
 	 * @return OmResult  -> oggetto contenente l'immagine risultante dalla codifica, e il numero di byte codificati.
 	 * */
+	@Deprecated
 	public StegOmResult stegaCryptMultiByte(byte[] AES_CODED_OUT) {
 		int bytePerPix = this.bytePerPix-1;
 		
@@ -451,6 +454,7 @@ public class StegCipher {
 	 * @param BufferedImage codedImg -> immagine codificata da stegaCrypt da decodificare
 	 * @return List<Byte> AES_CODED_IN -> lista di byte prodotta in uscita
 	 */
+	@Deprecated
 	public ArrayList<Byte> stegaDeCrypt(BufferedImage codedImg) {
 		ArrayList<Byte> stegDecodedAesIn = new ArrayList<Byte>();
 		
@@ -489,6 +493,7 @@ public class StegCipher {
 	 * @param BufferedImage codedImg -> immagine codificata da stegaCrypt da decodificare
 	 * @return List<Byte> AES_CODED_IN -> lista di byte prodotta in uscita
 	 */
+	@Deprecated
 	public byte[] stegaDeCryptToArray(BufferedImage codedImg) {
 		// calcolo larghezza e altezza immagine
         int height = codedImg.getHeight();
@@ -530,6 +535,7 @@ public class StegCipher {
 	 * @param BufferedImage codedImg -> immagine codificata da stegaCrypt da decodificare
 	 * @return La lista di byte prodotta in uscita
 	 */
+	@Deprecated
 	public byte[] stegaDeCryptToArray(BufferedImage codedImg, Integer cryptedByteNumber) {
 		// calcolo larghezza e altezza immagine
         int height = codedImg.getHeight();
@@ -582,6 +588,7 @@ public class StegCipher {
 	 * @return La lista di byte prodotta in uscita
 	 * @throws STEGException 
 	 * */
+	@Deprecated
 	public byte[] stegaDeCryptMultiByte(BufferedImage codedImg, Integer cryptedByteNumber) throws STEGException {
 		
 		int bytePerPix = this.bytePerPix-1;

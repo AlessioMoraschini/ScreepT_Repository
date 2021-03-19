@@ -25,11 +25,11 @@ import frameutils.utils.GuiUtilsExtended;
 
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
+import om.EscapeType;
 import om.SelectionDtoFull;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import variousutils.EscapeType;
-import variousutils.StringWorkerExtended;
+import utils.StringWorkerExtended;
 
 import javax.swing.JLabel;
 
@@ -196,10 +196,10 @@ public class EscapeReplacerFrame extends ParentFrame {
 			public void actionPerformed(ActionEvent e) {
 				cursorWaiting();
 				// first replace back already escaped sequences to avoid escaping escape text (&grave -> amperstand would be escaped too)
-				replaceEscapedWithSpecTextSelected(getSelectedEscapeType());
-				replaceSpecWithEscapedTextSelected(getSelectedEscapeType());
+				SelectionDtoFull dto = replaceEscapedWithSpecTextSelected(getSelectedEscapeType(), null, false);
+				dto = replaceSpecWithEscapedTextSelected(getSelectedEscapeType(), dto, true);
+				dto.applySelectionDTO(outputTextArea);
 				cursorFinished();
-				
 			}
 		});
 		
@@ -207,7 +207,8 @@ public class EscapeReplacerFrame extends ParentFrame {
 		btnConvertEscapesTo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cursorWaiting();
-				replaceEscapedWithSpecTextSelected(getSelectedEscapeType());
+				SelectionDtoFull dto = replaceEscapedWithSpecTextSelected(getSelectedEscapeType(), null, true);
+				dto.applySelectionDTO(outputTextArea);
 				cursorFinished();
 			}
 		});
@@ -273,60 +274,33 @@ public class EscapeReplacerFrame extends ParentFrame {
 		return EscapeType.valueOf(selectedType);
 	}
 	
-	private void replaceSpecWithEscapedTextSelected(EscapeType type) {
-		SelectionDtoFull selectionTxtArea = new SelectionDtoFull(outputTextArea);
-		int selStart = selectionTxtArea.first;
-		String output = "";
-		String center = "";
+	private SelectionDtoFull replaceSpecWithEscapedTextSelected(EscapeType type, SelectionDtoFull selectionTextArea, boolean makeNewSelectedIfNothingSelected) {
+		SelectionDtoFull selectionTxtArea = selectionTextArea == null ? new SelectionDtoFull(outputTextArea) : selectionTextArea;
+		String escaped = "";
 		
-		if(outputTextArea.getSelectedText() != null) {
-			center = StringWorkerExtended.replaceSpecialWithEscapes(selectionTxtArea.selection, type);
-			output = selectionTxtArea.text.concat(center).concat(selectionTxtArea.end);
-			outputTextArea.setText(output);
-			outputTextArea.requestFocus();
-			outputTextArea.setSelectionStart(selStart);
+		if(selectionTxtArea.selected) {
+			escaped = StringWorkerExtended.replaceSpecialWithEscapes(selectionTxtArea.selection, type);
 		}else {
-			output = selectionTxtArea.text.concat(center).concat(selectionTxtArea.end);
-			output = StringWorkerExtended.replaceSpecialWithEscapes(output, type);
-			outputTextArea.setText(output);
-			outputTextArea.requestFocus();
-			outputTextArea.setSelectionStart(0);
-			outputTextArea.setSelectionEnd(selectionTxtArea.last);
+			escaped = StringWorkerExtended.replaceSpecialWithEscapes(selectionTxtArea.text, type);
 		}
+
+		selectionTxtArea.replaceSelection(escaped, makeNewSelectedIfNothingSelected, false);
+		return selectionTxtArea;
 		
-		if(!center.equals("")) {
-			outputTextArea.setSelectionEnd(selStart + center.length());
-		}else {
-			outputTextArea.setSelectionEnd(selectionTxtArea.last);
-		}
 	}
 	
-	private void replaceEscapedWithSpecTextSelected(EscapeType type) {
-		SelectionDtoFull selectionTxtArea = new SelectionDtoFull(outputTextArea);
-		int selStart = selectionTxtArea.first;
-		String output = "";
-		String center = "";
+	private SelectionDtoFull replaceEscapedWithSpecTextSelected(EscapeType type, SelectionDtoFull selectionTextArea, boolean makeNewSelectedIfNothingSelected) {
+		SelectionDtoFull selectionTxtArea = selectionTextArea == null ? new SelectionDtoFull(outputTextArea) : selectionTextArea;
+		String escapedBack = "";
 		
-		if(outputTextArea.getSelectedText() != null) {
-			center = StringWorkerExtended.replaceEscapesWithSpecials(selectionTxtArea.selection, type);
-			output = selectionTxtArea.text.concat(center).concat(selectionTxtArea.end);
-			outputTextArea.setText(output);
-			outputTextArea.requestFocus();
-			outputTextArea.setSelectionStart(selStart);
+		if(selectionTxtArea.selected) {
+			escapedBack = StringWorkerExtended.replaceEscapesWithSpecials(selectionTxtArea.selection, type);
 		}else {
-			output = selectionTxtArea.text.concat(center).concat(selectionTxtArea.end);
-			output = StringWorkerExtended.replaceEscapesWithSpecials(output, type);
-			outputTextArea.setText(output);
-			outputTextArea.requestFocus();
-			outputTextArea.setSelectionStart(0);
-			outputTextArea.setSelectionEnd(selectionTxtArea.last);
+			escapedBack = StringWorkerExtended.replaceEscapesWithSpecials(selectionTxtArea.text, type);
 		}
-		
-		if(!center.equals("")) {
-			outputTextArea.setSelectionEnd(selStart + center.length());
-		}else {
-			outputTextArea.setSelectionEnd(selectionTxtArea.last);
-		}
+
+		selectionTxtArea.replaceSelection(escapedBack, makeNewSelectedIfNothingSelected, false);
+		return selectionTxtArea;
 	}
 
 	@Override

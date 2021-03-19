@@ -58,6 +58,8 @@ public class HistoryNode {
 			HistoryNode other = (HistoryNode) otherNode;
 			boolean fileMatch = false;
 			boolean scrollPaneMatch = false;
+			boolean lineMatch = other.caretPosition == caretPosition;
+			
 			if(other.loadedFile != null) {
 				fileMatch = other.loadedFile.equals(loadedFile);
 			}
@@ -65,7 +67,7 @@ public class HistoryNode {
 				scrollPaneMatch = other.scrollPane.equals(scrollPane);
 			}
 			
-			return (fileMatch || scrollPaneMatch);
+			return lineMatch && (fileMatch || scrollPaneMatch);
 		}else {
 			return super.equals(otherNode);
 		}

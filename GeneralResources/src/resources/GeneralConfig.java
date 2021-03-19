@@ -24,7 +24,7 @@ import java.util.TreeMap;
 
 import files.FileWorker;
 import resources.om.FilePojo;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 import utility.properties.PropertiesManager;
 import utils.SysUtils;
 
@@ -45,7 +45,8 @@ public class GeneralConfig {
 	// MAIN PROPERTIES                                                                                                                                                                                           
 	public static String AUTHOR = "A.M. Design and Development";                                                                                                                                                                      
 	public static String APP_VERSION = resourcesFilePathsMappings.getProperty("APP_VERSION", "Unknown Version");                                                                                                                                   
-	public static String APPLICATION_NAME = "ScreepT - V" + APP_VERSION;                                                                                                                                                               
+	public static String APPLICATION_SHORT_NAME = resourcesFilePathsMappings.getProperty("APPLICATION_SHORT_NAME", "ScreepT");                                                                                                                                                               
+	public static String APPLICATION_NAME = APPLICATION_SHORT_NAME + " - V" + APP_VERSION;                                                                                                                                                               
 	public static String BUILD_INCREMENTAL_NUMBER = resourcesFilePathsMappings.getProperty("BUILD_INCREMENTAL_NUMBER", "Unknown build number");     
 	public static String BUILD_COMMIT_HASH = resourcesFilePathsMappings.getProperty("BUILD_COMMIT_HASH", "Undefined commit hash");
 	public static String CHANGE_LOG_FILE_PATH = resourcesFilePathsMappings.getProperty("CHANGE_LOG_FILE_PATH", "");
@@ -89,7 +90,7 @@ public class GeneralConfig {
 	public static String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScreepT_decrypted_tempFiles";
 	public static File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 	
-	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR");                                                                                                                                     
+	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_ScreepT/");                                                                                                                                     
 	public static String PLUGINS_DIR = resourcesFilePathsMappings.getProperty("PLUGINS_DIR");
 	public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR");
 	static{
@@ -98,6 +99,8 @@ public class GeneralConfig {
 		} catch (Exception e) {
 		}
 	}
+	public static String CREEPTER_FOLDER = resourcesFilePathsMappings.getProperty("CREEPTER_FOLDER", "Resources_ScreepT/CreepTer/");                                                                                                                       
+	public static String CREEPTER_INSTRUCTIONS_FILE = CREEPTER_FOLDER + "Instructions.txt";                                                                                                                       
 	public static String DEFAULT_IMAGE_FOLDER = resourcesFilePathsMappings.getProperty("DEFAULT_IMAGE_FOLDER");                                                                                                                       
 	public static String SOUNDS_FOLDER = resourcesFilePathsMappings.getProperty("SOUNDS_FOLDER");                                                                                                                                     
 	public static String WORDLIST_FOLDER = resourcesFilePathsMappings.getProperty("WORDLIST_FOLDER");                                                                                                                                 
@@ -206,6 +209,7 @@ public class GeneralConfig {
 	public static String debugPreRead;
 	private static boolean FLAG_DEBUG_GRAPHICS;
 	public static String DEBUG_GRAPHICS;
+	public static boolean ASYNC_MODULES_LOAD;
 	
 	// TITLE REFRESHER
 	public static int TITLE_REFRESH_TIME = resourcesFilePathsMappings.getIntVarFromProps("TITLE_REFRESH_TIME", 2000);
@@ -237,6 +241,8 @@ public class GeneralConfig {
 	public static int MAX_REPLACE_DIAL_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_REPLACE_DIAL_LIST_SIZE", 50);
 	public static int MAX_SEARCH_DIAL_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_SEARCH_DIAL_LIST_SIZE", 50);
 	public static int MAX_HISTORY_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_HISTORY_SIZE", 40);
+	public static int HISTORY_MOUSECLICK_LINES_DIFF_TO_ADD = resourcesFilePathsMappings.getIntVarFromProps("HISTORY_MOUSECLICK_LINES_DIFF_TO_ADD", 20);
+	public static float SHELL_PANEL_FONT_SIZE = resourcesFilePathsMappings.getFloatVarFromProps("SHELL_PANEL_FONT_SIZE", 19f);
 	public static boolean RECTANGULAR_TXT_SELECTION_ALLOWED;
 	public static boolean PRELOAD_TXT_EDITOR_FLAG;
 	public static Font TXT_EDITOR_MINIMAP_FONT_DEFAULT;
@@ -270,6 +276,7 @@ public class GeneralConfig {
 	public static Color BUTTON_BCKG_COLOR_TXT_EDITOR;
 	public static Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER;
 	public static int MAX_FILE_SIZE_TXT_EDITOR_KB;
+	public static int MAX_TEXT_EDITOR_SAFE_LINES;
 	public static int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS;
 	public static int NORMAL_WHEEL_SPEED;
 	public static int FAST_WHEEL_SPEED;
@@ -508,6 +515,7 @@ public class GeneralConfig {
 			debugPreRead = resourcesFilePathsMappings.getProperty("FLAG_DEBUG_GRAPHICS");
 			FLAG_DEBUG_GRAPHICS = (debugPreRead!= null && debugPreRead.equalsIgnoreCase("true"))? true : false;
 			DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
+			ASYNC_MODULES_LOAD = resourcesFilePathsMappings.getBooleanVarFromProps("ASYNC_MODULES_LOAD", true);
 			
 			// Tooltips
 			TOOLTIP_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_DELAY", 400);
@@ -546,6 +554,7 @@ public class GeneralConfig {
 			 * Contains String themes name, and source theme file, lazy initialized
 			 */
 			XML_THEMES_MAP = getRefreshedThemesMap();
+			
 			/**
 			 * Contains String themes name, and theme content lazy read
 			 */
@@ -560,6 +569,7 @@ public class GeneralConfig {
 			BUTTON_BCKG_COLOR_TXT_EDITOR = resourcesFilePathsMappings.getColorVarFromProps("BUTTON_BCKG_COLOR_TXT_EDITOR", new Color(120, 125, 140));
 			BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = resourcesFilePathsMappings.getColorVarFromProps("BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER", new Color(71, 76, 84));
 			MAX_FILE_SIZE_TXT_EDITOR_KB = resourcesFilePathsMappings.getIntVarFromProps("MAX_FILE_SIZE_TXT_EDITOR_KB", 1024*20); // 20 MB default
+			MAX_TEXT_EDITOR_SAFE_LINES = resourcesFilePathsMappings.getIntVarFromProps("MAX_TEXT_EDITOR_SAFE_LINES", 1000000); // 1 Million lines default
 			TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = resourcesFilePathsMappings.getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
 			NORMAL_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
 			FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("FAST_WHEEL_SPEED", 150);
@@ -577,6 +587,23 @@ public class GeneralConfig {
 			return new Boolean(true);
 		} catch (Exception e) {
 			return null;
+		}
+	}
+	
+	public static void refreshClipboardMap() {
+		synchronized (CLIPBOARD_PANEL_MAP) {
+			CLIPBOARD_PANEL_MAP = getRefreshedClipBoardsMap();
+		}
+	}
+	public static void refreshThemeseMap() {
+		synchronized (XML_THEMES_MAP) {
+			XML_THEMES_MAP = getRefreshedThemesMap();
+		}
+	}
+
+	public static void refreshThemeseContentMap() {
+		synchronized (XML_THEMES_CONTENT_MAP) {
+			XML_THEMES_CONTENT_MAP = getRefreshedThemesContentMap();
 		}
 	}
 	

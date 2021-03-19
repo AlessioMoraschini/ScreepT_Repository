@@ -23,8 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import net.miginfocom.swing.MigLayout;
-import om.TabTextEditorObj;
-import om.TextEditorOption;
+import om.TabTextEditorObject;
 import om.themes.Themes;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -33,13 +32,15 @@ import resources.SoundsManagerExtended;
 import tabbededitor.CustomTabbedEditor;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
+import treeutils.FileNamedTreeTransferHandler;
 import treeutils.TreeUtils;
 import treeutils.om.FileTreeModel;
+import utility.string.StringWorker;
 import utils.RsyntaxUtils;
 import utils.panels.ClipboardPanel;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.arch.PanelType;
-import utils.panels.arch.ParentPanel;
+import utils.panels.arch.TogglePanelTextArea;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -48,14 +49,16 @@ import javax.swing.ToolTipManager;
 import org.apache.log4j.Logger;
 import org.fife.ui.rtextarea.RUndoManager;
 
+import arch.INItializerParent;
 import dialogutils.JOptionHelperExtended;
 import files.FileVarious;
+import files.FileWorker;
 import files.om.FileNamed;
 import frameutils.frame.arch.ModulePanel;
+import frameutils.frame.panels.ShellReadWritePanel;
 import frameutils.utils.GuiUtilsExtended;
 import maingUI.MainGuiGeneralAppStarter;
 import maingUI.MainGUI;
-import mainobj.INItializer;
 
 import java.awt.SystemColor;
 
@@ -68,6 +71,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
@@ -88,8 +93,12 @@ import gUI.utils.shortcutshandler.TextEditorShortcutListener;
 import gUI.utils.texteditor.TabbedEditorOwnerScreepT;
 import gUI.utils.texteditor.TextEditorUtils;
 import gUI.utils.tree.texteditor.TreeFileMouseListenerTxtEditor;
+import gui.GuiUtils;
+import gui.RXTextUtilities;
 import gui.TextEditTooltips;
 import guistyle.GUIStyelSettingsExtended;
+import impl.INItializer;
+import impl.om.TextEditorOption;
 
 import java.awt.Dimension;
 import javax.swing.border.EmptyBorder;
@@ -127,13 +136,15 @@ public class TextEditor extends ModulePanel {
 	private JSeparator separator_NO_HIDE;
 	private JSeparator separator_NO_HIDE_2;
 
-	public JSplitPane splitPaneMain;
-	public JSplitPane splitPaneMainContainer;
-	public JScrollPane leftSplitPane;
-	public JScrollPane rightSplitPane;
-	public JPanel leftSplitContainer; 
-	public ParentPanel rightSplitContainer; 
-	public JTree leftSplitTreeFiles;
+	public JSplitPane splitPaneTreeAndVerticalSplit;
+	public JSplitPane splitPaneTreetabsAndRightToggle;
+	public JSplitPane splitPaneVerticalAllAndBottomToggle;
+	public JScrollPane leftScrollPane;
+	public JScrollPane rightModuleScrollPane;
+	public JPanel leftScrollPaneContainer; 
+	public TogglePanelTextArea rightModulePanel; 
+	public ShellReadWritePanel bottomModulePanel; 
+	public JTree leftFileTree;
 
 	public JFrame parentFrame; // the frame that instantiate this object
 
@@ -239,49 +250,60 @@ public class TextEditor extends ModulePanel {
 		getCurrentTabEditor().applyStyleToTabs();
 		getCurrentTabEditor().mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-		// PARENT CONTAINER (main lv.1, right)
-		splitPaneMainContainer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		splitPaneMainContainer.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+		// PARENT CONTAINER (subparent and bottom toggle - vertical)
+		splitPaneVerticalAllAndBottomToggle = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		splitPaneVerticalAllAndBottomToggle.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+
+		// SUB-PARENT CONTAINER (main lv.1, right)
+		splitPaneTreetabsAndRightToggle = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPaneTreetabsAndRightToggle.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 
 		// 2ND LEVEL CONTAINER SPLIT PANE (left, center)
-		splitPaneMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		splitPaneMain.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+		splitPaneTreeAndVerticalSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPaneTreeAndVerticalSplit.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 		
-		leftSplitTreeFiles = new JTree(new FileTreeModel(new File(currentConf.getTextEditorOpt().defaultWorkspacePath)));
-		mouseListenerTreeFilePanel = new TreeFileMouseListenerTxtEditor(leftSplitTreeFiles, this);
+		leftFileTree = new JTree(new FileTreeModel(new File(currentConf.getTextEditorOpt().defaultWorkspacePath)));
+		leftFileTree.setDragEnabled(true);
+		leftFileTree.setTransferHandler(new FileNamedTreeTransferHandler(MainGUI.dialogHelper, () -> {
+			textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
+		}));
+		mouseListenerTreeFilePanel = new TreeFileMouseListenerTxtEditor(leftFileTree, this);
 		
-		leftSplitTreeFiles.setComponentPopupMenu(mouseListenerTreeFilePanel.getPopUpMenu());
-		leftSplitTreeFiles.addMouseListener(mouseListenerTreeFilePanel.getMouseListener());
-		leftSplitTreeFiles.addMouseListener(mouseListenerTreeFilePanel.getDoubleCLickListener());
-		leftSplitTreeFiles.addKeyListener(mouseListenerTreeFilePanel);
-		leftSplitTreeFiles.addMouseMotionListener(mouseListenerTreeFilePanel.getHoverOnNodesListener());
-		leftSplitTreeFiles.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
-		ToolTipManager.sharedInstance().registerComponent(leftSplitTreeFiles);
+		leftFileTree.setComponentPopupMenu(mouseListenerTreeFilePanel.getPopUpMenu());
+		leftFileTree.addMouseListener(mouseListenerTreeFilePanel.getMouseListener());
+		leftFileTree.addMouseListener(mouseListenerTreeFilePanel.getDoubleCLickListener());
+		leftFileTree.addKeyListener(mouseListenerTreeFilePanel);
+		leftFileTree.addMouseMotionListener(mouseListenerTreeFilePanel.getHoverOnNodesListener());
+		leftFileTree.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
+		ToolTipManager.sharedInstance().registerComponent(leftFileTree);
 		
-		leftSplitPane = new JScrollPane(leftSplitTreeFiles);
-		leftSplitPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		leftSplitPane.setPreferredSize(new Dimension(200, 500));
-		leftSplitContainer = new JPanel();
-		leftSplitContainer.setBackground(fileNavColorBckg);
-		leftSplitContainer.setForeground(Color.GRAY);
-		leftSplitContainer.setLayout(new MigLayout("fill, insets 0, hidemode 3",
+		leftScrollPane = new JScrollPane(leftFileTree);
+		leftScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		leftScrollPane.setPreferredSize(new Dimension(200, 500));
+		leftScrollPaneContainer = new JPanel();
+		leftScrollPaneContainer.setBackground(fileNavColorBckg);
+		leftScrollPaneContainer.setForeground(Color.GRAY);
+		leftScrollPaneContainer.setLayout(new MigLayout("fill, insets 0, hidemode 3",
 				"[20px:25px:25px][2px:4px,grow][20px:25px:25px][20px:25px:25px][20px:25px:25px][25px:25px:25px][18px:20px:20px][18px:20px:20px][18px:20px:20px]", 
 				"[25px:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
 		 
 		initRightPane();
-		rightSplitContainer.setBackground(fileNavColorBckg);
-		rightSplitContainer.setForeground(Color.GRAY);
-		rightSplitPane = new JScrollPane(rightSplitContainer);
-		rightSplitPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		rightSplitPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		rightSplitPane.setPreferredSize(new Dimension(200, 500));
+		rightModulePanel.setBackground(fileNavColorBckg);
+		rightModulePanel.setForeground(Color.GRAY);
+		rightModuleScrollPane = new JScrollPane(rightModulePanel);
+		rightModuleScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		rightModuleScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		rightModuleScrollPane.setPreferredSize(new Dimension(200, 500));
+		
+
+		bottomModulePanel = mainApplication.windowCreator.getShellPanel(true);
 		
 		lblFiles = new JLabel(" File tree");
 		lblFiles.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		lblFiles.setMinimumSize(new Dimension(50, 12));
 		lblFiles.setHorizontalAlignment(SwingConstants.LEFT);
 		lblFiles.setForeground(Color.LIGHT_GRAY);
-		leftSplitContainer.add(lblFiles, "cell 0 0 2 1,alignx left,aligny center");
+		leftScrollPaneContainer.add(lblFiles, "cell 0 0 2 1,alignx left,aligny center");
 		
 		btnResyncTree_nostyle = new JButton("");
 		btnResyncTree_nostyle.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -292,7 +314,7 @@ public class TextEditor extends ModulePanel {
 		btnResyncTree_nostyle.setToolTipText(TextEditTooltips.tooltipResyncTree);
 		btnResyncTree_nostyle.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnResyncTree_nostyle.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD2SMALL));
-		leftSplitContainer.add(btnResyncTree_nostyle, "cell 2 0,alignx center");
+		leftScrollPaneContainer.add(btnResyncTree_nostyle, "cell 2 0,alignx center");
 		
 		btnPackTree_nostyle = new JButton("");
 		btnPackTree_nostyle.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -303,7 +325,7 @@ public class TextEditor extends ModulePanel {
 		btnPackTree_nostyle.setToolTipText(TextEditTooltips.tooltipPackTree);
 		btnPackTree_nostyle.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnPackTree_nostyle.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS_SMALL));
-		leftSplitContainer.add(btnPackTree_nostyle, "cell 3 0,alignx center");
+		leftScrollPaneContainer.add(btnPackTree_nostyle, "cell 3 0,alignx center");
 		
 		btnDepthUp_nostyle = new JButton("");
 		btnDepthUp_nostyle.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -314,7 +336,7 @@ public class TextEditor extends ModulePanel {
 		btnDepthUp_nostyle.setToolTipText(TextEditTooltips.tooltipDepthTreeUp);
 		btnDepthUp_nostyle.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnDepthUp_nostyle.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UP_SMALL));
-		leftSplitContainer.add(btnDepthUp_nostyle, "cell 4 0,alignx center,aligny center");
+		leftScrollPaneContainer.add(btnDepthUp_nostyle, "cell 4 0,alignx center,aligny center");
 		
 		btnDepthDown_nostyle = new JButton("");
 		btnDepthDown_nostyle.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -325,7 +347,7 @@ public class TextEditor extends ModulePanel {
 		btnDepthDown_nostyle.setToolTipText(TextEditTooltips.tooltipDepthTreeDown);
 		btnDepthDown_nostyle.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnDepthDown_nostyle.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DOWN_SMALL));
-		leftSplitContainer.add(btnDepthDown_nostyle, "cell 5 0,alignx center,aligny center");
+		leftScrollPaneContainer.add(btnDepthDown_nostyle, "cell 5 0,alignx center,aligny center");
 		
 		toggleButtonFileTreeNewWorkspace = new JButton("");
 		toggleButtonFileTreeNewWorkspace.setMaximumSize(new Dimension(20, 12));
@@ -333,7 +355,7 @@ public class TextEditor extends ModulePanel {
 		toggleButtonFileTreeNewWorkspace.setToolTipText(TextEditTooltips.tooltipWorkspaceNew);
 		toggleButtonFileTreeNewWorkspace.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		toggleButtonFileTreeNewWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_SEARCH));
-		leftSplitContainer.add(toggleButtonFileTreeNewWorkspace, "cell 6 0");
+		leftScrollPaneContainer.add(toggleButtonFileTreeNewWorkspace, "cell 6 0");
 		
 		toggleButtonFileTreeWorkspace = new JButton("");
 		GuiUtilsExtended.makeTransparentJButton(toggleButtonFileTreeWorkspace);
@@ -343,7 +365,7 @@ public class TextEditor extends ModulePanel {
 		toggleButtonFileTreeWorkspace.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		toggleButtonFileTreeWorkspace.setToolTipText(TextEditTooltips.tooltipWorkspaceToggle);
 		toggleButtonFileTreeWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_ON));
-		leftSplitContainer.add(toggleButtonFileTreeWorkspace, "cell 7 0");
+		leftScrollPaneContainer.add(toggleButtonFileTreeWorkspace, "cell 7 0");
 		
 		toggleButtonFileTreeLocked = new JButton("");
 		GuiUtilsExtended.makeTransparentJButton(toggleButtonFileTreeLocked);
@@ -351,7 +373,7 @@ public class TextEditor extends ModulePanel {
 		toggleButtonFileTreeLocked.setToolTipText(TextEditTooltips.tooltipFileViewLock);
 		toggleButtonFileTreeLocked.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		toggleButtonFileTreeLocked.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNPIN));
-		leftSplitContainer.add(toggleButtonFileTreeLocked, "cell 8 0,alignx center,growy");
+		leftScrollPaneContainer.add(toggleButtonFileTreeLocked, "cell 8 0,alignx center,growy");
 		
 		separator_NO_HIDE = new JSeparator();
 		separator_NO_HIDE.setSize(new Dimension(50, 2));
@@ -359,20 +381,27 @@ public class TextEditor extends ModulePanel {
 		separator_NO_HIDE.setBackground(Color.GRAY);
 		separator_NO_HIDE.setOpaque(true);
 		separator_NO_HIDE.setForeground(Color.LIGHT_GRAY);
-		leftSplitContainer.add(separator_NO_HIDE, "cell 0 1 9 1,growx");
-		leftSplitContainer.add(leftSplitPane, "cell 0 2 9 1,grow");
+		leftScrollPaneContainer.add(separator_NO_HIDE, "cell 0 1 9 1,growx");
+		leftScrollPaneContainer.add(leftScrollPane, "cell 0 2 9 1,grow");
 
-		mainPanel.add(splitPaneMainContainer, "cell 0 3 37 1,grow");
+		mainPanel.add(splitPaneTreeAndVerticalSplit, "cell 0 3 37 1,grow");
 		
-		// Parent container split components
-		splitPaneMainContainer.setRightComponent(rightSplitPane);
-		splitPaneMainContainer.setLeftComponent(splitPaneMain);
-		splitPaneMainContainer.setDividerLocation(parentFrame.getWidth()-100);
-		splitPaneMainContainer.setBorder(BorderFactory.createEmptyBorder());
+		// Parent main vertical split pane
+		splitPaneVerticalAllAndBottomToggle.setTopComponent(splitPaneTreetabsAndRightToggle);
+//		splitPaneVerticalAllAndBottomToggle.setTopComponent(getCurrentTabEditor().mainTabList);
+		splitPaneVerticalAllAndBottomToggle.setBottomComponent(bottomModulePanel);
+		textEditorUtils.updateBottomDividerLocation();
+		
+		// Sub-Parent container split components
+		splitPaneTreetabsAndRightToggle.setRightComponent(rightModuleScrollPane);
+		splitPaneTreetabsAndRightToggle.setLeftComponent(getCurrentTabEditor().mainTabList);
+//		splitPaneTreetabsAndRightToggle.setLeftComponent(splitPaneVerticalAllAndBottomToggle);
+		splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth()-100);
+		splitPaneTreetabsAndRightToggle.setBorder(BorderFactory.createEmptyBorder());
 		
 		// Main split init components
-		splitPaneMain.setRightComponent(getCurrentTabEditor().mainTabList);
-		splitPaneMain.setLeftComponent(leftSplitContainer);
+		splitPaneTreeAndVerticalSplit.setRightComponent(splitPaneVerticalAllAndBottomToggle);
+		splitPaneTreeAndVerticalSplit.setLeftComponent(leftScrollPaneContainer);
 		
 		separator_NO_HIDE_2 = new JSeparator();
 		separator_NO_HIDE_2.setSize(new Dimension(50, 2));
@@ -380,7 +409,7 @@ public class TextEditor extends ModulePanel {
 		separator_NO_HIDE_2.setOpaque(true);
 		separator_NO_HIDE_2.setForeground(Color.GRAY);
 		separator_NO_HIDE_2.setBackground(Color.GRAY);
-		leftSplitContainer.add(separator_NO_HIDE_2, "cell 0 3 9 1,growx");
+		leftScrollPaneContainer.add(separator_NO_HIDE_2, "cell 0 3 9 1,growx");
 		
 		lblCurrentDir = new JLabel(ROOT_STANDARD_LBL);
 		lblCurrentDir.setHorizontalTextPosition(SwingConstants.LEFT);
@@ -389,16 +418,16 @@ public class TextEditor extends ModulePanel {
 		lblCurrentDir.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCurrentDir.setForeground(SystemColor.menu);
 		lblCurrentDir.setFont(new Font("SansSerif", Font.PLAIN, 12));
-		leftSplitContainer.add(lblCurrentDir, "cell 0 4 2 1,alignx left");
+		leftScrollPaneContainer.add(lblCurrentDir, "cell 0 4 2 1,alignx left");
 		
 		dynLblCurrentDir = new JLabel("");
 		dynLblCurrentDir.setHorizontalTextPosition(SwingConstants.RIGHT);
 		dynLblCurrentDir.setHorizontalAlignment(SwingConstants.RIGHT);
 		dynLblCurrentDir.setForeground(SystemColor.menu);
 		dynLblCurrentDir.setFont(new Font("SansSerif", Font.BOLD, 12));
-		leftSplitContainer.add(dynLblCurrentDir, "cell 2 4 7 1,alignx right");
-		splitPaneMain.setContinuousLayout(true);
-		splitPaneMainContainer.setContinuousLayout(true);
+		leftScrollPaneContainer.add(dynLblCurrentDir, "cell 2 4 7 1,alignx right");
+		splitPaneTreeAndVerticalSplit.setContinuousLayout(true);
+		splitPaneTreetabsAndRightToggle.setContinuousLayout(true);
 
 		getCurrentTabEditor().addTab(null); // comment for editing in windowuilder
 		getCurrentTabEditor().isFirstTabAdded = true;
@@ -420,6 +449,8 @@ public class TextEditor extends ModulePanel {
 		initGuiFromConfig(true, true);
 		
 		loadOpenedFilesAtStart();
+		
+		applyFilesCaretPositionMap();
 
 		textEditorUtils.resizeFrameToDefault(mainApplication);
 
@@ -437,7 +468,7 @@ public class TextEditor extends ModulePanel {
 				@Override
 				public void run() {
 					CustomTabbedEditor tabEditor = getCurrentTabEditor();
-					Vector<TabTextEditorObj> tabListObjects = tabEditor.loadedList.getList();
+					Vector<TabTextEditorObject> tabListObjects = tabEditor.loadedList.getList();
 
 					tabEditor.loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
 					tabEditor.loadedTabObj.textArea.revalidate();
@@ -457,11 +488,20 @@ public class TextEditor extends ModulePanel {
 			});
 		}
 
-		parentFrame.addFocusListener(getCurrentTabEditor().loadedTabObj.focusTxtAreaMonitor);
+//		parentFrame.addFocusListener(getCurrentTabEditor().loadedTabObj.focusTxtAreaMonitor);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				textEditorUtils.applySelectedTheme();
+				textEditorUtils.applySelectedTheme(false);
+				new Thread(() -> {
+					try {
+						Thread.sleep(1200);
+						GuiUtils.giveFocusToComponent(getCurrentTabEditor().loadedTabObj.textArea);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					RXTextUtilities.centerLineFullInScrollPane(getCurrentTabEditor().loadedTabObj.textArea);
+				}).start();
 			}
 		});
 		
@@ -470,15 +510,15 @@ public class TextEditor extends ModulePanel {
 
 	private void initRightPane() {
 		if (currentConfiguration.getTextEditorOpt().mapViewActive) {
-			rightSplitContainer = MapTextAreaPanel.getSingletonLazy(textEditorUtils.getDialogManager());
+			rightModulePanel = MapTextAreaPanel.getSingletonLazy(textEditorUtils.getDialogManager());
 		} else if (currentConfiguration.getTextEditorOpt().clipboardViewActive) {
-			rightSplitContainer = ClipboardPanel.getSingletonLazy(textEditorUtils.getDialogManager(), currentConfiguration);
-			((ClipboardPanel)rightSplitContainer).selectFromComboClipboards(currentConfiguration.getTextEditorOpt().lastFileOpenedClipboard);
+			rightModulePanel = ClipboardPanel.getSingletonLazy(textEditorUtils.getDialogManager(false), currentConfiguration);
+			((ClipboardPanel)rightModulePanel).selectFromComboClipboards(currentConfiguration.getTextEditorOpt().lastFileOpenedClipboard);
 		} else {
 			// Default
-			rightSplitContainer = MapTextAreaPanel.getSingletonLazy(textEditorUtils.getDialogManager());
+			rightModulePanel = MapTextAreaPanel.getSingletonLazy(textEditorUtils.getDialogManager());
 		}
-		rightSplitPane = new JScrollPane(rightSplitContainer);
+		rightModuleScrollPane = new JScrollPane(rightModulePanel);
 		
 	}
 	
@@ -563,7 +603,7 @@ public class TextEditor extends ModulePanel {
 					@Override
 					public void run() {
 						int tempUpdated = GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL + 1;
-						FileNamed currentRoot = (FileNamed)leftSplitTreeFiles.getModel().getRoot();
+						FileNamed currentRoot = (FileNamed)leftFileTree.getModel().getRoot();
 						if (FileVarious.doesAncestorNlevelsExist(currentRoot.mFile, tempUpdated)) {
 							try {
 								GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL = tempUpdated;
@@ -623,47 +663,50 @@ public class TextEditor extends ModulePanel {
 				
 				File directory = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(mainApplication.getMainFrame(), "Choose a workspace folder to load");
 				setWorkspace(directory);
-				currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(directory, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
-				mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 			}
 		});
 		
 		// left divisor resize
-		splitPaneMain.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+		splitPaneTreeAndVerticalSplit.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				if (subHeaderPanel.btnToggleFileView.isSelected() && getCurrentTabEditor().loadedTabObj.loadedFile != null && getCurrentTabEditor().loadedTabObj.loadedFile.exists()) {
-					splitPaneMain.getLeftComponent().setVisible(true);
-					currentConfiguration.getTextEditorOpt().setDividerFileTreePosX(splitPaneMain.getDividerLocation());
-				}
-			}
-		});
-
-		// right divisor resize
-		splitPaneMainContainer.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						final TextEditorOption opt = currentConfiguration.getTextEditorOpt();
-						if ((opt.mapViewActive || opt.clipboardViewActive)) {
-							splitPaneMainContainer.getRightComponent().setVisible(true);
-
-							int newRightPaneValue = parentFrame.getWidth() - splitPaneMainContainer.getDividerLocation();
-
-							if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
-								// In case of clipboard keep memory in ad-hoc option
-								currentConfiguration.getTextEditorOpt().setDividerRightPanePosXClipboard(newRightPaneValue);
-							} else {
-								currentConfiguration.getTextEditorOpt().setDividerRightPanePosX(newRightPaneValue);
-							}
-						}
+				SwingUtilities.invokeLater(() -> {
+					if (subHeaderPanel.btnToggleFileView.isSelected() && (currentConfiguration.getTextEditorOpt().workspaceViewSelected || (getCurrentTabEditor().loadedTabObj.loadedFile != null && getCurrentTabEditor().loadedTabObj.loadedFile.exists()))) {
+						splitPaneTreeAndVerticalSplit.getLeftComponent().setVisible(true);
+						int oldVal = currentConfiguration.getTextEditorOpt().getDividerFileTreePosX();
+						int newVal = splitPaneTreeAndVerticalSplit.getDividerLocation();
+						currentConfiguration.getTextEditorOpt().setDividerFileTreePosX(newVal);
+					
+						applyDeltaToRightToggle(newVal - oldVal);
 					}
 				});
 			}
 		});
 		
+		// right divisor resize
+		splitPaneTreetabsAndRightToggle.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						activeRightDivisorCheck(false, false);
+					}
+				});
+			}
+		});
+
+		splitPaneVerticalAllAndBottomToggle.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						textEditorUtils.resizeShellInnerDivider();
+					}
+				});
+			}
+		});
+
 		// resizeListener tabListContainer
 		parentFrame.addComponentListener(new ComponentListener() {
 			public void componentShown(ComponentEvent e) {
@@ -681,11 +724,117 @@ public class TextEditor extends ModulePanel {
 			public void componentHidden(ComponentEvent e) {
 			}
 		});
-		
 	}
 	
-	public void setWorkspace(File directory) {
-		if(directory != null && directory.exists()) {
+	public ArrayList<String> getLoadedFiles(){
+		ArrayList<String> keys = new ArrayList<>();
+		
+		for(TabTextEditorObject obj : getCurrentTabEditor().loadedList.getList()) {
+			String key = null;
+			try {
+				key = obj.loadedFile.getAbsolutePath();
+			} catch(Exception e) {
+			}
+			
+			if(!StringWorker.isEmpty(key)) {
+				keys.add(key);
+			}
+		}
+		return keys;
+	}
+	
+	public void applyFilesCaretPositionMap() {
+		Map<String, String> openedCarets = currentConfiguration.getTextEditorOpt().getOpenedFileListCaretPosition();
+		
+		for(TabTextEditorObject obj : getCurrentTabEditor().loadedList.getList()) {
+			if(obj.loadedFile != null &&
+					openedCarets != null &&
+					!openedCarets.isEmpty() &&
+					openedCarets.containsKey(obj.loadedFile.getAbsolutePath())) {
+				
+				try {
+					obj.textArea.setCaretPosition(Integer.valueOf(openedCarets.get(obj.loadedFile.getAbsolutePath())));
+				} catch (NumberFormatException e) {
+					logger.error("Cannot apply caret position=" + openedCarets.get(obj.loadedFile.getAbsolutePath()) +
+							" from configuration for file: " + obj.loadedFile);
+				}
+			}
+		}
+	}
+	
+	public Map<String, String> updateOpenedFilesCaretPositionMap(boolean writeToConfigFile){
+		
+		ArrayList<String> caretPositions = new ArrayList<>();
+		ArrayList<String> keys = new ArrayList<>();
+		
+		for(TabTextEditorObject obj : getCurrentTabEditor().loadedList.getList()) {
+			String key = null;
+			String val = null;
+			try {
+				key = obj.loadedFile.getAbsolutePath();
+				val = String.valueOf(obj.textArea.getCaretPosition());
+			} catch(Exception e) {
+				val = "";
+			}
+			
+			if(!StringWorker.isEmpty(key)) {
+				keys.add(key);
+				caretPositions.add(val);
+			}
+		}
+
+		Map<String, String> openedFiles = INItializerParent.getMapFromKeyList(keys, caretPositions, "");
+		currentConfiguration.getTextEditorOpt().setOpenedFileListCaretPosition(openedFiles);
+
+		if(writeToConfigFile)
+			currentConfiguration.writeSingleValue(
+					INItializer.TEXT_EDITOR_OPT, 
+					"openedFileListCaretPosition", 
+					INItializerParent.mapToString(openedFiles)
+				);
+		
+		return openedFiles;
+	}
+	
+	public void applyDeltaToRightToggle(int deltaBase){
+		if (currentConfiguration.getTextEditorOpt().clipboardViewActive || currentConfiguration.getTextEditorOpt().mapViewActive) {
+			// Refresh divider location
+			splitPaneTreetabsAndRightToggle.getRightComponent().setVisible(true);
+		}
+		if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
+			// In case of clipboard use ad-hoc option
+			currentConfiguration.getTextEditorOpt().dividerRightPanePosXClipboard += deltaBase;
+		}else {
+			currentConfiguration.getTextEditorOpt().dividerRightPanePosX += deltaBase;
+		}
+		rightPaneResizeOnly();
+	}
+
+	
+	public void activeRightDivisorCheck(boolean useConfig, boolean apply) {
+		final TextEditorOption opt = currentConfiguration.getTextEditorOpt();
+		if ((opt.mapViewActive || opt.clipboardViewActive)) {
+			splitPaneTreetabsAndRightToggle.getRightComponent().setVisible(true);
+
+			int newRightPaneValue = parentFrame.getWidth(); 
+
+			if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
+				// In case of clipboard keep memory in ad-hoc option
+				newRightPaneValue = newRightPaneValue - (useConfig ? opt.dividerFileTreePosX : splitPaneTreetabsAndRightToggle.getDividerLocation());
+				currentConfiguration.getTextEditorOpt().setDividerRightPanePosXClipboard(newRightPaneValue);
+					
+			} else {
+				newRightPaneValue = newRightPaneValue - (useConfig ? opt.dividerRightPanePosX : splitPaneTreetabsAndRightToggle.getDividerLocation());
+				currentConfiguration.getTextEditorOpt().setDividerRightPanePosX(newRightPaneValue);
+			}
+
+			if(apply)
+				splitPaneTreetabsAndRightToggle.setDividerLocation(newRightPaneValue);
+		}
+	}
+	
+	public boolean setWorkspace(File directory) {
+		if(directory != null && directory.exists() && directory.isDirectory()) {
 			
 			try {
 				currentConfiguration.getTextEditorOpt().defaultWorkspacePath = directory.getCanonicalPath();
@@ -703,7 +852,16 @@ public class TextEditor extends ModulePanel {
 			
 			// REFRESH
 			textEditorUtils.refreshTreeFromWorkspace(directory);
+			currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(directory, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
+			mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
+			
+			if(!currentConfiguration.getTextEditorOpt().workspaceViewSelected)
+				toggleButtonFileTreeWorkspace.doClick();
+			
+			return true;
 		}
+		
+		return false;
 	}
 	
 	/**
@@ -713,7 +871,7 @@ public class TextEditor extends ModulePanel {
 	 */
 	public boolean askSave(int index) {
 		int askSave = JOptionHelperExtended.CANC;
-		TabTextEditorObj selected = getCurrentTabEditor().loadedList.getList().get(index);
+		TabTextEditorObject selected = getCurrentTabEditor().loadedList.getList().get(index);
 		
 		if (selected.unsaved) {
 			askSave = dialogHelper.yesNoOrCanc("Do you want to save current file?",	"Save current file?");
@@ -735,16 +893,15 @@ public class TextEditor extends ModulePanel {
 	}
 
 	public void initGuiFromConfig(boolean refreshGuiStyle, boolean refreshTheme) {
-		final TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
+		final TabTextEditorObject loadedTabObj = getCurrentTabEditor().loadedTabObj;
 		final TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
-		
 		// TEXT AREA
 		headerPanel.checkBoxInlineTabs.setSelected(txtOptions.isInlinedTabs());
 		headerPanel.doInlinedCheck();
 		headerPanel.chkCutWordsTo.setSelected(txtOptions.isBreaklineActive());
 		getCurrentTabEditor().loadedTabObj.textArea.setLineWrap(txtOptions.isBreaklineActive());
-		leftSplitContainer.setBackground(txtOptions.filePanelBackCol);
-		leftSplitTreeFiles.setBackground(txtOptions.filePanelBackCol);
+		leftScrollPaneContainer.setBackground(txtOptions.filePanelBackCol);
+		leftFileTree.setBackground(txtOptions.filePanelBackCol);
 		headerPanel.sliderSpokenSpeed.setValue(txtOptions.getVoiceRate());
 		
 		// UPDATE DETAIL
@@ -810,11 +967,11 @@ public class TextEditor extends ModulePanel {
 				}
 				
 				try {
-					TreeUtils.selectFileInNamedFileTree(MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.loadedFile,
-							MainGUI.textEditorPanel.leftSplitTreeFiles, true);
+					TreeUtils.selectFileInNamedFileTree(MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.loadedFile, MainGUI.textEditorPanel.leftFileTree, true);
 				} catch (Exception e) {
 					logger.warn("!!! Error trying to sync current file at start into JTree");
 				} 
+				textEditorUtils.updateBottomDividerLocation();
 			}
 		});
 		
@@ -824,19 +981,20 @@ public class TextEditor extends ModulePanel {
 		subHeaderPanel.btnToggleFileView.setSelected(txtOptions.fileTreeActive);
 		if (txtOptions.fileTreeActive) {
 			if (getCurrentTabEditor().loadedTabObj.loadedFile == null && !txtOptions.treeLocked) {
-				splitPaneMain.getLeftComponent().setVisible(false);
-				splitPaneMain.setDividerLocation(1);
+				splitPaneTreeAndVerticalSplit.getLeftComponent().setVisible(false);
+				splitPaneTreeAndVerticalSplit.setDividerLocation(1);
 			}
-			splitPaneMain.getLeftComponent().setVisible(true);
-			splitPaneMain.setDividerLocation(currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
+			splitPaneTreeAndVerticalSplit.getLeftComponent().setVisible(true);
+			splitPaneTreeAndVerticalSplit.setDividerLocation(currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 			subHeaderPanel.btnToggleFileView.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 		} else {
-			splitPaneMain.getLeftComponent().setVisible(false);
-			splitPaneMain.setDividerLocation(1);
+			splitPaneTreeAndVerticalSplit.getLeftComponent().setVisible(false);
+			splitPaneTreeAndVerticalSplit.setDividerLocation(1);
 			subHeaderPanel.btnToggleFileView.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 		}
 		
 		textEditorUtils.resetDividerColor();
+		textEditorUtils.checkRightVisibleIfEnabled();
 //		GUIStyelSettings.applyNimbusSize(0);
 	}
 	
@@ -844,16 +1002,21 @@ public class TextEditor extends ModulePanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if (isTextAreaMaximized()) {
-					if (preMaximizationBackupLeft != null) {
-						preMaximizationBackupLeft.doClick();
-						preMaximizationBackupLeft = null;
-					}
-
+					
 					if (preMaximizationBackupRight != null) {
 						preMaximizationBackupRight.doClick();
 						preMaximizationBackupRight = null;
 					}
+
+					if (preMaximizationBackupLeft != null) {
+						preMaximizationBackupLeft.doClick();
+						preMaximizationBackupLeft = null;
+					}
+					
+					textEditorUtils.setBottomDividerActive(true, true);
+					textEditorUtils.checkRightVisibleIfEnabled();
 				} else {
+					textEditorUtils.setBottomDividerActive(false, true);
 					hideLeftPane();
 					hideRightPane();
 				}
@@ -862,7 +1025,7 @@ public class TextEditor extends ModulePanel {
 	}
 	
 	public boolean isTextAreaMaximized() {
-		return !isLeftPaneVisible() && !isRightPaneVisible();
+		return !isLeftPaneVisible() && !isRightPaneVisible() && !textEditorUtils.isBottomDividerActive();
 	}
 	
 	public boolean isLeftPaneVisible() {
@@ -911,20 +1074,22 @@ public class TextEditor extends ModulePanel {
 			
 			textEditorUtils.resetDividerColor();
 			
-			currentTextEditor.rightSplitPane.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
-			currentTextEditor.splitPaneMainContainer.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
-			currentTextEditor.splitPaneMainContainer.getRightComponent().setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+			currentTextEditor.rightModuleScrollPane.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+			currentTextEditor.splitPaneTreetabsAndRightToggle.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+			currentTextEditor.splitPaneTreetabsAndRightToggle.getRightComponent().setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 			if(txtOptions.mapViewActive && textEditorUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
 				MapTextAreaPanel.getSingletonLazy(textEditorUtils.getDialogManager()).getTxtAreaMiniMap().requestFocus();
 			}
 			
 			if(!txtOptions.mapViewActive && !txtOptions.clipboardViewActive) {
-				getCurrentTabEditor().loadedTabObj.textArea.requestFocus();
+				GuiUtils.giveFocusToComponent(getCurrentTabEditor().loadedTabObj.textArea);
 			}
 
-			currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-			currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			currentTextEditor.rightModuleScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			currentTextEditor.rightModuleScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			GUIStyelSettingsExtended.applyNimbusSize(null, currentConfiguration.getGuiOpt().nimbusSize);
+			
+			textEditorUtils.syncMiniTextAreaContent();
 		});
 	}
 	
@@ -936,21 +1101,22 @@ public class TextEditor extends ModulePanel {
 			
 			
 			// Refresh divider location
-			splitPaneMainContainer.getRightComponent().setVisible(true);
+			splitPaneTreetabsAndRightToggle.getRightComponent().setVisible(true);
 			if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
 				// In case of clipboard use ad-hoc option
-				splitPaneMainContainer.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosXClipboard);
+				splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosXClipboard);
 			}else {
-				splitPaneMainContainer.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosX);
+				splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosX);
 			}
 			
 		} else {
 			// HIDE PANEL
-			splitPaneMainContainer.getRightComponent().setVisible(false);
-			splitPaneMainContainer.setDividerLocation(parentFrame.getWidth());
+			splitPaneTreetabsAndRightToggle.getRightComponent().setVisible(false);
+			splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth());
 			subHeaderPanel.toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 			subHeaderPanel.toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 		}
+		
 	}
 	
 	public boolean isRightPaneOn() {
@@ -975,6 +1141,12 @@ public class TextEditor extends ModulePanel {
 			btnDepthDown_nostyle.setToolTipText(TextEditTooltips.tooltipDepthTreeDown);
 		}
 	}
+	
+	private boolean validateFile(File toLoadFile) {
+		boolean exceedsLines = FileWorker.checkIfHasMoreThanNLines(toLoadFile, GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES);
+		boolean exceedsLength = toLoadFile.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB;
+		return toLoadFile != null && toLoadFile.exists() && !exceedsLength && !exceedsLines;
+	}
 
 	private void loadOpenedFilesAtStart() {
 		
@@ -984,17 +1156,27 @@ public class TextEditor extends ModulePanel {
 
 		boolean loadedAlmostOne = false;
 		currentTabbedEditor.alreadyLoading = true;
+		List<String> toRemove = new ArrayList<>();
 		if (currentConfiguration.getTextEditorOpt().getOpenedFileList() != null
 				&& currentConfiguration.getTextEditorOpt().getOpenedFileList().size() != 0) {
 			
 			for (String pathToOpen : currentConfiguration.getTextEditorOpt().getOpenedFileList()) {
 				File toLoadFile = new File(pathToOpen);
 				if (toLoadFile.exists()) {
+					if(!validateFile(toLoadFile)) {
+						toRemove.add(pathToOpen);
+						continue;
+					}
+					
 					currentTabbedEditor.addTab(toLoadFile);
 					currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(toLoadFile, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 					if (!loadedAlmostOne)
 						loadedAlmostOne = true;
 				}
+			}
+			
+			for(String toRemoStr : toRemove) {
+				currentConfiguration.getTextEditorOpt().getOpenedFileList().remove(toRemoStr);
 			}
 		}
 
@@ -1002,6 +1184,10 @@ public class TextEditor extends ModulePanel {
 		if (MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
 			logger.debug("ARGUMENTS FILES:" + Arrays.toString(MainGuiGeneralAppStarter.argumentsFiles));
 			for (File file : MainGuiGeneralAppStarter.argumentsFiles) {
+				if(!validateFile(file)) {
+					continue;
+				}
+				
 				currentTabbedEditor.loadFile(file);
 				logger.debug(file.getAbsolutePath() + " -> Loaded");
 				currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(file, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
@@ -1016,7 +1202,7 @@ public class TextEditor extends ModulePanel {
 			String toOpenAtStart = currentConfiguration.getTextEditorOpt().selectedAtStart;
 			try {
 				int i = 0;
-				for (TabTextEditorObj iteratorObj : currentTabbedEditor.loadedList.getList()) {
+				for (TabTextEditorObject iteratorObj : currentTabbedEditor.loadedList.getList()) {
 					if (iteratorObj.loadedFile != null
 							&& toOpenAtStart.equals(iteratorObj.loadedFile.getAbsolutePath())) {
 						currentTabbedEditor.mainTabList.setSelectedIndex(i);
@@ -1058,9 +1244,9 @@ public class TextEditor extends ModulePanel {
 				public void run() {
 					File workspace = new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
 					textEditorUtils.refreshTreeFromFolder(workspace, true);
-					leftSplitTreeFiles.revalidate();
-					leftSplitTreeFiles.repaint();
-					leftSplitTreeFiles.setVisible(true);
+					leftFileTree.revalidate();
+					leftFileTree.repaint();
+					leftFileTree.setVisible(true);
 				}
 			});
 		}
@@ -1077,7 +1263,7 @@ public class TextEditor extends ModulePanel {
 			@Override
 			public void run() {
 				while (MainGUI.mainAppRunning) {
-					TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
+					TabTextEditorObject loadedTabObj = getCurrentTabEditor().loadedTabObj;
 					
 					if (loadedTabObj != null && loadedTabObj.textArea != null) {
 						
@@ -1088,7 +1274,7 @@ public class TextEditor extends ModulePanel {
 						
 						try {
 							int line = loadedTabObj.textArea.getLineOfOffset(loadedTabObj.textArea.getCaretPosition());
-							footerPanel.dynLblCurrLine.setText(String.valueOf(line));
+							footerPanel.dynLblCurrLine.setText(String.valueOf(line) + 1);
 						} catch (BadLocationException e1) {
 							logger.error("Error refreshing current line in footer", e1);
 						}

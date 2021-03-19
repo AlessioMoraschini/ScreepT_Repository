@@ -29,6 +29,7 @@ import files.FileWorker;
 import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
+import gui.selection.AbstractSelector;
 import maingUI.MainGuiGeneralAppStarter;
 
 import java.awt.SystemColor;
@@ -37,6 +38,7 @@ import om.SupportedFileTextEditor;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
+import utility.string.TextAreaStringEditor;
 
 import javax.swing.JLabel;
 
@@ -70,18 +72,21 @@ public class TemplatesChooserFrame extends ParentFrame {
 	private JComboBox<String> comboTemplateSelector;
 	private JButton btnInject;
 	private JButton btnAddSelectionToTemplates;
-	private JButton AddCustomFromFile;
+	private JButton addCustomFromFile;
 	private JButton buttonInvoker;
 	private JButton btnOpenInFilesystem;
 	private JButton btnReloadTemplates;
 	public JTextArea outputTextArea;
 	private JOptionHelperExtended dialogHelper;
-	
+	private AbstractSelector<String> iSelector;
 	
 	// MAIN CONSTRUCTOR //
 	public TemplatesChooserFrame(JFrame parent, JTextArea outputText, JButton buttonInvoke) {
 		
 		active = true;
+		
+		// Default null safe impl - the custom one can be setted from caller
+		iSelector = AbstractSelector.getDefaultSelector(comboTemplateSelector);
 		
 		dialogHelper = new JOptionHelperExtended(this);
 		
@@ -138,10 +143,10 @@ public class TemplatesChooserFrame extends ParentFrame {
 		comboTemplateSelector.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(comboTemplateSelector, "cell 0 1,growx");
 		
-		AddCustomFromFile = new JButton("Add Custom Template");
-		AddCustomFromFile.setMinimumSize(new Dimension(185, 35));
-		AddCustomFromFile.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		getContentPane().add(AddCustomFromFile, "cell 1 1,growx");
+		addCustomFromFile = new JButton("Add Custom Template");
+		addCustomFromFile.setMinimumSize(new Dimension(185, 35));
+		addCustomFromFile.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		getContentPane().add(addCustomFromFile, "cell 1 1,growx");
 		
 		btnInject = new JButton("Inject template");
 		btnInject.setMinimumSize(new Dimension(108, 35));
@@ -165,13 +170,19 @@ public class TemplatesChooserFrame extends ParentFrame {
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
 	        	active = false;
 	        	buttonInvoker.setEnabled(true);
 	        	
 				logger.debug("Closing "+getClass().getName()+" - Configuration resetted.\n");
 	        	dispose();
 		    }
+		});
+		
+		comboTemplateSelector.addActionListener((e) -> {
+			SwingUtilities.invokeLater(() -> {
+				AbstractSelector.nullSafeSetLastSelected(
+						iSelector, (String)comboTemplateSelector.getSelectedItem());
+			});
 		});
 		
 		// append template into text area at current selection
@@ -185,12 +196,13 @@ public class TemplatesChooserFrame extends ParentFrame {
 					dialogHelper.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), "ERROR reading Template");
 					logger.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), e1);
 				}
-				outputTextArea.insert(selectedTemplate, outputTextArea.getCaretPosition());
+				TextAreaStringEditor.replaceTextAreaSelectionOrInsert(outputTextArea, selectedTemplate, null);
+
 			}
 		});
 
 		// add custom template from file
-		AddCustomFromFile.addActionListener(new ActionListener() {
+		addCustomFromFile.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -319,12 +331,23 @@ public class TemplatesChooserFrame extends ParentFrame {
 		return new Dimension(600, 165);
 	}
 	
+	public AbstractSelector<String> getiSelector() {
+		return iSelector;
+	}
+
+	public void setiSelector(AbstractSelector<String> iSelector, boolean updateComboSelection) {
+		this.iSelector = iSelector;
+		if(updateComboSelection)
+			AbstractSelector.updateStringComboSelection(iSelector, comboTemplateSelector);
+	}
+
 	private void reloadTemplates() {
 		comboTemplateSelector.removeAllItems();
 		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>( retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER) );
 		comboTemplateSelector.setModel( model );
 		//comboTemplateSelector = new JComboBox<String>(retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER));
 		comboTemplateSelector.revalidate();
+		AbstractSelector.updateStringComboSelection(iSelector, comboTemplateSelector);
 		comboTemplateSelector.repaint();
 	}
 	

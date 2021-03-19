@@ -38,13 +38,13 @@ import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.utils.filedialog.INIfileChoosER;
 import gui.MenuSetter;
+import impl.INItializer;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
-import mainobj.INItializer;
-import media.ImageWorkerExtended;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import treeutils.om.FileTreeModel;
+import utils.ImageWorkerExtended;
 
 public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBasic{
 	

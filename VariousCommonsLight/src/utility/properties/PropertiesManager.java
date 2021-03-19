@@ -25,13 +25,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
-import utility.ConversionUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
 
 public class PropertiesManager {
 	
-	private static SafeLogger logger = new SafeLogger(PropertiesManager.class);
+	public static SafeLogger logger = new SafeLogger(PropertiesManager.class);
 	private static SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
 	public File dynamicFileBindingsDefSource;

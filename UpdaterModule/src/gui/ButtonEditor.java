@@ -27,7 +27,7 @@ import gui.dialogs.msg.JOptionHelper;
 import om.exception.ProgressBarInterruptedException;
 import plugins.PluginDTO;
 import plugins.PluginManager;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 class ButtonEditor extends DefaultCellEditor {
 	private static final long serialVersionUID = 2322648608181904669L;

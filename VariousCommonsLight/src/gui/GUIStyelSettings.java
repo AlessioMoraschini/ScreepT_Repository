@@ -31,7 +31,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.ColorUIResource;
 
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class GUIStyelSettings{
 

@@ -33,10 +33,10 @@ import network.http.HttpHelper;
 import network.http.HttpHelper.HttpRequestMetod;
 import network.utils.DownloadUtils;
 import om.exception.ProgressBarInterruptedException;
-import utility.ConversionUtils;
-import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 import utility.properties.PropertiesManager;
 
 /**
@@ -57,7 +57,7 @@ public class PluginManager {
 
 	public static final HashingFunction DEFAULT_HASHING_F_PLUGINS = HashingFunction.SHA512;
 
-	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MainStandAloneUpdater.APP_PROPERTIES_FILE);
+	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MainStandAloneUpdater.MAIN_APP_PROPERTIES_PATH);
 	public static PropertiesManager installedPluginProperties = new PropertiesManager(installedPluginPropsFileName);
 	
 	public static final String LOCAL_PLUGINS_DIR = resourcesFilePathsMappings.getProperty("PLUGINS_DIR", "PLUGINS/");

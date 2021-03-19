@@ -7,8 +7,8 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import files.search.FileSearchAdvanced;
-import files.search.FileSearchAdvanced.SearchType;
+import files.search.FileNameSearchAdvanced;
+import files.search.FileNameSearchAdvanced.SearchType;
 
 public class TestSearchAdvanced {
 
@@ -17,60 +17,73 @@ public class TestSearchAdvanced {
 
 	private static final boolean IGNORE_CASE = false;
 	private static final String MATCH = "sAmple";
+	private static final String MATCH_wildcard = "*Ample*";
 	private static final File rootFolder = new File("C:\\Users\\xx\\Desktop\\Crypter Test\\BACKUP_ECLIPSE");
+//	private static final File rootFolderLight = new File("C:\\Users\\xx\\Desktop\\Crypter Test\\BACKUP_ECLIPSE\\RemoteSystemsTempFiles");
 	
 	@Test
-//	@Ignore
+	@Ignore
 	public void testFolderSearchDeep() throws IOException {
 		
 		System.out.print("TEST_SEARCH FOLDER (DEEP SEARCH) INSIDE: " + rootFolder.getCanonicalPath());
-		searchTest(SearchType.FOLDERS_ONLY, true);
+		searchTest(MATCH, SearchType.FOLDERS_ONLY, true, true);
+	}
+
+	@Test
+	@Ignore
+	public void testFolderSearch() throws IOException {
+		
+		System.out.print("TEST_SEARCH FOLDER (NON DEEP) INSIDE: " + rootFolder.getCanonicalPath());
+		searchTest(MATCH, SearchType.FOLDERS_ONLY, false, true);
+	}
+	
+	@Test
+	@Ignore
+	public void testFileSearchDeep() throws IOException {
+		
+		System.out.print("TEST_SEARCH FILE (DEEP SEARCH) INSIDE: " + rootFolder.getCanonicalPath());
+		searchTest(MATCH, SearchType.FILE_ONLY, true, true);
+	}
+	
+	@Test
+	@Ignore
+	public void testFileSearch() throws IOException {
+		
+		System.out.print("TEST_SEARCH FILE (NON DEEP) INSIDE: " + rootFolder.getCanonicalPath());
+		searchTest(MATCH, SearchType.FILE_ONLY, false, true);
+	}
+	
+	@Test
+	@Ignore
+	public void testAllSearchDeep() throws IOException {
+		
+		System.out.print("TEST_SEARCH ALL (DEEP SEARCH) INSIDE: " + rootFolder.getCanonicalPath());
+		searchTest(MATCH, SearchType.ALL, true, true);
 	}
 
 	@Test
 //	@Ignore
-	public void testFolderSearch() throws IOException {
-		
-		System.out.print("TEST_SEARCH FOLDER (NON DEEP) INSIDE: " + rootFolder.getCanonicalPath());
-		searchTest(SearchType.FOLDERS_ONLY, false);
-	}
-	
-	@Test
-	public void testFileSearchDeep() throws IOException {
-		
-		System.out.print("TEST_SEARCH FILE (DEEP SEARCH) INSIDE: " + rootFolder.getCanonicalPath());
-		searchTest(SearchType.FILE_ONLY, true);
-	}
-	
-	@Test
-	public void testFileSearch() throws IOException {
-		
-		System.out.print("TEST_SEARCH FILE (NON DEEP) INSIDE: " + rootFolder.getCanonicalPath());
-		searchTest(SearchType.FILE_ONLY, false);
-	}
-	
-	@Test
-//	@Ignore
-	public void testAllSearchDeep() throws IOException {
+	public void testAllSearchDeepWildcard() throws IOException {
 		
 		System.out.print("TEST_SEARCH ALL (DEEP SEARCH) INSIDE: " + rootFolder.getCanonicalPath());
-		searchTest(SearchType.ALL, true);
+		searchTest(MATCH_wildcard, SearchType.ALL, true, true);
 	}
 	
 	@Test
-//	@Ignore
+	@Ignore
 	public void testAllSearch() throws IOException {
 		
 		System.out.print("TEST_SEARCH ALL (NON DEEP) INSIDE: " + rootFolder.getCanonicalPath());
-		searchTest(SearchType.ALL, false);
+		searchTest(MATCH, SearchType.ALL, false, false);
 	}
 	
 	
 	// ######## UTILITY ###########
-	private void searchTest(SearchType type, boolean deepSearch) {
+	private void searchTest(String match, SearchType type, boolean deepSearch, boolean wildcardMode) {
 		long start = System.currentTimeMillis();
 		
-		List<File> result = FileSearchAdvanced.findByMatch(rootFolder, MATCH, false, type, deepSearch, IGNORE_CASE);
+		List<File> result = FileNameSearchAdvanced.findByMatch(
+				rootFolder, match, false, type, deepSearch, IGNORE_CASE, wildcardMode);
 		
 		long end = System.currentTimeMillis();
 		printElapsed(result.size(), start, end);

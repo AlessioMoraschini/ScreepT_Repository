@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class MousePointerUtils {
 	
@@ -95,7 +95,7 @@ public class MousePointerUtils {
 				if (event instanceof KeyEvent) {
 					KeyEvent keyEvent = (KeyEvent) event;
 					
-					if (keyEvent.isControlDown()) {
+					if (keyEvent.isControlDown() && keyEvent.isShiftDown()) {
 						if (keyEvent.getID() == KeyEvent.KEY_PRESSED) {
 							logger.debug(MouseInfo.getPointerInfo().getLocation() + " | ");
 							logger.debug(event);

@@ -70,13 +70,45 @@
 	    <artifactId>miglayout</artifactId>
 	    <version>3.7.4</version>
 	</dependency>
-
+	
 	<dependency>
-		<groupId>GenCommons</groupId>
-		<artifactId>GenCommons</artifactId>
-		<version>1.0</version>
+	    <groupId>com.github.depsypher</groupId>
+	    <artifactId>pngtastic</artifactId>
+	    <version>1.5</version>
 	</dependency>
 	
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-lang3</artifactId>
+	    <version>3.9</version>
+	    <exclusions>
+		    <exclusion>
+		    	<groupId>org.easymock</groupId>
+   			 	<artifactId>easymock</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.junit-pioneer</groupId>
+    			<artifactId>junit-pioneer</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.junit.jupiter</groupId>
+    			<artifactId>junit-jupiter</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.openjdk.jmh</groupId>
+    			<artifactId>jmh-core</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.openjdk.jmh</groupId>
+    			<artifactId>jmh-generator-annprocess</artifactId>
+		    </exclusion>
+	    </exclusions>
+	</dependency>
+
 	<dependency>
 		<groupId>Resources</groupId>
 		<artifactId>Resources</artifactId>

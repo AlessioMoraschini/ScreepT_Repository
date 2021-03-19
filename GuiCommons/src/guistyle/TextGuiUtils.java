@@ -20,6 +20,7 @@ import java.util.Map;
 
 public class TextGuiUtils {
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void underlineText(Component sourceElem) {
 		Map attributes = sourceElem.getFont().getAttributes();
 		attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);

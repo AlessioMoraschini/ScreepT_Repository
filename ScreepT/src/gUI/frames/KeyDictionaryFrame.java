@@ -22,13 +22,13 @@ import files.FileWorker;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
+import impl.INItializer;
 import maingUI.MainGUI;
-import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import om.BufferedImageType;
 import resources.IconsPathConfigurator;
 import treeutils.om.FileTreeModel;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 
 import javax.swing.JPanel;
 import java.awt.SystemColor;

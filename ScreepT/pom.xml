@@ -1,742 +1,772 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>ScreepT</groupId>
-  <artifactId>ScreepT</artifactId>
-  <version>${parent.build.version.screept}</version>
-  
-  <parent>
-  	<groupId>ScreepT_Parent</groupId>
-  	<artifactId>ScreepT_Parent</artifactId>
-  	<version>${parent.build.version.screept}</version>
-  	<relativePath>../ScreepT_Parent</relativePath>
-  </parent>
-  
-  <packaging>jar</packaging>
-  
-  <name>ScreepT</name>
-  <description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ScreepT</groupId>
+	<artifactId>ScreepT</artifactId>
+	<version>${parent.build.version.screept}</version>
+
+	<parent>
+		<groupId>ScreepT_Parent</groupId>
+		<artifactId>ScreepT_Parent</artifactId>
+		<version>${parent.build.version.screept}</version>
+		<relativePath>../ScreepT_Parent</relativePath>
+	</parent>
+
+	<packaging>jar</packaging>
+
+	<name>ScreepT</name>
+	<description>
   	This is the main module, that comprends the main GUI and all the methods specific for ScreepT implementation.
   	Furthermore, here you can find many classes useful to manage and keep separated the various functions, keeping the GUI more mainainable.
   </description>
-  <url>${project.main.url}</url>
-  <inceptionYear>${inception.year}</inceptionYear>
-  <licenses>
-    <license>
-      <name>${project.license.name}</name>
-      <url>${project.license.url}</url>
-    </license>
-  </licenses>
-  <developers>
-    <developer>
-      <name>${developer.name}</name>
-    </developer>
-  </developers>
-  
-  <scm>
-      <connection>scm:git:http://127.0.0.1/dummy</connection>
-      <developerConnection>scm:git:https://127.0.0.1/dummy</developerConnection>
-      <tag>HEAD</tag>
-      <url>http://127.0.0.1/dummy</url>
-  </scm>
-  
-  <properties>
-    <export.jar.name>ScreepT_${project.version}</export.jar.name>
-  </properties>
-  
-  <build>
-    <finalName>${export.jar.name}</finalName>
-    <sourceDirectory>src</sourceDirectory>
-    
-    <plugins>
-    	
-    	<!-- Properties inherited from parent -->
-    	<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>properties-maven-plugin</artifactId>
-			<executions>
-				<execution>
-					<phase>validate</phase>
-					<goals>
-						<goal>read-project-properties</goal>
-					</goals>
-					<configuration>
-						<files>
-							<file>${project.parent.relativePath}/${properties.location}</file>
-						</files>
-					</configuration>
-				</execution>
-			</executions>
-		</plugin>
-    
-    	<!-- LICENSE REPORT GENERATOR -->
-   		<plugin>
-	        <groupId>org.codehaus.mojo</groupId>
-			<artifactId>license-maven-plugin</artifactId>
-			<version>2.0.0</version>
-			<executions>
-				<execution>
-					<phase>install</phase>
-					<configuration>
-						<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
-						<generateBundle>true</generateBundle>
-						<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
-						<!-- <excludedScopes>provided,test</excludedScopes> -->
-						<excludedScopes>test</excludedScopes>
-					</configuration>
-					<goals>
-					<goal>third-party-report</goal>
-					</goals>
-				</execution>
-			</executions>
-			<configuration>
-				<skipThirdPartyReport>${license.thirdyparty.report.skip}</skipThirdPartyReport>
-			</configuration>
-      	</plugin>
-	    
-    	  <!-- Generate changelog -->
-	      <plugin>
-	         <groupId>org.codehaus.mojo</groupId>
-	         <artifactId>exec-maven-plugin</artifactId>
-	         <version>1.2.1</version>
-	         <executions>
-	             <execution>
-	                 <phase>pre-integration-test</phase>
-	                 <configuration>
-	                     <executable>cmd</executable>
-	                     <workingDirectory></workingDirectory>
-	                     <arguments>
-	                         <argument>/C</argument>
-	                         <argument>"generate_ChangeLogLauncher.bat"</argument>
-	                     </arguments>
-	                 </configuration>
-	                 <goals>
-	                     <goal>exec</goal>
-	                 </goals>
-	             </execution>                            
-	         </executions>
-	      </plugin>
-	      
-	      <!-- BUILD OBFUSCATION -->
-   	<plugin>
-	    <groupId>com.github.wvengen</groupId>
-	    <artifactId>proguard-maven-plugin</artifactId>
-	    <version>2.2.0</version>
+	<url>${project.main.url}</url>
+	<inceptionYear>${inception.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${project.license.name}</name>
+			<url>${project.license.url}</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
 
-           <executions>
-               <execution>
-                   <phase>package</phase>
-                   <goals><goal>proguard</goal></goals>
-               </execution>
-           </executions>
-           <configuration>
-           	<skip>${obfuscation.skip}</skip>
-               <proguardVersion>6.2.0</proguardVersion>
-               <obfuscate>true</obfuscate>
-               <options>
-                   <option>-keep public class maingUI.MainGuiGeneralAppStarter{public static void main(java.lang.String[]);}</option>
-              	   <option>-target 1.8</option>
-               </options>
-               <libs>
-                   <lib>${java.home}/lib/rt.jar</lib>
-               </libs>
-               <dependencies>
-               	<dependency>
-				    <groupId>com.github.wvengen</groupId>
-				    <artifactId>proguard-maven-plugin</artifactId>
-				    <version>2.2.0</version>
-				</dependency>
-				                
-                   <dependency>
-				    <groupId>net.sf.proguard</groupId>
-				    <artifactId>proguard-base</artifactId>
-				    <version>6.2.0</version>
-				</dependency>
-				<dependency>
-				    <groupId>net.sf.proguard</groupId>
-				    <artifactId>proguard-parent</artifactId>
-				    <version>6.2.0</version>
-				    <type>pom</type>
-				</dependency>
-									
+	<scm>
+		<connection>scm:git:http://127.0.0.1/dummy</connection>
+		<developerConnection>scm:git:https://127.0.0.1/dummy</developerConnection>
+		<tag>HEAD</tag>
+		<url>http://127.0.0.1/dummy</url>
+	</scm>
 
-               </dependencies>
-           </configuration>
-       </plugin>
-	      
-      <!-- download source code in Eclipse, best practice -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.9</version>
-        <configuration>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>true</downloadJavadocs>
-        </configuration>
-      </plugin>
-      
-      <!-- COMPILER -->
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-      
-      <!-- DEPENDENCY EXTRACTOR - If want to export single jars into LIBS -->
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.1.1</version>
-          <executions>
-              <execution>
-                  <id>copy-dependencies</id>
-                  <phase>prepare-package</phase>
-                  <goals>
-                      <goal>copy-dependencies</goal>
-                  </goals>
-                  <configuration>
-	                  <skip>${export.multijar.skip}</skip>
-	                  <overwrite>true</overwrite>
-                      <outputDirectory>
-                      	<!-- MULTIJAR LIBS UPDATE -->
-                          ${export.directory.multijar.libs}
-                          <!-- ECLIPSE_PRJ - ${project.build.directory}/libs -->
-                      </outputDirectory>
-                      <exclude>/**/*humbs.db</exclude>
-                  </configuration>
-              </execution>
-          </executions>
-      </plugin>
-      
-      <!-- JAR ASSEMBLER -->
-      <plugin>
-	    <groupId>org.apache.maven.plugins</groupId>
-	    <artifactId>maven-assembly-plugin</artifactId>
-	    <version>2.4.1</version>
-	    <executions>
+	<properties>
+		<export.jar.name>ScreepT_${project.version}</export.jar.name>
+	</properties>
 
-            <!-- (1) FATJAR BUILD AND EXPORT -->
-	        <execution>
-	            <id>make-assembly - main fatjar folder</id>
-	            <phase>package</phase>
-	            <goals>
-	                <goal>single</goal>
-	            </goals>
-	            <configuration>
-	            	<skipAssembly>${export.fatjar.skip}</skipAssembly>
-	            	<overwrite>true</overwrite>
-	                <outputDirectory>
-	                       <!-- ${project.build.directory}/CENTRALIZED -->
-	                       ${export.directory.fatjar.main}
-                   	</outputDirectory>
-                	<archive>
-		                <manifest>
-		                    <mainClass>
-		                        maingUI.MainGuiGeneralAppStarter
-		                    </mainClass>
-		                </manifest>
-		                <manifestEntries>
-		                	<Created-by>${developer.name}</Created-by>
-			              	<Built-By>${developer.name}</Built-By>
-			              	<Build-number>${buildNumber}</Build-number>
-			              	<Build-git-hash>${git.commit.id}</Build-git-hash>
-		                </manifestEntries>
-	                </archive>
-	                <appendAssemblyId>false</appendAssemblyId>
-	                <exclude>/**/*humbs.db</exclude>
-	                <descriptors>
-	                    <descriptor>UTILS_BUILD/assembly_exclude.xml</descriptor> 
-	                </descriptors>
-	                <!-- <exclude>/**/public-suffix-list.txt</exclude> -->
-	            </configuration>
-	        </execution>
-            
-	    </executions>
-	  </plugin>
-	  
-	  <!-- UPDATES COPY ALREADY BUILT JARS -->
-	 <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-antrun-plugin</artifactId>
-		<inherited>true</inherited>
-		<executions>
-			<execution>
-				<id>createThriftDir</id>
-				<phase>install</phase>
+	<build>
+		<finalName>${export.jar.name}</finalName>
+		<sourceDirectory>src</sourceDirectory>
+
+		<plugins>
+
+			<!-- Properties inherited from parent -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>read-project-properties</goal>
+						</goals>
+						<configuration>
+							<files>
+								<file>${project.parent.relativePath}/${properties.location}</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- LICENSE REPORT GENERATOR -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.0.0</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<configuration>
+							<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+							<generateBundle>true</generateBundle>
+							<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
+							<excludedScopes>provided,test</excludedScopes>
+						</configuration>
+						<goals>
+							<goal>third-party-report</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
-					<tasks>
-						<copy file="${export.directory.fatjar.main}/ScreepT_${parent.build.version.screept}.jar" todir="${export.updates.folder}"/>
-						<copy file="${export.directory.fatjar.main}/ScreepT_Launcher.jar" todir="${export.updates.folder}"/>
-					</tasks>
+					<skipThirdPartyReport>${license.thirdyparty.report.skip}</skipThirdPartyReport>
 				</configuration>
-				<goals>
-					<goal>run</goal>
-				</goals>
-			</execution>
-		</executions>
-	</plugin>
-	  
-	  <!-- (C) EXPORT RESOURCES TO BOTH MULTIJAR AND FATJAR EXPORT DIRS -->
-  	  <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
+			</plugin>
 
-     <!-- (C-1) MULTIJAR : .root -->
-          <execution>
-            <id>copy-resources -> ${export.directory.multijar.main}</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-            	<encoding>UTF-8</encoding>
-            	<includeEmptyDirs>true</includeEmptyDirs>
-            	<export.launcher.jarmode>false</export.launcher.jarmode>
-            	<tasks>
-					<echo>SINGLE_MAIN_JAR SOURCE: /target/ScreepT_${parent.build.version.screept}.jar</echo>
-				</tasks>
-            	<skip>${export.multijar.skip}</skip>
-            	<overwrite>true</overwrite>
-              	<outputDirectory>
-              		<!-- ${basedir}/target/ScreepT_${parent.build.version.screept}.jar -->
-              		${export.directory.multijar.main}
-              	</outputDirectory>
-               	<name>timestamp</name>
-               	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
-               	<timeZone>CTE</timeZone>
-			    <resources>
-			    	 <!-- Resources to filter from root -->
-				     <resource>
-					    <filtering>true</filtering>
-					    <directory>./</directory>
-					    <includes>
-					        <include>resourcesFilePathsMappings.properties</include>
-     					    <include>LAUNCHER/**/*</include>
-					        <include>LAUNCHER/*</include>
-					    </includes>
-					    <excludes>/**/*humbs.db</excludes>
-					 </resource>
-					 
-					 <!-- Main screept's jar (not fatjar) just compiled in /target -->
-				     <resource>
-					    <filtering>false</filtering>
-					    <directory>target/</directory>
-					    <includes>
-					        <include>${export.jar.name}.jar</include>
-					    </includes>
-					</resource>
-			    </resources>     
-            </configuration>            
-          </execution>
-          
-     <!-- (C-2) MULTIJAR : Resources_ScreepT -->
-          <execution>
-            <id>copy-resources -> ${export.directory.multijar.resources}</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-            	<encoding>UTF-8</encoding>
-            	<includeEmptyDirs>true</includeEmptyDirs>
-            	<skip>${export.multijar.skip}</skip>
-            	<overwrite>true</overwrite>
-              	<outputDirectory>
-              		<!-- ${basedir}/target/extra-resources -->
-              		${export.directory.multijar.resources}
-              	</outputDirectory>
-               	<name>timestamp</name>
-               	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
-               	<timeZone>CTE</timeZone>
-			    <resources>
-				     <resource>
-						<filtering>false</filtering>
-				        <directory>./Resources_ScreepT</directory>
-    					<includes>
-    						<include>/**</include>
-    						<include>/*</include>
-    						<include>/**/*</include>
-					    </includes>
-					    <excludes>
-					    	<exclude>/Readme/**</exclude>
-					    	<exclude>/Readme/*</exclude>
-					    	<exclude>/**/*Thumbs.db</exclude>
-					    	<exclude>/**/*.ini</exclude>
-					    	<exclude>*.ini</exclude>
-					    </excludes>
-					</resource>
-					<resource>
-					    <filtering>true</filtering>
-					    <directory>./Resources_ScreepT</directory>
-					    <includes>
-					    	<include>/Readme/**</include>
-					    	<include>/Readme/**/*</include>
-					    </includes>
-					    <excludes>
-					    	/**/*Thumbs.db
-					    </excludes>
-					</resource>
-			    </resources>     
-            </configuration>            
-          </execution>
-          
-   	<!-- FATJAR -->
-  	<!-- (C-3) Copy Root Folders -->
-          <execution>
-            <id>copy-resources -> ${export.directory.fatjar.main}</id>
-            <phase>install</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-            	<encoding>UTF-8</encoding>
-            	<includeEmptyDirs>true</includeEmptyDirs>
-            	<export.launcher.jarmode>false</export.launcher.jarmode>
-            	<skip>${export.fatjar.skip}</skip>
-            	<overwrite>true</overwrite>
-              	<outputDirectory>
-              		<!-- ${basedir}/target/extra-resources -->
-              		${export.directory.fatjar.main}
-              	</outputDirectory>
-               	<name>timestamp</name>
-               	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
-               	<timeZone>UTC+1</timeZone>
-			    <resources>
-			    
-			    	<!-- Root files to export with filtering -->
-				     <resource>
-					    <filtering>true</filtering>
-					    <directory>./</directory>
-					    <includes>
-					        <include>resourcesFilePathsMappings.properties</include>
-					        <include>LAUNCHER/Launcher_Configuration.ini</include>
-					    </includes>
-					    <excludes>
-					    	<exclude>/**/*humbs.db</exclude>
-					    </excludes>
-					</resource>
-					
-					<!-- Root prj files/folders to export without filtering -->
-			     	<resource>
-					    <filtering>false</filtering>
-					    <directory>./</directory>
-					    <includes>
-					        <include>INI_FILES</include>
-    						<include>LAUNCHER/**/*</include>
-    						<include>LOG/**/*</include>
-    						<include>NET_SCANNER/**/*</include>
-    						<include>UPDATES</include>
-    						<include>Dependencies_Installers/**/*</include>
-    						<include>IMG/**/*</include>
-					        <include>changelog.log</include>
-					    </includes>
-					    <excludes>
-					    	<exclude>IMG/**/*.png</exclude>
-					    	<exclude>/**/*humbs.db</exclude>
-					    	<exclude>LAUNCHER/Launcher_Configuration.ini</exclude>
-					    </excludes>
-					</resource>
-			    </resources>     
-            </configuration>            
-          </execution>
-          
-      <!-- (C-4) Copy root files into application dir's parent -->
-          <execution>
-            <id>copy- ROOT files -> ${export.directory.fatjar.main}/../</id>
-            <phase>install</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-            	<encoding>UTF-8</encoding>
-            	<includeEmptyDirs>true</includeEmptyDirs>
-            	<skip>${export.fatjar.root.skip}</skip>
-            	<overwrite>true</overwrite>
-              	<outputDirectory>
-              		${export.directory.fatjar.main}/../
-              	</outputDirectory>
-			    <resources>
-				     <resource>
-					    <filtering>false</filtering>
-					    <directory>ROOT_DIR_APP_FILES</directory>
-					    <includes>
-					        <include>/**</include>
-					        <include>/**/*</include>
-					    </includes>
-					    <excludes>
-					    	<exclude>Readme/**/*</exclude>
-					    </excludes>
-					</resource>
-					<resource>
-					    <filtering>true</filtering>
-					    <directory>ROOT_DIR_APP_FILES</directory>
-					    <includes>
-					        <include>Readme/**/*</include>
-					    </includes>
-					</resource>
-			    </resources>     
-            </configuration>            
-          </execution>
+			<!-- Generate changelog -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<phase>pre-integration-test</phase>
+						<configuration>
+							<executable>cmd</executable>
+							<workingDirectory></workingDirectory>
+							<arguments>
+								<argument>/C</argument>
+								<argument>"generate_ChangeLogLauncher.bat"</argument>
+							</arguments>
+						</configuration>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
-      <!-- (C-4B) Copy Vanilla files (initial configuration, exc... ) into relative found folders into root (Application dir)-->
-          <execution>
-            <id>copy- ROOT files -> ${export.directory.fatjar.main}</id>
-            <phase>install</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-            	<encoding>UTF-8</encoding>
-            	<includeEmptyDirs>true</includeEmptyDirs>
-            	<skip>${export.fatjar.vanilla.skip}</skip>
-            	<overwrite>true</overwrite>
-              	<outputDirectory>
-              		${export.directory.fatjar.main}
-              	</outputDirectory>
-			    <resources>
-				     <resource>
-					    <filtering>false</filtering>
-					    <directory>ROOT_VANILLA_FILES_EXPORT</directory>
-					    <includes>
-					        <include>/**</include>
-					        <include>/**/*</include>
-					    </includes>
-					</resource>
-			    </resources>     
-            </configuration>            
-          </execution>
-         
-      <!-- (C-5) FATJAR : Resources_ScreepT -->
-          <execution>
-            <id>copy-resources -> ${export.directory.fatjar.resources}</id>
-            <phase>install</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-            	<encoding>UTF-8</encoding>
-            	<skip>${export.fatjar.skip}</skip>
-            	<overwrite>true</overwrite>
-              	<outputDirectory>
-              		${export.directory.fatjar.resources}
-              	</outputDirectory>
-            	<includeEmptyDirs>true</includeEmptyDirs> 
-               	<name>timestamp</name>
-               	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
-               	<timeZone>UTC+1</timeZone>
-			    <resources>
-			     	<resource>
-						<filtering>false</filtering>
-				        <directory>./Resources_ScreepT</directory>
-					    <excludes>
-					    	<exclude>/Readme/**</exclude>
-					    	<exclude>/Readme/*</exclude>
-					    	<!-- Export vanilla version only -->
-					    	<exclude>CONFIG.ini</exclude>	
-					    	<exclude>license.properties</exclude>			    	
-					    	<exclude>/**/*Thumbs.db</exclude>
-					    </excludes>
-					</resource>
-					<resource>
-					    <filtering>true</filtering>
-					    <directory>./Resources_ScreepT</directory>
-					    <includes>
-					    	<include>/Readme/**</include>
-					    	<include>/Readme/**/*</include>
-					    </includes>
-					    <excludes>/**/*Thumbs.db</excludes>
-					</resource>
-			    </resources>     
-            </configuration>            
-          </execution>
-          
-      <!-- (C-6) SCREEPT'S UPDATES packaging - To hash, zip and upload on server each time 
-      (you can use updater.jar: see MainStandAloneUpdater functions A and A.1)-->
-          <execution>
-            <id>copy-resources -> ${export.updates.folder}</id>
-            <phase>install</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-            	<encoding>UTF-8</encoding>
-            	<includeEmptyDirs>true</includeEmptyDirs>
-            	<skip>${export.updates.skip}</skip>
-            	<overwrite>true</overwrite>
-              	<outputDirectory>
-              		${export.updates.folder}
-              	</outputDirectory>
-			    <resources>
-				     <resource>
-						<filtering>false</filtering>
-				        <directory>./</directory>
-    					<includes>
-    						<include>ROOT_DIR_APP_FILES/**</include>
-    						<include>Resources_ScreepT/**</include>
-    						<include>Resources_ScreepT/Backup/**/*.ini</include>
-    						<include>changelog.log</include>
-					    </includes>
-					    <excludes>
-    						<exclude>Resources_ScreepT/license.properties</exclude>
-					    	<exclude>ROOT_DIR_APP_FILES/Readme/**</exclude>
-					    	<exclude>ROOT_DIR_APP_FILES/Readme/*</exclude>
-					    	<exclude>Resources_ScreepT/lib/**</exclude>
-					    	<exclude>Resources_ScreepT/lib/*</exclude>
-					    	<exclude>Resources_ScreepT/PanelTempFiles/*</exclude>
-					    	<exclude>/**/*Thumbs.db</exclude>
-					    	<exclude>Resources_ScreepT/CONFIG.ini</exclude>
-					    </excludes>
-					</resource>
-					<resource>
-					    <filtering>true</filtering>
-					    <directory>./</directory>
-					    <includes>
-					    	<include>ROOT_DIR_APP_FILES/Readme/**</include>
-					    	<include>ROOT_DIR_APP_FILES/Readme/**/*</include>
-					        <include>resourcesFilePathsMappings.properties</include>
-					        <include>LAUNCHER/**/*</include>
-					        <include>LAUNCHER/*</include>
-					        <include>INI_FILES</include>
-					        <include>LOG/*</include>
-					    </includes>
-					    <excludes>
-					    	<exclude>*.ini</exclude>
-					    	<exclude>/**.ini</exclude>
-					    	<exclude>*/*.ini</exclude>
-					    	<exclude>/**/*Thumbs.db</exclude>
-					    </excludes>
-					</resource>
-			    </resources>     
-            </configuration>            
-          </execution>
-          
-          
-      <!-- (C-7) UPDATES - ROOT files outside .zip -->
-          <execution>
-            <id>copy-resources -> ${export.updates.root}</id>
-            <phase>install</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-            	<encoding>UTF-8</encoding>
-            	<includeEmptyDirs>true</includeEmptyDirs>
-            	<skip>${export.updates.skip}</skip>
-            	<overwrite>true</overwrite>
-              	<outputDirectory>
-              		<!-- ${basedir}/target/extra-resources -->
-              		${export.updates.root}
-              	</outputDirectory>
-			    <resources>
-				     <resource>
-						<filtering>true</filtering>
-				        <directory>./</directory>
-    					<includes>
-    						<include>manifest.properties</include>
-					    </includes>
-					</resource>
-				     <resource>
-						<filtering>false</filtering>
-				        <directory>./UTILS_BUILD</directory>
-    					<includes>
-    						<include>FTP.properties</include>
-    						<include>NO_UPLOAD_hash.bat</include>
-    						<include>NO_UPLOAD_hash_zip.bat</include>
-    						<include>NO_UPLOAD_hash_zip_uploadFTP.bat</include>
-					    </includes>
-					</resource>
-				     <resource>
-						<filtering>false</filtering>
-				        <directory>./ROOT_DIR_APP_FILES</directory>
-    					<includes>
-    						<include>License_ScreepT.html</include>
-					    </includes>
-					</resource>
-			    </resources>     
-            </configuration>            
-          </execution>
-     
-      <!-- (C-8) PLUGINS - Unzipped folders and manifest export - to manually hash, zip, and upload on server each time wanna update them -->
-          <execution>
-            <id>copy-resources -> ${export.plugins.folder}</id>
-            <phase>install</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-            	<encoding>UTF-8</encoding>
-            	<includeEmptyDirs>true</includeEmptyDirs>
-            	<skip>${export.plugins.skip}</skip>
-            	<overwrite>true</overwrite>
-              	<outputDirectory>
-              		${export.plugins.folder}
-              	</outputDirectory>
-			    <resources>
-				     <resource>
-						<filtering>false</filtering>
-				        <directory>./PLUGINS_VANILLA</directory>
-					</resource>
-			    </resources>     
-            </configuration>            
-          </execution>
-          
-          <!-- END COPY RESOURCES -->
-        </executions>
-      </plugin>
+			<!-- BUILD OBFUSCATION -->
+			<plugin>
+				<groupId>com.github.wvengen</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.2.0</version>
 
-      
-      <!-- Generate Build number -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <version>1.4</version>
-        <executions>
-          <execution>
-          	<id>number</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>create</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-        	<buildNumberPropertyName>buildNumber</buildNumberPropertyName>
-	       	<format>{0,number,integer}</format>
-		    <items>
-		        <item>buildNumber</item>
-		    </items>
-			<doCheck>false</doCheck>
-			<doUpdate>false</doUpdate>
-        </configuration>
-      </plugin>
-      
-      <plugin>
-		  <groupId>pl.project13.maven</groupId>
-		  <artifactId>git-commit-id-plugin</artifactId>
-		  <version>2.2.4</version>
-		  <executions>
-		    <execution>
-		      <id>get-the-git-infos</id>
-		      <goals>
-		        <goal>revision</goal>
-		      </goals>
-		    </execution>
-		  </executions>
-		
-		  <configuration>
-		    <commitIdGenerationMode>flat</commitIdGenerationMode>
-		  </configuration>
-		</plugin>
-	
- 	</plugins>
-  </build>
-  
-  	<dependencies>
-  	
-  		<!-- Exclude test only dependencies -->
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>proguard</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<skip>${obfuscation.skip}</skip>
+					<proguardVersion>6.2.0</proguardVersion>
+					<obfuscate>true</obfuscate>
+					<options>
+						<option>-keep public class maingUI.MainGuiGeneralAppStarter{public
+							static void main(java.lang.String[]);}</option>
+						<option>-target 1.8</option>
+					</options>
+					<libs>
+						<lib>${java.home}/lib/rt.jar</lib>
+					</libs>
+					<dependencies>
+						<dependency>
+							<groupId>com.github.wvengen</groupId>
+							<artifactId>proguard-maven-plugin</artifactId>
+							<version>2.2.0</version>
+						</dependency>
+
+						<dependency>
+							<groupId>net.sf.proguard</groupId>
+							<artifactId>proguard-base</artifactId>
+							<version>6.2.0</version>
+						</dependency>
+						<dependency>
+							<groupId>net.sf.proguard</groupId>
+							<artifactId>proguard-parent</artifactId>
+							<version>6.2.0</version>
+							<type>pom</type>
+						</dependency>
+
+
+					</dependencies>
+				</configuration>
+			</plugin>
+
+			<!-- download source code in Eclipse, best practice -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+
+			<!-- COMPILER -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<!-- DEPENDENCY EXTRACTOR - If want to export single jars into LIBS -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<skip>${export.multijar.skip}</skip>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								<!-- MULTIJAR LIBS UPDATE -->
+								${export.directory.multijar.libs}
+								<!-- ECLIPSE_PRJ - ${project.build.directory}/libs -->
+							</outputDirectory>
+							<exclude>/**/*humbs.db</exclude>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- JAR ASSEMBLER -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4.1</version>
+				<executions>
+
+					<!-- (1) FATJAR BUILD AND EXPORT -->
+					<execution>
+						<id>make-assembly - main fatjar folder</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<skipAssembly>${export.fatjar.skip}</skipAssembly>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								<!-- ${project.build.directory}/CENTRALIZED -->
+								${export.directory.fatjar.main}
+							</outputDirectory>
+							<archive>
+								<manifest>
+									<mainClass>
+										maingUI.MainGuiGeneralAppStarter
+									</mainClass>
+								</manifest>
+								<manifestEntries>
+									<Created-by>${developer.name}</Created-by>
+									<Built-By>${developer.name}</Built-By>
+									<Build-number>${buildNumber}</Build-number>
+									<Build-git-hash>${git.commit.id}</Build-git-hash>
+								</manifestEntries>
+							</archive>
+							<appendAssemblyId>false</appendAssemblyId>
+							<exclude>/**/*humbs.db</exclude>
+							<descriptors>
+								<descriptor>UTILS_BUILD/assembly_exclude.xml</descriptor>
+							</descriptors>
+							<!-- <exclude>/**/public-suffix-list.txt</exclude> -->
+						</configuration>
+					</execution>
+
+				</executions>
+			</plugin>
+
+			<!-- UPDATES COPY ALREADY BUILT JARS -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<inherited>true</inherited>
+				<executions>
+					<execution>
+						<id>createThriftDir</id>
+						<phase>install</phase>
+						<configuration>
+							<tasks>
+								<copy
+									file="${export.directory.fatjar.main}/ScreepT_${parent.build.version.screept}.jar"
+									todir="${export.updates.folder}" />
+								<copy file="${export.directory.fatjar.main}/ScreepT_Launcher.jar"
+									todir="${export.updates.folder}" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<delete>
+									<fileset dir="${export.updates.folder}" includes="*.*" />
+								</delete>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- (C) EXPORT RESOURCES TO BOTH MULTIJAR AND FATJAR EXPORT DIRS -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+
+					<!-- (C-1) MULTIJAR : .root -->
+					<execution>
+						<id>copy-resources -> ${export.directory.multijar.main}</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<includeEmptyDirs>true</includeEmptyDirs>
+							<export.launcher.jarmode>false</export.launcher.jarmode>
+							<tasks>
+								<echo>SINGLE_MAIN_JAR SOURCE:
+									/target/ScreepT_${parent.build.version.screept}.jar</echo>
+							</tasks>
+							<skip>${export.multijar.skip}</skip>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								<!-- ${basedir}/target/ScreepT_${parent.build.version.screept}.jar -->
+								${export.directory.multijar.main}
+							</outputDirectory>
+							<name>timestamp</name>
+							<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
+							<timeZone>CTE</timeZone>
+							<resources>
+								<!-- Resources to filter from root -->
+								<resource>
+									<filtering>true</filtering>
+									<directory>./</directory>
+									<includes>
+										<include>resourcesFilePathsMappings.properties</include>
+										<include>LAUNCHER/**/*</include>
+										<include>LAUNCHER/*</include>
+									</includes>
+									<excludes>/**/*humbs.db</excludes>
+								</resource>
+
+								<!-- Main screept's jar (not fatjar) just compiled in /target -->
+								<resource>
+									<filtering>false</filtering>
+									<directory>target/</directory>
+									<includes>
+										<include>${export.jar.name}.jar</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<!-- (C-2) MULTIJAR : Resources_ScreepT -->
+					<execution>
+						<id>copy-resources -> ${export.directory.multijar.resources}</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<includeEmptyDirs>true</includeEmptyDirs>
+							<skip>${export.multijar.skip}</skip>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								<!-- ${basedir}/target/extra-resources -->
+								${export.directory.multijar.resources}
+							</outputDirectory>
+							<name>timestamp</name>
+							<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
+							<timeZone>CTE</timeZone>
+							<resources>
+								<resource>
+									<filtering>false</filtering>
+									<directory>./Resources_ScreepT</directory>
+									<includes>
+										<include>/**</include>
+										<include>/*</include>
+										<include>/**/*</include>
+									</includes>
+									<excludes>
+										<exclude>/Readme/**</exclude>
+										<exclude>/Readme/*</exclude>
+										<exclude>/**/*Thumbs.db</exclude>
+										<exclude>/**/*.ini</exclude>
+										<exclude>*.ini</exclude>
+									</excludes>
+								</resource>
+								<resource>
+									<filtering>true</filtering>
+									<directory>./Resources_ScreepT</directory>
+									<includes>
+										<include>/Readme/**</include>
+										<include>/Readme/**/*</include>
+									</includes>
+									<excludes>
+										/**/*Thumbs.db
+									</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<!-- FATJAR -->
+					<!-- (C-3) Copy Root Folders -->
+					<execution>
+						<id>copy-resources -> ${export.directory.fatjar.main}</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<includeEmptyDirs>true</includeEmptyDirs>
+							<export.launcher.jarmode>false</export.launcher.jarmode>
+							<skip>${export.fatjar.skip}</skip>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								<!-- ${basedir}/target/extra-resources -->
+								${export.directory.fatjar.main}
+							</outputDirectory>
+							<name>timestamp</name>
+							<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
+							<timeZone>UTC+1</timeZone>
+							<resources>
+
+								<!-- Root files to export with filtering -->
+								<resource>
+									<filtering>true</filtering>
+									<directory>./</directory>
+									<includes>
+										<include>resourcesFilePathsMappings.properties</include>
+										<include>LAUNCHER/Launcher_Configuration.ini</include>
+									</includes>
+									<excludes>
+										<exclude>/**/*humbs.db</exclude>
+									</excludes>
+								</resource>
+
+								<!-- Root prj files/folders to export without filtering -->
+								<resource>
+									<filtering>false</filtering>
+									<directory>./</directory>
+									<includes>
+										<include>INI_FILES</include>
+										<include>LAUNCHER/**/*</include>
+										<include>LOG/**/*</include>
+										<include>NET_SCANNER/**/*</include>
+										<include>UPDATES</include>
+										<include>Dependencies_Installers/**/*</include>
+										<include>IMG/**/*</include>
+										<include>changelog.log</include>
+									</includes>
+									<excludes>
+										<exclude>IMG/**/*.png</exclude>
+										<exclude>/**/*humbs.db</exclude>
+										<exclude>LAUNCHER/Launcher_Configuration.ini</exclude>
+									</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<!-- (C-4) Copy root files into application dir's parent -->
+					<execution>
+						<id>copy- ROOT files -> ${export.directory.fatjar.main}/../</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<includeEmptyDirs>true</includeEmptyDirs>
+							<skip>${export.fatjar.root.skip}</skip>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								${export.directory.fatjar.main}/../
+							</outputDirectory>
+							<resources>
+								<resource>
+									<filtering>false</filtering>
+									<directory>ROOT_DIR_APP_FILES</directory>
+									<includes>
+										<include>/**</include>
+										<include>/**/*</include>
+									</includes>
+									<excludes>
+										<exclude>Readme/**/*</exclude>
+									</excludes>
+								</resource>
+								<resource>
+									<filtering>true</filtering>
+									<directory>ROOT_DIR_APP_FILES</directory>
+									<includes>
+										<include>Readme/**/*</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<!-- (C-4B) Copy Vanilla files (initial configuration, exc... ) into 
+						relative found folders into root (Application dir) -->
+					<execution>
+						<id>copy- ROOT files -> ${export.directory.fatjar.main}</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<includeEmptyDirs>true</includeEmptyDirs>
+							<skip>${export.fatjar.vanilla.skip}</skip>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								${export.directory.fatjar.main}
+							</outputDirectory>
+							<resources>
+								<resource>
+									<filtering>false</filtering>
+									<directory>ROOT_VANILLA_FILES_EXPORT</directory>
+									<includes>
+										<include>/**</include>
+										<include>/**/*</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<!-- (C-5) FATJAR : Resources_ScreepT -->
+					<execution>
+						<id>copy-resources -> ${export.directory.fatjar.resources}</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<skip>${export.fatjar.skip}</skip>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								${export.directory.fatjar.resources}
+							</outputDirectory>
+							<includeEmptyDirs>true</includeEmptyDirs>
+							<name>timestamp</name>
+							<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
+							<timeZone>UTC+1</timeZone>
+							<resources>
+								<resource>
+									<filtering>false</filtering>
+									<directory>./Resources_ScreepT</directory>
+									<excludes>
+										<exclude>/Readme/**</exclude>
+										<exclude>/Readme/*</exclude>
+										<!-- Export vanilla version only -->
+										<exclude>CONFIG.ini</exclude>
+										<exclude>license.properties</exclude>
+										<exclude>/**/*Thumbs.db</exclude>
+									</excludes>
+								</resource>
+								<resource>
+									<filtering>true</filtering>
+									<directory>./Resources_ScreepT</directory>
+									<includes>
+										<include>/Readme/**</include>
+										<include>/Readme/**/*</include>
+									</includes>
+									<excludes>/**/*Thumbs.db</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<!-- (C-6) SCREEPT'S UPDATES packaging - To hash, zip and upload on 
+						server each time (you can use updater.jar: see MainStandAloneUpdater functions 
+						A and A.1) -->
+					<execution>
+						<id>copy-resources -> ${export.updates.folder}</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<includeEmptyDirs>true</includeEmptyDirs>
+							<skip>${export.updates.skip}</skip>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								${export.updates.folder}
+							</outputDirectory>
+							<resources>
+								<resource>
+									<filtering>false</filtering>
+									<directory>./</directory>
+									<includes>
+										<include>ROOT_DIR_APP_FILES/**</include>
+										<include>Resources_ScreepT/**</include>
+										<include>Resources_ScreepT/Backup/**/*.ini</include>
+										<include>changelog.log</include>
+									</includes>
+									<excludes>
+										<exclude>Resources_ScreepT/license.properties</exclude>
+										<exclude>ROOT_DIR_APP_FILES/Readme/**</exclude>
+										<exclude>ROOT_DIR_APP_FILES/Readme/*</exclude>
+										<exclude>Resources_ScreepT/lib/**</exclude>
+										<exclude>Resources_ScreepT/lib/*</exclude>
+										<exclude>Resources_ScreepT/PanelTempFiles/*</exclude>
+										<exclude>/**/*Thumbs.db</exclude>
+										<exclude>Resources_ScreepT/CONFIG.ini</exclude>
+									</excludes>
+								</resource>
+								<resource>
+									<filtering>true</filtering>
+									<directory>./</directory>
+									<includes>
+										<include>ROOT_DIR_APP_FILES/Readme/**</include>
+										<include>ROOT_DIR_APP_FILES/Readme/**/*</include>
+										<include>resourcesFilePathsMappings.properties</include>
+										<include>LAUNCHER/**/*</include>
+										<include>LAUNCHER/*</include>
+										<include>INI_FILES</include>
+										<include>LOG/*</include>
+									</includes>
+									<excludes>
+										<exclude>*.ini</exclude>
+										<exclude>/**.ini</exclude>
+										<exclude>*/*.ini</exclude>
+										<exclude>/**/*Thumbs.db</exclude>
+									</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+
+					<!-- (C-7) UPDATES - ROOT files outside .zip -->
+					<execution>
+						<id>copy-resources -> ${export.updates.root}</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<includeEmptyDirs>true</includeEmptyDirs>
+							<skip>${export.updates.skip}</skip>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								<!-- ${basedir}/target/extra-resources -->
+								${export.updates.root}
+							</outputDirectory>
+							<resources>
+								<resource>
+									<filtering>true</filtering>
+									<directory>./</directory>
+									<includes>
+										<include>manifest.properties</include>
+									</includes>
+								</resource>
+								<resource>
+									<filtering>false</filtering>
+									<directory>./UTILS_BUILD</directory>
+									<includes>
+										<include>FTP.properties</include>
+										<include>NO_UPLOAD_hash.bat</include>
+										<include>NO_UPLOAD_hash_zip.bat</include>
+										<include>NO_UPLOAD_hash_zip_uploadFTP.bat</include>
+									</includes>
+								</resource>
+								<resource>
+									<filtering>false</filtering>
+									<directory>./ROOT_DIR_APP_FILES</directory>
+									<includes>
+										<include>License_ScreepT.html</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<!-- (C-8) PLUGINS - Unzipped folders and manifest export - to manually 
+						hash, zip, and upload on server each time wanna update them -->
+					<execution>
+						<id>copy-resources -> ${export.plugins.folder}</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<includeEmptyDirs>true</includeEmptyDirs>
+							<skip>${export.plugins.skip}</skip>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								${export.plugins.folder}
+							</outputDirectory>
+							<resources>
+								<resource>
+									<filtering>false</filtering>
+									<directory>./PLUGINS_VANILLA</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+					<!-- END COPY RESOURCES -->
+				</executions>
+			</plugin>
+
+
+			<!-- Generate Build number -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>number</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<buildNumberPropertyName>buildNumber</buildNumberPropertyName>
+					<format>{0,number,integer}</format>
+					<items>
+						<item>buildNumber</item>
+					</items>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>2.2.4</version>
+				<executions>
+					<execution>
+						<id>get-the-git-infos</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<configuration>
+					<commitIdGenerationMode>flat</commitIdGenerationMode>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- Exclude test only dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -750,116 +780,110 @@
 			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
-  	
-  		<!-- Plugin export depending on property setted in parent project -->
-	  	<dependency>
-		    <groupId>net.sourceforge.tess4j</groupId>
-		    <artifactId>tess4j</artifactId>
-		    <version>4.3.1</version>
-		    <scope>${plugins.export.scope}</scope>
+
+		<!-- Plugin export depending on property setted in parent project -->
+		<dependency>
+			<groupId>net.sourceforge.tess4j</groupId>
+			<artifactId>tess4j</artifactId>
+			<version>4.3.1</version>
+			<scope>${plugins.export.scope}</scope>
 		</dependency>
-		
-	 	<dependency>
-	    	<groupId>net.sf.sociaal</groupId>
-	    	<artifactId>freetts</artifactId>
-	    	<version>1.2.2</version>
-	    	<scope>${plugins.export.scope}</scope>
-	 	</dependency>
-	 	
-	 	<dependency>
-		    <groupId>org.icepdf.os</groupId>
-		    <artifactId>icepdf-core</artifactId>
-		    <version>6.2.2</version>
-		    <scope>${plugins.export.scope}</scope>
-		    <exclusions>
-		        <exclusion>
-		            <groupId>javax.media</groupId>
-		            <artifactId>jai_core</artifactId>
-		        </exclusion>
-		    </exclusions>
+
+		<dependency>
+			<groupId>net.sf.sociaal</groupId>
+			<artifactId>freetts</artifactId>
+			<version>1.2.2</version>
+			<scope>${plugins.export.scope}</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.icepdf.os</groupId>
+			<artifactId>icepdf-core</artifactId>
+			<version>6.2.2</version>
+			<scope>${plugins.export.scope}</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.media</groupId>
+					<artifactId>jai_core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
-		    <groupId>org.icepdf.os</groupId>
-		    <artifactId>icepdf-viewer</artifactId>
-		    <version>6.2.2</version>
-		    <scope>${plugins.export.scope}</scope>
+			<groupId>org.icepdf.os</groupId>
+			<artifactId>icepdf-viewer</artifactId>
+			<version>6.2.2</version>
+			<scope>${plugins.export.scope}</scope>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>com.github.oshi</groupId>
-		    <artifactId>oshi-core</artifactId>
-		    <version>3.13.0</version>
-		    <scope>${plugins.export.scope}</scope>
+			<groupId>com.github.oshi</groupId>
+			<artifactId>oshi-core</artifactId>
+			<version>3.13.0</version>
+			<scope>${plugins.export.scope}</scope>
 		</dependency>
-	
+
 		<!-- IMPORTS FROM OTHER PROJECTS -->
 		<dependency>
 			<groupId>Initializer_Configs</groupId>
-		    <artifactId>Initializer_Configs</artifactId>
-		    <version>1.0</version>
+			<artifactId>Initializer_Configs</artifactId>
+			<version>1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>ScreepT_Crypter</groupId>
-		 	<artifactId>ScreepT_Crypter</artifactId>
-		 	<version>1.0</version>
+			<artifactId>ScreepT_Crypter</artifactId>
+			<version>1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>GuiTextEditorCommons</groupId>
-		   	<artifactId>GuiTextEditorCommons</artifactId>
-		  	<version>1.0</version>
+			<artifactId>GuiTextEditorCommons</artifactId>
+			<version>1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>ScreepT_Launcher</groupId>
 			<artifactId>ScreepT_Launcher</artifactId>
 			<version>1.0</version>
 			<!-- <scope>compile</scope> -->
 		</dependency>
-		
+
 		<dependency>
 			<groupId>GuiCommons</groupId>
 			<artifactId>GuiCommons</artifactId>
-		 	<version>1.0</version>
+			<version>1.0</version>
 		</dependency>
-		
-		<dependency>
-		  <groupId>GenCommons</groupId>
-		  <artifactId>GenCommons</artifactId>
-		  <version>1.0</version>	
-		</dependency>
-		
+
 		<dependency>
 			<groupId>MultimediaConversion</groupId>
-		  	<artifactId>MultimediaConversion</artifactId>
-		 	<version>1.0</version>
+			<artifactId>MultimediaConversion</artifactId>
+			<version>1.0</version>
 		</dependency>
-			
+
 		<dependency>
 			<groupId>HardwareCommons</groupId>
-	 		<artifactId>HardwareCommons</artifactId>
-	 		<version>1.0</version>
+			<artifactId>HardwareCommons</artifactId>
+			<version>1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>UltimateCalculator</groupId>
 			<artifactId>UltimateCalculator</artifactId>
 			<version>1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>NetworkCommons</groupId>
 			<artifactId>NetworkCommons</artifactId>
 			<version>1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>UpdaterModule</groupId>
-		  	<artifactId>UpdaterModule</artifactId>
-		  	<version>1.0</version>
+			<artifactId>UpdaterModule</artifactId>
+			<version>1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>VariousCommonsLight</groupId>
 			<artifactId>VariousCommonsLight</artifactId>
@@ -872,6 +896,6 @@
 			<version>1.0</version>
 		</dependency>
 
-  </dependencies>
-  
+	</dependencies>
+
 </project>

@@ -12,6 +12,7 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -52,7 +53,7 @@ public class UpdateProgressPanel {
     public AtomicBoolean stopProcess = new AtomicBoolean(false);
     public AtomicBoolean forceDispose = new AtomicBoolean(false);
     
-    private JDialog dialog;
+    public JDialog dialog;
     private JLabel label = new JLabel("  I'm workin' !");
     
     private GridBagConstraints gbc_pb;
@@ -88,6 +89,7 @@ public class UpdateProgressPanel {
                 
         	}
         }).start();
+		
     }
     
     public UpdateProgressPanel(boolean secondBar, boolean undefinedDuration) {
@@ -95,6 +97,12 @@ public class UpdateProgressPanel {
     	if (undefinedDuration) {
 			setUndefinedDuration();
 		}
+    }
+    
+    public void setModalType(ModalityType type) {
+    	SwingUtilities.invokeLater(() -> {
+        	GuiUtils.setDialogModalType(dialog,  type);
+    	});
     }
     
     /**
@@ -249,6 +257,8 @@ public class UpdateProgressPanel {
 							return;
 						}
 
+						GuiUtils.setDialogModalType(dialog,  ModalityType.MODELESS);
+
 						if (forceDispose.get()) {
 							dialog.dispose();
 						}
@@ -317,6 +327,7 @@ public class UpdateProgressPanel {
     
     public void forceClose(){
     	try {
+    		GuiUtils.setDialogModalType(dialog,  ModalityType.MODELESS);
 			forceDispose.set(true);
 			if(getGeneralBar() != null) {
 				update(100, "Completed! Closing progress bar monitor...", true);
@@ -488,8 +499,11 @@ public class UpdateProgressPanel {
 			if (dialog.getWidth() != 0 && dialog.getWidth() < newWidth) {
 				int height = dialog.getHeight();
 				height = height == 0 ? 180 : height;
-				
-				GuiUtils.centerComponent(dialog, newWidth, height);
+				dialog.setBounds(
+						dialog.getX() - ((newWidth-dialog.getWidth())/2),
+						dialog.getY(),
+						newWidth,
+						height);
 			}
 		}
 	}

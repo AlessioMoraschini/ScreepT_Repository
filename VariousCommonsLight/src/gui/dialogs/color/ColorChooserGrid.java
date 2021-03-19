@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import javax.swing.JDialog;
 import net.miginfocom.swing.MigLayout;
 import om.HslColor;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 
 import javax.swing.JPanel;
 import javax.swing.JSeparator;

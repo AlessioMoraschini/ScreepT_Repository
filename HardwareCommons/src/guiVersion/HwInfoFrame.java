@@ -28,7 +28,7 @@ import oshi.hardware.HWDiskStore;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import runtime.RuntimeUtil;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 
 import javax.swing.JPanel;
 import java.awt.Color;

@@ -21,6 +21,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
@@ -52,19 +53,21 @@ import files.watcher.ChangeDTO;
 import frameutils.frame.ImageViewerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import general.MyFileView;
+import gui.GuiUtils;
+import gui.RXTextUtilities;
 import gui.dnd.FileDrop;
-import mainobj.INItializer;
+import impl.INItializer;
 import om.ColumnTextArea;
 import om.HistoryNode;
 import om.LimitedConcurrentList;
 import om.SupportedFileTextEditor;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
 
 public class CustomTabbedEditor implements ITabsManager {
@@ -101,8 +104,8 @@ public class CustomTabbedEditor implements ITabsManager {
 	
 	/* THEESE ARE THE LOADED TABS, AND A REFERENCE TO THE CURRENT SELECTED */
 	public LimitedConcurrentList<HistoryNode> navigationHistory;
-	public LimitedConcurrentList<TabTextEditorObj> loadedList;
-	public volatile TabTextEditorObj loadedTabObj;
+	public LimitedConcurrentList<TabTextEditorObject> loadedList;
+	public volatile TabTextEditorObject loadedTabObj;
 	
 	public INItializer currentConfiguration;
 	public ITabbedEditorOwner tabEditorManager;
@@ -122,7 +125,7 @@ public class CustomTabbedEditor implements ITabsManager {
 		this.tabEditorManager = tabEditorManager;
 		this.newFileStringTarget = tabEditorManager.getNewFileStringTarget();
 		this.currentConfiguration = (configuration != null)? configuration : new INItializer();
-		this.loadedList = new LimitedConcurrentList<TabTextEditorObj>(Integer.MAX_VALUE);
+		this.loadedList = new LimitedConcurrentList<TabTextEditorObject>(Integer.MAX_VALUE);
 		this.navigationHistory = new LimitedConcurrentList<HistoryNode>(GeneralConfig.MAX_HISTORY_SIZE);
 		this.dialogHelper = new JOptionHelperExtended(parent);
 		this.changesHistory = new ChangeDTO();
@@ -162,6 +165,7 @@ public class CustomTabbedEditor implements ITabsManager {
 							
 							if (loadedTabObj != null && loadedTabObj.currentScrollPane != null && loadedTabObj.textArea != null) {
 								addToHystory(loadedTabObj);
+								RXTextUtilities.centerLineFullInScrollPane(loadedTabObj.textArea);
 							}
 						});
 					}
@@ -174,6 +178,10 @@ public class CustomTabbedEditor implements ITabsManager {
 						TabUtils.scrollToNextTab(mainTabList);
 					} catch (Exception e1) {
 					}
+					
+					SwingUtilities.invokeLater(() -> {
+						GuiUtils.giveFocusToComponent(loadedTabObj.textArea);
+					});
 				}
 			}
 		});
@@ -192,8 +200,8 @@ public class CustomTabbedEditor implements ITabsManager {
 	
 	// TABBED PAIN - RELATED FUNCTIONS
 	
-	public TabTextEditorObj getTabObjByIndex(Integer index) {
-		TabTextEditorObj indexTabObj = 
+	public TabTextEditorObject getTabObjByIndex(Integer index) {
+		TabTextEditorObject indexTabObj = 
 				(index == null || index < 0 || index >= loadedList.getSize()) 
 			? this.loadedTabObj 
 			: loadedList.getList().get(index);
@@ -201,8 +209,8 @@ public class CustomTabbedEditor implements ITabsManager {
 		return indexTabObj;
 	}
 
-	public TabTextEditorObj getTabObjByFile(File match) {
-		TabTextEditorObj indexTabObj = this.loadedTabObj;
+	public TabTextEditorObject getTabObjByFile(File match) {
+		TabTextEditorObject indexTabObj = this.loadedTabObj;
 		
 		for (int i = 0; i < loadedList.getSize(); i++) {
 			try {
@@ -218,7 +226,7 @@ public class CustomTabbedEditor implements ITabsManager {
 	public boolean setIconToTab(String iconPath, Integer index) {
 		try {
 			JLabel tabHeadIcon = (JLabel) (getPanelFromTabHeader(index)).getComponent(TabUtils.TAB_ICON_ORDER);
-			TabTextEditorObj indexTabObj = getTabObjByIndex(index);
+			TabTextEditorObject indexTabObj = getTabObjByIndex(index);
 			
 			if (indexTabObj.loadedFile == null 
 					|| indexTabObj.unsaved 
@@ -274,18 +282,25 @@ public class CustomTabbedEditor implements ITabsManager {
 	
 	private boolean validateFileToOpen(File fileToOpen) {
 		if (fileToOpen != null) {
-			if (fileToOpen.exists() && fileToOpen.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB) {
-				dialogHelper.error(
-						"Cannot load file, max admitted size is " + ConversionUtils.coolFileSize((long) GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024));
-				return false;
-			}
-
-			if(isImageFileSupported(fileToOpen)) {
+			boolean exceedsLines = FileWorker.checkIfHasMoreThanNLines(fileToOpen, GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES);
+			boolean exceedsLength = fileToOpen.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB;
+			
+			if (fileToOpen.exists() && (exceedsLines || exceedsLength)) {
+				String msg = exceedsLines 
+						? "This file has more than " + GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES + " lines, and can slow down or crash ScreepT. Load anyway?"
+						: "This file is bigger than max admitted size [" + ConversionUtils.coolFileSize((long) GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024) + "] and can slow down or crash ScreepT. Load anyway?";
+				boolean userAcceptance = dialogHelper.yesOrNo(msg);
+				if (userAcceptance) {
+					tabEditorManager.forceUnrecognizedFileType();
+				}
+				return userAcceptance;
+			
+			} else if(isImageFileSupported(fileToOpen)) {
 				ImageViewerFrame.loadIntoLastExistingInstance(fileToOpen);
 				return false;
 				
 			} else if (!SupportedFileTextEditor.isSupported(fileToOpen)) {
-				boolean userAcceptance = dialogHelper.yesOrNo("This type of file is not supported [" + fileToOpen.getName() + "] : Load anyway?");
+				boolean userAcceptance = dialogHelper.yesOrNo("This type of file is not fully supported [" + fileToOpen.getName() + "] : Load anyway?");
 				if (userAcceptance) {
 					tabEditorManager.forceUnrecognizedFileType();
 				}
@@ -336,7 +351,7 @@ public class CustomTabbedEditor implements ITabsManager {
 					} catch (Throwable e1) {
 						String msg = "Error occurred loading file into new tab: "+fileToLoad.getAbsolutePath()+"\n\n";
 						logger.error(msg, e1);
-						new JOptionHelperExtended(null).error(msg, null);
+						new JOptionHelperExtended(null).error(msg, (String)null);
 					}
 
 					loadedTabObj.loadedFile = fileToLoad;
@@ -418,7 +433,7 @@ public class CustomTabbedEditor implements ITabsManager {
 		textArea.setCodeFoldingEnabled(currentConfiguration.getTextEditorOpt().isCodeFoldingEnabled());
 	}
 	
-	public FocusListener getFocusListenerTxtCursor() {
+	public FocusListener getFocusListener() {
 		return new FocusListener() {
 			
 			@Override
@@ -461,7 +476,7 @@ public class CustomTabbedEditor implements ITabsManager {
 			String name = (file != null) ? file.getName() : DEFAULT_NEW_FILE_NAME;
 			int newIndex = mainTabList.getTabCount();
 
-			TabTextEditorObj newTabNode = new TabTextEditorObj(
+			TabTextEditorObject newTabNode = new TabTextEditorObject(
 					this,
 					file, // File reference
 					"", // Initial text
@@ -470,7 +485,14 @@ public class CustomTabbedEditor implements ITabsManager {
 					changeMonManager, // file monitor reference
 					tabEditorManager.getShortcutManager() // shortcut listener implementation
 			);
-			newTabNode.textArea.addFocusListener(getFocusListenerTxtCursor());
+			newTabNode.textArea.addFocusListener(getFocusListener());
+			newTabNode.textArea.addMouseMotionListener(new MouseMotionAdapter() {
+				@Override
+				public void mouseMoved(MouseEvent e) {
+					if(!tabEditorManager.getShortcutManager().isAltDown())
+						newTabNode.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+				}
+			});
 			newTabNode.textArea.addMouseListener(new MouseListener() {
 				
 				@Override
@@ -618,7 +640,7 @@ public class CustomTabbedEditor implements ITabsManager {
 	 * @param targetTabObject
 	 * @return
 	 */
-	public int geIndexOfTabObj(TabTextEditorObj targetTabObject) {
+	public int geIndexOfTabObj(TabTextEditorObject targetTabObject) {
 		try {
 			return mainTabList.indexOfComponent(targetTabObject.currentScrollPane);
 		} catch (Exception e) {
@@ -670,7 +692,7 @@ public class CustomTabbedEditor implements ITabsManager {
 					
 					// IF LAST DO NOT REMOVE: EMPTY FIRST REFERENCES
 					if (!loadedList.getList().isEmpty()) {
-						TabTextEditorObj currentTab = loadedList.getList().get(0);
+						TabTextEditorObject currentTab = loadedList.getList().get(0);
 						currentTab.resetData();
 						getPanelFromTabHeader(0).setToolTipText("Unexisting file");
 						
@@ -828,7 +850,7 @@ public class CustomTabbedEditor implements ITabsManager {
 	
 	public boolean saveAllUnsavedExisting() throws IOException {
 		boolean done = true;
-		for (TabTextEditorObj element : loadedList.getList()) {
+		for (TabTextEditorObject element : loadedList.getList()) {
 			if (element.unsaved && element.loadedFile != null && element.loadedFile.exists()) {
 				if (!FileWorker.writeStringToFile(element.textArea.getText(), element.loadedFile, true)) {
 					done = false;
@@ -897,7 +919,7 @@ public class CustomTabbedEditor implements ITabsManager {
 	public void updateSavedLabelNTab(Integer sourceIndex) {
 		int indexChange = (sourceIndex == null) ? mainTabList.getSelectedIndex() : sourceIndex;
 		newFileStringTarget = tabEditorManager.getNewFileStringTarget();
-		TabTextEditorObj indexTabObj = getTabObjByIndex(sourceIndex);
+		TabTextEditorObject indexTabObj = getTabObjByIndex(sourceIndex);
 		
 		try {
 			// reference to tabHeader title
@@ -963,7 +985,7 @@ public class CustomTabbedEditor implements ITabsManager {
 		if (isFirstTabAdded && GeneralConfig.TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED) {
 			try {
 				logger.debug("backupCurrentBeforeSwitch() - starting");
-				TabTextEditorObj toSaveObj = loadedList.getList().get(lastIndexTabbedPane);
+				TabTextEditorObject toSaveObj = loadedList.getList().get(lastIndexTabbedPane);
 				toSaveObj.loadedFile = (loadedTabObj.loadedFile != null) ? new File(loadedTabObj.loadedFile.getAbsolutePath()) : null;
 				toSaveObj.unsaved = loadedTabObj.unsaved;
 				logger.debug("backupCurrentBeforeSwitch() - completed");
@@ -974,7 +996,7 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 	
 	public int checkFilePresenceNSelect(File match) {
-		for (TabTextEditorObj iterator : loadedList.getList()) {
+		for (TabTextEditorObject iterator : loadedList.getList()) {
 			if (iterator.loadedFile != null && iterator.loadedFile.equals(match)) {
 				mainTabList.setSelectedComponent(iterator.currentScrollPane);
 				return 1;
@@ -987,8 +1009,8 @@ public class CustomTabbedEditor implements ITabsManager {
 		return getAlreadyLoaded(match) != null;
 	}
 	
-	public TabTextEditorObj getAlreadyLoaded(File match) {
-		for (TabTextEditorObj iterator : loadedList.getList()) {
+	public TabTextEditorObject getAlreadyLoaded(File match) {
+		for (TabTextEditorObject iterator : loadedList.getList()) {
 			if (iterator.loadedFile != null && iterator.loadedFile.equals(match)) {
 				return iterator;
 			}
@@ -997,7 +1019,8 @@ public class CustomTabbedEditor implements ITabsManager {
 		return null;
 	}
 	
-	private void addToHystory(TabTextEditorObj loadedTabObj){
+	@Override
+	public void addToHystory(TabTextEditorObject loadedTabObj){
 		
 		// if already last skip
 		if (!historyActionChanging.get()) {
@@ -1045,8 +1068,13 @@ public class CustomTabbedEditor implements ITabsManager {
 			mainTabList.setSelectedIndex(i);
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					loadedTabObj.textArea.requestFocus();
-					loadedTabObj.textArea.setCaretPosition(nextNode.getCaretPosition());
+					GuiUtils.giveFocusToComponent(loadedTabObj.textArea);
+					try {
+						loadedTabObj.textArea.setCaretPosition(nextNode.getCaretPosition());
+					} catch (Exception e) {
+						logger.warn("can't set caret position from history node", e);
+					}
+					RXTextUtilities.centerLineFullInScrollPane(loadedTabObj.textArea);
 				}
 			});
 		}

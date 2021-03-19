@@ -11,7 +11,11 @@
  */
 package maingUI;
 
+import java.awt.Color;
+import java.awt.Dialog;
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -19,13 +23,18 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
+import files.om.FileNamed;
 import files.om.SearchResult;
 import frameutils.frame.ClipboardFrame;
 import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.GeneratePasswordFrame;
 import frameutils.frame.HashCheckerFrame;
+import frameutils.frame.ShellFrame;
 import frameutils.frame.arch.ParentFrame;
+import frameutils.frame.panels.ShellReadWritePanel;
+import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.frames.AboutSectionFrame;
 import gUI.frames.ChangeLogFrame;
@@ -43,13 +52,17 @@ import gui.UpdateProgressPanel;
 import gui.LightLicenseViewer.UserLicenseChoice;
 import gui.dialogs.msg.JOptionHelper;
 import gui.filesearch.FileSearchActions;
-import gui.filesearch.FileSearchDialog;
+import gui.filesearch.content.FileContentSearchDialog;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
+import impl.INItializer;
+import om.LimitedConcurrentList;
+import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
+import utils.RsyntaxUtils;
 import utils.SysUtils;
 
 public class WindowCreator {
@@ -75,12 +88,16 @@ public class WindowCreator {
 				new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE_AS)
 		);
 		
-		schemeManager.closeAction = () -> {
-			if(MainGUI.mainGuiUtils.isTextEditorActive()) {
+		schemeManager.setCloseAction(() -> {
+			if(MainGUI.textEditorPanel != null && MainGUI.textEditorPanel.subHeaderPanel != null) {
 				MainGUI.textEditorPanel.subHeaderPanel.initComboStyleScheme();
-				MainGUI.textEditorPanel.textEditorUtils.applySelectedTheme();
+				MainGUI.textEditorPanel.subHeaderPanel.comboStylesScheme
+					.setSelectedItem(ThemesWrapper.getFromListByPath(
+							schemeManager.getSelectedColorSchemeObj().schemeSource.getAbsolutePath(),
+							MainGUI.textEditorPanel.subHeaderPanel.themeList));
+				MainGUI.textEditorPanel.textEditorUtils.applySelectedTheme(true);
 			}
-		};
+		});
 		
 		schemeManager.setAlwaysOnTop(true);
 		schemeManager.setLocationRelativeTo(mainApplication.getMainFrame());
@@ -101,10 +118,110 @@ public class WindowCreator {
 	
 	public ClipboardFrame newClipboardFrame() {
 			
-		ClipboardFrame clipboardFrame = ClipboardFrame.getInstance(mainApplication.getMainFrame());
+		ClipboardFrame clipboardFrame = ClipboardFrame.getInstance(
+				mainApplication.getMainFrame(), MainGUI.currentConfiguration.getTextEditorOpt());
 		commonGraphicInitAlwaysOnTop(clipboardFrame, "Clipboard Frame - ", true);
 		
 		return clipboardFrame;
+	}
+	
+	private File getLastValidFileFromList(LimitedConcurrentList<FileNamed> list) {
+		for(int i = list.getList().size() - 1; i >= 0; i--) {
+			FileNamed curr = list.getList().get(i);
+			if(curr != null && curr.mFile != null && curr.mFile.exists())
+				return curr.mFile;
+		}
+		
+		return null;
+	}
+	
+	private void addNWriteLastShellFrameFileToConfig(File toAdd) {
+		
+		if(toAdd == null)
+			return;
+		
+		try {
+			MainGUI.currentConfiguration.getTextEditorOpt().getLastOpenedShellFrameFiles()
+				.addLast(new FileNamed(toAdd.getCanonicalPath()));
+			MainGUI.currentConfiguration.writeSingleValue(
+					INItializer.TEXT_EDITOR_OPT, "lastOpenedShellFiles", 
+					MainGUI.currentConfiguration.getTextEditorOpt().getLastOpenedShellFrameFiles().toCharSeparatedString(";"));
+		} catch (IOException e) {
+			logger.error("Cannot update last shell file opened in configuration", e);
+		}
+	}
+	
+	public ShellFrame newShellFrame(boolean dark) {
+		File lastValid = getLastValidFileFromList(MainGUI.currentConfiguration.getTextEditorOpt().getLastOpenedShellFrameFiles());
+		
+		ShellFrame shellFrame = ShellFrame.getInstance(
+				getDarkTextArea(),
+				mainApplication.getMainFrame(),
+				true,
+				lastValid);
+		
+		shellFrame.payloadPanel.fileChooser = MainGuiGeneralAppStarter.fileDialogHelper;
+		
+		shellFrame.setCloseAction(() -> {
+			addNWriteLastShellFrameFileToConfig(shellFrame.getLoadedFile());
+		});
+		
+		((ShellReadWritePanel)shellFrame.payloadPanel).setAfterLoadAction(() -> {
+			addNWriteLastShellFrameFileToConfig(shellFrame.getLoadedFile());
+		});
+
+		((ShellReadWritePanel)shellFrame.payloadPanel).setAfterSaveAction(() -> {
+			addNWriteLastShellFrameFileToConfig(shellFrame.getLoadedFile());
+		});
+		
+		if(dark)
+			((ShellReadWritePanel)shellFrame.payloadPanel).darker();
+		
+		commonGraphicInit(shellFrame, "Shell Frame - ", true);
+		
+		return shellFrame;
+	}
+	
+	public RSyntaxTextArea getDarkTextArea() {
+		RSyntaxTextArea txtArea = new RSyntaxTextArea();
+		txtArea.setCurrentLineHighlightColor(Color.DARK_GRAY.darker());
+		txtArea.setSelectedTextColor(Color.DARK_GRAY);
+		txtArea.setSelectionColor(Color.DARK_GRAY);
+		txtArea.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
+		RsyntaxUtils.setFont(txtArea, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
+		return txtArea;
+	}
+	
+	public ShellReadWritePanel getShellPanel(boolean dark) {
+		File preloadFile = getLastValidFileFromList(MainGUI.currentConfiguration.getTextEditorOpt().getLastOpenedShellFrameFiles());
+		ShellReadWritePanel panel = new ShellReadWritePanel(80000, mainApplication.getMainFrame(), getDarkTextArea());
+		panel.darker();
+		
+		panel.fileChooser = MainGuiGeneralAppStarter.fileDialogHelper;
+		
+		if(preloadFile != null && preloadFile.isFile() && preloadFile.exists())
+			panel.loadAction(preloadFile).run();
+		
+		panel.setSyncAction(() -> {
+			if(MainGUI.mainGuiUtils.isTextEditorActive())
+				MainGUI.textEditorPanel.textEditorUtils.updateBottomDividerLocation();
+		});
+		
+		panel.setAfterLoadAction(() -> {
+			addNWriteLastShellFrameFileToConfig(panel.loadedFile);
+		});
+
+		panel.setAfterSaveAction(() -> {
+			addNWriteLastShellFrameFileToConfig(panel.loadedFile);
+		});
+		
+		if(dark)
+			panel.darker();
+		
+		panel.pinToTopButton.setEnabled(false);
+		panel.pinToTopButton.setVisible(false);
+		
+		return panel;
 	}
 	
 	public ColorPickerFrame newColorPickerFrame() {
@@ -212,27 +329,20 @@ public class WindowCreator {
 		});
 	}
 	
-	public FileSearchDialog fileContentSearch() {
+	public FileContentSearchDialog fileContentSearch(List<File> preloadedSourceFiles) {
+		FileContentSearchDialog searchDialog = fileContentSearch();
+		searchDialog.setSelectedFiles(preloadedSourceFiles);
+		return searchDialog;
+	}
+
+	public FileContentSearchDialog fileContentSearch() {
 		
-		FileSearchDialog searchDialog = FileSearchDialog.getLazyInstance((JFrame)null, new FileSearchActions() {
+		FileContentSearchDialog searchDialog = FileContentSearchDialog.getLazyInstance((JFrame)null, new FileSearchActions() {
 
 			@Override
 			public void resultView(SearchResult searchResult, int viewLine) {
-				if(!MainGUI.mainGuiUtils.isTextEditorActive()) {
-					MainGUI.mainGuiUtils.startTextEditor(MainGUI.textEditorPanel == null);
-				}
 				
-				SwingUtilities.invokeLater(()->{
-					while (MainGUI.textEditorPanel == null) {
-						try {
-							Thread.sleep(250);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					
-					MainGUI.textEditorPanel.getCurrentTabEditor().loadFile(searchResult.ownerFile);
-				
+				MainGUI.mainGuiUtils.openFilesInTextEditor(new File[] {searchResult.ownerFile}, ()->{
 					try {
 						JTextArea textArea = MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.textArea;
 						textArea.requestFocus();
@@ -248,7 +358,9 @@ public class WindowCreator {
 		});
 		
 		searchDialog.setIconImage(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH).getImage());
+		searchDialog.setOptions(MainGUI.currentConfiguration.getFileOpt(), true);
 		searchDialog.setVisible(true);
+		commonGraphicInit(searchDialog, null);
 		return searchDialog;
 	}
 	
@@ -282,8 +394,12 @@ public class WindowCreator {
 		
 		return panelAbout;
 	}
-
+	
 	public LightLicenseViewer newLicenseFrame(boolean mandatoryDeclineAcceptOptions, boolean closeOnDecline) {
+		return newLicenseFrame(GeneralConfig.LICENSE_FILE, mandatoryDeclineAcceptOptions, closeOnDecline);
+	}
+
+	public LightLicenseViewer newLicenseFrame(File licenseHtml, boolean mandatoryDeclineAcceptOptions, boolean exitOnDecline) {
 		
 		LightLicenseViewer licenseViewer;
 		
@@ -291,11 +407,11 @@ public class WindowCreator {
 			LightLicenseViewer.mandatoryChoice = true;
 			UserLicenseChoice choice;
 			do{
-				licenseViewer = LightLicenseViewer.getInstance(GeneralConfig.LICENSE_FILE, "You must accept this EULA before to start using ScreepT", "License acceptance");
+				licenseViewer = LightLicenseViewer.getInstance(licenseHtml, "You must accept this EULA before to start using ScreepT", "License acceptance");
 				choice = licenseViewer.userChoice;
 				if(choice.equals(UserLicenseChoice.REJECTED)) {
 					if (new JOptionHelper(null).yesOrNo("You cannot proceed without accepting this License, are you sure to stop this process?")) {
-						if (closeOnDecline) {
+						if (exitOnDecline) {
 							MainGuiManager.closeApplication(1);
 						} else {
 							return licenseViewer;
@@ -359,6 +475,21 @@ public class WindowCreator {
 	}
 	
 	// COMMONS INITIALIZATION METHODS //
+	public void commonGraphicInit(final Dialog newFrame, String title) {
+		
+		SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+		
+		if(title != null)
+			newFrame.setTitle(title + " " + GeneralConfig.APPLICATION_NAME);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				newFrame.setLocationRelativeTo(mainApplication.getMainFrame());
+				newFrame.setVisible(true);
+			}
+		});
+	}
+	
 	public void commonGraphicInit(final ParentFrame newFrame, String title, boolean autoExtend) {
 		
 		SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);

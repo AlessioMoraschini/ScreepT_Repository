@@ -14,6 +14,7 @@ package main;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -27,25 +28,41 @@ import gui.dialogs.msg.JOptionHelper;
 import main.om.PropertiesDTO;
 import network.ftp.FtpDumper;
 import network.progress.UploadAction;
-import utility.SafeLogger;
+import network.utils.DownloadUtils;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.log.SafeLogger;
 import utility.properties.PropertiesManager;
 import utility.string.StringWorker;
+import utility.string.StringWorker.EOL;
 
 public class MainStandAloneUpdater {
 	
 	public static SafeLogger logger = new SafeLogger(MainStandAloneUpdater.class);
 	
-	public static final String MAIN_LAUNCHER_JAR = "ScreepT_Launcher.jar";
+	public static final String CMD_FLAG_GENERATE_HASHES = "-generateHashes";
+	public static final String CMD_FLAG_MAIN_RELEASE = "-mainRelease";
+	public static final String CMD_FLAG_UPLOAD_FTP = "-uploadFtpUpdates";
 	
-	public static final String FTP_PROPERTIES_FILE = "FTP.properties";
-	public static final String APP_PROPERTIES_FILE = "resourcesFilePathsMappings.properties";
-	public final static String KEY_DEFAULT_LAUNCHER_INI_PATH = "DEFAULT_LAUNCHER_INI_PATH";
-	private static final String KEY_ROOT_FILES_UPDATES_DIR = "ROOT_DIR_APP_FILES";
-	public static String UPDATES_PROPERTIES_FILE = "manifest.properties";
+	public static final String UPDATER_LOG_FILE_NAME = "updater_history";
+	public static final String UPDATER_LOG_FILE = "./" + UPDATER_LOG_FILE_NAME + ".log";
 	
 	public static final File CURRENT_DIR = new File(System.getProperty("user.dir"));
+	public static final String THIS_JAR_PATH = "updater.jar";
+
+	// Main application update static named files
+	public static final String MAIN_LAUNCHER_JAR = "ScreepT_Launcher.jar";
+	public static final String MAIN_APP_PROPERTIES_PATH = "resourcesFilePathsMappings.properties";
+	
+	// Other functionalities
+	public static final String FTP_PROPERTIES_FILE = "FTP.properties";
+	public static String UPDATES_PROPERTIES_FILE = "manifest.properties";
+	
+	// Properties file keys
+	public final static String KEY_DEFAULT_LAUNCHER_INI_PATH = "DEFAULT_LAUNCHER_INI_PATH";
+	private static final String KEY_ROOT_FILES_UPDATES_DIR = "ROOT_DIR_APP_FILES";
+	private static final String KEY_FOLDER_ZIP_TO_ELABORATE = "RELEASE_FOLDER-OR-ZIP_TO_ELABORATE";
+	
 	
 	private static final JOptionHelper dialogHelper = new JOptionHelper(null);
 	public static final HashingFunction downloadsHashFunc = HashingFunction.SHA512;
@@ -55,26 +72,56 @@ public class MainStandAloneUpdater {
 	 */
 	public static void main(String[] args) {
 		
-		if(args[0].trim().contains("-generateHashes")) {
+		try {
+			logger.setLogFileEol(null);
+			logger.setLogFile(new File(UPDATER_LOG_FILE));
+			logger.setFlagWriteOnFile(true);
+			FileWorker.logger = new SafeLogger(FileWorker.class, true, logger.getLogFile(), true);
+			ZipWorker.logger = new SafeLogger(ZipWorker.class, true, logger.getLogFile(), true);
+			DownloadUtils.logger = new SafeLogger(DownloadUtils.class, true, logger.getLogFile(), true);
+			FtpDumper.logger = new SafeLogger(FtpDumper.class, true, logger.getLogFile(), true);
+			ChecksumHasher.logger = new SafeLogger(ChecksumHasher.class, true, logger.getLogFile(), true);
+			PropertiesManager.logger = new SafeLogger(PropertiesManager.class, true, logger.getLogFile(), true);
+			
+			logger.info("\n###############################################################" + EOL.defaultEol.eol +
+					"# updater.jar - Starting - " + new Date().toString() + EOL.defaultEol.eol +
+					"###############################################################" + EOL.defaultEol.eol);
+			
+			mainArgsOrhcestrator(args);
+		
+		} catch (Exception e) {
+			signalErrorAndExit1(e);
+		}
+	}
+	
+	private static void mainArgsOrhcestrator(String[] args) {
+		
+		if(args[0].trim().contains(CMD_FLAG_GENERATE_HASHES)) {
 			
 			ArrayList<File> toUpload = new ArrayList<>();
 			
-			if (args[0].trim().contains("-mainRelease")) {
-				/******************************************************************************************************** 
-				 * Function AB: "mainRelease"
-				 * 	Usage -> generateHashes(mainRelease) function: java -jar updater.jar -generateHashes-mainRelease true manifest.properties
-				 ********************************************************************************************************/
+			if (args[0].trim().contains(CMD_FLAG_MAIN_RELEASE)) {
+				logger.info("\n\n\n******************************************************" 
+						+ "\n* MainRelease detected: -generateHashes-mainRelease  *"
+						+ "\n******************************************************/\n\n");
+				/** Usage -> generateHashes(mainRelease) function: java -jar updater.jar -generateHashes-mainRelease true manifest.properties**/
 				toUpload = mainGenerateReleaseHashed(args);
 				
 			} else {
+				logger.info("\n\n\n*******************************************" 
+						+ "\n* Hash updates detected: -generateHashes  *"
+						+ "\n*******************************************/\n\n");
 				/******************************************************************************************************** 
-				 * Function AA: "generateHashes"
 				 * 	Usage -> generateHashes function: java -jar updater.jar -generateHashes true manifest.properties
 				 ********************************************************************************************************/
 				toUpload = mainGenerateUpdatesHashed(args);
 			}
 			
-			if(args[0].trim().contains("-uploadFtpUpdates")) {
+			if(args[0].trim().contains(CMD_FLAG_UPLOAD_FTP)) {
+				
+				logger.info("\n\n\n*******************************************" 
+						+ "\n* Upload flag detected: -uploadFtpUpdates *"
+						+ "\n*******************************************/\n\n");
 				/******************************************************************************************************** 
 				 * Function A.1: "-generateHashes-uploadFtpUpdates" (reads ftp properties from FTP_PROPERTIES file)
 				 * 	Usage -> generateHashes function: 
@@ -89,6 +136,9 @@ public class MainStandAloneUpdater {
 		
 		} else {
 
+			logger.info("\n\n\n****************************" 
+					+ "\n* App embedded Update detected   *"
+					+ "\n****************************/\n\n");
 			/**********************************************************************************************************		
 			 * Function B: update ScreepT 
 			 * Usage -> update ScreepT function: java -jar updater.jar updater.jar UPDATES/updates ScreepT_0.9.5.jar
@@ -99,7 +149,7 @@ public class MainStandAloneUpdater {
 	
 	private static void mainUpdateScreepT(String[] args) {
 		
-		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(APP_PROPERTIES_FILE);
+		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MAIN_APP_PROPERTIES_PATH);
 		
 		final File updaterJar = new File(args[0]).getAbsoluteFile();
 		final File updatesFolder = new File(args[1]).getAbsoluteFile();
@@ -161,28 +211,48 @@ public class MainStandAloneUpdater {
 				
 				PropertiesDTO backupProperties = getPropertiesToKeep(resourcesFilePathsMappings);
 				
-				// replace existing files matching with updates (don't touch user personal files)
-				logger.info("Copying content of " + updatesFolder + " into " + generalApplicationFolder);
-				FileWorker.copyDirectoryContents(updatesFolder, generalApplicationFolder);
+				try {
+					Thread.sleep(2000);
+				} catch (Exception e1) {
+					logger.error("", e1);;
+				}
 				
 				// Check if there is Root files update to copy one level up
-				File rootDirUpdates = new File(KEY_ROOT_FILES_UPDATES_DIR);
+				File rootDirUpdates = new File(updatesFolder.getAbsolutePath() + File.separator + KEY_ROOT_FILES_UPDATES_DIR);
 				if(rootDirUpdates.exists()) {
 					try {
-						updateProgressMonitor.update(70, "Updating licenses and launcher...", true);
+						updateProgressMonitor.update(50, "Updating licenses and launcher...", true);
 						FileWorker.copyDirectoryContents(rootDirUpdates, mainRootDirectory);
-						FileWorker.deleteDirContentInclRoot(rootDirUpdates);
+						boolean deleted = FileWorker.deleteDirContentInclRoot(rootDirUpdates);
+						if(deleted)
+							logger.info(rootDirUpdates.getAbsolutePath() + " copied and deleted.");
+						else
+							logger.warn("Something may be not copied and/or deleted.");
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("", e);
 					}
 				}
 				
+				try {
+					Thread.sleep(2000);
+				} catch (Exception e1) {
+					logger.error("", e1);
+				}
+				// replace existing files matching with updates (don't touch user personal files)
+				String msg = "Copying content of " + updatesFolder + " into " + generalApplicationFolder;
+				updateProgressMonitor.update(70, msg, true);
+				logger.info(msg);
+				FileWorker.copyDirectoryContents(updatesFolder, generalApplicationFolder);
+				
+				logger.info("Updating configuration...");
 				updateProgressMonitor.update(85, 100, "Updating configuration...");
-				restorePropertiesToKeep(backupProperties, APP_PROPERTIES_FILE);
+				restorePropertiesToKeep(backupProperties, MAIN_APP_PROPERTIES_PATH);
 				saveNewJarRef(resourcesFilePathsMappings, newJar);
 				
+				logger.info("deleting old jar...");
 				FileUtils.deleteQuietly(oldJar);
 				
+				logger.info("Completed!");
 				updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
 				
 			} else {
@@ -207,6 +277,7 @@ public class MainStandAloneUpdater {
 			if (updateProgressMonitor != null) {
 				updateProgressMonitor.forceClose();
 			}
+			logger.info("Exiting updater. Bie bie ;)");
 			System.exit(0);
 		}
 	}
@@ -231,10 +302,11 @@ public class MainStandAloneUpdater {
 		toUpload.add(new File(UPDATES_PROPERTIES_FILE));
 		for(File curr : CURRENT_DIR.listFiles()) {
 			
-			if (curr.isFile() 
-					&& !curr.getName().endsWith(".bat") 
-					&& !curr.getName().equals(UPDATES_PROPERTIES_FILE)
-					&& !curr.getName().equals(FTP_PROPERTIES_FILE)) {
+			if (curr.isFile() &&
+				!curr.getName().endsWith(".bat") &&
+				!curr.getName().endsWith(".log") &&
+				!curr.getName().equals(UPDATES_PROPERTIES_FILE) &&
+				!curr.getName().equals(FTP_PROPERTIES_FILE)) {
 				
 				try {
 					String hash = ChecksumHasher.getFileHashBuffered(curr.getName(), downloadsHashFunc, true);
@@ -260,7 +332,7 @@ public class MainStandAloneUpdater {
 		Boolean createUpdatesZip = Boolean.valueOf(args[1]);
 		UPDATES_PROPERTIES_FILE = args[2];
 
-		File releaseFolderOrZip = new File(new PropertiesManager(FTP_PROPERTIES_FILE).getProperty("RELEASE_FOLDER-OR-ZIP_TO_ELABORATE"));
+		File releaseFolderOrZip = new File(new PropertiesManager(FTP_PROPERTIES_FILE).getProperty(KEY_FOLDER_ZIP_TO_ELABORATE));
 		logger.info("Src: " + releaseFolderOrZip.getAbsolutePath());
 		
 		// Only for folder to be zipped -> zip folder into current one
@@ -276,10 +348,8 @@ public class MainStandAloneUpdater {
 		}
 
 		ArrayList<File> toUpload = new ArrayList<>();
-		toUpload.add(new File(UPDATES_PROPERTIES_FILE));
 		
-		String updaterJar = "updater.jar";
-		File updaterJarFile = new File(updaterJar);
+		File updaterJarFile = new File(THIS_JAR_PATH);
 		if (updaterJarFile.exists()) {
 			toUpload.add(updaterJarFile);
 		}
@@ -290,8 +360,8 @@ public class MainStandAloneUpdater {
 				PropertiesManager manifestProps = new PropertiesManager(UPDATES_PROPERTIES_FILE);
 
 				if (updaterJarFile.exists()) {
-					String updaterHash = ChecksumHasher.getFileHashBuffered(updaterJar, downloadsHashFunc, true);
-					manifestProps.saveCommentedProperty(updaterJar, updaterHash);
+					String updaterHash = ChecksumHasher.getFileHashBuffered(THIS_JAR_PATH, downloadsHashFunc, true);
+					manifestProps.saveCommentedProperty(THIS_JAR_PATH, updaterHash);
 				}
 				String hash = ChecksumHasher.getFileHashBuffered(releaseFolderOrZip, downloadsHashFunc, true);
 				manifestProps.saveCommentedProperty(releaseFolderOrZip.getName(), hash);
@@ -307,6 +377,8 @@ public class MainStandAloneUpdater {
 				signalErrorAndExit1(e);
 			}
 		}
+		
+		toUpload.add(new File(UPDATES_PROPERTIES_FILE));
 		
 		return toUpload;
 	}
@@ -339,6 +411,8 @@ public class MainStandAloneUpdater {
 	}
 	
 	private static void launchJar(String launcherPath) throws IOException {
+		
+		logger.info("Launching main jar!");
 		Runtime runtime = Runtime.getRuntime();
 		runtime.exec("java -jar " + launcherPath);
 		
@@ -356,6 +430,7 @@ public class MainStandAloneUpdater {
 			proceed = (!ChecksumHasher.checkHashFromProperties(updaterJar, manifestProps, downloadsHashFunc)) ? false : proceed;
 			proceed = (!ChecksumHasher.checkHashFromProperties(zipUpdates, manifestProps, downloadsHashFunc)) ? false : proceed;
 		} catch (Throwable e) {
+			logger.error("Cannot proceed with update procedure, error while validating checksum!", e);
 			proceed = false;
 		}
 		
@@ -365,6 +440,7 @@ public class MainStandAloneUpdater {
 			} else {
 				proceed = false;
 			}
+			logger.info("User has chosen to continue: " + proceed);
 		}
 		
 		return proceed;
@@ -385,6 +461,10 @@ public class MainStandAloneUpdater {
 	 *  SIGNAL KO BEFORE EXIT
 	 */
 	private static void signalErrorAndExit1(Throwable e) {
+		logger.error("\n\n\n*******************" 
+				+ "\n* PROCESS FAILED! *"
+				+ "\n*******************/\n");
+		logger.error("# error detected at: " + new Date().toString());
 		logger.error("An error occurred: ",e);
 		try {
 			Thread.sleep(10000);
@@ -397,6 +477,10 @@ public class MainStandAloneUpdater {
 	 *  SIGNAL OK BEFORE EXIT
 	 */
 	private static void signalOKAndExit0() {
+		logger.info("\n\n\n*********************" 
+				+ "\n* COMPLETE SUCCESS! *"
+				+ "\n*********************/\n");
+		logger.info("# Completed at: " + new Date().toString());
 		logger.info("Finished! Updater will close after 5 seconds from now...");
 		try {
 			Thread.sleep(5000);
@@ -410,6 +494,13 @@ public class MainStandAloneUpdater {
 	 */
 	private static void mainUploadUpdatesViaFTP(ArrayList<File> toUploadList) {
 		
+		if(toUploadList == null || toUploadList.isEmpty()) {
+			logger.info("Nothing to upload!");
+			return;
+		} else {
+			logger.info("Files to upload:" + EOL.defaultEol.eol + StringWorker.concatFilePaths(toUploadList, EOL.defaultEol));
+		}
+		
 		PropertiesManager ftpProperties;
 		try {
 			ftpProperties = new PropertiesManager(FTP_PROPERTIES_FILE);
@@ -418,27 +509,45 @@ public class MainStandAloneUpdater {
 			throw e;
 		}
 		
+		int CONNECTION_TIMEOUT_MS = ftpProperties.getIntVarFromProps("CONNECTION_TIMEOUT_MS", 25000);
 		String HOST = ftpProperties.getProperty("HOST", "ftp.am-design-development.com");
 		String USER = ftpProperties.getProperty("USER", "");
 		String PSW = ftpProperties.getProperty("PSW", "");
 		int PORT = ftpProperties.getIntVarFromProps("PORT", 22);
 		String FOLDER_ON_SERVER = ftpProperties.getProperty("FOLDER_ON_SERVER", "/www.am-design-development.com/ScreepT/Updates");
 		
-		if(StringWorker.isEmpty(USER)) {
-			USER = new JOptionHelper(null).askForString("Specify USERNAME");
-		}
-		
-		if (PSW.equals("")) {
-			char[] psw = new JOptionHelper(null).askForPasswordNullable("Insert FTPS password", "Insert FTPS password", 64, "Upload");
-			if(psw != null) {
-				PSW = new String(psw);
+		FtpDumper dumper = null;
+		FtpDumper.setCONNECTION_TIMEOUT(CONNECTION_TIMEOUT_MS);
+		boolean validLogin = false;
+		int tries = 0;
+		while (!validLogin) {
+			if ( tries > 0 || StringWorker.isEmpty(USER)) {
+				USER = new JOptionHelper(null).askForString("Enter USERNAME", "Username", USER);
 			}
+			
+			if (PSW.equals("")) {
+				char[] psw = new JOptionHelper(null).askForPasswordNullable("Enter FTPS password for user:" + USER, "Insert FTPS password", 64, "Upload");
+				if (psw != null) {
+					PSW = new String(psw);
+				}
+			}
+			UpdateProgressPanel panel = new UpdateProgressPanel();
+			panel.setUndefinedDuration();
+			panel.setClosable(false);
+			panel.update(20, "Checking connection to FTPS server...");
+			dumper = new FtpDumper(HOST, USER, PSW, PORT);
+			validLogin = dumper.ftps != null && dumper.isConnected();
+			UpdateProgressPanel.forceDisposeSafe(panel);
+			if(!validLogin) {
+				dialogHelper.error("Login failed");
+				PSW = "";
+			} 
+
+			tries++;
 		}
-		
-		FtpDumper dumper = new FtpDumper(HOST, USER, PSW, PORT);
 		
 		UpdateProgressPanel progPanel = new UpdateProgressPanel(true);
-		
+		progPanel.dialog.setTitle("Uploading files");
 		// Remove remote manifest before to start upload, and upload separately after other files:
 		// -> this will avoid users to start updates during the update process.
 		File manifestFound = findManifestAndMoveAtTheEnd(toUploadList);
@@ -455,7 +564,7 @@ public class MainStandAloneUpdater {
 		try {
 			int i = 1;
 			for (File currentToUpload : toUploadList) {
-				System.out.println("Uploading: " + currentToUpload + " ...");
+				logger.info("Uploading: " + currentToUpload + " ...");
 				
 				dumper.setUploadAction(getUploadAction(progPanel, currentToUpload.length(), currentToUpload.getName()));
 				int generalProgress = (int)(i*100 / toUploadList.size());
@@ -464,7 +573,7 @@ public class MainStandAloneUpdater {
 				progPanel.adaptWidthToCurrentText();
 				
 				dumper.uploadFile(currentToUpload.getAbsolutePath(), currentToUpload.getName(), FOLDER_ON_SERVER);
-				System.out.println(currentToUpload + " -> Uploaded");
+				logger.info(currentToUpload + " -> Uploaded");
 				
 				i++;
 			}

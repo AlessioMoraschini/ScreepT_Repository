@@ -131,7 +131,7 @@ public class JvmHelper {
 			
 			try {
 				// MATCH PREFERRED DEFAULT JVM CONDITION
-				if (SysUtils.keepOnlyDotsAndDigits(versionDirName).startsWith(ScreepTLauncher.iniFileManager.preferredJvmVersionIfNotSpecified)) {
+				if (StringWorker.keepOnlyDotsAndDigits(versionDirName).startsWith(ScreepTLauncher.iniFileManager.preferredJvmVersionIfNotSpecified)) {
 					if (checkSingleJavaVersionOK(versionDirName)) {
 						return currentPath;
 					} 
@@ -172,13 +172,13 @@ public class JvmHelper {
 	public boolean checkSingleJavaVersionOK(String version) {
 		
 		// remove non dots chars and transform undescores to dots
-		String noLettersDotsOnly = SysUtils.keepOnlyDotsAndDigits(version);
+		String noLettersDotsOnly = StringWorker.keepOnlyDotsAndDigits(version);
 		
 		boolean lessThanMax;
 		boolean moreThanMin;
 		try {
-			lessThanMax = SysUtils.compareVersions(noLettersDotsOnly, MAX_JRE_VERSION) < 0;
-			moreThanMin = SysUtils.compareVersions(noLettersDotsOnly, MIN_JRE_VERSION) >= 0;
+			lessThanMax = StringWorker.compareVersions(noLettersDotsOnly, MAX_JRE_VERSION) < 0;
+			moreThanMin = StringWorker.compareVersions(noLettersDotsOnly, MIN_JRE_VERSION) >= 0;
 		} catch (IllegalArgumentException e) {
 			logger.error("Error comparing version: illegal format of ["+version+"]", e);
 			return false;
@@ -196,7 +196,7 @@ public class JvmHelper {
 	public boolean checkSingleJavaVersionOK(String version, String max, String min) {
 		
 		// remove non dots chars and transform undescores to dots
-		String noLettersDotsOnly = SysUtils.keepOnlyDotsAndDigits(version);
+		String noLettersDotsOnly = StringWorker.keepOnlyDotsAndDigits(version);
 		
 		if(!noLettersDotsOnly.startsWith("1.")) {
 			noLettersDotsOnly = "1.".concat(noLettersDotsOnly);
@@ -205,8 +205,8 @@ public class JvmHelper {
 		boolean lessThanMax;
 		boolean moreThanMin;
 		try {
-			lessThanMax = SysUtils.compareVersions(noLettersDotsOnly, max) < 0;
-			moreThanMin = SysUtils.compareVersions(noLettersDotsOnly, min) >= 0;
+			lessThanMax = StringWorker.compareVersions(noLettersDotsOnly, max) < 0;
+			moreThanMin = StringWorker.compareVersions(noLettersDotsOnly, min) >= 0;
 		} catch (IllegalArgumentException e) {
 			logger.error("Error comparing version: illegal format of ["+version+"]", e);
 			return false;

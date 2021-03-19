@@ -32,13 +32,13 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JPasswordField;
 import javax.swing.text.BadLocationException;
 
-import utility.BitWorker;
-import utility.ConversionUtils;
-import utility.EncodingUtils;
-import utility.EntrophyzerUtils;
+import utility.bytes.BitWorker;
 import utility.hash.SafeHasher;
 import utility.hash.SafeHasher.HashAlgorithm;
 import utility.hash.SafeHasher.IterationsLevel;
+import utility.manipulation.ConversionUtils;
+import utility.manipulation.EncodingUtils;
+import utility.manipulation.EntrophyzerUtils;
 import utility.string.StringWorker;
 import utility.string.StringWorker.EOL;
 
@@ -133,7 +133,9 @@ public class AesCipher {
 		StringBuilder builder = new StringBuilder(10000);
 		for(int i=0; i<sourceLines.length; i++) {
 			encrypted = cipher.doFinal(sourceLines[i].getBytes(EncodingUtils.stringEncoding));
-			builder.append(encodingUtils.encodeBase64(encrypted)).append(EOL.defaultEol.eol);
+			builder.append(encodingUtils.encodeBase64(encrypted));
+			if(i < sourceLines.length - 1)
+				builder.append(EOL.defaultEol.eol);
 		}
 		return builder.toString();
 	}
@@ -211,7 +213,9 @@ public class AesCipher {
 		StringBuilder builder = new StringBuilder(10000);
 		for(int i=0; i<sourceLines.length; i++) {
 			decrypted = cipher.doFinal(encodingUtils.decodeBase64bytes(sourceLines[i]));
-			builder.append(new String(decrypted, EncodingUtils.stringEncoding)).append(EOL.defaultEol.eol);
+			builder.append(new String(decrypted, EncodingUtils.stringEncoding));
+			if(i < sourceLines.length - 1)
+				builder.append(EOL.defaultEol.eol);
 		}
 		return builder.toString();
 	}

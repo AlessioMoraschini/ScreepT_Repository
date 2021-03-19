@@ -15,7 +15,7 @@ import crypt.steg.StegCipher;
 import files.FileWorker;
 import om.BufferedImageType;
 import util.ImageEncodingUtils;
-import utility.ByteWorker;
+import utility.bytes.ByteWorker;
 
 import org.junit.Rule;
 

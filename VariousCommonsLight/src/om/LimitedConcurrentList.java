@@ -14,7 +14,10 @@ package om;
 import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
+
+import javax.management.BadAttributeValueExpException;
 
 import files.om.FileNamed;
 
@@ -119,6 +122,9 @@ public class LimitedConcurrentList <T>{
 	 */
 	public void addUniquesToTop(Collection<T> elements) {
 		
+		if(elements == null)
+			return;
+		
 		synchronized (list) {
 			for (T element : elements) {
 				
@@ -145,6 +151,9 @@ public class LimitedConcurrentList <T>{
 	 */
 	public void addUniqueToTop(T element) {
 		
+		if(element == null)
+			return;
+		
 		synchronized (list) {
 			if (isFull() && !list.isEmpty()) {
 				list.remove(0);
@@ -156,6 +165,24 @@ public class LimitedConcurrentList <T>{
 			} else {
 				list.add(element);
 			}
+		}
+	}
+	public void addUniqueToTopByEquals(T element) {
+		
+		if(element == null)
+			return;
+		
+		synchronized (list) {
+			if (isFull() && !list.isEmpty()) {
+				list.remove(0);
+			}
+			
+			for(T el : list) {
+				if(element.equals(el)) {
+					list.remove(el);
+				}
+			}
+			list.add(0, element);
 		}
 	}
 	
@@ -276,8 +303,74 @@ public class LimitedConcurrentList <T>{
 
 		return builder.toString();
 	}
+
+	/**
+	 * Only for elements of type String[] or List<String> or Vector<String>
+	 * @param separator
+	 * @param innerSeparator
+	 * @return
+	 */
+	public String toCharSeparatedStringMatrix(String separator, String innerSeparator) {
+		if(list == null) {return "";}
+		
+		StringBuilder builder = new StringBuilder();
+		for(T curr : list) {
+			int j = 0;
+			
+			try {
+				if (curr instanceof String[]) {
+					String[] array = (String[]) curr;
+					int i = 0;
+					for(String s : array) {
+						builder.append(s);
+						if(i < array.length - 1)
+							builder.append(innerSeparator);
+							
+						i++;
+					}
+				
+				} else if (curr instanceof List<?>) {
+					List<String> array = (List<String>) curr;
+					int i = 0;
+					for(String s : array) {
+						builder.append(s);
+						if(i < array.size() - 1)
+							builder.append(innerSeparator);
+							
+						i++;
+					}
+				
+				} else if (curr instanceof Vector){
+					Vector<String> array = (Vector<String>) curr;
+					int i = 0;
+					for(String s : array) {
+						builder.append(s);
+						if(i < array.size() - 1)
+							builder.append(innerSeparator);
+							
+						i++;
+					}
+				
+				} else {
+					throw new BadAttributeValueExpException(curr + " -  was expected to be one of [String[] or List<String> or Vector<String>], but it's a " + curr.getClass().getCanonicalName());
+				}
+				
+			} catch (Exception e) {
+			}
+			
+			if(j < list.size() - 1)
+				builder.append(separator);
+			
+			j++;
+		}
+		
+		return builder.toString();
+	}
 	
 	public void reset() {
+		if(list == null)
+			list = new Vector<T>();
+		
 		list.clear();
 	}
 
@@ -289,6 +382,17 @@ public class LimitedConcurrentList <T>{
 
 	public void setList(Vector<T> list) {
 		this.list = list;
+	}
+
+	public void setListFromList(List<T> list, boolean uniqueOnly) {
+		reset();
+		
+		for(T t : list) {
+			if(uniqueOnly)
+				addUniqueToTopByEquals(t);
+			else
+				add(t);
+		}
 	}
 
 	public int getMaxSize() {

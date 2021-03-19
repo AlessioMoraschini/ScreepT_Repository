@@ -14,19 +14,23 @@ package frameutils.utils;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
-import codeformatter.CustomCodeFormatter;
 import dialogutils.JOptionHelperExtended;
 import gui.GuiUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
+import utility.string.CustomCodeFormatter;
 import utility.string.StringWorker;
 
 public class GuiUtilsExtended extends GuiUtils {
@@ -45,6 +49,17 @@ public class GuiUtilsExtended extends GuiUtils {
 	
 	public static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
 	public static CustomCodeFormatter codeFormatter;
+	
+	public static final String XML = "xml";
+	public static final String JS = "js";
+	public static final String JSON = "json";
+	public static final String HTML = "html";
+	public static final String CSS = "css";
+	public static final String JAVA = "java";
+	public static final String[] supportedTypes = new String[]{
+			XML, JS, JSON, HTML, CSS, JAVA
+	};
+	public static final List<String> supportedTypesList = new ArrayList<>(Arrays.asList(supportedTypes));
 	
 	public static void init() {
 		codeFormatter = new CustomCodeFormatter(GeneralConfig.JS_LIB_FOLDER);
@@ -75,7 +90,7 @@ public class GuiUtilsExtended extends GuiUtils {
 
 		try {
 			// XML format handler (if xml formatter works then is a xml recognized file)
-			if (extension.toLowerCase().endsWith("xml")) {
+			if (extension.toLowerCase().endsWith(XML)) {
 				suppported = true;
 				formatted = CustomCodeFormatter.xmlPrettyFormat(source, tabSize);
 				source = CustomCodeFormatter.xmlPrettyFormat(source, tabSize);
@@ -84,25 +99,25 @@ public class GuiUtilsExtended extends GuiUtils {
 					source = StringWorker.removeLines(source);
 				}
 			// JS/JSON -> use javascript function call with custom library to prettify JS string
-			}else if (extension.toLowerCase().endsWith("js") || extension.toLowerCase().endsWith("json")) {
+			}else if (extension.toLowerCase().endsWith(JS) || extension.toLowerCase().endsWith(JSON)) {
 				suppported = true;
 				formatted = codeFormatter.jsFormatJSLIB(source, 5);
 				source = StringWorker.replaceSpacesWithTabs(formatted, tabSize);
 				
 			// HTML -> use javascript function call with custom library to prettify html string
-			}else if (extension.toLowerCase().endsWith("html")) {
+			}else if (extension.toLowerCase().endsWith(HTML)) {
 				suppported = true;
 				formatted = codeFormatter.htmlFormatJSLIB(source, 5);
 				source = StringWorker.replaceSpacesWithTabs(formatted, tabSize);
 			
 			// CSS -> use javascript function call with custom library to prettify css string
-			}else if (extension.toLowerCase().endsWith("css")) {
+			}else if (extension.toLowerCase().endsWith(CSS)) {
 				suppported = true;
 				formatted = codeFormatter.cssFormatJSLIB(source, 5);
 				source = StringWorker.replaceSpacesWithTabs(formatted, tabSize);
 				
 			// JAVA -> use google library to prettify java string
-			} else if (extension.toLowerCase().endsWith("java")) {
+			} else if (extension.toLowerCase().endsWith(JAVA)) {
 			suppported = false;
 //			formatted = CustomCodeFormatter.googleJavaCodeFormat(source);
 //			source = formatted;
@@ -133,6 +148,18 @@ public class GuiUtilsExtended extends GuiUtils {
 		}
 		
 		dialogHelper.setIF_SCROLLABLE_DEF_DIMENSION(originalDialogDim);
+	}
+	
+	public static boolean isFileTypeSupportedFormatter(File file) {
+		if(file != null && file.exists() && file.isFile()) {
+			for(String ext : supportedTypes) {
+				if(file.getName().toLowerCase().endsWith("." + ext)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 }

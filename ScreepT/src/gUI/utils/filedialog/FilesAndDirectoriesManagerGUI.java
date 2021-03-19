@@ -24,9 +24,9 @@ import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
 import files.om.DeleteFilesByExtensionDTO;
+import impl.INItializer;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
-import mainobj.INItializer;
 
 public class FilesAndDirectoriesManagerGUI {
 	
@@ -50,14 +50,14 @@ public class FilesAndDirectoriesManagerGUI {
             		if(dialog.yesOrNo("Are you sure to rename file: '"+selectedFile.getName()+ "'?")) {
             			defaultVisualizedDir = selectedFile.getParentFile().getAbsolutePath();
 		            	errors=FileVarious.upperCaseSubFolder(selectedFile);
-		            	dialog.info("Renaming completed! \n\nCompleted with: "+errors+" Errors.", null);
+		            	dialog.info("Renaming completed! \n\nCompleted with: "+errors+" Errors.", (String)null);
             		}
             	}//END FILE
             	else if(selectedFile.isDirectory()) {
             		if(dialog.yesOrNo("Are you sure to rename folder: '" + selectedFile.getName() + "' and all files/directory in it?")) {
             			defaultVisualizedDir = selectedFile.getAbsolutePath();
 		            	errors=FileVarious.upperCaseSubFolder(selectedFile);
-		            	dialog.info("Renaming completed! \n\nCompleted with: "+errors+" Errors.", null);
+		            	dialog.info("Renaming completed! \n\nCompleted with: "+errors+" Errors.", (String)null);
             		}	
             	}// END DIRECTORY
             	if(!selectedFile.exists()) {

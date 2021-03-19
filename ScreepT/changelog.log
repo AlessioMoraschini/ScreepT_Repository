@@ -1,3 +1,61 @@
+2021-03-15  (refs/remotes/origin/BugFix) Fixed rectangular mode and huge files load (log/tail mode coming soon)
+
+2021-03-15  Fixed theme editor save BUG and improved code formatter tooltips and UX
+
+2021-03-04  Improved fileName search performance + added warning messages for user
+
+2021-03-03  minor fix - restart was launching application two times in case of updates pending to install
+
+2021-03-03  Fixed clipboard panel reload bug
+
+2021-03-03  (tag: refs/tags/0.9.41) New version 0.9.41 - minor bug fixed
+
+2021-03-02  Launch as admin - Linux -> added -A option to show GUI prompt
+
+2021-03-02  (tag: refs/tags/0.9.40) V0.9.40 first build
+
+2021-03-02  V0.9.39 stable
+
+2021-03-02  Added restart as administrator option + fixed .exe startup bug
+
+2021-03-01  Fixed open with functionality in Windows to load files from other drives
+
+2021-03-01  Added file drag copy/move from file tree
+
+2021-02-28  Various improvements + refactored text editor menu
+
+2021-02-28  New feature: quick wildcard search file names wanted folder (CTRL+ALT+R)
+
+2021-02-28  Added quick file search with CTRL+ALT+R
+
+2021-02-27  File Content Search improved and added to automatic configuration
+
+2021-02-25  Plugin tesseract fix + added opened line position sync at startup
+
+2021-02-20  (tag: refs/tags/0.9.37) Split panel integrated into text editor as bottom panel
+
+2021-02-18  FileContent search: added file name filters with wildcard support
+
+2021-02-17  (tag: refs/tags/0.9.36) Shell bugFixed, added shortcuts, and general improvements
+
+2021-02-16  Console frame V1.0 ready !
+
+2021-02-14  Added embedded system console V0.1 - Work in progress
+
+2021-02-11  (tag: refs/tags/0.9.34) Version 0.9.34: Various minor bug fixed
+
+2021-02-01  Templates and Clipboard panels bugs fixed, added last used template memorization
+
+2021-02-01  Text editor bugfix: file tree right click menu and key shortcuts improved
+
+2021-01-27  Various TEXT EDITOR bugs fixed
+
+2021-01-26  Fixed Resource optimizer and easter eggs shortcuts' bug
+
+2021-01-25  TEXT EDITOR: Fixed bug on text replacement for templates injection and escape replacement functions.
+
+2020-12-12  Text-editor: Themes editor - bugs fixed
+
 2020-10-29  Added autostart Option (See General Options panel)
 
 2020-10-29  (tag: refs/tags/0.9.28) General options frame: added autostart menu addition/removal

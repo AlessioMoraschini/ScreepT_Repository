@@ -29,6 +29,10 @@ public class TestShorctutsFrame {
 		JTextArea textAreaS = new JTextArea();
 		JScrollPane scrollPane = new JScrollPane(textAreaS);
 		scrollPane.setViewportView(textAreaS);
+		textAreaS.setText("0123456789");
+		textAreaS.setSelectionStart(3);
+		textAreaS.setSelectionEnd(1);
+//		textAreaS.setCaretPosition(1);
 		frame.add(scrollPane);
 		frame.setVisible(true);
 		frame.setAlwaysOnTop(true);

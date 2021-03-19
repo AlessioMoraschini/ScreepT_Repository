@@ -37,6 +37,24 @@ public class SplitPaneUtils {
 				}
 	}
 	
+	public static void setBackground(Color background, JSplitPane panel) {
+		try {
+			BasicSplitPaneUI ui = (BasicSplitPaneUI) panel.getUI();
+	        BasicSplitPaneDivider divider = ui.getDivider();
+	        divider.setBackground(background);
+		} catch (Exception e) {
+		}
+	}
+	
+	public static BasicSplitPaneDivider getDivider(JSplitPane panel) {
+		try {
+			BasicSplitPaneUI ui = (BasicSplitPaneUI) panel.getUI();
+	        return ui.getDivider();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
 	public static void setDividerColors(Color back, Color border, JSplitPane panel) {
 		panel.setUI(new BasicSplitPaneUI() {
             public BasicSplitPaneDivider createDefaultDivider() {
@@ -44,6 +62,7 @@ public class SplitPaneUtils {
 					private static final long serialVersionUID = -4392834503356984099L;
 
 					public void setBorder(Border b) {
+						super.setBorder(b);
 	                }
 	
 	                @Override
@@ -59,6 +78,8 @@ public class SplitPaneUtils {
 	            };
             }
         });
+		
+		((BasicSplitPaneUI) panel.getUI()).getDivider().setBorder(new LineBorder(border, 2));
         panel.setBorder(new LineBorder(border));
 	}
 
@@ -78,6 +99,17 @@ public class SplitPaneUtils {
 	            };
             }
         });
+	}
+
+	public static double getDividerRatio(JSplitPane pane) {
+		Double location = (double) pane.getDividerLocation();
+		int paneSize = pane.getOrientation() == JSplitPane.HORIZONTAL_SPLIT ? pane.getWidth() : pane.getHeight();
+		Double ratio = location / (paneSize - pane.getDividerSize());
+		return ratio > 1.0D 
+				? 1.0D 
+				: ratio < 0D 
+						? 0D 
+						: ratio;
 	}
 	
 }

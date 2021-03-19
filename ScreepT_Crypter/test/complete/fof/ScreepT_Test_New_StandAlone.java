@@ -10,7 +10,7 @@ import org.junit.Test;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
 import util.ScreeptUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 import utils.TestUtils;
 
 public class ScreepT_Test_New_StandAlone {

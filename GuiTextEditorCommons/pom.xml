@@ -71,7 +71,7 @@
 	<dependency>
 	    <groupId>com.fifesoft</groupId>
 	    <artifactId>rsyntaxtextarea</artifactId>
-	    <version>3.0.6</version>
+	    <version>3.1.2</version>
 	</dependency>
 
 	<!-- 
@@ -97,12 +97,6 @@
 	</dependency>
 			
 	<dependency>
-		<groupId>GenCommons</groupId>
-		<artifactId>GenCommons</artifactId>
-		<version>1.0</version>
-	</dependency>
-	
-	<dependency>
 		<groupId>GuiCommons</groupId>
 		<artifactId>GuiCommons</artifactId>
 	 	<version>1.0</version>
@@ -112,6 +106,14 @@
 		<groupId>Initializer_Configs</groupId>
 		<artifactId>Initializer_Configs</artifactId>
 		<version>1.0</version>
+	</dependency>
+	
+	<!-- Exclude test only dependencies from build -->
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.12</version>
+		<scope>test</scope>
 	</dependency>
 	
   </dependencies>

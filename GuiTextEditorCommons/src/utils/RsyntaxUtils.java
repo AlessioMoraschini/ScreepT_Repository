@@ -44,7 +44,6 @@ import files.CustomFileFilters;
 import files.FileVarious;
 import files.om.FileNamed;
 import gui.dialogs.msg.JOptionHelper;
-import media.ImageWorkerExtended;
 import resources.GeneralConfig;
 import utility.string.StringWorker;
 

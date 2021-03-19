@@ -30,11 +30,11 @@ import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
 
 import gUI.frames.KeyGenFrame;
+import gUI.utils.ImageWorkerScreepT;
 import gui.UpdateProgressPanel;
-import mainobj.INItializer;
-import media.ImageWorkerExtended;
+import impl.INItializer;
 import om.KeyGenImageType;
-import uTILS.local.ImageWorkerScreepT;
+import utils.ImageWorkerExtended;
 
 public class ImageGenContainerPanel extends JPanel{
 	private static final long serialVersionUID = 3880705375830247529L;

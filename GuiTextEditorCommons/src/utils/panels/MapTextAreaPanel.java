@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
+import gui.RXTextUtilities;
 import guistyle.GUIStyelSettingsExtended;
 import net.miginfocom.swing.MigLayout;
 
@@ -27,12 +28,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import resources.GeneralConfig;
-import utils.RsyntaxUtils;
 import utils.dialog.ITextAreaDialogs;
 import utils.panels.arch.IParentPanel;
-import utils.panels.arch.ParentPanel;
+import utils.panels.arch.TogglePanelTextArea;
 
-public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
+public class MapTextAreaPanel extends TogglePanelTextArea implements IParentPanel{
 	private static final long serialVersionUID = 8967000441862912408L;
 
 	public static MapTextAreaPanel singletonInstance = null;
@@ -61,7 +61,7 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 		currentScrollPane.setBackground(Color.black);
 		currentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		currentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.FAST_WHEEL_SPEED);
+		currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.NORMAL_WHEEL_SPEED * 2);
 
 		txtAreaMiniMap.setBorder(new EmptyBorder(0,0,0,0));
 		txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
@@ -105,18 +105,18 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 				
 				SwingUtilities.invokeLater(() -> {
 					
-					// Get diyamic reference from interface taken from main editor utils class
-					RsyntaxUtils.setBackground(txtAreaMiniMap, targetTemp.getBackground());
-					txtAreaMiniMap.setForeground(targetTemp.getForeground());
-					RsyntaxUtils.setForeground(txtAreaMiniMap, targetTemp.getCaretColor());
-					// sync Text and caret position
+//					// Get diyamic reference from interface taken from main editor utils class
+//					RsyntaxUtils.setBackground(txtAreaMiniMap, targetTemp.getBackground());
+//					txtAreaMiniMap.setForeground(targetTemp.getForeground());
+//					RsyntaxUtils.setForeground(txtAreaMiniMap, targetTemp.getCaretColor());
+//					// sync Text and caret position
 					txtAreaMiniMap.setText(targetTemp.getText());
-					txtAreaMiniMap.setCurrentLineHighlightColor(txtAreaMiniMap.getBackground().brighter());
+//					txtAreaMiniMap.setCurrentLineHighlightColor(txtAreaMiniMap.getBackground().brighter());
 					txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
 					
 					logger.debug("loading theme: " + targetTemp.getSyntaxScheme() + " into text Area minimap");
 					dialogManager.loadThemeIntoTarget(txtAreaMiniMap);
-					currentScrollPane.setBackground(Color.black);
+//					currentScrollPane.setBackground(Color.black);
 
 					safeSyncCaretFromTxtReference();
 				});
@@ -175,10 +175,11 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 				txtAreaMiniMap.setSelectionStart(start);
 				txtAreaMiniMap.setSelectionEnd(end);
 			}else {
-				txtAreaMiniMap.setCaretPosition(0);
+				txtAreaMiniMap.setCaretPosition(Math.max(0, end - 1));
 				txtAreaMiniMap.setCaretPosition(end);
 			}
 			
+			RXTextUtilities.centerLineFullInScrollPane(txtAreaMiniMap, true, false);
 			dialogManager.getTargetTextArea().requestFocus();
 			
 		} catch (Exception e) {
@@ -197,9 +198,11 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 				reference.setSelectionStart(start);
 				reference.setSelectionEnd(end);
 			}else{
-				reference.setCaretPosition(0);
+				reference.setCaretPosition(Math.max(0, end));
 				reference.setCaretPosition(end);
 			}
+			
+			RXTextUtilities.centerLineFullInScrollPane(reference);
 			
 		} catch (Exception e) {
 			logger.warn("ERROR setting caret position into textArea reference map");

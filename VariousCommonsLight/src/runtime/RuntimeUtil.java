@@ -17,8 +17,8 @@ import java.net.UnknownHostException;
 
 import javax.management.MBeanServerConnection;
 
-import utility.ConversionUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 
 public class RuntimeUtil {
 	
@@ -27,7 +27,7 @@ public class RuntimeUtil {
 	private RuntimeUtil() {
 		// No Init
 	}
-
+	
 	public static long getMaxMemory() {
 		return Runtime.getRuntime().maxMemory();
 	}

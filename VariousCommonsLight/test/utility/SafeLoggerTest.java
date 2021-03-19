@@ -2,7 +2,7 @@ package utility;
 
 import org.junit.Test;
 
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class SafeLoggerTest {
 	

@@ -51,7 +51,7 @@ public class ImageEncodingUtils {
 	 * Questo metodo restituisce un array contenente il valore dei pixel ottenuti scansionando l'immagine orizzontalmente, distanziati dall'intervallo fornito
 	 * iN QUESTO CASO L'INTERVALLO è CALCOLATO AUTOMATICAMENTE A SECONDA DEL VALORE DEL PRIMO PX
 	 * @param image
-	 * @param N E' il numero di pixel da estrarre. Può essere anche maggiore del numero di pixel contenuti nell'immagine
+	 * @param N E' il numero di pixel da estrarre. Non può essere maggiore del numero di pixel contenuti nell'immagine
 	 * @return array di interi (dimensione N) rappresentanti il valore dei pixel scansionati. Se N > numeroPixels allora viene Sollevata eccezione
 	 * @throws STEGException 
 	 */
@@ -87,7 +87,7 @@ public class ImageEncodingUtils {
 			}
 			return read;
 		}else {
-			throw new STEGException();
+			throw new STEGException("Cannot extract more pixels than number of available ones!");
 		}
 	}
 	
@@ -168,9 +168,9 @@ public class ImageEncodingUtils {
 			}
 			destinationFile.createNewFile();
 		}
-		boolean writeEsit = ImageIO.write(generatedKeyimg, imgExtension, destinationFile);
+		boolean written = ImageIO.write(generatedKeyimg, imgExtension, destinationFile);
 		// in caso di errore ritorna null
-		if (!writeEsit) {
+		if (!written) {
 			generatedKeyimg = null;
 		}
 		return generatedKeyimg;

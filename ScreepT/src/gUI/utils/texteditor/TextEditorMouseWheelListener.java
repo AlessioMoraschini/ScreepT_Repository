@@ -18,6 +18,7 @@ import javax.swing.SwingUtilities;
 
 import gUI.panels.TextEditor;
 import gUI.utils.shortcutshandler.TextEditorShortcutListener;
+import maingUI.MainGUI;
 import resources.GeneralConfig;
 
 import tabbededitor.CustomTabbedEditor;
@@ -36,34 +37,56 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
+		if(!MainGUI.mainGuiUtils.isTextEditorActive())
+			return;
+			
 		int rotation = e.getWheelRotation();
 		
 		if (TextEditorShortcutListener.flagCtrlDown.get() && TextEditorShortcutListener.flagShiftDown.get() && !TextEditorShortcutListener.flagAltDown.get()) {
 			// CASE CTRL+SHIFT
 			adjustFontSize(rotation);
-		}else if(((TextEditorShortcutListener.flagAltDown.get() && TextEditorShortcutListener.flagShiftDown.get()) || TextEditorShortcutListener.flagShiftDown.get()) && ! TextEditorShortcutListener.flagCtrlDown.get()){
+		} else if (((TextEditorShortcutListener.flagAltDown.get() && TextEditorShortcutListener.flagShiftDown.get()) || TextEditorShortcutListener.flagShiftDown.get()) && ! TextEditorShortcutListener.flagCtrlDown.get()){
 			// CASE ALT OR SHIFT
 			adjustHorizontalScroll(e);
-		}else {
-			// CASE CTRL (in method)
-			adjustScroll(e);
 			
+		} else {
+			
+			adjustScroll(e);
+			syncMiniMapScroll(rotation);
 		}
-		
+	}
+	
+	private void syncMiniMapScroll(int rotation) {
+//		try {
+//			if (currentEditor.textEditorUtils.isMiniTextAreaActive()) {
+//				MapTextAreaPanel miniMap = (MapTextAreaPanel) currentEditor.textEditorUtils.getTypedIRightPanel();
+//				Rectangle pos = miniMap.currentScrollPane.getViewport().getViewRect();
+//				float txtSize = currentEditor.getCurrentTabEditor().getCurrentTextArea().getFont().getSize();
+//				float txtMiniSize = GeneralConfig.TXT_EDITOR_MINIMAP_FONT.getSize();
+//				pos.y += getVerticalScrollAmount() * (float)rotation * (txtMiniSize/txtSize) * 3;
+//				miniMap.getTxtAreaMiniMap().scrollRectToVisible(pos);
+//			} 
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+	}
+	
+	private int getVerticalScrollAmount() {
+		if (TextEditorShortcutListener.flagCtrlDown.get() && TextEditorShortcutListener.flagAltDown.get()
+				&& !TextEditorShortcutListener.flagShiftDown.get()) {
+			return GeneralConfig.ULTRA_FAST_WHEEL_SPEED;
+		} else if (TextEditorShortcutListener.flagCtrlDown.get() && !TextEditorShortcutListener.flagAltDown.get()
+				&& !TextEditorShortcutListener.flagShiftDown.get()) {
+			return GeneralConfig.FAST_WHEEL_SPEED;
+		} else {
+			return GeneralConfig.NORMAL_WHEEL_SPEED;
+		}
 	}
 	
 	private void adjustScroll(MouseWheelEvent e) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				if (TextEditorShortcutListener.flagCtrlDown.get() && TextEditorShortcutListener.flagAltDown.get()
-						&& !TextEditorShortcutListener.flagShiftDown.get()) {
-					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.ULTRA_FAST_WHEEL_SPEED);
-				} else if (TextEditorShortcutListener.flagCtrlDown.get() && !TextEditorShortcutListener.flagAltDown.get()
-						&& !TextEditorShortcutListener.flagShiftDown.get()) {
-					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.FAST_WHEEL_SPEED);
-				} else {
-					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.NORMAL_WHEEL_SPEED);
-				}
+				currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(getVerticalScrollAmount());
 				// trigger scroll event on target
 				currentTabEditor.loadedTabObj.currentScrollPane.getListeners(MouseWheelListener.class)[0].mouseWheelMoved(e);
 			}
@@ -90,7 +113,7 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 	
 	private void adjustFontSize(int delta) {
 		if(currentTabEditor.loadedTabObj != null) {
-			currentEditor.subHeaderPanel.sliderFontSize.setValue(currentEditor.subHeaderPanel.sliderFontSize.getValue() - (delta*4));
+			currentEditor.subHeaderPanel.sliderFontSize.setValue(currentEditor.subHeaderPanel.sliderFontSize.getValue() - (delta*2));
 		}
 	}
 }

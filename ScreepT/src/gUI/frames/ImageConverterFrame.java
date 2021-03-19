@@ -24,10 +24,10 @@ import gUI.panels.CrypterPanel;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 import gui.GuiUtils;
 import gui.UpdateProgressPanel;
+import impl.INItializer;
+import impl.om.ImgConverterOption;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
-import mainobj.INItializer;
-import media.ImageWorkerExtended;
 
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -36,6 +36,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import java.awt.SystemColor;
+import java.awt.Dialog.ModalityType;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,12 +45,12 @@ import java.io.IOException;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
-import om.ImgConverterOption;
 import om.ScalingAlgorithm;
 import panel.PanelFileDragNDropManager;
 import resources.IconsPathConfigurator;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
+import utils.ImageWorkerExtended;
 
 import javax.swing.JLabel;
 
@@ -584,6 +585,7 @@ public class ImageConverterFrame extends ParentFrame {
 							
 							try {
 								progUpdater = new UpdateProgressPanel(false);
+								progUpdater.setModalType(ModalityType.DOCUMENT_MODAL);
 								progUpdater.getPb().setValue(20);
 								
 								if (inputImg != null) {
@@ -688,6 +690,7 @@ public class ImageConverterFrame extends ParentFrame {
 									selected = FileVarious.uniqueJavaObjFile(selected);
 									
 									progUpdater = new UpdateProgressPanel(false);
+									progUpdater.setModalType(ModalityType.DOCUMENT_MODAL);
 									progUpdater.getPb().setValue(20);
 									progUpdater.getPb().setIndeterminate(true);
 
@@ -799,6 +802,7 @@ public class ImageConverterFrame extends ParentFrame {
 							
 							try {
 								progUpdater = new UpdateProgressPanel(false);
+								progUpdater.setModalType(ModalityType.DOCUMENT_MODAL);
 								progUpdater.getPb().setValue(20);
 								progUpdater.getLabel().setText("I'm loading the image...");
 								progUpdater.getPb().setIndeterminate(true);

@@ -199,6 +199,15 @@ public class TreeUtils {
 	    }
 	}
 	
+	public static void expandRoot(JTree tree) {
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode)tree.getModel().getRoot();
+		tree.expandPath(new TreePath(root.getPath()));
+	}
+
+	public static void expandNode(JTree tree, DefaultMutableTreeNode node) {
+		tree.expandPath(new TreePath(node.getPath()));
+	}
+	
 	/**
 	 *  Recursively expand the given path (This does not expand child paths in the given tree)
 	 * @param tree
@@ -395,6 +404,7 @@ public class TreeUtils {
 		setNodeExpandedState(tree, node, expanded);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void setNodeExpandedState(JTree tree, DefaultMutableTreeNode node, boolean expanded) {
 		ArrayList<DefaultMutableTreeNode> list = Collections.list(node.children());
 		for (DefaultMutableTreeNode treeNode : list) {

@@ -13,9 +13,11 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dialog;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Font;
@@ -46,12 +48,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -73,8 +78,8 @@ import javax.swing.text.JTextComponent;
 
 import files.om.FileNamed;
 import gui.dialogs.msg.JOptionHelper;
-import utility.ImageWorker;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ImageWorker;
 import utility.string.StringWorker;
 
 public class GuiUtils {
@@ -105,6 +110,11 @@ public class GuiUtils {
 		String result = (selection == null) ? allText : selection;
 
 		return result;
+	}
+	
+	public static boolean checkIfComponentContains(Container container, Component toSearch) {
+		List<Component> componentList = Arrays.asList(container.getComponents());
+		return componentList.contains(toSearch);
 	}
 
 	public static MouseListener getClickOutDisposeListener(final JFrame target) {
@@ -158,6 +168,19 @@ public class GuiUtils {
 
 			}
 		};
+	}
+	
+	public static void giveFocusToComponent(Component component) {
+		if(component == null)
+			return;
+		
+		SwingUtilities.invokeLater(()-> {
+			if(component instanceof JTextComponent)
+				((JTextComponent)component).setRequestFocusEnabled(true);
+			
+			component.requestFocus();
+			component.requestFocusInWindow();
+		});
 	}
 
 	public static MouseMotionListener getMouseExitedDisposeListener(final JFrame target) {
@@ -219,6 +242,18 @@ public class GuiUtils {
 			}
 		});
 	}
+	
+	public static void launchThreadSafeSwingV2(Runnable threadAction) {
+		new Thread(() -> {
+			SwingUtilities.invokeLater(() -> {
+				try {
+					threadAction.run();
+				} catch (Exception e) {
+					logger.error("GuiUtils.launchThreadSafeSwing(threadAction) => Error executing threadAction! ", e);
+				}
+			});
+		}).start();
+	}
 
 	public static void labelUpdateWithTimeout(String message, JTextComponent target, int timeout) {
 
@@ -245,6 +280,7 @@ public class GuiUtils {
 			public void run() {
 				target.removeAllItems();
 				Object[] array = values.toArray();
+				@SuppressWarnings({ "rawtypes", "unchecked" })
 				DefaultComboBoxModel<E> model = new DefaultComboBoxModel(array);
 				target.setModel(model);
 				target.revalidate();
@@ -642,13 +678,46 @@ public class GuiUtils {
 	public static void openInFileSystem(File destination) {
 		if (destination != null && destination.exists()) {
 			try {
-				if (destination.isDirectory()) {
+				if(isWindows()) {
+					openInFileSystemWin(destination);
+				} else if (destination.isDirectory()) {
 					Desktop.getDesktop().open(destination);
 				} else {
 					Desktop.getDesktop().open(destination.getParentFile());
 				}
 				logger.debug(destination.getAbsolutePath() + " Opened in system explorer");
 
+			} catch (IOException e1) {
+				logger.error("Error opening folder in system explorer !", e1);
+			}
+		}
+	}
+	
+	private static boolean isWindows() {
+		String osNameShort = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+		return osNameShort.indexOf("win") >= 0;
+	}
+	
+	/**
+	 * View the file with windows explorer, selecting the given file
+	 */
+	public static void openInFileSystemWin(File destination) {
+		String path;
+		try {
+			path = destination.getCanonicalPath();
+			String command = "explorer.exe /select,\"" + path + "\"";
+			Runtime.getRuntime().exec(command);
+		} catch (IOException e) {
+			logger.error("Error opening in file system", e);
+		}
+	}
+
+	public static void openWithSystemDefault(File destination) {
+		if (destination != null && destination.exists()) {
+			try {
+				Desktop.getDesktop().open(destination);
+				logger.debug(destination.getAbsolutePath() + " Opened with default application");
+				
 			} catch (IOException e1) {
 				logger.error("Error opening folder in system explorer !", e1);
 			}
@@ -691,6 +760,18 @@ public class GuiUtils {
 		if (frame != null) {
 			RootPaneContainer root = (RootPaneContainer) frame.getRootPane().getTopLevelAncestor();
 			root.getGlassPane().setCursor(CURSOR_DEFAULT);
+		}
+	}
+	
+	public static void clickAndTriggerButton(JButton button) {
+		if(button != null) {
+			button.doClick();
+		}
+	}
+	public static void clickAndTriggerCheckbox(JCheckBox checkbox, boolean triggerUncheckAction) {
+		if(checkbox != null) {
+			checkbox.setSelected(triggerUncheckAction);
+			checkbox.doClick();
 		}
 	}
 
@@ -930,6 +1011,20 @@ public class GuiUtils {
 		return "<html>" + original + "</html>";
 	}
 
+	public static String getAsHtmlList(List<String> originals) {
+		StringBuilder builder = new StringBuilder();
+		if(originals != null) {
+			
+			for(String original : originals) {
+				builder.append("<li>")
+					.append(original)
+					.append("</li>");
+			}
+		}
+			
+		return "<ul>" + builder.toString() + "</ul>";
+	}
+
 	public static String encapsulateInTag(String original, String tag) {
 		String trimmedTag = StringWorker.trimToEmpty(tag);
 
@@ -972,6 +1067,24 @@ public class GuiUtils {
 		int tabsTotalLength = tabSize * nOfTabs;
 
 		return currentLine.length() - nOfTabs + tabsTotalLength;
+	}
+	
+	public static void setDialogModalType(Dialog target, ModalityType type) {
+		setDialogModalType(target, type, false);
+	}
+
+	public static void setDialogModalType(Dialog target, ModalityType type, boolean switchVisible) {
+		
+		boolean wasVisible = target.isVisible();
+		
+		if(switchVisible)
+			target.setVisible(!wasVisible);
+		
+		target.setModalityType(type);
+		target.setModal(!ModalityType.MODELESS.equals(type));
+	
+		if(switchVisible)
+			target.setVisible(wasVisible);
 	}
 
 }

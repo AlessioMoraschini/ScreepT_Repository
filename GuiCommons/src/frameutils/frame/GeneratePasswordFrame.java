@@ -22,12 +22,12 @@ import gui.GuiUtils;
 import gui.dialogs.msg.JOptionHelper.Choice;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.ConversionUtils;
 import utility.hash.SafeHasher;
 import utility.hash.SafeHasher.HashAlgorithm;
 import utility.hash.SafeHasher.IterationsLevel;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
-import variousutils.StringWorkerExtended;
+import utils.StringWorkerExtended;
 import net.miginfocom.swing.MigLayout;
 import om.SecurityLevel;
 

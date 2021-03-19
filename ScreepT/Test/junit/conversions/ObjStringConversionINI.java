@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import om.ScalingAlgorithm;
 import testUtils.TestUtils;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 
 public class ObjStringConversionINI {
 

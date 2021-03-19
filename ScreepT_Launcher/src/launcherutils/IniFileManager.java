@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
-import gui.utils.LoggerUtils;
+import gui.utils.LauncherLoggerUtils;
 import utility.string.StringWorker;
 
 public class IniFileManager {
@@ -95,7 +95,7 @@ public class IniFileManager {
 			manualPathJvm = StringWorker.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "manualPathJvm"));
 			
 			String logLevelStr = iniConfigFile.get(IniFileManager.INI_APP_OPT, "logLevelSetting");
-			logLevel = LoggerUtils.getLogLevelFromString(logLevelStr != null ? logLevelStr : "INFO");
+			logLevel = LauncherLoggerUtils.getLogLevelFromString(logLevelStr != null ? logLevelStr : "INFO");
 			
 			logger.info("Launcher_configuration file loaded!");
 		} catch (InvalidFileFormatException e) {

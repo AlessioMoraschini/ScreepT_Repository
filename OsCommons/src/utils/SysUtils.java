@@ -27,12 +27,13 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import files.search.FileSearchAdvanced;
+import files.search.FileNameSearchAdvanced;
 import gui.GuiUtils;
 import om.JVMInfo;
 import om.OSinfo;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 import utility.string.StringWorker;
+import utils.linux.LinuxFindJvmVersions;
 
 
 public class SysUtils {
@@ -336,53 +337,6 @@ public class SysUtils {
 		return version.substring(version.indexOf("\"") + 1, version.lastIndexOf("\""));
 	}
 
-	/**
-	 * Use this method to remove every character from given string, except "." and
-	 * digits 0-9 Note that eventual undescores will become dots.
-	 * 
-	 * @param source
-	 * @return
-	 */
-	public static String keepOnlyDotsAndDigits(String source) {
-		String dotsOnly = source.replaceAll("_", ".");
-		dotsOnly = dotsOnly.replaceAll("-", "");
-		// remove non dots chars
-		return dotsOnly.replaceAll("[a-zA-Z!#$%&'*+=?^`{|}+]|[_]\\-", "");
-	}
-
-	/**
-	 * Dotted version format compare - if version not matches format
-	 * <Strong>IllegalArgumentException</Strong> is thrown
-	 * 
-	 * @param version_A
-	 * @param version_B
-	 * @return -1 if A less than B, 1 if A more than B, 0 if equals
-	 */
-	public static int compareVersions(String version_A, String version_B) throws IllegalArgumentException {
-
-		if (version_A == null || version_B == null) {
-			throw new IllegalArgumentException("Version can not be null");
-		}
-		if (!version_A.matches("[0-9]+(\\.[0-9]+)*") || !version_B.matches("[0-9]+(\\.[0-9]+)*")) {
-			throw new IllegalArgumentException("Invalid version format");
-		}
-
-		String[] AParts = version_A.split("\\.");
-		String[] BParts = version_B.split("\\.");
-		int length = Math.max(AParts.length, BParts.length);
-		for (int i = 0; i < length; i++) {
-			int ACurrPart = i < AParts.length ? Integer.parseInt(AParts[i]) : 0;
-			int BCurrPart = i < BParts.length ? Integer.parseInt(BParts[i]) : 0;
-			if (ACurrPart < BCurrPart) {
-				return -1;
-			}
-			if (ACurrPart > BCurrPart) {
-				return 1;
-			}
-		}
-		return 0;
-	}
-	
 	public static String getCurrentSystemEncoding() {
 		return System.getProperty("file.encoding");
 	}
@@ -591,10 +545,22 @@ public class SysUtils {
 		return builder.toString();
 	}
 	
+	public static Process launchCommand(String command) throws IOException {
+		List<String> commands = new ArrayList<>();
+		if(new OSinfo().isWindows()) {
+			commands.add("cmd.exe");
+			commands.add("/C");
+		}
+		commands.add(command);
+		
+		ProcessBuilder builder = new ProcessBuilder(commands);
+		return builder.start();
+	}
+	
 	/**
 	 * retrieve list of commands, write to file and run it in current OS
 	 */
-	public static void launchBatchOrBash(String batchOrBashPath, boolean minimizedShell) {
+	public static Process launchBatchOrBash(String batchOrBashPath, boolean minimizedShell) {
 		
 		OSinfo OS = getOsInfoLazy();
 		logger.info("Launching commands on currentOS: " + OS.getOsName() + OS.getOsArch());
@@ -610,9 +576,10 @@ public class SysUtils {
 			// CASE WINDOWS
 			if (OS.isWindows()) {
 				String minimizedOpt = minimizedShell ? "/min " : "";
-				runtime.exec("cmd /c start " + minimizedOpt + "\"\" \"" + batchOrBashPath + "\"");
+				logger.info("Commands launched without exceptions :)"); 
+				return runtime.exec("cmd /c start " + minimizedOpt + "\"\" \"" + batchOrBashPath + "\"");
 			
-			}else {
+			} else {
 				
 				// TODO LINUX/MAC SHELL show on/off
 				logger.info("Executing process [pwd]");
@@ -621,12 +588,89 @@ public class SysUtils {
 				Process executableMaker = runtime.exec("chmod u+x " + batchOrBashPath);
 				execNlogProcessOutput(executableMaker);
 				executableMaker.waitFor();
+				logger.info("Commands launched without exceptions :)"); 
 				
-				runtime.exec(batchOrBashPath);
+				return runtime.exec(batchOrBashPath);
 			}
-			logger.info("Commands launched without exceptions :)"); 
 		} catch (Exception e) {
 			logger.error(" !!! Error launching generated commands file !!!\n\n", e);
+			return null;
+		}
+	}
+	
+	public static Process launchExeAsAdmin(String exePath, String exeLaunchCommand, String... args) throws IOException, InterruptedException {
+		try {
+			new File(exePath).setExecutable(true);
+		} catch (Exception e) {
+			logger.error("Cannot set jar executable: " + exeLaunchCommand);
+		}
+		
+		String params = " ";
+		if(OS_INFO_LAZY.isWindows()) {
+			if(args != null) {
+				params = " -ArgumentList ";
+				int i = 0;
+				for(String arg : args) {
+					params +=  "'"+ arg +"'" + ((i < args.length - 1) ? "," : "");
+					i++;
+				}
+			}
+			return Runtime.getRuntime().exec("powershell.exe Start-Process '" + exeLaunchCommand + "' "
+					+ params +  " -verb RunAs");
+		} else {
+			if(args != null) {
+				for(String arg : args) {
+					params +=  arg + " ";
+				}
+			}
+
+			logger.info("Executing process [pwd]");
+			execNlogProcessOutput(Runtime.getRuntime().exec("pwd"));
+			logger.info("Executing process [chmod u+x " + exeLaunchCommand + "]");
+			Process executableMaker = Runtime.getRuntime().exec("chmod u+x " + exeLaunchCommand);
+			execNlogProcessOutput(executableMaker);
+			executableMaker.waitFor();
+			return Runtime.getRuntime().exec("sudo -A " + exeLaunchCommand + params);
+		}
+	}
+
+	/**
+	 * retrieve list of commands, write to file and run it in current OS
+	 */
+	public static Process launchBatchOrBashSimple(String batchOrBashPath) {
+		
+		OSinfo OS = getOsInfoLazy();
+		logger.info("Launching commands on currentOS: " + OS.getOsName() + OS.getOsArch());
+		
+		Runtime runtime = Runtime.getRuntime();
+		
+		try {
+			try {
+				new File(batchOrBashPath).setExecutable(true);
+				
+			} catch (Exception e1) {}
+			
+			// CASE WINDOWS
+			if (OS.isWindows()) {
+				logger.info("Commands launched without exceptions :)"); 
+				return runtime.exec(batchOrBashPath);
+				
+			} else {
+				
+				// TODO LINUX/MAC SHELL show on/off
+				logger.info("Executing process [pwd]");
+				execNlogProcessOutput(runtime.exec("pwd"));
+				logger.info("Executing process [chmod u+x" + batchOrBashPath + "]");
+				Process executableMaker = runtime.exec("chmod u+x " + batchOrBashPath);
+				execNlogProcessOutput(executableMaker);
+				executableMaker.waitFor();
+				logger.info("Commands launched without exceptions :)"); 
+				
+				return runtime.exec(batchOrBashPath);
+			}
+		} catch (Exception e) {
+			logger.error(" !!! Error launching generated commands file !!!\n\n", e);
+			return null;
 		}
 	}
 	
@@ -810,7 +854,8 @@ public class SysUtils {
 		String classPath = "";
 		String separator = getOsInfoLazy().isWindows() ? ";" : ":";
 		
-		for (File found : FileSearchAdvanced.findOnlyFilesByMatch(new File(root), ".jar", false, true, false)) {
+		for (File found : FileNameSearchAdvanced.findOnlyFilesByMatch(
+				new File(root), ".jar", false, true, false, false, Long.MAX_VALUE)) {
 			classPath += found + separator;
 		}
 		
@@ -916,6 +961,33 @@ public class SysUtils {
 				return this.bashProgamName;
 			}
 		}
+	}
+
+	/**
+	 * Get registry add command by path, key, and value
+	 * 
+	 * [REG ADD "HKEY_CLASSES_ROOT\*\shell\Open_with_ScreepT\command" /t REG_SZ /d "\"C:\Users\xx\Desktop\SCREEPT_LATEST_V1\ScreepT.exe\" \"^%1\"" /f]
+	 */
+	public static String getRegistryAddString(String path, String key, String val) {
+		return "REG ADD \""+path+"\" /v \""+key+"\" /t REG_SZ /d \""+val+"\" /f";
+	}
+
+	/**
+	 * Get registry add command by path, val, and parameter
+	 * 
+	 * [REG ADD "HKEY_CLASSES_ROOT\*\shell\Open_with_ScreepT\command" /t REG_SZ /d "\"C:\Users\xx\Desktop\SCREEPT_LATEST_V1\ScreepT.exe\" \"^%1\"" /f]
+	 */
+	public static String getRegistryAddStringVal(String path, String val, String param) {
+		return "REG ADD \""+path+"\" /t REG_SZ /d \"\\\""+val+"\\\" \\\"" + param + "\\\"\" /f";
+	}
+
+	/**
+	 * Get registry remove command by key
+	 * @param path
+	 * @return
+	 */
+	public static String getPathRemoveString(String path) {
+		return "REG DELETE \""+path+"\" /f";
 	}
 
 }

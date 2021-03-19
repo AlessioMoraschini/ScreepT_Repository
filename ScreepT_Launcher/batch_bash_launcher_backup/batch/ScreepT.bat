@@ -1,4 +1,7 @@
-cd %0\..\Application
+set batdir=%~dp0
+echo %batdir%
+
+cd /D %batdir%\Application
 
 echo %CD%
 
@@ -6,7 +9,7 @@ java -version
 
 if %ERRORLEVEL% GEQ 1 goto undefjava
 
-call java -Dsun.java2d.ddscale=false -Dsun.java2d.noddraw=true -Dsun.java2d.uiScale=1 -Dfile.encoding=utf8 -Xmx256m -Xms128m -jar ScreepT_Launcher.jar %1
+call java -Dsun.java2d.ddscale=false -Dsun.java2d.noddraw=true -Dsun.java2d.uiScale=1 -Dfile.encoding=utf8 -Xmx128m -Xms128m -jar ScreepT_Launcher.jar %1
 
 if %ERRORLEVEL% GEQ 1 goto error
 

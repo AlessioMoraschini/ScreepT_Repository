@@ -24,6 +24,7 @@ public class Snake extends JFrame {
 		setVisible(true);
 		this.title = title != null ? title : "Snake";
 		setTitle(this.title);
+		instance = this;
     }
 	
 	public void init() {
@@ -77,6 +78,7 @@ public class Snake extends JFrame {
     
     public static Snake getInstance(String title) {
     	Snake instance = Snake.instance != null ? Snake.instance : new Snake(title);
+    	Snake.instance.setVisible(true);
     	instance.toFront();
     	
     	return instance;

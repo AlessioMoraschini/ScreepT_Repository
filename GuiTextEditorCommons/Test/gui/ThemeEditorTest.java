@@ -12,9 +12,9 @@ public class ThemeEditorTest {
 	
 	public static void main(String[] args) {
 		SchemeManagerGui schemeManager = new SchemeManagerGui(themeFolderCustom, themeFolderDefault, new Font("Segoe UI", Font.PLAIN, 25));
-		schemeManager.closeAction = () -> {
+		schemeManager.setCloseAction(() -> {
 			new JOptionHelper(null).info("Close action triggered!");
-		};
+		});
 	}
 
 }

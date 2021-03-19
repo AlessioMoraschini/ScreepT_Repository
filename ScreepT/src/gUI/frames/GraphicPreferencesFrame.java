@@ -13,13 +13,11 @@ package gUI.frames;
 
 import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
-import om.GuiOption;
-import om.TextEditorOption;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
 import utils.panels.ClipboardPanel;
-import utils.panels.arch.ParentPanel;
+import utils.panels.arch.TogglePanelTextArea;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -54,8 +52,10 @@ import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import guistyle.GUIStyelSettingsExtended;
 import guistyle.LookAndFeelInfoCustom;
+import impl.INItializer;
+import impl.om.GuiOption;
+import impl.om.TextEditorOption;
 import maingUI.MainGUI;
-import mainobj.INItializer;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -357,7 +357,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		separator_3.setBackground(Color.GRAY);
 		mainPanel.add(separator_3, "cell 0 4,growx");
 		
-		lblTextAreaOptions = new JLabel("Text Eitor Options");
+		lblTextAreaOptions = new JLabel("Text Editor Options");
 		lblTextAreaOptions.setForeground(Color.GRAY);
 		lblTextAreaOptions.setFont(new Font("Tahoma", Font.BOLD, 13));
 		mainPanel.add(lblTextAreaOptions, "cell 1 4 2 1,alignx left");
@@ -1130,7 +1130,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	
 	private void syncRightPaneCustomOptions() {
 		if (currentEditor != null) {
-			ParentPanel rightPane = currentEditor.textEditorUtils.getTypedIRightPanel();
+			TogglePanelTextArea rightPane = currentEditor.textEditorUtils.getTypedIRightPanel();
 			if (rightPane != null && rightPane instanceof ClipboardPanel) {
 				((ClipboardPanel) rightPane).sync();
 			} 

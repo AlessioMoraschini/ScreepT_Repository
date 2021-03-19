@@ -42,22 +42,23 @@ import gUI.panels.TextEditor;
 import gui.GuiUtils;
 import gui.LightLicenseViewer;
 import gui.LightLicenseViewer.UserLicenseChoice;
+import gui.filesearch.name.FileNameSearchDialog;
 import guistyle.GUIStyelSettingsExtended;
-import mainobj.INItializer;
+import impl.INItializer;
+import impl.om.GenericOption;
 import network.utils.DownloadUtils;
-import om.GenericOption;
 import om.SupportedFileTextEditor;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 import om.exception.ProgressBarInterruptedException;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import tabbededitor.CustomTabbedEditor;
-import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.log.SafeLogger;
 import utility.properties.PropertiesManager;
-import utils.SysUtils;
+import utility.string.StringWorker;
 
 public class MainGuiUtils {
 	
@@ -122,7 +123,7 @@ public class MainGuiUtils {
 										logger.error(message, e1);
 										
 									} else if(e1 instanceof UpdatesUnavailableException) {
-										dialogHelper.warn(e1.getMessage(), "An error occurred");
+										dialogHelper.warn(e1.getMessage(), "Updates not found. It's possibile that they're being upgraded, retry again later.");
 										logger.error(e1.getMessage(), e1);
 										
 									} else {
@@ -142,7 +143,7 @@ public class MainGuiUtils {
 							// If version == null means that sw is already updated
 							if (MainGuiGeneralAppStarter.updatesManager.udpdatesReachable()) {
 								logger.info("Nothing to download, current version is up to date :)");
-									dialogHelper.info("Nothing to download, current version is up to date :)", "Already up to date");
+								dialogHelper.info("Nothing to download, current version is up to date :)", "Already up to date");
 							}else {
 								logger.error("Cannot retrieve remote update data, server is unreachable.");
 								dialogHelper.error("Cannot retrieve remote update data, server is unreachable.", "Connection error");
@@ -194,7 +195,7 @@ public class MainGuiUtils {
 			File newLicense = DownloadUtils.downloadFile(false, new URL(GeneralConfig.WEB_UPDATES_LICENSE_URL), GeneralConfig.TEMP_DIRECTORY+"tempNewLicense.html", null);
 			
 			if (!ChecksumHasher.equalsFilesChecksum(newLicense, GeneralConfig.LICENSE_FILE, HashingFunction.SHA512)) {
-				LightLicenseViewer licenseViewer = MainGUI.mainAPP.windowCreator.newLicenseFrame(true, false);
+				LightLicenseViewer licenseViewer = MainGUI.mainAPP.windowCreator.newLicenseFrame(newLicense, true, false);
 				return UserLicenseChoice.ACCEPTED.equals(licenseViewer.userChoice);
 			} else {
 				return true;
@@ -412,13 +413,16 @@ public class MainGuiUtils {
 	}
 	
 	public boolean isTextEditorActive() {
-		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof TextEditor;
+		return getMainPanel().getComponent(0) instanceof TextEditor;
+	}
+	public boolean isTextEditorPanelWithFocus() {
+		return getMainPanel().getComponent(0) instanceof TextEditor && mainAppReference.getMainFrame().isFocusableWindow();
 	}
 	public boolean isCrypterActive() {
-		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof CrypterPanel;
+		return getMainPanel().getComponent(0) instanceof CrypterPanel;
 	}
 	public boolean isConfManagerActive() {
-		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof ConfigurationManagerPanel;
+		return getMainPanel().getComponent(0) instanceof ConfigurationManagerPanel;
 	}
 	
 	public void updateTitleRightPart(String newSuffix) {
@@ -497,8 +501,53 @@ public class MainGuiUtils {
 		});
 	}
 	
+	public synchronized void openFilesInTextEditor(File[] filesToLoad, Runnable postOpenAction) {
+			
+		if(!MainGUI.mainGuiUtils.isTextEditorActive()) {
+			MainGUI.mainGuiUtils.startTextEditor(MainGUI.textEditorPanel == null);
+		}
+		
+		SwingUtilities.invokeLater(()->{
+			while (MainGUI.textEditorPanel == null) {
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			MainGUI.textEditorPanel.getCurrentTabEditor().loadFiles(filesToLoad);
+			
+			SwingUtilities.invokeLater(()->{
+				Runnable action = postOpenAction != null ? postOpenAction : () -> {};
+				action.run();
+			});
+		});
+	}
+	
+	public void openQuickSearchIntoWorkspace() {
+		
+		SwingUtilities.invokeLater(()->{
+//			File workspace = new File(MainGUI.textEditorPanel.currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
+			FileNameSearchDialog dialog = new FileNameSearchDialog(
+					MainGUI.mainAPP.getMainFrame(), 
+					MainGUI.textEditorPanel.currentConfiguration);
+			dialog.setTitle("Search files by name - " + GeneralConfig.APPLICATION_NAME);
+			
+			dialog.setDoubleClickItemAction((file) ->{
+				MainGUI.mainGuiUtils.openFilesInTextEditor(new File[] {file}, null);
+			});
+			dialog.setLocationRelativeTo(mainAppReference.getMainFrame());
+			dialog.setVisible(true);
+		});
+	}
+	
+	public JPanel getMainPanel() {
+		return (JPanel) mainAppReference.getMainFrame().getContentPane();
+	}
+	
 	public void replaceMainPanel(JPanel newMainPanel) {
-		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+		JPanel contentPane = getMainPanel();
 		contentPane.removeAll();
     	contentPane.add(newMainPanel);
     	contentPane.revalidate(); 
@@ -709,7 +758,7 @@ public class MainGuiUtils {
 		
 		thereAreUnsaved = false;
 		atLeastOneTemp = false;
-		for (TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
+		for (TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
 			if (tabElement.unsaved) {
 				thereAreUnsaved = true;
 			}
@@ -718,36 +767,47 @@ public class MainGuiUtils {
 			}
 		} 
 		
-		return (thereAreUnsaved || atLeastOneTemp);
+		return !(thereAreUnsaved || atLeastOneTemp);
 	}
 	
 	/**
 	 * Check if panels that are currently loaded (!= null) can be de-referenced (if nothing to save is found, or no file to crypt currently loaded)
 	 */
-	public void deReferenceUnusedPanels() {
+	public Boolean deReferenceUnusedPanels() {
+		
+		if(!MainGuiUtils.askUnsavedTextFiles())
+			// If user presses cancel button do nothing
+			return null;
+		
+		Boolean somethingCleaned = Boolean.FALSE;
 		
 		if(MainGUI.configManagerPanel != null && !isConfManagerActive()) {
 			MainGUI.configManagerPanel = null;
+			somethingCleaned = Boolean.TRUE;
 		}
 		
 		if(MainGUI.crypterPanel != null && !isCrypterActive() && MainGUI.crypterPanel.panelVDragNDropPane.getAllNodes().length == 0) {
 			MainGUI.crypterPanel = null;
+			somethingCleaned = Boolean.TRUE;
 		}
 
 		if(MainGUI.textEditorPanel != null && !isTextEditorActive() && isAllSavedInTextEditor()) {
 			MainGUI.textEditorPanel = null;
+			somethingCleaned = Boolean.TRUE;
 		}
+		
+		return somethingCleaned;
 	}
 
 	public static boolean checkJavaVersionMaxCompatibility() {
 		MainGUI.currentJvmVersion = System.getProperty("java.version");
 		
-		String tempCompareJvmCurrent = SysUtils.keepOnlyDotsAndDigits(MainGUI.currentJvmVersion);
-		int compareRes = SysUtils.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
+		String tempCompareJvmCurrent = StringWorker.keepOnlyDotsAndDigits(MainGUI.currentJvmVersion);
+		int compareRes = StringWorker.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
 		
 		return compareRes != 1;
 	}
-
+	
 	/**
 	 * return false if not exit, true if has to exit;
 	 * @return
@@ -763,7 +823,7 @@ public class MainGuiUtils {
 		boolean askCondition = false;
 		boolean atLeastOneTemp = false;
 	
-		for (TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
+		for (TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
 			if (tabElement.unsaved) {
 				askCondition = true;
 			}
@@ -789,14 +849,14 @@ public class MainGuiUtils {
 			} catch (IOException e) {
 				logger.error("", e);
 				if(!MainGUI.dialogHelper.yesOrNo("Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?")) {
-					MainGUI.dialogHelper.error("Exit procedure arrested", "Close procedure stopped");
+					MainGUI.dialogHelper.error("Procedure aborted", "Procedure aborted");
 					MainGUI.mntmTextEditor.doClick();
 					return false; // no -> don't exit after error
 				}
 			}
 			if(atLeastOneTemp) {
 				MainGUI.mntmTextEditor.doClick();
-				for(TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
+				for(TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
 					if(tabElement.unsaved && tabElement.loadedFile == null) {
 						currentTabEditor.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
 						MainGUI.textEditorPanel.subHeaderPanel.btnSaveTextFile.requestFocus();

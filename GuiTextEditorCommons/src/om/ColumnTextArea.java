@@ -15,6 +15,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
+import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -44,6 +45,7 @@ import org.fife.ui.rtextarea.RUndoManager;
 
 import frameutils.utils.GuiUtilsExtended;
 import gui.GuiUtils;
+import gui.RXTextUtilities;
 import gui.dialogs.font.om.FontMetricsWrapper;
 import resources.GeneralConfig;
 import utility.string.StringWorker.EOL;
@@ -265,7 +267,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 					String currentSelLine = getText(start, end);
 					int lineWidth = GuiUtils.getHighlightWidthWithTabs(currentSelLine, thisTextArea.getTabSize());
 					int rowEnd = Utilities.getRowEnd(this, end);
-					if (rowEnd != end && (startFirstL != start || endFirstL != lineWidth)) {
+					if (rowEnd != end && (Math.abs(startFirstL - start) > 1 || Math.abs(endFirstL - lineWidth) > 1)) {
 						isRectangular = false;
 					}
 				} catch (BadLocationException e) {
@@ -396,18 +398,11 @@ public class ColumnTextArea extends RSyntaxTextArea {
     
     @Override
     public void copyAsStyledText() {
-    	int selStart = getSelectionStart();
-    	int selEnd = getSelectionEnd();
-    	if(selEnd == selStart) {
-    		setSelectionStart(0);
-        	setSelectionEnd(getText().length()-1);
-    	}
-    	
+    	SelectionDtoFull dto = new SelectionDtoFull(this);
+
     	super.copyAsStyledText();
     	
-    	requestFocus();
-    	setSelectionStart(selStart);
-    	setSelectionEnd(selEnd);
+    	dto.applySelectionDTO(false, this);
     }
 
 class ColumnSelectionCaret extends DefaultCaret {
@@ -451,16 +446,16 @@ class ColumnSelectionCaret extends DefaultCaret {
     	
         super.mouseReleased(e);
         
-        SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				updateSelectionIfShiftPressed();
-				if(customCaret != null && customCaret instanceof ColumnSelectionCaret) {
-					((ColumnSelectionCaret)customCaret).paint(getGraphics());
-				}
-			}
-		});
+        if(thisTextArea != null && !shiftDown)
+        	thisTextArea.removeAllLineHighlights();
         
+		updateSelectionIfShiftPressed();
+		if(customCaret != null && customCaret instanceof ColumnSelectionCaret) {
+			((ColumnSelectionCaret)customCaret).paint(getGraphics());
+		}
+		
+		if(!shiftDown)
+			lastStartPosition = thisTextArea.getCaretPosition();
     }
 
     @Override
@@ -477,26 +472,41 @@ class ColumnSelectionCaret extends DefaultCaret {
         if (e.getClickCount()==1) {
 			try {
                 if(thisTextArea != null){
-                    	
+                	Robot robot = new Robot();
+                	robot.mouseMove(e.getXOnScreen(), e.getYOnScreen() - 1);
+                	robot.mouseMove(e.getXOnScreen(), e.getYOnScreen() + 1);
                 	boolean rightClick = SwingUtilities.isRightMouseButton(e);
-                	if (!shiftDown && !rightClick) {
-						thisTextArea.removeAllLineHighlights();
-						thisTextArea.getHighlighter().removeAllHighlights();
+                	
+                	if (!shiftDown) {
+                		thisTextArea.removeAllLineHighlights();
+                		thisTextArea.repaint();
+                		
+                		if(!rightClick) {
+                			thisTextArea.getHighlighter().removeAllHighlights();
+                			thisTextArea.addLineHighlight(RXTextUtilities.getLineAtCaret(thisTextArea), thisTextArea.getCurrentLineHighlightColor());
+                		}
 					}
 		
-					int start = thisTextArea.getSelectionStart();
+					int start = thisTextArea.getSelectionEnd() > thisTextArea.getCaretPosition() 
+							? lastStartPosition
+							: thisTextArea.getSelectionStart();
 
 					// Update last start position, used on key released if shift is pressed
 					if (shiftDown) {
 						lastStartPosition = thisTextArea.getSelectedText() != null ? start : thisTextArea.getCaretPosition();
+					} else {
+						lastStartPosition = thisTextArea.getCaretPosition();
 					}
 					
-					updateSelectionIfShiftPressed();
+//					updateSelectionIfShiftPressed();
 				}
 			
 			} catch (Exception e1) {
 				logger.error("Error tryin' to refresh highlight on mouse pressed", e1);
 			}
+
+        } else if(e.getClickCount() == 2 || e.getClickCount() == 3 ) {
+        	thisTextArea.removeAllLineHighlights();
 		}
     }
     
@@ -505,11 +515,16 @@ class ColumnSelectionCaret extends DefaultCaret {
         if(shiftDown) {
         	try {
 				thisTextArea.requestFocus();
-				thisTextArea.setSelectionStart(lastStartPosition);
-				thisTextArea.setSelectionEnd(thisTextArea.getCaretPosition());
+				if (thisTextArea.getCaretPosition() > lastStartPosition) {
+					thisTextArea.setSelectionStart(lastStartPosition);
+					thisTextArea.setSelectionEnd(thisTextArea.getCaretPosition());
+				} else {
+					thisTextArea.setSelectionStart(thisTextArea.getCaretPosition());
+					thisTextArea.setSelectionEnd(lastStartPosition);
+				}
 			} catch (Exception e) {
 			}
-        }
+        } 
     }
 
     @Override

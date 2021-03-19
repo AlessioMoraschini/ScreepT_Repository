@@ -3,6 +3,8 @@ package cache.arch;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
+import cache.exception.ResultCacheException;
+
 public abstract class AbstractResultCache<T> {
 	
 	///////////////  DEFAULTS  ////////////////
@@ -11,7 +13,7 @@ public abstract class AbstractResultCache<T> {
 	///////////////  FIELDS  ////////////////
 	private long expiryTime;
 	private ConcurrentHashMap<String, AbstractCachedObject<T>> cache;
-	private ICacheRefresher<T> cacheRefresher;
+	private IResultCacheRefresher<T> cacheRefresher;
 	private volatile int maxCacheSize;
 	private volatile float deallocationFactor;
 	
@@ -30,7 +32,7 @@ public abstract class AbstractResultCache<T> {
 		this.expiryTime = expiryTime;
 	}
 	
-	public AbstractResultCache(long expiryTime, ICacheRefresher<T> cacheRefresher) {
+	public AbstractResultCache(long expiryTime, IResultCacheRefresher<T> cacheRefresher) {
 		this(expiryTime);
 		this.cacheRefresher = cacheRefresher;
 	}
@@ -53,7 +55,7 @@ public abstract class AbstractResultCache<T> {
 		return get(input, cacheRefresher);
 	}
 
-	public final T getRefreshed(IResultCacheInput input, ICacheRefresher<T> cacheRefresher) throws Exception {
+	public final T getRefreshed(IResultCacheInput input, IResultCacheRefresher<T> cacheRefresher) throws Exception {
 		
 		validateCacheRefresher(cacheRefresher);
 		
@@ -65,7 +67,7 @@ public abstract class AbstractResultCache<T> {
 		return getFromCache(input);
 	}
 
-	public final T get(IResultCacheInput input, ICacheRefresher<T> cacheRefresher) throws Exception {
+	public final T get(IResultCacheInput input, IResultCacheRefresher<T> cacheRefresher) throws Exception {
 		
 		validateCacheRefresher(cacheRefresher);
 		
@@ -120,7 +122,7 @@ public abstract class AbstractResultCache<T> {
 		return 0;
 	}
 	
-	private void validateCacheRefresher(ICacheRefresher<T> refresher) throws ResultCacheException {
+	private void validateCacheRefresher(IResultCacheRefresher<T> refresher) throws ResultCacheException {
 		if(refresher == null) {
 			throw new ResultCacheException("cacheRefresher is NULL! Please initialize it before to call getRefreshed(IResultCacheInput input), or call the method's signature with a valid cacheRefresher parameter");
 		}
@@ -139,7 +141,7 @@ public abstract class AbstractResultCache<T> {
 		return maxCacheSize;
 	}
 
-	public ICacheRefresher<T> getCacheRefresher() {
+	public IResultCacheRefresher<T> getCacheRefresher() {
 		return cacheRefresher;
 	}
 	
@@ -153,7 +155,7 @@ public abstract class AbstractResultCache<T> {
 	
 	///////////////  SETTERS  ////////////////
 
-	public void setCacheRefresher(ICacheRefresher<T> cacheRefresher) {
+	public void setCacheRefresher(IResultCacheRefresher<T> cacheRefresher) {
 		synchronized (this.cacheRefresher) {
 			this.cacheRefresher = cacheRefresher;
 		}

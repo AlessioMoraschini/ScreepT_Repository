@@ -23,6 +23,7 @@ public enum Themes {DARK(GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml", "dark
 					DEFAULT_V2(GeneralConfig.THEMES_FOLDER_DEFAULT + "default-alt.xml", "default-alt.xml", "/org/fife/ui/rsyntaxtextarea/themes/default-alt.xml"),
 					ECLIPSE(GeneralConfig.THEMES_FOLDER_DEFAULT + "eclipse.xml", "eclipse.xml", "/org/fife/ui/rsyntaxtextarea/themes/eclipse.xml"),
 					IDEA(GeneralConfig.THEMES_FOLDER_DEFAULT + "idea.xml", "idea.xml", "/org/fife/ui/rsyntaxtextarea/themes/idea.xml"),
+					DRUID(GeneralConfig.THEMES_FOLDER_DEFAULT + "druid.xml", "druid.xml", "/org/fife/ui/rsyntaxtextarea/themes/druid.xml"),
 					MONOKAI(GeneralConfig.THEMES_FOLDER_DEFAULT + "monokai.xml", "monokai.xml", "/org/fife/ui/rsyntaxtextarea/themes/monokai.xml"),
 					THEMEVS(GeneralConfig.THEMES_FOLDER_DEFAULT + "vs.xml", "vs.xml", "/org/fife/ui/rsyntaxtextarea/themes/vs.xml"),
 					NONE("NO_STYLE", "NO_STYLE", "");

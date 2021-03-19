@@ -23,11 +23,11 @@ import javax.swing.JFrame;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gui.UpdateProgressPanel;
+import impl.om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
-import om.TextEditorOption;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import textareautil.TxtFieldFileDragNDropManager;
+import textarea.om.TxtFieldFileDragNDropManager;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
 
@@ -99,14 +99,14 @@ public class HashCheckerFrame extends ParentFrame{
 			@Override
 			public void run() {
 				if (txtFieldLoadedFile != null && txtFieldLoadedFile.loadedFilesList != null && !txtFieldLoadedFile.loadedFilesList.isEmpty()) {
-					loadFile(txtFieldLoadedFile.loadedFilesList.get(0));
+					loadFile(txtFieldLoadedFile.loadedFilesList.get(0), true);
 					txtFieldLoadedFile.loadedFilesList.clear();
 				}
 			}
 		}, txtFieldLoadedFile);
 		
 		txtFieldLoadedFile.setAllowDirectoriesDrop(true);
-		txtFieldLoadedFile.setEnabled(false);
+		txtFieldLoadedFile.setEditable(false);
 		
 		txtFieldLoadedFile.setBackground(lightGrayDefault);
 		txtFieldLoadedFile.setPreferredSize(new Dimension(18, 25));
@@ -171,7 +171,7 @@ public class HashCheckerFrame extends ParentFrame{
 		txtFieldChecksumResult.setForeground(Color.DARK_GRAY);
 		getContentPane().add(txtFieldChecksumResult, "cell 2 6 3 1,grow");
 		
-		loadFile(initialFile);
+		loadFile(initialFile, false);
 		
 		addHandlers();
 		
@@ -189,12 +189,16 @@ public class HashCheckerFrame extends ParentFrame{
 		});
 	}
 	
-	public void loadFile(File toLoadFile) {
+	public void loadFile(File toLoadFile, boolean calculateHash) {
 		if (toLoadFile != null && toLoadFile.exists()) {
 			currentFile = toLoadFile;
 			txtFieldLoadedFile.setText(currentFile.getAbsolutePath());
 			txtFieldLoadedFile.setBackground(lightGrayDefault);
 			txtFieldChecksumResult.setText("Click on 'calculate checksum' to get hash Cheksum for current file");
+			
+			if(!calculateHash)
+				return;
+			
 			if ("".equals(txtFieldChecksumMatcher.getText()) || txtFieldChecksumMatcher.getText().equals(HINT_VERIFY)) {
 				btnCalculateHash.doClick();
 			} else {
@@ -219,7 +223,7 @@ public class HashCheckerFrame extends ParentFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				loadFile(new File(txtFieldLoadedFile.getText()));
+				loadFile(new File(txtFieldLoadedFile.getText()), true);
 			}
 		});
 		
@@ -228,7 +232,7 @@ public class HashCheckerFrame extends ParentFrame{
 			public void actionPerformed(ActionEvent e) {
 				File readFile = fileChooser.fileAndDirRead(thisFrame);
 				if(readFile != null && readFile.exists()) {
-					loadFile(readFile);
+					loadFile(readFile, true);
 				}
 			}
 		});

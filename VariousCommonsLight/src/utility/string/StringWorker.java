@@ -20,8 +20,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -30,7 +33,7 @@ import java.util.UUID;
 
 import javax.swing.JTextArea;
 
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class StringWorker {
 	
@@ -47,7 +50,16 @@ public class StringWorker {
 		public String eol;
 		public String eolRegex;
 		
-		public static EOL defaultEol = LF;
+		public static EOL defaultEol = getOsBasedEOL();
+		
+		public static EOL getOsBasedEOL() {
+			String osNameShort = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+			if(osNameShort != null && osNameShort.indexOf("win") > 0) {
+				return EOL.CRLF;
+			} else {
+				return EOL.LF;
+			}
+		}
 	
 		private EOL(String eol, String regex) {
 			this.eol = eol;
@@ -583,6 +595,17 @@ public class StringWorker {
 	        i++;
 	    }
 	}
+	public static<E> String strArray(E[] array) {
+		int i=0;
+		StringBuilder builder = new StringBuilder();
+		if(array != null)
+			for (E curr : array) {
+				builder.append("Val["+i+"] : " + curr);
+				i++;
+			}
+		
+		return builder.toString();
+	}
 
 	/**
 	 * This method prints string representation of int array using toString
@@ -651,6 +674,45 @@ public class StringWorker {
 		
 		return first.contains(second);
 	}
+	
+	public static String concat(List<? extends Object> list,  EOL separator) {
+		StringBuilder builder = new StringBuilder();
+		if(list != null && !list.isEmpty()) {
+			int i = 0;
+			for(Object s : list) {
+				if(s != null)
+					builder.append(s);
+				if(s != null && i < list.size() - 1)
+					builder.append(separator.eol);
+				
+				i++;
+			}
+		}
+		
+		return builder.toString();
+	}
+	
+	public static String concatFilePaths(List<File> list,  EOL separator) {
+		separator = separator == null ? EOL.defaultEol : separator;
+		StringBuilder builder = new StringBuilder();
+		if(list != null && !list.isEmpty()) {
+			int i = 0;
+			for(File file : list) {
+				if(file != null)
+					try {
+						builder.append(file.getCanonicalPath());
+					} catch (IOException e) {
+						logger.error("Error getting canonical path of: " + file, e);
+					}
+				if(file != null && i < list.size() - 1)
+					builder.append(separator.eol);
+				
+				i++;
+			}
+		}
+		
+		return builder.toString();
+	}
 
 	public static boolean isEmpty(String source) {
 		return source == null || (source != null && "".equals(source.trim()));
@@ -696,6 +758,40 @@ public class StringWorker {
 		
 		return false;
 	}
+	
+	public static String removeBlankLines(String text, String lineSeparator) {
+		if(text == null || lineSeparator == null)
+			return text;
+		
+		StringBuilder builder = new StringBuilder();
+		
+		String[] lines = text.split(lineSeparator);
+		for(int i = 0; i < lines.length; i++) {
+			if(!StringWorker.isEmpty(lines[i]))
+				builder.append(lines[i]);
+			
+			if(i < lines.length - 1)
+				builder.append(lineSeparator);
+		}
+		
+		return builder.toString();
+	}
+	
+	public static boolean checkWildcardMatch(String toCheck, String wildcardExpression) {
+		return checkWildcardMatch(toCheck, wildcardExpression, false);
+	}
+
+	public static boolean checkWildcardMatch(String toCheck, String wildcardExpression, boolean ignoreCase) {
+		if(isEmpty(toCheck) || isEmpty(wildcardExpression))
+			return false;
+		
+		if(ignoreCase) {
+			wildcardExpression = wildcardExpression.toLowerCase();
+			toCheck = toCheck.toLowerCase();
+		}
+		
+		return trimToEmpty(toCheck).matches(trimToEmpty(wildcardExpression).replace("?", ".?").replace("*", ".*?"));
+	}
 
 	/**
 	 * Replace all EOL(EndOfLine) characters with the wanted type
@@ -705,6 +801,18 @@ public class StringWorker {
 	public static String normalizeStringToEol(String source, EOL outputEOL) {
 		
 		String output = normalizeStringToLF(source).replaceAll(EOL.LF.eol, outputEOL.eol);
+		
+		return output;
+	}
+
+	/**
+	 * Replace all EOL(EndOfLine) characters with the wanted type
+	 * @param source
+	 * @return
+	 */
+	public static String normalizeStringToEol(String source, String outputEOL) {
+		
+		String output = normalizeStringToLF(source).replaceAll(EOL.LF.eol, outputEOL);
 		
 		return output;
 	}
@@ -816,6 +924,75 @@ public class StringWorker {
 	}
 	public static boolean validateCharset(String charsetName) throws Exception {
 		return charsetName != null && Charset.isSupported(charsetName);
+	}
+
+	/**
+	 * Use this method to remove every character from given string, except "." and
+	 * digits 0-9 Note that eventual undescores will become dots.
+	 * 
+	 * @param source
+	 * @return
+	 */
+	public static String keepOnlyDotsAndDigits(String source) {
+		String dotsOnly = source.replaceAll("_", ".");
+		dotsOnly = dotsOnly.replaceAll("-", "");
+		// remove non dots chars
+		return dotsOnly.replaceAll("[a-zA-Z!#$%&'*+=?^`{|}+]|[_]\\-", "");
+	}
+
+	/**
+	 * Dotted version format compare - if version not matches format
+	 * <Strong>IllegalArgumentException</Strong> is thrown
+	 * 
+	 * @param version_A
+	 * @param version_B
+	 * @return -1 if A less than B, 1 if A more than B, 0 if equals
+	 */
+	public static int compareVersions(String version_A, String version_B) throws IllegalArgumentException {
+	
+		if (version_A == null || version_B == null) {
+			throw new IllegalArgumentException("Version can not be null");
+		}
+		
+		String cleanVersA = keepOnlyDotsAndDigits(version_A);
+		String cleanVersB = keepOnlyDotsAndDigits(version_B);
+		
+		if (!cleanVersA.matches("[0-9]+(\\.[0-9]+)*") || !cleanVersB.matches("[0-9]+(\\.[0-9]+)*")) {
+			throw new IllegalArgumentException("Invalid version format");
+		}
+	
+		String[] AParts = cleanVersA.split("\\.");
+		String[] BParts = cleanVersB.split("\\.");
+		int length = Math.max(AParts.length, BParts.length);
+		for (int i = 0; i < length; i++) {
+			int ACurrPart = i < AParts.length ? Integer.parseInt(AParts[i]) : 0;
+			int BCurrPart = i < BParts.length ? Integer.parseInt(BParts[i]) : 0;
+			if (ACurrPart < BCurrPart) {
+				return -1;
+			}
+			if (ACurrPart > BCurrPart) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+	
+	public static String repeatStringNTimes(String string, int n, boolean newLineEach) {
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i < n; i++) {
+			builder.append(string).append((newLineEach && i < n - 1) ? EOL.defaultEol.eol : "");
+		}
+		
+		return builder.toString();
+	}
+	
+	public static DecimalFormat getNDecimalsFormat(int n) {
+		String decimalPattern = repeatStringNTimes("0", n, false);
+		return new DecimalFormat("#0." + decimalPattern); 
+	}
+	
+	public static String getStringDouble(Double value, int nDecimals) {
+		return getNDecimalsFormat(nDecimals).format(value);
 	}
 
 }

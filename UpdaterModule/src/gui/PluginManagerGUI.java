@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import java.awt.Font;
 
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
@@ -38,7 +39,7 @@ import gui.dialogs.msg.JOptionHelper;
 import net.miginfocom.swing.MigLayout;
 import plugins.PluginDTO;
 import plugins.PluginManager;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 import javax.swing.JButton;
 
@@ -86,9 +87,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		this.pluginManager = (pluginManager != null) ? pluginManager : new PluginManager();
 
 		UIManager.put("ToolTip.background", new Color(255, 250, 205));
-		GuiUtils.centerComponent(this, 1300, 300);
 		this.setAlwaysOnTop(true);
-		setLocationRelativeTo(parentFrame);
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow]", "[50px:80px][grow]"));
 		
@@ -123,6 +122,9 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		}
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		SwingUtilities.invokeLater(()->{
+			GuiUtils.centerComponent(this, 1300, 350);
+		});
 	}
 	
 	@Override

@@ -27,13 +27,13 @@ import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import files.FileVarious;
 import files.FileWorker;
-import files.search.FileSearchAdvanced;
+import files.search.FileNameSearchAdvanced;
 import gui.GuiUtils;
+import impl.INItializer;
 import main.MainStandAloneUpdater;
 import main.om.PropertiesDTO;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
-import mainobj.INItializer;
 import resources.GeneralConfig;
 
 import java.io.File;
@@ -128,17 +128,31 @@ public class INIfileChoosER {
 		
 		if (sourceFolder != null && sourceFolder.exists()) {
 			File defaultIni = new File(GeneralConfig.DEFAULT_INI);
+			File defaultLauncherIni = new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH);
 			String defaultIniParentDir = defaultIni.getParentFile().getName();
-			List<File> matchedFolders = FileSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultIniParentDir, true, true, false);
-			for (File extFolder : matchedFolders) {
-				List<File> matchedIniConf = FileSearchAdvanced.findOnlyFilesByMatch(extFolder, defaultIni.getName(), true, true, false);
+			String defaultLauncherIniParentDir = defaultLauncherIni.getParentFile().getName();
+			List<File> matchedResourcesFolders = FileNameSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultIniParentDir, true, true, false, false, Long.MAX_VALUE);
+			List<File> matchedLauncherFolders = FileNameSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultLauncherIniParentDir, true, true, false, false, Long.MAX_VALUE);
+			
+			for(File launcherFolder : matchedLauncherFolders) {
+				List<File> matchedIniLauncherConf = FileNameSearchAdvanced.findOnlyFilesByMatch(launcherFolder, defaultLauncherIni.getName(), true, true, false, false, Long.MAX_VALUE);
+				try {
+					FileUtils.copyFileToDirectory(matchedIniLauncherConf.get(0), defaultLauncherIni.getParentFile(), true);
+				} catch (Exception e1) {
+					String safeFrom = matchedIniLauncherConf.isEmpty() ? " NULL " : matchedIniLauncherConf.get(0).getAbsolutePath();
+					logger.error("Can't copy configuration from " + safeFrom + " to " + defaultLauncherIni.getParentFile());
+				}
+			}
+			
+			for (File resourcesFolder : matchedResourcesFolders) {
+				List<File> matchedIniConf = FileNameSearchAdvanced.findOnlyFilesByMatch(resourcesFolder, defaultIni.getName(), true, true, false, false, Long.MAX_VALUE);
 				if (!matchedIniConf.isEmpty()) {
 					boolean confirmation = MainGuiGeneralAppStarter.dialogHelper.yesOrNo(
 							GuiUtils.encapsulateInHtml("Are you sure to overwrite default configuration with the following?<br> " + matchedIniConf.get(0)), "Overwrite current?");
 					
 					if(confirmation) {
 						ok = copyNloadIniAsDefault(matchedIniConf.get(0));
-						updateFromExternalGeneralConfig(extFolder.getParentFile());
+						updateFromExternalGeneralConfig(resourcesFolder.getParentFile());
 						if(importCopy) {
 							try {
 								FileUtils.copyFileToDirectory(matchedIniConf.get(0), new File(GeneralConfig.DEFAULT_INI_FOLDER));
@@ -277,7 +291,7 @@ public class INIfileChoosER {
     
     public static void updateFromExternalGeneralConfig(File generalConfigRootSearch) {
     	
-    	List<File> matchedGeneralConf = FileSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true, false);
+    	List<File> matchedGeneralConf = FileNameSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true, false, false, Long.MAX_VALUE);
     	
     	if (!matchedGeneralConf.isEmpty()) {
     		
@@ -296,7 +310,7 @@ public class INIfileChoosER {
 
     public static void copyGeneralConfig(File generalConfigRootSearch) {
     	
-		List<File> matchedGeneralConf = FileSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true, false);
+		List<File> matchedGeneralConf = FileNameSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true, false, false, Long.MAX_VALUE);
 		
 		if (!matchedGeneralConf.isEmpty()) {
 			

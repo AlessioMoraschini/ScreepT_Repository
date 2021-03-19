@@ -11,6 +11,10 @@
  */
 package om;
 
+import javax.swing.JTextArea;
+
+import gui.GuiUtils;
+
 public class SelectionDTO {
 
 	public String text;
@@ -37,6 +41,22 @@ public class SelectionDTO {
 	@Override
 	public String toString() {
 		return "SelectionDTO [start=" + start + ", end=" + end + "]";
+	}
+
+	public static void applySelectionDTO(final SelectionDTO result, final JTextArea textArea) {
+		if (result != null) {
+			textArea.setText(result.text);
+			
+			GuiUtils.launchThreadSafeSwing(()->{
+				try {
+					Thread.sleep(150);
+				} catch (InterruptedException e) {
+				}
+				textArea.requestFocus();
+				textArea.setSelectionStart(result.start);
+				textArea.setSelectionEnd(result.end != null ? result.end.intValue() : result.end);
+			});
+		}
 	}
 	
 }

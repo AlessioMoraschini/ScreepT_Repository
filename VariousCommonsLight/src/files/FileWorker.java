@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
@@ -38,14 +39,14 @@ import org.apache.commons.io.FilenameUtils;
 
 import files.om.DeleteFilesByExtensionDTO;
 import gui.dialogs.msg.JOptionHelper;
-import utility.ConversionUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
 import utility.string.StringWorker.EOL;
 
 public class FileWorker {
 	
-	static SafeLogger logger = new SafeLogger(FileWorker.class);
+	public static SafeLogger logger = new SafeLogger(FileWorker.class);
 	
 	private static JOptionHelper dialogHelper = new JOptionHelper(null);
 	
@@ -92,13 +93,24 @@ public class FileWorker {
 		return esit;
 	}
 
+	public static boolean appendFileTxtArea(
+			File txtFile,
+			JTextArea textArea_1,
+			boolean goToStart){
+		return appendFileTxtArea(txtFile, textArea_1, goToStart, EOL.defaultEol);
+	}
+	
 	/**
 	 * this method append the content of a txt file (as a string) in the given text area 
 	 * @param txtFile the source .txt file
 	 * @param textArea_1 the text area to be filled with file content
 	 * @return
 	 */
-	public static boolean appendFileTxtArea(File txtFile, JTextArea textArea_1, boolean goToStart) {
+	public static boolean appendFileTxtArea(
+			File txtFile,
+			JTextArea textArea_1,
+			boolean goToStart,
+			EOL eol) {
 		
 		long startTime = System.currentTimeMillis();
 	
@@ -117,7 +129,7 @@ public class FileWorker {
 					String line;
 					
 					while ((line = reader.readLine()) != null) {
-						builder.append(line).append(EOL.defaultEol.eol);
+						builder.append(line).append(eol.eol);
 					}
 					reader.close(); 
 					readerStream.close();
@@ -147,7 +159,47 @@ public class FileWorker {
 		}
 		return true;
 	}
-
+	
+	public static boolean appendStringToFile(String source, File outFile, boolean createIfNotExisting, EOL eol) {
+		
+		if(outFile == null || (!outFile.exists() && !createIfNotExisting))
+			return false;
+		
+		try {
+			if(!outFile.exists())
+				outFile.createNewFile();
+		
+			String outString = eol != null 
+					? StringWorker.normalizeStringToEol(source, eol)
+					: source;
+		
+		    Files.write(outFile.toPath(), outString.getBytes(), StandardOpenOption.APPEND);
+		
+		}catch (IOException e) {
+		    logger.error("Error appending String to file to file", e);
+		    return false;
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * This method writes a string to a file with given EOL (if null default will be used)
+	 * @param source the source string to write on file
+	 * @param outFile the ouput file to write in
+	 * @param overwrite if true overwrite existing file
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean writeStringToFile(String source, File outFile, boolean overwrite, EOL eol) throws IOException {
+		String outString = eol != null 
+				? StringWorker.normalizeStringToEol(source, eol)
+				: source;
+				
+		return writeStringToFile(outString, outFile, overwrite);
+	}
+	
 	/**
 	 * This method writes a string to a file 
 	 * @param source the source string to write on file
@@ -194,17 +246,78 @@ public class FileWorker {
 		return true;
 	}
 	
-	public static String readFileAsString(File toRead, String encoding) throws IOException {
+	public static String readFileAsString(
+			File toRead,
+			String encoding) throws IOException {
+		return readFileAsString(toRead, encoding, EOL.defaultEol);
+	}
+	
+	// returns true if given file contains more than N lines
+	public static boolean checkIfHasMoreThanNLines(
+			File toRead,
+			int limit) {
+		
+		if(toRead == null || !toRead.exists()) {
+			return false;
+		}
+		
+		String defaultEncoding = System.getProperty("file.encoding");
+	
+		logger.info("readFileAsString -> Start...");
+	
+		BufferedReader reader = null;
+		try {
+			FileInputStream readerStream = new FileInputStream(toRead);
+			reader = new BufferedReader(new InputStreamReader(readerStream, defaultEncoding));
+		} catch (Exception e1) {
+			logger.debug("Cannot read with default encoding: " + defaultEncoding);
+			try {
+				reader.close();
+			} catch(Exception e) {
+			}
+			
+			return false;
+		}
+		
+		try {
+			String line = reader.readLine();
+			
+			int i = 0;
+			while ( line != null) {
+				if(i > limit)
+					return true;
+				
+				line = reader.readLine();
+				i++;
+			}
+		} catch (IOException e) {
+			return false;
+		}finally {
+			try {
+				reader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
+		}
+		
+		return false;
+	}
+
+	public static String readFileAsString(
+			File toRead,
+			String encoding,
+			EOL eol) throws IOException {
+		
 		if(toRead == null || !toRead.exists()) {
 			throw new IOException();
 		}
 		
 		String defaultEncoding = System.getProperty("file.encoding");
 		encoding = encoding != null ? encoding : defaultEncoding;
-	
+		
 		logger.info("readFileAsString -> Start...");
 		long startTime = System.currentTimeMillis();
-	
+		
 		StringBuilder builder = new StringBuilder(100000);
 		FileInputStream readerStream = new FileInputStream(toRead);
 		BufferedReader reader;
@@ -215,10 +328,12 @@ public class FileWorker {
 			reader = new BufferedReader(new InputStreamReader(readerStream, defaultEncoding));
 		}
 		try {
-			String line;
+			String line = reader.readLine();
 			
-			while ((line = reader.readLine()) != null) {
-				builder.append(line).append(EOL.defaultEol.eol);
+			while ( line != null) {
+				builder.append(line);
+				line = reader.readLine();
+				builder.append(eol.eol);
 			}
 		} catch (IOException e) {
 			throw e;
@@ -239,6 +354,15 @@ public class FileWorker {
 	public static String readFileAsString(File toRead) throws IOException {
 		return readFileAsString(toRead, null);
 	}
+	
+	public static boolean loadFileTxtArea(
+			File txtFile, 
+			JTextArea textArea_1, 
+			JLabel lblCurrentFile, 
+			String extensionFilter) {
+		return loadFileTxtArea(txtFile, textArea_1, lblCurrentFile, extensionFilter, EOL.defaultEol);
+	}
+
 
 	/**
 	 * this method writes the content of a given extension file (as a string) in the given text area, updating also the given label with description
@@ -248,7 +372,12 @@ public class FileWorker {
 	 * @param extension filter can be null, or specified if you want to filter only a type of file admitted
 	 * @return
 	 */
-	public static boolean loadFileTxtArea(File txtFile, JTextArea textArea_1, JLabel lblCurrentFile, String extensionFilter) {
+	public static boolean loadFileTxtArea(
+			File txtFile, 
+			JTextArea textArea_1, 
+			JLabel lblCurrentFile, 
+			String extensionFilter,
+			EOL eol) {
 		
 		if(txtFile == null) {
 			return false;
@@ -271,7 +400,7 @@ public class FileWorker {
 				String line;
 				
 				while ((line = reader.readLine()) != null) {
-					builder.append(line).append(EOL.defaultEol.eol);
+					builder.append(line).append(eol.eol);
 				}
 				
 				textArea_1.append(builder.toString());
@@ -281,7 +410,7 @@ public class FileWorker {
 				}
 				
 			} catch (Exception e1) {
-				dialogHelper.error("[Error loading the selected file]", null);
+				dialogHelper.error("[Error loading the selected file]", (String)null);
 				logger.error("Exception happened!", e1);
 				return false;
 			}
@@ -404,24 +533,30 @@ public class FileWorker {
 		
 		File[] files = folder.listFiles();
 	    if(files!=null) { //some JVMs return null for empty dirs
-	        for(File f: files) {
-	            if(f.isDirectory()) {
-	                boolean del = deleteDirContentInclRoot(f);
-	                if(del==false) {
-	                	deleted = false;
-	                }
-	            } else {
-	                boolean del = f.delete();
-	                if(del==false) {
-	                	deleted = false;
-	                }
-	            }
-	        }
-	        // at the end delete given container folder too
-	        folder.delete();
+	    	for(File f: files) {
+		        try {
+					    if(f.isDirectory()) {
+					        boolean del = deleteDirContentInclRoot(f);
+					        if(del==false) {
+					        	deleted = false;
+					        }
+					    } else {
+					        boolean del = f.delete();
+					        if(del==false) {
+					        	deleted = false;
+					        }
+					    }
+				} catch (Exception e) {
+					logger.error("Cannot delete file: " + f, e);
+					deleted = false;
+				}
+	    	}
 	    }
+
+	    // at the end delete given container folder too
+	    folder.delete();
 	
-	    out.println("deleteDirContentInclRoot -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+	    logger.info("deleteDirContentInclRoot -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 	    return deleted;	
 	}
 
@@ -430,7 +565,7 @@ public class FileWorker {
 	}
 
 	/**
-	 * this method is used to physically copy the content of a folder inside a distination folder
+	 * this method is used to physically copy the content of a folder inside a destination folder
 	 * (works also for a source file instead of a source folder). 
 	 * @param source Directory or file
 	 * @param destination Directory container / target file, to replace if exists
@@ -443,13 +578,21 @@ public class FileWorker {
 		long startTime = System.currentTimeMillis();
 		logger.info("copyDirectoryContents -> Start...");
 	
+		for(File file : FileWorker.getAllContent(destination, CustomFileFilters.ALL_FOUND)) {
+			try {
+				file.setWritable(true);
+			} catch(Exception e) {
+				logger.warn("Cannot set writable file: " + file, e);
+			}
+		}
+		
 		if(source.isDirectory()) {
 			for (File curr : source.listFiles()) {
 				logger.info("Copying "+curr+" \n  => into "+destination);
 				try {
 					FileUtils.copyToDirectory(curr, destination);
 				} catch (Exception e) {
-					logger.error("An error occurred while copying " + curr + " into " + destination, e);
+					logger.error("An error occurred while copying \"" + curr + "\" into " + destination, e);
 				}
 			}
 		}

@@ -34,7 +34,7 @@ import java.util.TooManyListenersException;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 @Deprecated
 public class TabbedDragNDropManager extends JTabbedPane{
@@ -184,7 +184,8 @@ public class TabbedDragNDropManager extends JTabbedPane{
                 dtde.acceptDrop(dtde.getDropAction());
                 try {
 
-                    List<File> transferData = (List) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                    @SuppressWarnings("unchecked")
+					List<File> transferData = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
                     if (transferData != null && transferData.size() > 0) {
                         importFiles(transferData);
                         dtde.dropComplete(true);

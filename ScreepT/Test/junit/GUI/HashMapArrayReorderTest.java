@@ -17,8 +17,8 @@ import org.junit.Test;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import testUtils.TestTimer;
-import utility.ConversionUtils;
-import utility.EntrophyzerUtils;
+import utility.manipulation.ConversionUtils;
+import utility.manipulation.EntrophyzerUtils;
 
 public class HashMapArrayReorderTest {
 

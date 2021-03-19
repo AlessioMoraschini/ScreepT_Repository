@@ -48,7 +48,6 @@ import java.util.Date;
 import net.miginfocom.swing.MigLayout;
 import om.KeyGenImageType;
 import resources.IconsPathConfigurator;
-import uTILS.local.ImageWorkerScreepT;
 
 import org.apache.log4j.Logger;
 
@@ -57,10 +56,11 @@ import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.subpanels.ImageGenContainerPanel;
+import gUI.utils.ImageWorkerScreepT;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
 import gui.UpdateProgressPanel;
+import impl.INItializer;
 import maingUI.MainGUI;
-import mainobj.INItializer;
 
 import java.awt.Cursor;
 
@@ -379,7 +379,7 @@ public class KeyGenFrame extends ParentFrame {
 							    				logger.debug(selectedFile.getCanonicalPath()+" deleted & re-saved.");
 
 							        		}else {
-							        			dialogHelper.info("Operation cancelled", null);
+							        			dialogHelper.info("Operation cancelled", (String)null);
 							    				logger.debug("Canceled by user.");
 							        		}
 							        	}else {

@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -28,7 +29,8 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 
 import gui.dialogs.msg.JOptionHelper;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.string.StringWorker;
 import utility.string.StringWorker.EOL;
 
 /**
@@ -81,6 +83,60 @@ public class FileVarious {
 		return parent == null ? null : parent.getAbsolutePath();
 	}
 	
+	public static String getCanonicalPathSafe(File file) {
+		try {
+			return file.getCanonicalPath();
+		} catch (Exception e) {
+			if(file != null)
+				return file.getAbsolutePath();
+			else
+				return null;
+		}
+	}
+
+	public static File getCanonicalFileSafe(File file) {
+		try {
+			return file.getCanonicalFile();
+		} catch (Exception e) {
+			return file;
+		}
+	}
+
+	public static String getCanonicalPathSafeNormalized(File file, String separatorNormalized) {
+		String raw = null;
+		try {
+			raw = file.getCanonicalPath();
+			
+		} catch (Exception e) {
+			if(file != null)
+				raw = file.getAbsolutePath();
+			else
+				return null;
+		}
+		
+		raw = raw.replaceAll("/", "\\\\");
+		raw = raw.replaceAll("\\\\", separatorNormalized);
+		
+		return raw;
+	}
+
+	public static boolean checkIfSameFile(File fileA, File fileB) {
+		 String pathA = StringWorker.trimToEmpty(getCanonicalPathSafeNormalized(fileA, "/"));
+		 String pathB = StringWorker.trimToEmpty(getCanonicalPathSafeNormalized(fileB, "/"));
+		 
+		 return pathA.equals(pathB);
+	}
+	
+	public static boolean validateFileOrDir(File fileOrDir) {
+		return fileOrDir != null && fileOrDir.exists();
+	}
+	public static boolean validateDir(File dir) {
+		return validateFileOrDir(dir) && dir.isDirectory();
+	}
+	public static boolean validateFile(File file) {
+		return validateFileOrDir(file) && file.isFile();
+	}
+	
 	/**
 	 * Get relative path from a reference file path:
 	 * 
@@ -103,11 +159,42 @@ public class FileVarious {
 		return other.toURI().relativize(first.toURI()).getPath();
 	}
 	
+	public static List<File> addWithoutRepetitions(List<File> toAdd, List<File> originalList){
+		if(originalList == null)
+			originalList = new ArrayList<>();
+		
+		if(toAdd != null && !toAdd.isEmpty()) {
+			for(File currentNew : toAdd) {
+				boolean currentAlreadyPresent = originalList.isEmpty() ? false : true;
+				int i = 0;
+				for(File file : originalList) {
+					try {
+						if(file.getCanonicalPath().equals(currentNew.getCanonicalPath())) 
+							break;
+						
+						if(i == originalList.size() - 1)
+							currentAlreadyPresent = false;
+						
+					} catch (IOException e) {
+						logger.error("", e);
+					}
+					
+					i++;
+				}
+				
+				if(!currentAlreadyPresent)
+					originalList.add(currentNew);
+			}
+		}
+		
+		return originalList;
+	}
+	
 	public static boolean isBinaryFile(File fileToCheck) throws IOException {
         String type = Files.probeContentType(fileToCheck.toPath());
         if (type == null) {
-            //type couldn't be determined, assume binary
-            return true;
+            //type couldn't be determined, assume text
+            return false;
         } else if (type.startsWith("text")) {
             return false;
         } else {
@@ -381,6 +468,29 @@ public class FileVarious {
 	      }
 	  }
 	  return count;
+	}
+
+	public static int countFilesUntilLimit(File directory, boolean countDirectories, long maxAdmitted) {
+		int count = 0;
+		for (File file : directory.listFiles()) {
+			
+			if (file.isFile()) {
+				count++;
+			
+			} else if (file.isDirectory()) {
+				if(countDirectories) {
+					count++;
+				}
+				count += countFilesUntilLimit(file, countDirectories, maxAdmitted);
+				if(count > maxAdmitted)
+					return count;
+			}
+		}
+		return count;
+	}
+
+	public static boolean checkIfContainsMoreFilesThanMax(File directory, boolean countDirectories, long maxAdmitted) {
+		return countFilesUntilLimit(directory, countDirectories, maxAdmitted + 1) > maxAdmitted;
 	}
 
 	public static File[] getFileArrayFromStrings(String[] filePaths){

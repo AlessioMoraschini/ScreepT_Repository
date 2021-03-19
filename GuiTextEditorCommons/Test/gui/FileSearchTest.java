@@ -1,16 +1,15 @@
 package gui;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import files.om.SearchResult;
 import gui.filesearch.FileSearchActions;
-import gui.filesearch.FileSearchDialog;
+import gui.filesearch.content.FileContentSearchDialog;
 
 public class FileSearchTest {
 
 	public static void main(String[] argv) {
-		final FileSearchDialog dialog = new FileSearchDialog((JFrame)null, new FileSearchActions() {
+		final FileContentSearchDialog dialog = new FileContentSearchDialog((JFrame)null, new FileSearchActions() {
 
 			@Override
 			public void fileSearchUpdater(SearchResult searchResult) {
@@ -27,6 +26,6 @@ public class FileSearchTest {
 		});
 		
 		dialog.setVisible(true);
-		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 }

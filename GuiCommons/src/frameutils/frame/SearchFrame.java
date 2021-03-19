@@ -19,7 +19,6 @@ import java.awt.Cursor;
 
 import net.miginfocom.swing.MigLayout;
 import om.SelectionDtoFull;
-import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 

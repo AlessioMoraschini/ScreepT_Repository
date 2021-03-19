@@ -2,26 +2,35 @@ package maingUI;
 
 import java.awt.Window;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JFrame;
 
+import org.apache.log4j.Level;
+
 import dialogutils.JOptionHelperExtended;
+import files.CustomFileFilters;
+import files.FileVarious;
+import files.FileWorker;
+import files.ZipWorker;
 import files.watcher.ChangeDTO;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
+import general.utils.ScreepTLoggerUtils;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
-import logger.LoggerUtils;
+import impl.INItializer;
+import main.MainStandAloneUpdater;
 import mainlauncher.ScreepTLauncher;
-import mainobj.INItializer;
 import om.OSinfo;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import tabbededitor.CustomTabbedEditor;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 import utils.SysUtils;
 import utils.panels.ClipboardPanel;
 import utils.panels.arch.PanelType;
@@ -41,9 +50,10 @@ public class MainGuiManager {
 		this.mainGuiUtils = mainGuiUtils;
 	}
 	
-	public static void restartApplication() {
+	public static void restartApplication(boolean asAdmin) {
 		
-		if(!MainGUI.dialogHelper.yesOrNo("Restart " + GeneralConfig.APPLICATION_NAME + " ?")) {
+		String adminFlag = asAdmin ? " as administrator" : "";
+		if(!MainGUI.dialogHelper.yesOrNo("Restart " + GeneralConfig.APPLICATION_SHORT_NAME + adminFlag + " ?")) {
 			return;
 		}
 		
@@ -54,9 +64,19 @@ public class MainGuiManager {
 				MainGuiUtils.logger.info("Restart requested: restarting application...");
 				
 				closeApplication(999);
-				SysUtils.launchBatchOrBash(nativeLauncherPath, false);
 				
-				MainGuiUtils.logger.info("\n [RESTART REQUESTED] \n\n" + LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
+				// If there are updates to install then restart has already been triggered
+				if(MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.get() && MainGUI.updatesDownloaded != null)
+					System.exit(0);
+				
+				if(asAdmin) {
+					String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
+					SysUtils.launchExeAsAdmin(path, path, (String[])null);
+				} else {
+					SysUtils.launchBatchOrBash(nativeLauncherPath, false);
+				}
+				
+				MainGuiUtils.logger.info("\n [RESTART REQUESTED - adminMode="+asAdmin+"] \n\n" + ScreepTLoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 				
 				System.exit(0);
 
@@ -68,6 +88,66 @@ public class MainGuiManager {
 		} catch (Exception e) {
 			MainGuiUtils.logger.error("Cannot restart application: an error occurred", e);
 		}
+	}
+	
+	public void exportLogs() {
+		logger.debug(" => User started logs exporting procedure.");
+		boolean choice = true;
+		if(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START.equals(Level.OFF)) {
+			String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScreepT_launcher's customize options at start)";
+			choice = MainGUI.dialogHelper.yesOrNo(msg, "Export logs even if disabled?");
+		}
+		
+		if (choice) {
+
+			// show input dialog to select the file(gives null in case of no file selected)
+			File selected = MainGUI.fileLogWriteDialog(MainGUI.mainFrameScreept);
+			if (selected != null) {
+				logger.info("\n\n##################################################\n\n" + new Date().toString()
+				 		+ "\n\nBuild N°: " + GeneralConfig.BUILD_INCREMENTAL_NUMBER + "\n\n"
+						+ "Build HASH: " + GeneralConfig.BUILD_COMMIT_HASH + "\n\n"
+						+ "\n\n" + GeneralConfig.APPLICATION_NAME + " EXPORT!\n\n"
+						+ "##################################################\n\n");
+
+				// Create unique temporary folder
+				File tempFolder = FileVarious.uniqueJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + "LOG_EXPORT_TEMP"));
+				tempFolder.mkdir();
+				
+				// Copy logs into it
+				File copiedMainLog = FileWorker.copyFileIntoDir(new File(GeneralConfig.LOG_PATH), tempFolder, true, GeneralConfig.TEMP_DIRECTORY);
+				File copiedLauncherLog = FileWorker.copyFileIntoDir(new File(GeneralConfig.LOG_LAUNCHER_PATH), tempFolder, false, GeneralConfig.TEMP_DIRECTORY);
+				for(File f : getUpdaterLogs())
+					FileWorker.copyFileIntoDir(f, tempFolder, false, GeneralConfig.TEMP_DIRECTORY);
+					
+				// Create a zip of temp folder and put it into selected destination
+				File zipped = ZipWorker.zipFolderToFile(tempFolder.getAbsolutePath(), selected, true, true);
+				boolean copied = copiedMainLog != null && copiedLauncherLog != null;
+				if (copied && zipped != null && zipped.exists()) {
+					MainGUI.dialogHelper.info("File correctly saved in " + zipped, "Log File Exported :)");
+					logger.info("File :" + GeneralConfig.LOG_PATH + " Exported, exportFile: " + zipped);
+				} else {
+					MainGUI.dialogHelper.error("File not saved [" + zipped +"], Some error occurred :(", (String)null);
+					logger.error("File not saved, some error occurred :( ");
+				}
+				
+				// Delete temporary folder
+				FileWorker.deleteDirContentInclRoot(tempFolder);
+			}
+		}
+	}
+	
+	public List<File> getUpdaterLogs() {
+		File mainUpdaterLogs = new File(GeneralConfig.CURRENT_EXECUTION_DIR);
+		File[] logs = mainUpdaterLogs.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.FILE_ONLY, ".log", true));
+		List<File> filtered = new ArrayList<>();
+		if(logs != null) {
+			for(File log : logs) {
+				if(log.getName().contains(MainStandAloneUpdater.UPDATER_LOG_FILE_NAME))
+					filtered.add(log);
+			}
+		}
+		
+		return filtered;
 	}
 
 	/**
@@ -85,6 +165,10 @@ public class MainGuiManager {
 		// Remember splitPanel dividers position - TEXT Editor
 		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosX", currentConfiguration.getTextEditorOpt().getDividerRightPanePosX());
 		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
+		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerBottomPosRatio", String.valueOf(currentConfiguration.getTextEditorOpt().getDividerBottomPosRatio()));
+		
+//		DEFAULT_FILE_TREE_ANCESTOR_LEVEL
+		GeneralConfig.resourcesFilePathsMappings.saveCommentedProperty("DEFAULT_FILE_TREE_ANCESTOR_LEVEL", String.valueOf(GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL));
 		
 		// CHECK UNSAVED TEXT EDITOR FILES
 		if(!MainGuiUtils.askUnsavedTextFiles()) {
@@ -125,7 +209,7 @@ public class MainGuiManager {
 	  	
 		MainGUI.mainAppRunning = false;
 		
-		MainGuiUtils.logger.info(LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
+		MainGuiUtils.logger.info(ScreepTLoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 	
 		SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 		
@@ -157,7 +241,7 @@ public class MainGuiManager {
 	  	
 		MainGUI.mainAppRunning = false;
 		
-		MainGuiUtils.logger.info(LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
+		MainGuiUtils.logger.info(ScreepTLoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 	
 		SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 		
@@ -200,7 +284,7 @@ public class MainGuiManager {
 			
 			// save list of non null and existing files in tabs
 			currentConfiguration.getTextEditorOpt().getOpenedFileList().clear();
-			for (TabTextEditorObj currentObj : currentTabEditor.loadedList.getList()) {
+			for (TabTextEditorObject currentObj : currentTabEditor.loadedList.getList()) {
 				if (currentObj.loadedFile != null && currentObj.loadedFile.exists()) {
 					currentConfiguration.getTextEditorOpt().getOpenedFileList()
 							.add(currentObj.loadedFile.getAbsolutePath());
@@ -208,7 +292,9 @@ public class MainGuiManager {
 			}
 			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "loadedFilesAtStart",
 					currentConfiguration.listToString(currentConfiguration.getTextEditorOpt().getOpenedFileList()));
-	
+			
+			initTxtWriter.updateOpenedFilesCaretPositionMap(true);
+			
 			// save current opened if it exists
 			if(currentTabEditor.loadedTabObj != null 
 					&& currentTabEditor.loadedTabObj.loadedFile!= null 
@@ -220,13 +306,13 @@ public class MainGuiManager {
 			// update clipboard if exists
 			if(initTxtWriter != null && initTxtWriter.textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
 				// save only current cause others are already saved once user selected items
-				((ClipboardPanel)initTxtWriter.rightSplitContainer).saveCurrClipboardSilent();
+				((ClipboardPanel)initTxtWriter.rightModulePanel).saveCurrClipboardSilent();
 			}
 		}
 		
 		logger.info("\n => Opened files in textEditor added to configuration");
 	}
-
+	
 	public static boolean doIfTempDecryptedChanged(JFrame parent) {
 		logger.debug("Starting check on fileMonitor...");
 		CrypterPanel panelCrypter = MainGUI.crypterPanel;
@@ -307,18 +393,17 @@ public class MainGuiManager {
 	public static void checkUpdatesWaitingForInstall() {
 		try {
 			if (MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.get()) {
-				MainGuiUtils.logger.error("Updates detected, starting updater jar application...");
+				MainGuiUtils.logger.info("Updates detected, starting updater jar application...");
 				if(MainGUI.updatesDownloaded != null) {
 					String command = "java -jar " + MainGUI.updatesDownloaded[0].getName() 
 						+ " " + MainGUI.updatesDownloaded[0].getName() 
 						+ " " + MainGUI.updatesDownloaded[1].getParentFile().getName() + File.separator + MainGUI.updatesDownloaded[1].getName()
 						+ " " + MainGUI.updatesDownloaded[2].getName();
-					Runtime runtime = Runtime.getRuntime();
 					MainGuiUtils.logger.info("Launching java command to update with downloaded files: \n\n" + command + "\n\n");
-					runtime.exec(command);
+					Runtime.getRuntime().exec(command);
 					MainGuiUtils.logger.info("Updater jar application launched!");
 				}else {
-					MainGuiUtils.logger.error("updatesDownloaded is null!");
+					MainGuiUtils.logger.error("MainGUI.updatesDownloaded is null!");
 				}
 			}
 		} catch (Exception e) {

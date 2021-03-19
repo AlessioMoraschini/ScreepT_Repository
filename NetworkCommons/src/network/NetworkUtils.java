@@ -47,8 +47,8 @@ import network.http.HttpHelper;
 import network.om.FtpSpeedTestOptions;
 import network.utils.IPaddressConverter;
 import resources.GeneralConfig;
-import utility.ConversionUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
 
 public class NetworkUtils {

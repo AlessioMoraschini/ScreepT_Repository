@@ -27,11 +27,11 @@ import org.apache.commons.net.io.CopyStreamAdapter;
 import files.FileWorker;
 import network.progress.DownloadAction;
 import network.progress.UploadAction;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class FtpDumper {
 
-	private static final SafeLogger logger = new SafeLogger(FtpDumper.class);
+	public static SafeLogger logger = new SafeLogger(FtpDumper.class);
 	private static final String protocol = "TLS";
 	public static int CONNECTION_TIMEOUT = 30000;
 	public static int KEEP_ALIVE_DURATION_SECONDS = 25;
@@ -45,6 +45,8 @@ public class FtpDumper {
 	public String psw;
 	public int port;
 	public FTPSClient ftps;
+	
+	private boolean connected = false;
 		
 	//costruttori
 	 
@@ -88,8 +90,12 @@ public class FtpDumper {
 		
 		return res;
 	}
+	
+	public boolean isConnected() {
+		return connected;
+	}
 
-	public synchronized boolean checkConnection() {
+	public synchronized boolean checkNewConnection() {
 		
 		FTPSClient ftps = new FTPSClient(protocol);
 		boolean res=false;
@@ -102,10 +108,11 @@ public class FtpDumper {
 			return false;
 		}
 		
+		connected = res;
 		return res;
 	}
 	
-	public void connect() throws ConnectException {
+	public boolean connect() throws ConnectException {
 		FTPSClient ftps = new FTPSClient(protocol);
 		boolean res = false;
 		try {
@@ -123,6 +130,10 @@ public class FtpDumper {
 		
 		logger.info("Connection completed: " + res);
 		this.ftps = ftps;
+		
+		connected = res;
+		
+		return res;
 	}
 	
 	public boolean disconnect() {
@@ -132,9 +143,11 @@ public class FtpDumper {
 				ftps.disconnect();
 			}
 			logger.info("Disconnected from FTPS server");
+			connected = false;
 			return true;
 		} catch (IOException ex) {
 			logger.error("\n**** ERROR: CANNOT DISCONNECT FROM FTPS SERVER ****\n", ex);
+			connected = true;
 			return false;
 		}
 	}
