@@ -10,7 +10,8 @@
 	<!-- MODULES BUILD -->
 	<modules>
 		<module>../AM_Rkanoid</module>
-		<module>../VariousCommonsLight</module>
+		<!-- <module>../../ScreepT-Common-Repository/ExternalPluginInterface</module> -->
+		<module>../../ScreepT-Common-Repository/VariousCommonsLight</module>
 		<module>../GeneralResources</module>
 		<module>../OsCommons</module>
 		<module>../ScreepT_Crypter</module>
