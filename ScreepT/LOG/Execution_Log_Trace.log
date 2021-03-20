@@ -1,0 +1,221 @@
+2021-03-20 20:52:52,749 [main] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 20:52:53,463 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 20:52:53,521 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 20:52:53,568 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 20:52:54,628 [Thread-29] ERROR network.utils.DownloadUtils - Error comparing version: illegal format of A[.] or B[0.9.43][utility.string.StringWorker.compareVersions(StringWorker.java:961), network.utils.DownloadUtils.compareNewVersion(DownloadUtils.java:119), updater.UpdatesManager.lookForUpdates(UpdatesManager.java:112), maingUI.MainGuiUtils$1.run(MainGuiUtils.java:92), java.lang.Thread.run(Thread.java:748)]
+2021-03-20 20:52:58,847 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 20:54:51,464 [main] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 20:54:52,044 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 20:54:52,091 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 20:54:52,130 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 20:54:53,249 [Thread-29] ERROR network.utils.DownloadUtils - Error comparing version: illegal format of A[.] or B[0.9.43][utility.string.StringWorker.compareVersions(StringWorker.java:961), network.utils.DownloadUtils.compareNewVersion(DownloadUtils.java:119), updater.UpdatesManager.lookForUpdates(UpdatesManager.java:112), maingUI.MainGuiUtils$1.run(MainGuiUtils.java:92), java.lang.Thread.run(Thread.java:748)]
+2021-03-20 20:54:56,032 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 20:55:04,444 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 20:55:09,009 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 20:55:13,684 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 20:59:08,534 [main] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 20:59:09,724 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 20:59:09,780 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 20:59:09,821 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 20:59:10,982 [Thread-29] ERROR network.utils.DownloadUtils - Error comparing version: illegal format of A[.] or B[0.9.43][utility.string.StringWorker.compareVersions(StringWorker.java:961), network.utils.DownloadUtils.compareNewVersion(DownloadUtils.java:119), updater.UpdatesManager.lookForUpdates(UpdatesManager.java:112), maingUI.MainGuiUtils$1.run(MainGuiUtils.java:92), java.lang.Thread.run(Thread.java:748)]
+2021-03-20 20:59:11,664 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:00:57,666 [main] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:00:58,325 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:00:58,376 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:00:58,420 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:00:59,496 [Thread-29] ERROR network.utils.DownloadUtils - Error comparing version: illegal format of A[.] or B[0.9.43][utility.string.StringWorker.compareVersions(StringWorker.java:961), network.utils.DownloadUtils.compareNewVersion(DownloadUtils.java:119), updater.UpdatesManager.lookForUpdates(UpdatesManager.java:112), maingUI.MainGuiUtils$1.run(MainGuiUtils.java:92), java.lang.Thread.run(Thread.java:748)]
+2021-03-20 21:01:00,893 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:04:45,508 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:06:34,098 [main] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:06:34,614 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:06:34,662 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:06:34,713 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:06:36,760 [Thread-29] ERROR network.utils.DownloadUtils - Error comparing version: illegal format of A[.] or B[0.9.43][utility.string.StringWorker.compareVersions(StringWorker.java:961), network.utils.DownloadUtils.compareNewVersion(DownloadUtils.java:119), updater.UpdatesManager.lookForUpdates(UpdatesManager.java:112), maingUI.MainGuiUtils$1.run(MainGuiUtils.java:92), java.lang.Thread.run(Thread.java:748)]
+2021-03-20 21:06:37,198 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:08:14,290 [main] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:08:14,752 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:08:14,803 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:08:14,839 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:08:15,916 [Thread-29] ERROR network.utils.DownloadUtils - Error comparing version: illegal format of A[.] or B[0.9.43][utility.string.StringWorker.compareVersions(StringWorker.java:961), network.utils.DownloadUtils.compareNewVersion(DownloadUtils.java:119), updater.UpdatesManager.lookForUpdates(UpdatesManager.java:112), maingUI.MainGuiUtils$1.run(MainGuiUtils.java:92), java.lang.Thread.run(Thread.java:748)]
+2021-03-20 21:08:17,234 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:08:23,893 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:08:24,171 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:08:24,787 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:08:25,046 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:08:26,897 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:08:27,119 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:09:36,872 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:09:37,118 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:11:37,064 [main] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:11:37,507 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:11:37,554 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:11:37,591 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:11:38,605 [Thread-29] ERROR network.utils.DownloadUtils - Error comparing version: illegal format of A[.] or B[0.9.43][utility.string.StringWorker.compareVersions(StringWorker.java:961), network.utils.DownloadUtils.compareNewVersion(DownloadUtils.java:119), updater.UpdatesManager.lookForUpdates(UpdatesManager.java:112), maingUI.MainGuiUtils$1.run(MainGuiUtils.java:92), java.lang.Thread.run(Thread.java:748)]
+2021-03-20 21:11:45,317 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:11:45,554 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:11:51,535 [AWT-EventQueue-0] ERROR handlers.AWTExceptionHandler - AWT UNHANDLED EXCEPTION DETECTED: 
+java.lang.ArrayStoreException
+	at java.lang.System.arraycopy(Native Method)
+	at java.util.Arrays.copyOf(Arrays.java:3213)
+	at java.util.ArrayList.toArray(ArrayList.java:411)
+	at gUI.utils.tree.texteditor.TreeFileMouseListenerTxtEditor.lambda$14(TreeFileMouseListenerTxtEditor.java:750)
+	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2022)
+	at javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2348)
+	at javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:402)
+	at javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:259)
+	at javax.swing.AbstractButton.doClick(AbstractButton.java:376)
+	at javax.swing.plaf.basic.BasicMenuItemUI.doClick(BasicMenuItemUI.java:842)
+	at javax.swing.plaf.basic.BasicMenuItemUI$Handler.mouseReleased(BasicMenuItemUI.java:886)
+	at java.awt.Component.processMouseEvent(Component.java:6533)
+	at javax.swing.JComponent.processMouseEvent(JComponent.java:3324)
+	at java.awt.Component.processEvent(Component.java:6298)
+	at java.awt.Container.processEvent(Container.java:2237)
+	at java.awt.Component.dispatchEventImpl(Component.java:4889)
+	at java.awt.Container.dispatchEventImpl(Container.java:2295)
+	at java.awt.Component.dispatchEvent(Component.java:4711)
+	at java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4889)
+	at java.awt.LightweightDispatcher.processMouseEvent(Container.java:4526)
+	at java.awt.LightweightDispatcher.dispatchEvent(Container.java:4467)
+	at java.awt.Container.dispatchEventImpl(Container.java:2281)
+	at java.awt.Window.dispatchEventImpl(Window.java:2746)
+	at java.awt.Component.dispatchEvent(Component.java:4711)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:760)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:90)
+	at java.awt.EventQueue$4.run(EventQueue.java:733)
+	at java.awt.EventQueue$4.run(EventQueue.java:731)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:730)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2021-03-20 21:12:02,665 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:12:02,896 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:12:06,251 [AWT-EventQueue-0] ERROR handlers.AWTExceptionHandler - AWT UNHANDLED EXCEPTION DETECTED: 
+java.lang.ArrayStoreException
+	at java.lang.System.arraycopy(Native Method)
+	at java.util.Arrays.copyOf(Arrays.java:3213)
+	at java.util.ArrayList.toArray(ArrayList.java:411)
+	at gUI.utils.tree.texteditor.TreeFileMouseListenerTxtEditor.lambda$14(TreeFileMouseListenerTxtEditor.java:750)
+	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2022)
+	at javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2348)
+	at javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:402)
+	at javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:259)
+	at javax.swing.AbstractButton.doClick(AbstractButton.java:376)
+	at javax.swing.plaf.basic.BasicMenuItemUI.doClick(BasicMenuItemUI.java:842)
+	at javax.swing.plaf.basic.BasicMenuItemUI$Handler.mouseReleased(BasicMenuItemUI.java:886)
+	at java.awt.Component.processMouseEvent(Component.java:6533)
+	at javax.swing.JComponent.processMouseEvent(JComponent.java:3324)
+	at java.awt.Component.processEvent(Component.java:6298)
+	at java.awt.Container.processEvent(Container.java:2237)
+	at java.awt.Component.dispatchEventImpl(Component.java:4889)
+	at java.awt.Container.dispatchEventImpl(Container.java:2295)
+	at java.awt.Component.dispatchEvent(Component.java:4711)
+	at java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4889)
+	at java.awt.LightweightDispatcher.processMouseEvent(Container.java:4526)
+	at java.awt.LightweightDispatcher.dispatchEvent(Container.java:4467)
+	at java.awt.Container.dispatchEventImpl(Container.java:2281)
+	at java.awt.Window.dispatchEventImpl(Window.java:2746)
+	at java.awt.Component.dispatchEvent(Component.java:4711)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:760)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:90)
+	at java.awt.EventQueue$4.run(EventQueue.java:733)
+	at java.awt.EventQueue$4.run(EventQueue.java:731)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:730)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2021-03-20 21:13:15,778 [main] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:13:16,257 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:13:16,303 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:13:16,337 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:13:17,404 [Thread-29] ERROR network.utils.DownloadUtils - Error comparing version: illegal format of A[.] or B[0.9.43][utility.string.StringWorker.compareVersions(StringWorker.java:961), network.utils.DownloadUtils.compareNewVersion(DownloadUtils.java:119), updater.UpdatesManager.lookForUpdates(UpdatesManager.java:112), maingUI.MainGuiUtils$1.run(MainGuiUtils.java:92), java.lang.Thread.run(Thread.java:748)]
+2021-03-20 21:15:19,045 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:15:19,276 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:16:12,769 [main] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:16:13,271 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:16:13,316 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:16:13,350 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:16:15,254 [Thread-29] ERROR network.utils.DownloadUtils - Error comparing version: illegal format of A[.] or B[0.9.43][utility.string.StringWorker.compareVersions(StringWorker.java:961), network.utils.DownloadUtils.compareNewVersion(DownloadUtils.java:119), updater.UpdatesManager.lookForUpdates(UpdatesManager.java:112), maingUI.MainGuiUtils$1.run(MainGuiUtils.java:92), java.lang.Thread.run(Thread.java:748)]
+2021-03-20 21:16:16,854 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:17:34,386 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:17:38,281 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:17:39,160 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:17:41,257 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:17:43,872 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:17:44,910 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:18:23,214 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:18:30,488 [AWT-EventQueue-0] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:18:50,042 [main] ERROR plugin.api.AbstractPluginApplicationApi - Cannot load plugin of type: interface plugin.external.arch.IPluginTextEditor
+2021-03-20 21:18:50,482 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:18:50,526 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:18:50,561 [AWT-EventQueue-0] ERROR utils.RsyntaxUtils - File: null is null or not existing, cannot add to autocomplete
+2021-03-20 21:18:51,685 [Thread-29] ERROR network.utils.DownloadUtils - Error comparing version: illegal format of A[.] or B[0.9.43][utility.string.StringWorker.compareVersions(StringWorker.java:961), network.utils.DownloadUtils.compareNewVersion(DownloadUtils.java:119), updater.UpdatesManager.lookForUpdates(UpdatesManager.java:112), maingUI.MainGuiUtils$1.run(MainGuiUtils.java:92), java.lang.Thread.run(Thread.java:748)]
+2021-03-20 21:19:48,557 [AWT-EventQueue-0] ERROR handlers.AWTExceptionHandler - AWT UNHANDLED EXCEPTION DETECTED: 
+java.lang.NullPointerException
+	at org.jmeld.ui.settings.EditorSettingsPanel$25.actionPerformed(EditorSettingsPanel.java:410)
+	at javax.swing.JComboBox.fireActionEvent(JComboBox.java:1258)
+	at javax.swing.JComboBox.setSelectedItem(JComboBox.java:586)
+	at org.jmeld.ui.settings.EditorSettingsPanel.initConfiguration(EditorSettingsPanel.java:570)
+	at org.jmeld.ui.settings.EditorSettingsPanel.configurationChanged(EditorSettingsPanel.java:515)
+	at org.jmeld.util.conf.ConfigurationManager.fireChanged(ConfigurationManager.java:124)
+	at org.jmeld.util.conf.AbstractConfiguration.fireChanged(AbstractConfiguration.java:85)
+	at org.jmeld.util.conf.AbstractConfiguration.fireChanged(AbstractConfiguration.java:79)
+	at org.jmeld.util.conf.AbstractConfigurationElement.fireChanged(AbstractConfigurationElement.java:20)
+	at org.jmeld.settings.EditorSettings.setLookAndFeelName(EditorSettings.java:312)
+	at org.jmeld.ui.settings.EditorSettingsPanel$23.actionPerformed(EditorSettingsPanel.java:383)
+	at javax.swing.JComboBox.fireActionEvent(JComboBox.java:1258)
+	at javax.swing.JComboBox.setSelectedItem(JComboBox.java:586)
+	at javax.swing.JComboBox.setSelectedIndex(JComboBox.java:622)
+	at javax.swing.plaf.basic.BasicComboPopup$Handler.mouseReleased(BasicComboPopup.java:861)
+	at java.awt.AWTEventMulticaster.mouseReleased(AWTEventMulticaster.java:290)
+	at java.awt.Component.processMouseEvent(Component.java:6533)
+	at javax.swing.JComponent.processMouseEvent(JComponent.java:3324)
+	at javax.swing.plaf.basic.BasicComboPopup$1.processMouseEvent(BasicComboPopup.java:510)
+	at java.awt.Component.processEvent(Component.java:6298)
+	at java.awt.Container.processEvent(Container.java:2237)
+	at java.awt.Component.dispatchEventImpl(Component.java:4889)
+	at java.awt.Container.dispatchEventImpl(Container.java:2295)
+	at java.awt.Component.dispatchEvent(Component.java:4711)
+	at java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4889)
+	at java.awt.LightweightDispatcher.processMouseEvent(Container.java:4526)
+	at java.awt.LightweightDispatcher.dispatchEvent(Container.java:4467)
+	at java.awt.Container.dispatchEventImpl(Container.java:2281)
+	at java.awt.Window.dispatchEventImpl(Window.java:2746)
+	at java.awt.Component.dispatchEvent(Component.java:4711)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:760)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:90)
+	at java.awt.EventQueue$4.run(EventQueue.java:733)
+	at java.awt.EventQueue$4.run(EventQueue.java:731)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:730)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)

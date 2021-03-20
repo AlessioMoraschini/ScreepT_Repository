@@ -1,12 +1,17 @@
 package plugins;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import files.FileVarious;
 import maingUI.MainGUI;
 import maingUI.MainGuiUtils;
 import plugin.api.AbstractPluginApplicationApi;
 import plugin.external.arch.IPlugin;
+import plugin.external.arch.IPluginCrypter;
+import plugin.external.arch.IPluginTextEditor;
 import resources.GeneralConfig;
 
 public class ScreepTApplicationApi extends AbstractPluginApplicationApi {
@@ -33,6 +38,20 @@ public class ScreepTApplicationApi extends AbstractPluginApplicationApi {
 	@Override
 	public String getPluginFolderPath(Class<? extends IPlugin> plugin) {
 		return GeneralConfig.EXTERNAL_PLUGINS;
+	}
+
+	@Override
+	public String[] getFilesToLoad(IPlugin plugin) {
+		List<String> fileList = new ArrayList<>();
+
+		if(utils.isTextEditorActive() && plugin instanceof IPluginTextEditor) {
+			fileList.add(FileVarious.getCanonicalPathSafe(
+					MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.loadedFile));
+		} else if(utils.isCrypterActive() && plugin instanceof IPluginCrypter) {
+			fileList = FileVarious.getStringListFromFiles(Arrays.asList(MainGUI.crypterPanel.panelVDragNDropPane.getTreeNodes()));
+		}
+
+		return fileList.toArray(new String[0]);
 	}
 
 }
