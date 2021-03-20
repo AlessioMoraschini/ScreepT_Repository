@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package maingUI;
+package general.utils;
 
 import java.awt.Color;
 import java.awt.Dialog;
@@ -56,6 +56,9 @@ import gui.filesearch.content.FileContentSearchDialog;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import impl.INItializer;
+import maingUI.MainGUI;
+import maingUI.MainGuiGeneralAppStarter;
+import maingUI.MainGuiManager;
 import om.LimitedConcurrentList;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;

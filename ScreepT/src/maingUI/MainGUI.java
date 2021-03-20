@@ -63,6 +63,7 @@ import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import gUI.utils.filedialog.FilesAndDirectoriesManagerGUI;
 import gUI.utils.filedialog.INIfileChoosER;
+import general.utils.WindowCreator;
 import gui.ComponentResizer;
 import gui.GuiUtils;
 import gui.PluginManagerGUI;

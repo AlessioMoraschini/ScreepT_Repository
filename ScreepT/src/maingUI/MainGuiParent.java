@@ -50,6 +50,7 @@ import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
+import general.utils.ToggleAction;
 import gui.GuiUtils;
 import gui.MenuSetter;
 import impl.INItializer;

@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package maingUI;
+package general.utils;
 
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import dialogutils.JOptionHelperExtended;
 import gui.listener.KeyListenerParent;
 import maingUI.MainGUI;
+import maingUI.MainGuiManager;
 
 public class SafetyScreepTShortcutsListener extends KeyListenerParent implements KeyEventDispatcher{
 	

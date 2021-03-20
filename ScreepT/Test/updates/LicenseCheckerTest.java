@@ -7,9 +7,9 @@ import java.net.URL;
 
 import org.junit.Test;
 
+import general.utils.WindowCreator;
 import gui.LightLicenseViewer;
 import gui.LightLicenseViewer.UserLicenseChoice;
-import maingUI.WindowCreator;
 import network.utils.DownloadUtils;
 import resources.GeneralConfig;
 import utility.hash.ChecksumHasher;
