@@ -1,3 +1,5 @@
+2021-03-20  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Improved pluginManager integration + modules moved to common repository
+
 2021-03-15  Fixed rectangular mode and huge files load (log/tail mode coming soon)
 
 2021-03-15  Fixed theme editor save BUG and improved code formatter tooltips and UX

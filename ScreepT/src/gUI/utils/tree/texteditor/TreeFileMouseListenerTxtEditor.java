@@ -52,7 +52,9 @@ import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gui.GuiUtils;
 import gui.MenuSetter;
+import gui.PdfSelector2TextFrame;
 import impl.INItializer;
+import maingUI.MainGuiGeneralAppStarter;
 import mouseutils.TreeFileMouseListenerBasicFileNamed;
 import plugin.api.AbstractPluginApplicationApi.PluginType;
 import plugin.external.arch.IPlugin;
@@ -732,6 +734,12 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		try {
 
 			pluginsMenuItem.removeAll();
+
+			IPlugin pdfReader;
+			if(MainGuiGeneralAppStarter.tesseractAvailable) {
+				pdfReader = new PdfSelector2TextFrame.PDFReaderPlugin();
+				plugins.add(pdfReader);
+			}
 
 			Iterator<IPlugin> iterator = plugins.iterator();
 			while (iterator.hasNext()) {

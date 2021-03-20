@@ -55,6 +55,7 @@ import gUI.panels.TextEditor;
 import general.utils.ToggleAction;
 import gui.GuiUtils;
 import gui.MenuSetter;
+import gui.PdfSelector2TextFrame;
 import impl.INItializer;
 import jmenu.BrowserOpenerMenu;
 import jmenu.CustomJmenuItem;
@@ -903,6 +904,12 @@ public class MainGuiParent {
 
 			mnPlugins.add(mntmLookForPlugins);
 			mnPlugins.add(new JSeparator());
+
+			IPlugin pdfReader;
+			if(MainGuiGeneralAppStarter.tesseractAvailable) {
+				pdfReader = new PdfSelector2TextFrame.PDFReaderPlugin();
+				plugins.add(pdfReader);
+			}
 
 			Iterator<IPlugin> iterator = plugins.iterator();
 			while (iterator.hasNext()) {
