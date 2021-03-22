@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import files.CustomFileFilters;
 import files.FileWorker;
+import om.OSinfo;
 import resources.om.FilePojo;
 import utility.manipulation.ConversionUtils;
 import utility.properties.PropertiesManager;
@@ -125,6 +127,10 @@ public class GeneralConfig {
 			// Temp Folders and Files
 			public static String TEMP_DIRECTORY = resourcesFilePathsMappings.getProperty("TEMP_DIR", RESOURCES_DIR + "temp/");
 			public static File TEMP_DIRECTORY_FILE = new File(TEMP_DIRECTORY);
+			static {
+				if(!TEMP_DIRECTORY_FILE.exists())
+					TEMP_DIRECTORY_FILE.mkdirs();
+			}
 
 			// LICENSE MAPPING
 			public static final String licensePropertiesPath = RESOURCES_DIR + "license.properties";
@@ -165,8 +171,8 @@ public class GeneralConfig {
 			 * Used in launcher to choose right type of launch command for system
 			 */
 			public static boolean FLAG_LAUNCH_JAR_COMMAND;
-			public static String MAIN_GENERAL_CLASSPATH_WIN = "\"./EXTERNAL_PLUGINS/*;./*;./Resources_ScreepT/lib/*\" ";
-			public static String MAIN_GENERAL_CLASSPATH_UNIX = "\"./EXTERNAL_PLUGINS/*:./*:./Resources_ScreepT/lib/*\" ";
+			public static String MAIN_GENERAL_CLASSPATH_WIN = "\"" + getExternalPluginsClasspath() + "./*;./Resources_ScreepT/lib/*\" ";
+			public static String MAIN_GENERAL_CLASSPATH_UNIX = "\"" + getExternalPluginsClasspath() + "./*:./Resources_ScreepT/lib/*\" ";
 			public static String MAIN_GENERAL_STARTER_PACKAGE;
 
 			// LAUNCHER DEFAULTS
@@ -359,6 +365,20 @@ public class GeneralConfig {
 				});
 
 				return clipboards;
+			}
+
+			public static String getExternalPluginsClasspath() {
+				File[] subDirs = new File(EXTERNAL_PLUGINS).listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.DIR_ONLY));
+				String classPath = "";
+				if(subDirs != null) {
+					for(File dir : subDirs) {
+						if(dir.isDirectory()) {
+							classPath += "./" + EXTERNAL_PLUGINS + "/" + dir.getName() + "/*" + (new OSinfo().isWindows() ? ";" : ":");
+						}
+					}
+				}
+
+				return classPath;
 			}
 
 			public static TreeMap<String, File> getRefreshedClipBoardsMap(){

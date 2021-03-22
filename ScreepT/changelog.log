@@ -1,4 +1,8 @@
-2021-03-20  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Improved pluginManager integration + modules moved to common repository
+2021-03-21  PdfSelector frame bugfix
+
+2021-03-20  Delete TestUtils directory
+
+2021-03-20  Improved pluginManager integration + modules moved to common repository
 
 2021-03-15  Fixed rectangular mode and huge files load (log/tail mode coming soon)
 

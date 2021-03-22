@@ -834,6 +834,16 @@ public class MainGuiParent {
 					}
 				});
 			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						updateAvailablePlugins(ScreepTApplicationApi.getAvailablePlugins(PluginType.ROOT, false, true));
+					}
+				});
+			}
 		});
 
 	}

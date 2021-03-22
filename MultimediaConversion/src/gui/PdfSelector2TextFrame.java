@@ -295,6 +295,11 @@ public class PdfSelector2TextFrame extends JFrame {
 		}
 
 		@Override
+		public String getPluginZipName() {
+			return "Tesseract.zip";
+		}
+
+		@Override
 		public void initialize() {
 			// TODO Auto-generated method stub
 		}

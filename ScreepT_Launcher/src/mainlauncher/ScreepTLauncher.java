@@ -180,8 +180,7 @@ import utils.SysUtils;
 			loaderGraphics.setVisible(true);
 			startPendingDeletesCleanerThread();
 
-			JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib;" +
-					"./" + GeneralConfig.EXTERNAL_PLUGINS + "\"";
+			JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib;\"";
 
 			// Initialize logger properties -> FIRST THING TO DO
 			logger.setLoggerAvailable(true);

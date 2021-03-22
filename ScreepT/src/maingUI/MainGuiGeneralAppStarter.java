@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
@@ -50,6 +51,8 @@ import impl.INItializer;
 import launcherutils.IniFileManager;
 import network.proxy.ProxySettingsGUI;
 import plugin.api.AbstractPluginApplicationApi;
+import plugin.api.AbstractPluginApplicationApi.PluginType;
+import plugin.external.arch.IPlugin;
 import plugins.PluginManager;
 import plugins.ScreepTApplicationApi;
 import resources.GeneralConfig;
@@ -486,6 +489,14 @@ public class MainGuiGeneralAppStarter {
 
 		if(MainGuiGeneralAppStarter.hwInfoAvailable) {
 			installedPlugins.add("HardwareInfo.zip");
+		}
+
+		Set<IPlugin> plugins = ScreepTApplicationApi.getAvailablePlugins(PluginType.ROOT, false, false);
+		if(plugins != null && !plugins.isEmpty()) {
+			for(IPlugin plugin : plugins) {
+				if(!plugin.isTestPlugin())
+					installedPlugins.add(plugin.getPluginZipName());
+			}
 		}
 
 		PluginManager.installedPluginProperties.saveCommentedProperty(

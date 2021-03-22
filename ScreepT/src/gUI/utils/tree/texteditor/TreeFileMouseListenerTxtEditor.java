@@ -133,7 +133,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
                 }
 
                 if(SwingUtilities.isRightMouseButton(arg0)) {
-            		updateAvailablePlugins(ScreepTApplicationApi.getAvailablePlugins(PluginType.ROOT, false, true));
+            		updateAvailablePlugins(ScreepTApplicationApi.getAvailablePlugins(PluginType.TEXT_EDITOR, false, true));
                 }
 
 	            super.mousePressed(arg0);
