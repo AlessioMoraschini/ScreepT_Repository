@@ -373,7 +373,7 @@ public class GeneralConfig {
 				if(subDirs != null) {
 					for(File dir : subDirs) {
 						if(dir.isDirectory()) {
-							classPath += "./" + EXTERNAL_PLUGINS + "/" + dir.getName() + "/*" + (new OSinfo().isWindows() ? ";" : ":");
+							classPath += "./" + EXTERNAL_PLUGINS + dir.getName() + "/*" + (new OSinfo().isWindows() ? ";" : ":");
 						}
 					}
 				}

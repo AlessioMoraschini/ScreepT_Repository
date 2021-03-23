@@ -16,6 +16,7 @@ import resources.GeneralConfig;
 
 public class ScreepTApplicationApi extends AbstractPluginApplicationApi {
 
+	@SuppressWarnings("unused")
 	private MainGUI maingui;
 	private MainGuiUtils utils;
 
