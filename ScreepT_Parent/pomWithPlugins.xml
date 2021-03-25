@@ -9,21 +9,21 @@
 	
 	<!-- MODULES BUILD -->
 	<modules>
-		<module>../AM_Rkanoid</module>
-		<module>../../ScreepT-Common-Repository/PluginsParent</module>
+		<module>../../ScreepT-Common-Repository/AM_Rkanoid</module>
 		<module>../../ScreepT-Common-Repository/ExternalPluginInterface</module>
+		<module>../../ScreepT-Common-Repository/PluginsParent</module>
 		<module>../../ScreepT-Common-Repository/VariousCommonsLight</module>
-		<module>../GeneralResources</module>
-		<module>../OsCommons</module>
+		<module>../../ScreepT-Common-Repository/GeneralResources</module>
+		<module>../../ScreepT-Common-Repository/OsCommons</module>
 		<module>../ScreepT_Crypter</module>
-		<module>../Initializer_Configs</module>
-		<module>../GuiCommons</module>
+		<module>../../ScreepT-Common-Repository/Initializer_Configs</module>
+		<module>../../ScreepT-Common-Repository/GuiCommons</module>
 		<module>../NetworkCommons</module>
-		<module>../UpdaterModule</module>
-		<module>../HardwareCommons</module>
+		<module>../../ScreepT-Common-Repository/UpdaterModule</module>
+		<module>../../ScreepT-Common-Repository/HardwareCommons</module>
 		<module>../GuiTextEditorCommons</module>
-		<module>../MultimediaConversion</module>
-		<module>../UltimateCalculator</module>
+		<module>../../ScreepT-Common-Repository/MultimediaConversion</module>
+		<module>../../ScreepT-Common-Repository/UltimateCalculator</module>
 		<module>../ScreepT_Launcher</module>
 		<module>../ScreepT</module>
 	</modules>
