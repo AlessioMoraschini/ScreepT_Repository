@@ -25,11 +25,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
-import files.FileWorker;
-import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
-import gui.selection.AbstractSelector;
 import maingUI.MainGuiGeneralAppStarter;
 
 import java.awt.SystemColor;
@@ -38,7 +35,10 @@ import om.SupportedFileTextEditor;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
-import utility.string.TextAreaStringEditor;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.gui.selection.AbstractSelector;
+import various.common.light.utility.string.TextAreaStringEditor;
 
 import javax.swing.JLabel;
 

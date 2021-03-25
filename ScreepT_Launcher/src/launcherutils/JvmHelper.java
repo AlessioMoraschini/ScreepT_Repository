@@ -19,9 +19,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import mainlauncher.ScreepTLauncher;
-import om.OSinfo;
-import utility.string.StringWorker;
-import utils.SysUtils;
+import os.commons.om.OSinfo;
+import os.commons.utils.SysUtils;
+import various.common.light.utility.string.StringWorker;
 
 public class JvmHelper {
 	

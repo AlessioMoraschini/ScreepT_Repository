@@ -10,6 +10,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import om.SupportedFileTextEditor;
 import resources.GeneralConfig;
 import utils.RsyntaxUtils;
+import various.common.light.gui.GuiUtils;
 
 public class AutocompleteTest {
 

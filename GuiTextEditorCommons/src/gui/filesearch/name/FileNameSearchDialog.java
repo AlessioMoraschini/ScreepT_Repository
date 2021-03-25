@@ -23,23 +23,23 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import files.FileVarious;
-import files.om.FileSearchDTO;
-import files.search.FileNameSearchAdvanced;
-import files.search.FileNameSearchAdvanced.SearchType;
 import frameutils.frame.arch.ParentDialog;
 import frameutils.frame.panels.arch.ParentPanel;
-import gui.GuiUtils;
-import gui.dnd.FileDropListenerSingle;
-import impl.INItializer;
-import impl.om.FileOptions;
-import impl.om.TextEditorOption;
+import initializer.configs.impl.INItializer;
+import initializer.configs.impl.om.FileOptions;
+import initializer.configs.impl.om.TextEditorOption;
 import list.FileDropList;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.string.StringWorker;
-import utility.time.AmAsyncAction;
+import various.common.light.files.FileVarious;
+import various.common.light.files.om.FileSearchDTO;
+import various.common.light.files.search.FileNameSearchAdvanced;
+import various.common.light.files.search.FileNameSearchAdvanced.SearchType;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.dnd.FileDropListenerSingle;
+import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.time.AmAsyncAction;
 
 public class FileNameSearchDialog extends ParentDialog {
 	private static final long serialVersionUID = 5026956746595091072L;

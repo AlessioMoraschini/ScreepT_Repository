@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import javax.swing.JPasswordField;
 
 import crypt.aes.AesCipher;
-import gui.dialogs.msg.JOptionHelper;
-import om.SecurityLevel;
-import utility.log.SafeLogger;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.om.SecurityLevel;
+import various.common.light.utility.log.SafeLogger;
 
 public class ScreeptUtils {
 	

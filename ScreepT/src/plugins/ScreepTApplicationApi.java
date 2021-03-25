@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import files.FileVarious;
 import maingUI.MainGUI;
 import maingUI.MainGuiUtils;
 import plugin.api.AbstractPluginApplicationApi;
@@ -13,6 +12,7 @@ import plugin.external.arch.IPlugin;
 import plugin.external.arch.IPluginCrypter;
 import plugin.external.arch.IPluginTextEditor;
 import resources.GeneralConfig;
+import various.common.light.files.FileVarious;
 
 public class ScreepTApplicationApi extends AbstractPluginApplicationApi {
 

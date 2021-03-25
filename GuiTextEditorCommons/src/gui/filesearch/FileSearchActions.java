@@ -2,7 +2,7 @@ package gui.filesearch;
 
 import java.util.List;
 
-import files.om.SearchResult;
+import various.common.light.files.om.SearchResult;
 
 public interface FileSearchActions {
 

@@ -40,12 +40,12 @@ import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.parser.Parser;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 
-import files.CustomFileFilters;
-import files.FileVarious;
-import files.om.FileNamed;
-import gui.dialogs.msg.JOptionHelper;
 import resources.GeneralConfig;
-import utility.string.StringWorker;
+import various.common.light.files.CustomFileFilters;
+import various.common.light.files.FileVarious;
+import various.common.light.files.om.FileNamed;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.utility.string.StringWorker;
 
 public class RsyntaxUtils {
 

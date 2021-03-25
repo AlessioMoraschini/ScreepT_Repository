@@ -17,9 +17,9 @@ import java.awt.event.KeyEvent;
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
-import gui.listener.KeyListenerParent;
 import maingUI.MainGUI;
 import maingUI.MainGuiManager;
+import various.common.light.gui.listener.KeyListenerParent;
 
 public class SafetyScreepTShortcutsListener extends KeyListenerParent implements KeyEventDispatcher{
 	

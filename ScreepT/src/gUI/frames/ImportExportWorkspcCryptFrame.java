@@ -15,10 +15,12 @@ import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
-import gui.GuiUtils;
-import impl.om.TextEditorOption;
+import initializer.configs.impl.om.TextEditorOption;
 import maingUI.MainGUI;
 import net.miginfocom.swing.MigLayout;
+import various.common.light.files.om.FileNamed;
+import various.common.light.gui.GuiUtils;
+
 import java.awt.Color;
 import java.awt.Dimension;
 
@@ -32,9 +34,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.border.LineBorder;
-
-import files.om.FileNamed;
-
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.JSeparator;

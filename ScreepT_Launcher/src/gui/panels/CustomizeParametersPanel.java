@@ -15,18 +15,18 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import gui.GuiUtils;
-import gui.dialogs.msg.JOptionHelper;
 import launcherutils.IniFileManager;
 import launcherutils.JvmHelper;
 import mainlauncher.ScreepTLauncher;
 import net.miginfocom.swing.MigLayout;
-import om.OSinfo;
+import os.commons.om.OSinfo;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
-import utility.string.StringWorker;
-import utils.SysUtils;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.utility.string.StringWorker;
 
 import javax.swing.JLabel;
 

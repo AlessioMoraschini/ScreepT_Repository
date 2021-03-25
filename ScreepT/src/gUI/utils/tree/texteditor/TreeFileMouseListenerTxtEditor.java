@@ -44,16 +44,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
-import files.FileVarious;
-import files.FileWorker;
-import files.om.FileNamed;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
-import gui.GuiUtils;
-import gui.MenuSetter;
 import gui.PdfSelector2TextFrame;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import maingUI.MainGuiGeneralAppStarter;
 import mouseutils.TreeFileMouseListenerBasicFileNamed;
 import plugin.api.AbstractPluginApplicationApi.PluginType;
@@ -64,9 +59,14 @@ import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
 import treeutils.om.FileNameCellRenderer;
-import utility.manipulation.ConversionUtils;
-import utility.string.StringWorker;
 import utils.dialog.ColorDialogUtils;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.files.om.FileNamed;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.MenuSetter;
+import various.common.light.utility.manipulation.ConversionUtils;
+import various.common.light.utility.string.StringWorker;
 
 public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFileNamed {
 

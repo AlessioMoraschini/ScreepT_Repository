@@ -23,9 +23,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.log4j.Logger;
 
-import gui.GUIStyelSettings;
-import gui.GuiUtils;
 import resources.GeneralConfig;
+import various.common.light.gui.GUIStyelSettings;
+import various.common.light.gui.GuiUtils;
 
 public class LauncherLoaderFrame extends JFrame{
 	private static final long serialVersionUID = 483795297212663954L;

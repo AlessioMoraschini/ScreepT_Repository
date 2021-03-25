@@ -5,9 +5,9 @@ import java.awt.Font;
 
 import org.junit.Test;
 
-import om.ScalingAlgorithm;
 import testUtils.TestUtils;
-import utility.manipulation.ConversionUtils;
+import various.common.light.om.ScalingAlgorithm;
+import various.common.light.utility.manipulation.ConversionUtils;
 
 public class ObjStringConversionINI {
 

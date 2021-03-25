@@ -12,6 +12,7 @@
 package gui;
 
 import frameutils.utils.GuiUtilsExtended;
+import various.common.light.gui.GuiUtils;
 
 public class TextEditTooltips {
 

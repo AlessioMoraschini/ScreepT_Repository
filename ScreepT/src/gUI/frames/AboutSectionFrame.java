@@ -24,10 +24,10 @@ import maingUI.MainGUI;
 
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
-import utils.SysUtils;
 
 import javax.swing.JLabel;
 import java.awt.Font;

@@ -20,7 +20,7 @@ import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
 import gui.utils.LauncherLoggerUtils;
-import utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker;
 
 public class IniFileManager {
 	

@@ -21,10 +21,10 @@ import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
 
-import files.FileWorker;
 import frameutils.frame.arch.ParentFrame;
-import gui.GuiUtils;
 import resources.IconsPathConfigurator;
+import various.common.light.files.FileWorker;
+import various.common.light.gui.GuiUtils;
 
 public class ChangeLogFrame extends ParentFrame{
 	private static final long serialVersionUID = -168486278206232881L;

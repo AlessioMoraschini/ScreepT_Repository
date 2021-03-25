@@ -31,10 +31,10 @@ import org.apache.log4j.Logger;
 
 import gUI.frames.KeyGenFrame;
 import gUI.utils.ImageWorkerScreepT;
-import gui.UpdateProgressPanel;
-import impl.INItializer;
-import om.KeyGenImageType;
+import initializer.configs.impl.INItializer;
 import utils.ImageWorkerExtended;
+import various.common.light.gui.UpdateProgressPanel;
+import various.common.light.om.KeyGenImageType;
 
 public class ImageGenContainerPanel extends JPanel{
 	private static final long serialVersionUID = 3880705375830247529L;

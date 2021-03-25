@@ -16,7 +16,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.SwingUtilities;
 
 import dialogutils.GenericFileChooserDialog;
-import gui.listener.KeyListenerParent;
+import various.common.light.gui.listener.KeyListenerParent;
 
 public class MainGuiShortcutsListener extends KeyListenerParent implements KeyEventDispatcher {
 	

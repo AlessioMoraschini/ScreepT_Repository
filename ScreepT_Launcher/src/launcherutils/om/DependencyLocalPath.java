@@ -11,8 +11,8 @@
  */
 package launcherutils.om;
 
-import om.OSinfo;
-import utils.SysUtils;
+import os.commons.om.OSinfo;
+import os.commons.utils.SysUtils;
 
 public class DependencyLocalPath {
 	

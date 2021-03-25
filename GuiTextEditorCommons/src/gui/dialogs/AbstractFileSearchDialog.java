@@ -47,7 +47,7 @@ import org.fife.rsta.ui.search.SearchListener;
 
 import dialogutils.GenericFileChooserDialog;
 import frameutils.frame.panels.arch.ParentPanel;
-import gui.GuiUtils;
+import various.common.light.gui.GuiUtils;
 
 /**
  * This is the base class for {@link FindDialog} and {@link ReplaceDialog}. It

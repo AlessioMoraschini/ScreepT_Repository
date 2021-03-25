@@ -17,15 +17,12 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
-import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
-import gui.GuiUtils;
-import gui.UpdateProgressPanel;
-import impl.INItializer;
-import impl.om.ImgConverterOption;
+import initializer.configs.impl.INItializer;
+import initializer.configs.impl.om.ImgConverterOption;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 
@@ -45,12 +42,15 @@ import java.io.IOException;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
-import om.ScalingAlgorithm;
 import panel.PanelFileDragNDropManager;
 import resources.IconsPathConfigurator;
-import utility.manipulation.ConversionUtils;
-import utility.string.StringWorker;
 import utils.ImageWorkerExtended;
+import various.common.light.files.FileVarious;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.UpdateProgressPanel;
+import various.common.light.om.ScalingAlgorithm;
+import various.common.light.utility.manipulation.ConversionUtils;
+import various.common.light.utility.string.StringWorker;
 
 import javax.swing.JLabel;
 

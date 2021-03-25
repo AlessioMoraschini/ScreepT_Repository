@@ -47,27 +47,27 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 
-import files.om.FileNamed;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import general.utils.ToggleAction;
-import gui.GuiUtils;
-import gui.MenuSetter;
 import gui.PdfSelector2TextFrame;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import jmenu.BrowserOpenerMenu;
 import jmenu.CustomJmenuItem;
-import om.LimitedConcurrentList;
-import om.OSinfo;
 import om.TabTextEditorObject;
+import os.commons.om.OSinfo;
 import plugin.api.AbstractPluginApplicationApi.PluginType;
 import plugin.external.arch.IPlugin;
 import plugins.ScreepTApplicationApi;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.string.StringWorker;
+import various.common.light.files.om.FileNamed;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.MenuSetter;
+import various.common.light.om.LimitedConcurrentList;
+import various.common.light.utility.string.StringWorker;
 
 public class MainGuiParent {
 

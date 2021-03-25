@@ -8,13 +8,13 @@ import java.net.URL;
 import org.junit.Test;
 
 import general.utils.WindowCreator;
-import gui.LightLicenseViewer;
-import gui.LightLicenseViewer.UserLicenseChoice;
-import network.utils.DownloadUtils;
 import resources.GeneralConfig;
-import utility.hash.ChecksumHasher;
-import utility.hash.HashingFunction;
-import utility.log.SafeLogger;
+import various.common.light.gui.LightLicenseViewer;
+import various.common.light.gui.LightLicenseViewer.UserLicenseChoice;
+import various.common.light.network.utils.DownloadUtils;
+import various.common.light.utility.hash.ChecksumHasher;
+import various.common.light.utility.hash.HashingFunction;
+import various.common.light.utility.log.SafeLogger;
 
 public class LicenseCheckerTest {
 

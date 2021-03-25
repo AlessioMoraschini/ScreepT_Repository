@@ -21,10 +21,10 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
-import files.FileVarious;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.subpanels.ImageGenContainerPanel;
-import gui.dialogs.msg.JOptionHelper;
+import various.common.light.files.FileVarious;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 
 public class ImageWorkerScreepT {
 

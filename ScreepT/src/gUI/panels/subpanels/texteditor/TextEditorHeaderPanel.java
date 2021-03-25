@@ -41,15 +41,15 @@ import crypt.aes.AesCipher;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gUI.utils.texteditor.TextEditorUtils;
-import gui.RXTextUtilities;
 import gui.TextEditTooltips;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import net.miginfocom.swing.MigLayout;
-import om.SelectionDtoFull;
 import om.TabTextEditorObject;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import util.ScreeptUtils;
+import various.common.light.gui.RXTextUtilities;
+import various.common.light.om.SelectionDtoFull;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;

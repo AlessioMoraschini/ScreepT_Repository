@@ -19,8 +19,6 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import gui.GuiUtils;
-import gui.dialogs.msg.JOptionHelper;
 import launcherutils.IniFileManager;
 import launcherutils.om.DependencyModel;
 import mainlauncher.ScreepTLauncher;
@@ -29,9 +27,11 @@ import java.awt.Button;
 import java.awt.Color;
 
 import net.miginfocom.swing.MigLayout;
-import om.OSinfo;
+import os.commons.om.OSinfo;
+import os.commons.utils.SysUtils;
 import resources.IconsPathConfigurator;
-import utils.SysUtils;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

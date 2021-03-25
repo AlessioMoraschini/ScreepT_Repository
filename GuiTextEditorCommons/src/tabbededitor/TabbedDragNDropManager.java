@@ -34,7 +34,7 @@ import java.util.TooManyListenersException;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
-import utility.log.SafeLogger;
+import various.common.light.utility.log.SafeLogger;
 
 @Deprecated
 public class TabbedDragNDropManager extends JTabbedPane{

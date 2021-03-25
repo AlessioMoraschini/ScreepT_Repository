@@ -21,12 +21,12 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
-import files.FileWorker;
-import files.FileVarious;
-import files.om.DeleteFilesByExtensionDTO;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.files.om.DeleteFilesByExtensionDTO;
 
 public class FilesAndDirectoriesManagerGUI {
 	

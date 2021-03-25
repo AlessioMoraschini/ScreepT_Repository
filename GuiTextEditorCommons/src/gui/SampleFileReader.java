@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import files.FileWorker;
 import om.SupportedFileTextEditor;
+import various.common.light.files.FileWorker;
 
 public class SampleFileReader {
 

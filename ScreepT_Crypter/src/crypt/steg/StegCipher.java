@@ -19,11 +19,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
 
-import om.BufferedImageType;
 import util.ImageEncodingUtils;
-import utility.bytes.ByteWorker;
-import utility.log.SafeLogger;
-import utility.manipulation.EntrophyzerUtils;
+import various.common.light.om.BufferedImageType;
+import various.common.light.utility.bytes.ByteWorker;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.manipulation.EntrophyzerUtils;
 
 /**
  * this class represent the coding/decoding of source byte list or array, implementing simil-steganography

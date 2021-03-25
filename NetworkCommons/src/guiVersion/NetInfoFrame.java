@@ -17,12 +17,12 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
-import gui.dialogs.msg.JOptionHelper;
 import net.miginfocom.swing.MigLayout;
 import network.NetworkAdapter;
 import network.NetworkUtils;
 import network.om.FtpSpeedTestOptions;
 import resources.IconsPathConfigurator;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;

@@ -11,30 +11,30 @@ import javax.swing.JFrame;
 import org.apache.log4j.Level;
 
 import dialogutils.JOptionHelperExtended;
-import files.CustomFileFilters;
-import files.FileVarious;
-import files.FileWorker;
-import files.ZipWorker;
-import files.watcher.ChangeDTO;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import general.utils.ScreepTLoggerUtils;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import main.MainStandAloneUpdater;
 import mainlauncher.ScreepTLauncher;
-import om.OSinfo;
 import om.TabTextEditorObject;
-import plugins.PluginManager;
+import os.commons.om.OSinfo;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import tabbededitor.CustomTabbedEditor;
-import utility.log.SafeLogger;
-import utils.SysUtils;
+import updater.module.plugins.PluginManager;
 import utils.panels.ClipboardPanel;
 import utils.panels.arch.PanelType;
+import various.common.light.files.CustomFileFilters;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.files.ZipWorker;
+import various.common.light.files.watcher.ChangeDTO;
+import various.common.light.utility.log.SafeLogger;
 
 public class MainGuiManager {
 

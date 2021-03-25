@@ -46,20 +46,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.miginfocom.swing.MigLayout;
-import om.KeyGenImageType;
 import resources.IconsPathConfigurator;
+import various.common.light.files.FileVarious;
+import various.common.light.gui.UpdateProgressPanel;
+import various.common.light.om.KeyGenImageType;
 
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
-import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.subpanels.ImageGenContainerPanel;
 import gUI.utils.ImageWorkerScreepT;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
-import gui.UpdateProgressPanel;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import maingUI.MainGUI;
 
 import java.awt.Cursor;

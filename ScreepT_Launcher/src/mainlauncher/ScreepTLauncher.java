@@ -27,12 +27,6 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.PropertyConfigurator;
 
-import files.FileVarious;
-import files.FileWorker;
-import gui.GuiUtils;
-import gui.LightLicenseViewer;
-import gui.LightLicenseViewer.UserLicenseChoice;
-import gui.dialogs.msg.JOptionHelper;
 import gui.panels.CustomizeParametersPanel;
 import gui.panels.DependenciesManagerPanel;
 import gui.panels.LauncherMainPanel;
@@ -44,13 +38,19 @@ import launcherutils.JvmHelper;
 import launcherutils.om.DependencyLocalPath;
 import launcherutils.om.DependencyModel;
 import launcherutils.om.JvmArgumentsDTO;
-import om.OSinfo;
+import os.commons.om.OSinfo;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
-import utility.log.SafeLogger;
-import utility.properties.PropertiesManager;
-import utility.string.StringWorker;
-import utils.SysUtils;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.LightLicenseViewer;
+import various.common.light.gui.LightLicenseViewer.UserLicenseChoice;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.properties.PropertiesManager;
+import various.common.light.utility.string.StringWorker;
 
 /**
  *

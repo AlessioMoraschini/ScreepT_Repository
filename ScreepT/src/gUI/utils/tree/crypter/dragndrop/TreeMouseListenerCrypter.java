@@ -32,8 +32,8 @@ import org.apache.log4j.Logger;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
-import gui.MenuSetter;
 import resources.IconsPathConfigurator;
+import various.common.light.gui.MenuSetter;
 
 public class TreeMouseListenerCrypter {
 	

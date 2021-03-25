@@ -32,15 +32,15 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JPasswordField;
 import javax.swing.text.BadLocationException;
 
-import utility.bytes.BitWorker;
-import utility.hash.SafeHasher;
-import utility.hash.SafeHasher.HashAlgorithm;
-import utility.hash.SafeHasher.IterationsLevel;
-import utility.manipulation.ConversionUtils;
-import utility.manipulation.EncodingUtils;
-import utility.manipulation.EntrophyzerUtils;
-import utility.string.StringWorker;
-import utility.string.StringWorker.EOL;
+import various.common.light.utility.bytes.BitWorker;
+import various.common.light.utility.hash.SafeHasher;
+import various.common.light.utility.hash.SafeHasher.HashAlgorithm;
+import various.common.light.utility.hash.SafeHasher.IterationsLevel;
+import various.common.light.utility.manipulation.ConversionUtils;
+import various.common.light.utility.manipulation.EncodingUtils;
+import various.common.light.utility.manipulation.EntrophyzerUtils;
+import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker.EOL;
 
 public class AesCipher {
 	

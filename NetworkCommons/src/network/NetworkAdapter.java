@@ -15,8 +15,8 @@ import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 
-import network.utils.IPaddressConverter;
-import utility.bytes.BitWorker;
+import various.common.light.network.utils.IPaddressConverter;
+import various.common.light.utility.bytes.BitWorker;
 
 public class NetworkAdapter {
 	

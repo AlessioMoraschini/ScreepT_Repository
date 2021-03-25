@@ -10,8 +10,8 @@ import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.NetworkIF;
 import oshi.software.os.OSFileStore;
-import runtime.RuntimeUtil;
-import utility.manipulation.ConversionUtils;
+import various.common.light.runtime.RuntimeUtil;
+import various.common.light.utility.manipulation.ConversionUtils;
 
 public class HwTest {
 

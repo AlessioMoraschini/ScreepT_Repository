@@ -7,11 +7,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
-import files.om.FileContentSearchDTO;
-import files.om.SearchResult;
 import frameutils.frame.arch.ParentFrame;
 import gui.filesearch.FileSearchActions;
-import utility.string.StringWorker;
+import various.common.light.files.om.FileContentSearchDTO;
+import various.common.light.files.om.SearchResult;
+import various.common.light.utility.string.StringWorker;
 
 import java.awt.GridBagLayout;
 import java.text.SimpleDateFormat;

@@ -16,10 +16,10 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import launcherutils.om.JvmArgumentsDTO;
-import om.LimitedConcurrentList;
-import om.OSinfo;
+import os.commons.om.OSinfo;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
-import utils.SysUtils;
+import various.common.light.om.LimitedConcurrentList;
 
 public class CommandsAssembler {
 

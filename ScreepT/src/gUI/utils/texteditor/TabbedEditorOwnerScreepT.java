@@ -19,14 +19,14 @@ import javax.swing.text.JTextComponent;
 import org.apache.log4j.Logger;
 
 import gUI.panels.TextEditor;
-import impl.om.TextEditorOption;
+import initializer.configs.impl.om.TextEditorOption;
 import maingUI.MainGUI;
-import om.ICommonShortcuts;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObject;
 import tabbededitor.ITabbedEditorOwner;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.arch.PanelType;
+import various.common.light.om.ICommonShortcuts;
 
 public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	

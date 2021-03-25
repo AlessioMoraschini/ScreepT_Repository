@@ -48,18 +48,12 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import dialogutils.JOptionHelperExtended;
-import files.FileWorker;
-import files.watcher.ChangeDTO;
 import frameutils.frame.ImageViewerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import general.MyFileView;
-import gui.GuiUtils;
-import gui.RXTextUtilities;
-import gui.dnd.FileDrop;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import om.ColumnTextArea;
 import om.HistoryNode;
-import om.LimitedConcurrentList;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObject;
 import resources.GeneralConfig;
@@ -67,8 +61,14 @@ import resources.IconsPathConfigurator;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
-import utility.manipulation.ConversionUtils;
-import utility.string.StringWorker;
+import various.common.light.files.FileWorker;
+import various.common.light.files.watcher.ChangeDTO;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.RXTextUtilities;
+import various.common.light.gui.dnd.FileDrop;
+import various.common.light.om.LimitedConcurrentList;
+import various.common.light.utility.manipulation.ConversionUtils;
+import various.common.light.utility.string.StringWorker;
 
 public class CustomTabbedEditor implements ITabsManager {
 

@@ -27,7 +27,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import gui.dialogs.msg.JOptionHelper;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 
 /**
  * This is a class that implements a customizable closable (default is not closable, must set closable to true, and then set stopProcess to to true when you want to signal for close)

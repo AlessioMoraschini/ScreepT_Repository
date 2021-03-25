@@ -43,13 +43,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import network.http.HttpHelper;
 import network.om.FtpSpeedTestOptions;
-import network.utils.IPaddressConverter;
 import resources.GeneralConfig;
-import utility.log.SafeLogger;
-import utility.manipulation.ConversionUtils;
-import utility.string.StringWorker;
+import various.common.light.network.http.HttpHelper;
+import various.common.light.network.utils.IPaddressConverter;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.manipulation.ConversionUtils;
+import various.common.light.utility.string.StringWorker;
 
 public class NetworkUtils {
 

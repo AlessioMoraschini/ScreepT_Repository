@@ -10,10 +10,10 @@ import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.TokenTypes;
 
-import gui.dialogs.color.ColorSelector;
-import gui.dialogs.color.om.ColorSelectionElement;
-import gui.dialogs.font.om.FontType;
-import utility.log.SafeLogger;
+import various.common.light.gui.dialogs.color.ColorSelector;
+import various.common.light.gui.dialogs.color.om.ColorSelectionElement;
+import various.common.light.gui.dialogs.font.om.FontType;
+import various.common.light.utility.log.SafeLogger;
 
 public class TokensStyleHelp {
 	

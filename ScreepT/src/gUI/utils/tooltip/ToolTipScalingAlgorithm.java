@@ -16,7 +16,7 @@ import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
-import om.ScalingAlgorithm;
+import various.common.light.om.ScalingAlgorithm;
 
 public class ToolTipScalingAlgorithm extends DefaultListCellRenderer {
 	private static final long serialVersionUID = -8632379055811951011L;

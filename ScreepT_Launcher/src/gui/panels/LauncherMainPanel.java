@@ -15,8 +15,6 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import gui.GUIStyelSettings;
-import gui.GuiUtils;
 import mainlauncher.ScreepTLauncher;
 
 import javax.swing.JPanel;
@@ -26,13 +24,15 @@ import javax.swing.ToolTipManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
-import network.proxy.ProxySettingsGUI;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import utils.SysUtils;
+import various.common.light.gui.GUIStyelSettings;
+import various.common.light.gui.GuiUtils;
+import various.common.light.network.proxy.ProxySettingsGUI;
 
 import javax.swing.JLabel;
 import javax.imageio.ImageIO;

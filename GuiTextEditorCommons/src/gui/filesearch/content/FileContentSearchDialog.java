@@ -53,21 +53,21 @@ import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.SearchContext;
 
-import files.FileVarious;
-import files.om.FileContentSearchDTO;
-import files.om.FileNamed;
-import gui.GUIStyelSettings;
-import gui.GuiUtils;
 import gui.dialogs.AbstractFileSearchDialog;
-import gui.dialogs.msg.JOptionHelper;
-import gui.dnd.FileDrop;
 import gui.filesearch.FileSearchActions;
-import impl.om.FileOptions;
+import initializer.configs.impl.om.FileOptions;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.manipulation.ArrayHelper;
-import utility.reflection.ReflectionUtils;
-import utility.string.StringWorker;
+import various.common.light.files.FileVarious;
+import various.common.light.files.om.FileContentSearchDTO;
+import various.common.light.files.om.FileNamed;
+import various.common.light.gui.GUIStyelSettings;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.gui.dnd.FileDrop;
+import various.common.light.utility.manipulation.ArrayHelper;
+import various.common.light.utility.reflection.ReflectionUtils;
+import various.common.light.utility.string.StringWorker;
 
 
 /**

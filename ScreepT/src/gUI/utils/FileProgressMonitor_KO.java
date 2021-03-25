@@ -11,7 +11,7 @@
  */
 package gUI.utils;
 
-import gui.UpdateProgressPanel;
+import various.common.light.gui.UpdateProgressPanel;
 
 public class FileProgressMonitor_KO {
 	

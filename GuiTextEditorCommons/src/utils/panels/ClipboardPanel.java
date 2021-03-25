@@ -38,12 +38,9 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import combobox.TextPaneComboBoxEditor;
 import dialogutils.JOptionHelperExtended;
-import files.FileWorker;
-import files.FileVarious;
 import frameutils.utils.GuiUtilsExtended;
-import gui.GuiUtils;
-import impl.INItializer;
-import impl.om.TextEditorOption;
+import initializer.configs.impl.INItializer;
+import initializer.configs.impl.om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -51,6 +48,9 @@ import utils.RsyntaxUtils;
 import utils.dialog.ITextAreaDialogs;
 import utils.panels.arch.IParentPanel;
 import utils.panels.arch.TogglePanelTextArea;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.gui.GuiUtils;
 
 import java.awt.Dimension;
 import javax.swing.JLabel;

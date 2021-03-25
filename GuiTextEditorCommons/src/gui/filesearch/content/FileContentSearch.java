@@ -18,19 +18,19 @@ import javax.swing.tree.TreePath;
 
 import org.apache.commons.io.FilenameUtils;
 
-import files.CustomFileFilters;
-import files.FileVarious;
-import files.FileWorker;
-import files.om.FileContentSearchDTO;
-import files.om.SearchResult;
-import gui.UpdateProgressPanel;
-import gui.dialogs.msg.JOptionHelper;
 import gui.filesearch.FileSearchActions;
 import gui.filesearch.resultview.FileSearchResultViewer;
 import om.SupportedFileTextEditor;
-import utility.log.SafeLogger;
-import utility.manipulation.ArrayHelper;
-import utility.string.StringWorker;
+import various.common.light.files.CustomFileFilters;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.files.om.FileContentSearchDTO;
+import various.common.light.files.om.SearchResult;
+import various.common.light.gui.UpdateProgressPanel;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.manipulation.ArrayHelper;
+import various.common.light.utility.string.StringWorker;
 
 public class FileContentSearch {
 	

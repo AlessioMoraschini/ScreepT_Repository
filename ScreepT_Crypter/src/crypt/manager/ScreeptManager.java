@@ -39,12 +39,12 @@ import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
 import crypt.steg.StegOmResult;
-import files.CustomFileComparator;
 import crypt.steg.STEGException;
 import util.ImageEncodingUtils;
 import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;
-import utility.log.SafeLogger;
+import various.common.light.files.CustomFileComparator;
+import various.common.light.utility.log.SafeLogger;
 
 /**
  * 

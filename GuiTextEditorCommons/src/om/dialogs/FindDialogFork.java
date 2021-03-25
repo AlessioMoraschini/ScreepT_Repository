@@ -48,10 +48,10 @@ import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 
-import gui.GUIStyelSettings;
-import gui.GuiUtils;
 import resources.GeneralConfig;
-import utility.reflection.ReflectionUtils;
+import various.common.light.gui.GUIStyelSettings;
+import various.common.light.gui.GuiUtils;
+import various.common.light.utility.reflection.ReflectionUtils;
 
 
 /**

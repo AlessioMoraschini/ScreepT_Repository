@@ -19,7 +19,6 @@ import javax.swing.JScrollPane;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
-import gui.RXTextUtilities;
 import guistyle.GUIStyelSettingsExtended;
 import net.miginfocom.swing.MigLayout;
 
@@ -31,6 +30,7 @@ import resources.GeneralConfig;
 import utils.dialog.ITextAreaDialogs;
 import utils.panels.arch.IParentPanel;
 import utils.panels.arch.TogglePanelTextArea;
+import various.common.light.gui.RXTextUtilities;
 
 public class MapTextAreaPanel extends TogglePanelTextArea implements IParentPanel{
 	private static final long serialVersionUID = 8967000441862912408L;

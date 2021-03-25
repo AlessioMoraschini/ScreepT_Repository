@@ -25,21 +25,21 @@ import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 
 import dialogutils.GenericFileChooserDialog;
-import files.FileVarious;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
-import gui.GuiUtils;
-import gui.RXTextUtilities;
 import gui.TextEditTooltips;
 import maingUI.MainGUI;
-import om.ICommonShortcuts;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
-import utility.KeyListenerUtils;
-import utility.string.StringWorker.EOL;
-import utils.SysUtils;
+import various.common.light.files.FileVarious;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.RXTextUtilities;
+import various.common.light.om.ICommonShortcuts;
+import various.common.light.utility.KeyListenerUtils;
+import various.common.light.utility.string.StringWorker.EOL;
 
 public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonShortcuts{
 	

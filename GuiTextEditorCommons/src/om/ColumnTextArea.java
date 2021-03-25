@@ -44,11 +44,13 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RUndoManager;
 
 import frameutils.utils.GuiUtilsExtended;
-import gui.GuiUtils;
-import gui.RXTextUtilities;
-import gui.dialogs.font.om.FontMetricsWrapper;
 import resources.GeneralConfig;
-import utility.string.StringWorker.EOL;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.RXTextUtilities;
+import various.common.light.gui.dialogs.font.om.FontMetricsWrapper;
+import various.common.light.om.ICommonShortcuts;
+import various.common.light.om.SelectionDtoFull;
+import various.common.light.utility.string.StringWorker.EOL;
 
 @SuppressWarnings("restriction")
 public class ColumnTextArea extends RSyntaxTextArea {

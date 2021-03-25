@@ -7,10 +7,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import files.om.FileContentSearchDTO;
-import files.om.SearchResult;
 import gui.filesearch.FileSearchActions;
 import gui.filesearch.content.FileContentSearch;
+import various.common.light.files.om.FileContentSearchDTO;
+import various.common.light.files.om.SearchResult;
 
 public class FileContentSearchTest {
 

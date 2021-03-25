@@ -2,9 +2,9 @@ package gui;
 
 import javax.swing.JFrame;
 
-import files.om.SearchResult;
 import gui.filesearch.FileSearchActions;
 import gui.filesearch.content.FileContentSearchDialog;
+import various.common.light.files.om.SearchResult;
 
 public class FileSearchTest {
 

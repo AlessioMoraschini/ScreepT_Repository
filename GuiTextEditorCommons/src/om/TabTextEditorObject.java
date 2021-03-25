@@ -62,27 +62,29 @@ import org.fife.ui.rsyntaxtextarea.parser.Parser;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
-import files.FileVarious;
-import files.watcher.FileChangeMonitor;
 import frameutils.utils.GuiUtilsExtended;
-import gui.GuiUtils;
-import gui.MenuSetter;
-import gui.RXTextUtilities;
 import gui.TextEditTooltips;
-import gui.dnd.FileDrop;
-import impl.INItializer;
-import impl.om.TextEditorOption;
+import initializer.configs.impl.INItializer;
+import initializer.configs.impl.om.TextEditorOption;
 import jmenu.BrowserOpenerMenu;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbededitor.IChangeMonManager;
 import tabbededitor.ITabsManager;
-import utility.string.StringWorker;
-import utility.string.TextAreaStringEditor;
-import utility.string.StringWorker.EOL;
-import utility.time.AmAsyncAction;
 import utils.RsyntaxUtils;
-import utils.SysUtils;
+import various.common.light.files.FileVarious;
+import various.common.light.files.watcher.FileChangeMonitor;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.MenuSetter;
+import various.common.light.gui.RXTextUtilities;
+import various.common.light.gui.dnd.FileDrop;
+import various.common.light.om.ICommonShortcuts;
+import various.common.light.om.SelectionDtoFull;
+import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.string.TextAreaStringEditor;
+import various.common.light.utility.string.StringWorker.EOL;
+import various.common.light.utility.time.AmAsyncAction;
 
 public class TabTextEditorObject {
 	

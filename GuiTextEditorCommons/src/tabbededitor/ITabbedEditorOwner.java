@@ -16,8 +16,8 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.JTextArea;
 import javax.swing.text.JTextComponent;
 
-import om.ICommonShortcuts;
 import om.SupportedFileTextEditor;
+import various.common.light.om.ICommonShortcuts;
 
 public interface ITabbedEditorOwner {
 	

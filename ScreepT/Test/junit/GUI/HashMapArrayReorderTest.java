@@ -14,11 +14,11 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
-import configuration.RepeatTest;
-import configuration.RepeatedTestRule;
+import test.util.configuration.RepeatTest;
+import test.util.configuration.RepeatedTestRule;
 import testUtils.TestTimer;
-import utility.manipulation.ConversionUtils;
-import utility.manipulation.EntrophyzerUtils;
+import various.common.light.utility.manipulation.ConversionUtils;
+import various.common.light.utility.manipulation.EntrophyzerUtils;
 
 public class HashMapArrayReorderTest {
 

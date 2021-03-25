@@ -18,6 +18,7 @@ import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
 import utils.panels.ClipboardPanel;
 import utils.panels.arch.TogglePanelTextArea;
+import various.common.light.files.om.FileNamed;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -46,15 +47,14 @@ import org.apache.log4j.Logger;
 import com.jgoodies.looks.plastic.PlasticTheme;
 
 import dialogutils.JOptionHelperExtended;
-import files.om.FileNamed;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import guistyle.GUIStyelSettingsExtended;
 import guistyle.LookAndFeelInfoCustom;
-import impl.INItializer;
-import impl.om.GuiOption;
-import impl.om.TextEditorOption;
+import initializer.configs.impl.INItializer;
+import initializer.configs.impl.om.GuiOption;
+import initializer.configs.impl.om.TextEditorOption;
 import maingUI.MainGUI;
 
 import javax.swing.UIManager;

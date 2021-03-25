@@ -18,10 +18,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
-import files.FileVarious;
-import files.watcher.ChangeDTO;
-import files.watcher.FileChangeMonitor;
 import om.TabTextEditorObject;
+import various.common.light.files.FileVarious;
+import various.common.light.files.watcher.ChangeDTO;
+import various.common.light.files.watcher.FileChangeMonitor;
 
 public class ChangeMonitorManager implements IChangeMonManager{
 	

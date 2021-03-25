@@ -23,7 +23,6 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import dialogutils.JOptionHelperExtended;
-import files.FileWorker;
 import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.utils.filedialog.INIfileChoosER;
@@ -31,7 +30,7 @@ import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
 import gUI.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
 import gui.dialogs.FindDialogFork;
 import guistyle.GUIStyelSettingsExtended;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import maingUI.MainGUI;
 import maingUI.MainGuiUtils;
 import net.miginfocom.swing.MigLayout;
@@ -43,6 +42,7 @@ import utils.ImageWorkerExtended;
 import utils.RsyntaxUtils;
 import utils.dialog.ITextAreaDialogs;
 import utils.dialog.TextAreaDialogs;
+import various.common.light.files.FileWorker;
 
 import java.awt.Font;
 import java.awt.Insets;

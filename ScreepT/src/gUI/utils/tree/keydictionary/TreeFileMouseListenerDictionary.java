@@ -36,14 +36,14 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
-import files.FileWorker;
 import gUI.frames.KeyGenFrame;
-import gui.MenuSetter;
-import gui.UpdateProgressPanel;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.manipulation.ConversionUtils;
+import various.common.light.files.FileWorker;
+import various.common.light.gui.MenuSetter;
+import various.common.light.gui.UpdateProgressPanel;
+import various.common.light.utility.manipulation.ConversionUtils;
 
 public class TreeFileMouseListenerDictionary {
 	

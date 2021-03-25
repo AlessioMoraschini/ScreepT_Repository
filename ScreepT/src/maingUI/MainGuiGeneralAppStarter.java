@@ -35,35 +35,35 @@ import org.ini4j.Wini;
 
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
-import files.FileVarious;
-import files.FileWorker;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.utils.dependencycheck.LibChecker;
 import general.utils.SafetyScreepTShortcutsListener;
 import general.utils.ScreepTLoggerUtils;
-import gui.GuiUtils;
-import gui.LightLicenseViewer;
-import gui.LightLicenseViewer.UserLicenseChoice;
-import gui.dialogs.msg.JOptionHelper;
 import gui.utils.LauncherLoaderFrame;
 import handlers.AWTExceptionHandler;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import launcherutils.IniFileManager;
-import network.proxy.ProxySettingsGUI;
 import plugin.api.AbstractPluginApplicationApi;
 import plugin.api.AbstractPluginApplicationApi.PluginType;
 import plugin.external.arch.IPlugin;
-import plugins.PluginManager;
 import plugins.ScreepTApplicationApi;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import runtime.ParametricExceptionThread;
 import updater.UpdatesManager;
-import utility.log.SafeLogger;
-import utility.properties.PropertiesManager;
-import utility.time.Benchmarker;
+import updater.module.plugins.PluginManager;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.LightLicenseViewer;
+import various.common.light.gui.LightLicenseViewer.UserLicenseChoice;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.network.proxy.ProxySettingsGUI;
+import various.common.light.runtime.ParametricExceptionThread;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.properties.PropertiesManager;
+import various.common.light.utility.time.Benchmarker;
 
 public class MainGuiGeneralAppStarter {
 

@@ -40,9 +40,6 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.Gutter;
 
 import dialogutils.JOptionHelperExtended;
-import files.FileWorker;
-import files.FileVarious;
-import files.om.FileNamed;
 import frameutils.frame.panels.ShellReadWritePanel;
 import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.utils.GuiUtilsExtended;
@@ -53,9 +50,8 @@ import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import gui.TextEditTooltips;
 import gui.dialogs.FindDialogFork;
 import gui.dialogs.ReplaceDialogFork;
-import gui.dialogs.msg.JOptionHelper;
 import guistyle.GUIStyelSettingsExtended;
-import impl.om.TextEditorOption;
+import initializer.configs.impl.om.TextEditorOption;
 import maingUI.MainGUI;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObject;
@@ -70,8 +66,6 @@ import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
 import treeutils.om.FileNameCellRenderer;
 import treeutils.om.FileTreeNamedModel;
-import utility.reflection.ReflectionUtils;
-import utility.string.StringWorker;
 import utils.ImageWorkerExtended;
 import utils.RsyntaxUtils;
 import utils.dialog.ITextAreaDialogs;
@@ -80,6 +74,12 @@ import utils.panels.ClipboardPanel;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.arch.PanelType;
 import utils.panels.arch.TogglePanelTextArea;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.files.om.FileNamed;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.utility.reflection.ReflectionUtils;
+import various.common.light.utility.string.StringWorker;
 
 public class TextEditorUtils {
 	

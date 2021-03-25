@@ -32,19 +32,19 @@ import org.apache.log4j.Logger;
 import org.ini4j.Wini;
 
 import dialogutils.JOptionHelperExtended;
-import files.FileWorker;
-import files.FileVarious;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.utils.filedialog.INIfileChoosER;
-import gui.MenuSetter;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import treeutils.om.FileTreeModel;
 import utils.ImageWorkerExtended;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.gui.MenuSetter;
 
 public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBasic{
 	

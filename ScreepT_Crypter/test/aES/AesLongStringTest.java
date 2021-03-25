@@ -14,7 +14,7 @@ import javax.crypto.NoSuchPaddingException;
 import org.junit.Test;
 
 import crypt.aes.AesCipher;
-import utils.Generator;
+import test.util.utils.Generator;
 
 public class AesLongStringTest {
 

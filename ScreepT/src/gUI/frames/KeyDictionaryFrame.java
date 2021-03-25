@@ -18,17 +18,17 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
-import files.FileWorker;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import maingUI.MainGUI;
 import net.miginfocom.swing.MigLayout;
-import om.BufferedImageType;
 import resources.IconsPathConfigurator;
 import treeutils.om.FileTreeModel;
-import utility.manipulation.ConversionUtils;
+import various.common.light.files.FileWorker;
+import various.common.light.om.BufferedImageType;
+import various.common.light.utility.manipulation.ConversionUtils;
 
 import javax.swing.JPanel;
 import java.awt.SystemColor;

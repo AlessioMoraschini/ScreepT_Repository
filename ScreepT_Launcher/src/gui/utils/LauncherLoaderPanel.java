@@ -21,13 +21,12 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
-import utility.string.StringWorker;
+import various.common.light.gui.GUIStyelSettings;
+import various.common.light.utility.string.StringWorker;
 
 import javax.swing.JProgressBar;
 
 import org.apache.log4j.Logger;
-
-import gui.GUIStyelSettings;
 
 import javax.swing.JLabel;
 import java.awt.CardLayout;

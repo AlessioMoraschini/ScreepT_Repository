@@ -3,7 +3,7 @@ package JUnit;
 import org.junit.Test;
 
 import launcherutils.JvmHelper;
-import utils.TestUtils;
+import test.util.utils.TestUtils;
 
 public class CompareVersionTest {
 

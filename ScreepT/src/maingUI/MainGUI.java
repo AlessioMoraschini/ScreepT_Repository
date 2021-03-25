@@ -50,9 +50,7 @@ import org.ini4j.Wini;
 
 import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
-import arch.InitOwner;
 import dialogutils.JOptionHelperExtended;
-import files.FileVarious;
 import frameutils.frame.ImageViewerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.frames.GeneralOptionsFrame;
@@ -64,21 +62,23 @@ import gUI.panels.TextEditor;
 import gUI.utils.filedialog.FilesAndDirectoriesManagerGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import general.utils.WindowCreator;
-import gui.ComponentResizer;
-import gui.GuiUtils;
-import gui.PluginManagerGUI;
 import guistyle.GUIStyelSettingsExtended;
-import impl.INItializer;
+import initializer.configs.arch.InitOwner;
+import initializer.configs.impl.INItializer;
 import jmenu.CustomJmenuItem;
 import mainlauncher.ScreepTLauncher;
 import net.miginfocom.swing.MigLayout;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import utility.manipulation.ConversionUtils;
-import utils.SysUtils;
+import updater.module.gui.PluginManagerGUI;
+import various.common.light.files.FileVarious;
+import various.common.light.gui.ComponentResizer;
+import various.common.light.gui.GuiUtils;
+import various.common.light.utility.manipulation.ConversionUtils;
 
 public class MainGUI extends MainGuiParent{
 

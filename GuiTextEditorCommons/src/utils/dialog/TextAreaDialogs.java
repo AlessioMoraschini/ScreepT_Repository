@@ -43,11 +43,11 @@ import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtilsExtended;
 import gui.dialogs.FindDialogFork;
 import gui.dialogs.ReplaceDialogFork;
-import om.LimitedConcurrentList;
 import resources.IconsPathConfigurator;
-import utility.reflection.ReflectionLibChecker;
-import utility.reflection.ReflectionUtils;
-import utility.string.TextAreaStringEditor;
+import various.common.light.om.LimitedConcurrentList;
+import various.common.light.utility.reflection.ReflectionLibChecker;
+import various.common.light.utility.reflection.ReflectionUtils;
+import various.common.light.utility.string.TextAreaStringEditor;
 
 public class TextAreaDialogs {
 

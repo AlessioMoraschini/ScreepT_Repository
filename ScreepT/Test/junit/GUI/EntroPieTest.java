@@ -7,9 +7,9 @@ import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 
-import configuration.RepeatTest;
-import configuration.RepeatedTestRule;
-import utility.bytes.ByteArrayShuffler;
+import test.util.configuration.RepeatTest;
+import test.util.configuration.RepeatedTestRule;
+import various.common.light.utility.bytes.ByteArrayShuffler;
 
 public class EntroPieTest {
 
