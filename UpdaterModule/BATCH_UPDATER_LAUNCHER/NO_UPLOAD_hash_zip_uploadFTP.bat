@@ -1,1 +1,0 @@
-java -jar updater.jar -generateHashes-uploadFtpUpdates true manifest.properties

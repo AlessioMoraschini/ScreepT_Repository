@@ -1,1 +1,0 @@
-java -jar updater.jar -generateHashes true manifest.properties
