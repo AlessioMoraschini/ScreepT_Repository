@@ -1,120 +1,124 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>GuiTextEditorCommons</groupId>
-  <artifactId>GuiTextEditorCommons</artifactId>
-  <version>1.0</version>
- 
-  <properties>
-  	<!-- #################### LICENSE COMMON DATA ################# -->
-	<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
-	<developer.mail>info@am-design-development.com</developer.mail>
-	<inception.year>2019</inception.year>
-	<current.year>2020</current.year>
-	<project.license.name>Proprietary dual License (Freeware|Commercial)</project.license.name>
-	<project.main.url>https://www.am-design-development.com</project.main.url>
-	<project.license.url>../License_ScreepT.html</project.license.url>
-  </properties>
-  
-  <packaging>jar</packaging>
-  
-  <name>GuiTextEditorCommons</name>
-  <description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>GuiTextEditorCommons</groupId>
+	<artifactId>GuiTextEditorCommons</artifactId>
+	<version>1.0</version>
+
+	<parent>
+		<groupId>CommonParentGlobal</groupId>
+		<artifactId>CommonParentGlobal</artifactId>
+		<version>${parent.common.version}</version>
+		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
+	</parent>
+
+	<properties>
+		<!-- #################### LICENSE COMMON DATA ################# -->
+		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
+		<developer.mail>info@am-design-development.com</developer.mail>
+		<inception.year>${screept.start.year}</inception.year>
+		<current.year>${screept.current.year}</current.year>
+		<project.license.name>Proprietary dual License (Freeware|Commercial)</project.license.name>
+		<project.main.url>https://www.am-design-development.com</project.main.url>
+		<project.license.url>../License_ScreepT.html</project.license.url>
+	</properties>
+
+	<packaging>jar</packaging>
+
+	<name>GuiTextEditorCommons</name>
+	<description>
   	This module is Specific for all the functions needed by the text editor ScreepT's module.
   </description>
-  <url>${project.main.url}</url>
-  <inceptionYear>${inception.year}</inceptionYear>
-  <licenses>
-    <license>
-      <name>${project.license.name}</name>
-      <url>${project.license.url}</url>
-    </license>
-  </licenses>
-  <developers>
-    <developer>
-      <name>${developer.name}</name>
-    </developer>
-  </developers>
-  
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <plugins>
-	    <!-- download source code in Eclipse, best practice -->
-	      <plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-eclipse-plugin</artifactId>
-	        <version>2.9</version>
-	        <configuration>
-	          <downloadSources>true</downloadSources>
-	          <downloadJavadocs>false</downloadJavadocs>
-	        </configuration>
-	      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  <repositories>
-    <repository>
-      <id>nexus.talanlabs.com</id>
-      <name>Talan repo</name>
-      <url>http://nexus.talanlabs.com/content/repositories/releases/</url>
-    </repository>
-  </repositories>
-  <dependencies>
-  		
-	<!-- https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea -->
-	<dependency>
-	    <groupId>com.fifesoft</groupId>
-	    <artifactId>rsyntaxtextarea</artifactId>
-	    <version>3.1.2</version>
-	</dependency>
+	<url>${project.main.url}</url>
+	<inceptionYear>${inception.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${project.license.name}</name>
+			<url>${project.license.url}</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
 
-	<!-- 
-	<dependency>
-	    <groupId>com.fifesoft</groupId>
-	    <artifactId>autocomplete</artifactId>
-	    <version>3.0.4</version>
-	</dependency> -->
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<!-- download source code in Eclipse, best practice -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>nexus.talanlabs.com</id>
+			<name>Talan repo</name>
+			<url>http://nexus.talanlabs.com/content/repositories/releases/</url>
+		</repository>
+	</repositories>
+	<dependencies>
 
-		
-    <!-- https://mvnrepository.com/artifact/com.fifesoft/spellchecker -->
-	<dependency>
-	    <groupId>com.fifesoft</groupId>
-	    <artifactId>spellchecker</artifactId>
-	    <version>3.0.0</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/com.fifesoft/rstaui -->
-	<dependency>
-	    <groupId>com.fifesoft</groupId>
-	    <artifactId>rstaui</artifactId>
-	    <version>3.0.0</version>
-	</dependency>
-			
-	<dependency>
-		<groupId>GuiCommons</groupId>
-		<artifactId>GuiCommons</artifactId>
-	 	<version>1.0</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>Initializer_Configs</groupId>
-		<artifactId>Initializer_Configs</artifactId>
-		<version>1.0</version>
-	</dependency>
-	
-	<!-- Exclude test only dependencies from build -->
-	<dependency>
-		<groupId>junit</groupId>
-		<artifactId>junit</artifactId>
-		<version>4.12</version>
-		<scope>test</scope>
-	</dependency>
-	
-  </dependencies>
+		<!-- https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea -->
+		<dependency>
+			<groupId>com.fifesoft</groupId>
+			<artifactId>rsyntaxtextarea</artifactId>
+			<version>${rsyntax.textarea.version}</version>
+		</dependency>
+
+		<!-- <dependency> <groupId>com.fifesoft</groupId> <artifactId>autocomplete</artifactId> 
+			<version>3.0.4</version> </dependency> -->
+
+
+		<!-- https://mvnrepository.com/artifact/com.fifesoft/spellchecker -->
+		<dependency>
+			<groupId>com.fifesoft</groupId>
+			<artifactId>spellchecker</artifactId>
+			<version>${rsyntax.textarea.utils.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fifesoft/rstaui -->
+		<dependency>
+			<groupId>com.fifesoft</groupId>
+			<artifactId>rstaui</artifactId>
+			<version>${rsyntax.textarea.utils.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>GuiCommons</groupId>
+			<artifactId>GuiCommons</artifactId>
+			<version>${gui.commons.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>Initializer_Configs</groupId>
+			<artifactId>Initializer_Configs</artifactId>
+			<version>${initializer.version}</version>
+		</dependency>
+
+		<!-- Exclude test only dependencies from build -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
 </project>

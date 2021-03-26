@@ -33,28 +33,28 @@ import various.common.light.utility.manipulation.ArrayHelper;
 import various.common.light.utility.string.StringWorker;
 
 public class FileContentSearch {
-	
+
 	public static SafeLogger logger = new SafeLogger(FileContentSearch.class);
-	
+
 	public static final String NEGATION_FILTER = "<>";
 
 	private AtomicInteger totalSourcesScanned;
 	private List<File> sourceFiles;
 	public List<SearchResult> results;
 	public FileContentSearchDTO searchDTO;
-	
+
 	public Pattern patternRegex;
 	public boolean useInternalRegex = false;
-	
+
 	public FileSearchActions searchActions;
-	
-	
+
+
 	FileSearchResultViewer resultViewer;
-	
+
 	JOptionHelper dialogHelper;
-	
+
 	String fileEncoding;
-	
+
 	public FileContentSearch(FileContentSearchDTO searchDTO, List<File> sources, FileSearchActions searchActions) {
 
 		this.totalSourcesScanned = new AtomicInteger(0);
@@ -63,48 +63,48 @@ public class FileContentSearch {
 		results = new ArrayList<SearchResult>();
 		resultViewer = new FileSearchResultViewer(searchActions, null, searchDTO);
 		resultViewer.sourceFilesTotal = sourceFiles.size();
-		
+
 		dialogHelper = new JOptionHelper(resultViewer);
-		
+
 		if(searchDTO.regex || searchDTO.wholeWord) {
-			
+
 			useInternalRegex = true;
-			String searchString = searchDTO.wholeWord 
+			String searchString = searchDTO.wholeWord
 					? "\\b" + searchDTO.searchString + "\\b"
 					: searchDTO.searchString;
-			
-			patternRegex = searchDTO.matchCase 
+
+			patternRegex = searchDTO.matchCase
 					? Pattern.compile(searchString)
 					: Pattern.compile(searchString, Pattern.CASE_INSENSITIVE);
 		}
-		
+
 		fileEncoding = System.getProperty("file.encoding");
-		
-		this.searchActions = searchActions != null 
+
+		this.searchActions = searchActions != null
 				? searchActions
 				: new FileSearchActions() {};
-				
+
 	}
-	
+
 	/**
 	 * List all files to search into and start search for every one
 	 * @return
 	 */
 	public List<SearchResult> startSearch(boolean showProgressUpdater){
-		
+
 		logger.info("Starting String search into files...");
 		results = new ArrayList<SearchResult>();
 		UpdateProgressPanel updateProgPanel = new UpdateProgressPanel(false);
 		updateProgPanel.progBarEnabled.set(showProgressUpdater);
 		int i = 1;
 		int totalFilesToScan = sourceTotalSize();
-		
+
 		// Start source files iteration
 		try {
 			for(File source : sourceFiles) {
 				totalSourcesScanned.incrementAndGet();
 				try {
-					
+
 					// Update progress values
 					String msg = source.getName() + " (" + i + "/" + sourceFiles.size() + ")";
 					int progressPerc = (int)(((float)i/totalFilesToScan) * 100);
@@ -113,7 +113,7 @@ public class FileContentSearch {
 					if(progressPerc == 99) {
 						updateProgPanel.setUndefinedDuration();
 					}
-					
+
 					// Search into current file
 					SearchResult currentResult = searchIntoFile(source, searchDTO, updateProgPanel);
 					currentResult.reorderByLine();
@@ -128,19 +128,19 @@ public class FileContentSearch {
 				} catch (IOException e) {
 					logger.error("An error occurred while searching into " + source, e);
 				}
-				
+
 				if(updateProgPanel.stopProcess.get()) {
 					logger.info("Search interrupted by user");
 					searchActions.searchStoppedAction();
 					break;
 				}
-				
+
 				i++;
 			}
-		
+
 		} catch (Exception e) {
 			logger.error("An error occurred during search!", e);
-		
+
 		} finally {
 			updateProgPanel.forceClose();
 			searchActions.searchCompleted(results);
@@ -154,25 +154,25 @@ public class FileContentSearch {
 				resultViewer.resultsTree.expandPath(new TreePath(root.getPath()));
 			});
 		}
-		
+
 		logger.info("Finished String search into files");
 		logger.debug("Search results: " + results);
 		return results;
 	}
-	
+
 	/**
-	 * In case of directories all contained files will be added to list, 
+	 * In case of directories all contained files will be added to list,
 	 * In case of files thwy will be directly added to list
-	 * 
+	 *
 	 * @param rawSources mix of files and directories to search into
 	 * @return all the source files to search in (no directories)
 	 */
 	private List<File> retrieveSourceFilesToUse(List<File> rawSources) {
 		List<File> elaboredSources = new ArrayList<>();
-		List<File> tempSources = rawSources == null || rawSources.isEmpty() 
-				? new ArrayList<>() 
+		List<File> tempSources = rawSources == null || rawSources.isEmpty()
+				? new ArrayList<>()
 				: rawSources;
-				
+
 		for(File tempSource : tempSources) {
 			if(tempSource.isDirectory()) {
 				List<File> subDirFiles = FileWorker.getAllContent(tempSource, CustomFileFilters.FILE_ONLY);
@@ -181,30 +181,30 @@ public class FileContentSearch {
 				elaboredSources.add(tempSource);
 			}
 		}
-		
+
 		if(!searchDTO.binariesIncluded) {
 			elaboredSources = removeBinaries(elaboredSources);
 		}
-		
+
 		if(hasFileFilters()) {
 			elaboredSources = applyFilters(elaboredSources, searchDTO);
 		}
-		
+
 		return elaboredSources;
 	}
-	
+
 	private boolean hasFileFilters() {
 		if(searchDTO.fileFilters == null || searchDTO.fileFilters.length <= 0)
 			return false;
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Use this only in case of file source: directory source will return an empty result
 	 * @param source
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public SearchResult searchIntoFile(File source, FileContentSearchDTO searchDTO, UpdateProgressPanel progressPanel) throws IOException {
 		SearchResult result = new SearchResult(source);
@@ -216,18 +216,18 @@ public class FileContentSearch {
 			return result;
 		}
 
-	
+
 		logger.info("searchIntoFile starting -> Search data: " + searchDTO);
 		long startTime = System.currentTimeMillis();
-	
+
 		FileInputStream readerStream = new FileInputStream(source);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, fileEncoding));
-		
+
 		try {
 			int i = 1;
 			String line;
 			while ((line = reader.readLine()) != null) {
-				
+
 				if(progressPanel.stopProcess.get()) {
 					logger.info("Search interrupted by user");
 					searchActions.searchStoppedAction();
@@ -237,32 +237,32 @@ public class FileContentSearch {
 				searchIntoLine(i, line, searchDTO, result);
 				i ++;
 			}
-			
+
 		} catch (IOException e) {
 			logger.error("An error occurred!", e);
 			throw e;
-		
+
 		} finally {
 			readerStream.close();
-			reader.close();			
+			reader.close();
 		}
-		
+
 		logger.info("searchIntoFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return result;
 	}
-	
+
 	/**
 	 * Single line search function
 	 */
 	public void searchIntoLine(int line, String sourceLine, FileContentSearchDTO searchDTO, SearchResult result) {
-		
+
 		// Initialize search variables
 		int index = 0;
-		
+
 		// Start search
-		
+
 		if(useInternalRegex && patternRegex != null) {
-			
+
 			Matcher matcher = patternRegex.matcher(sourceLine);
 		    while (matcher.find()) {
 		    	// add all matches on the line
@@ -273,21 +273,21 @@ public class FileContentSearch {
 					// No match found
 				}
 		    }
-			
+
 		} else {
 			String lineMod = searchDTO.matchCase ? sourceLine : sourceLine.toLowerCase();
 			String match = searchDTO.matchCase ? searchDTO.searchString : searchDTO.searchString.toLowerCase();
 			index = lineMod.indexOf(match);
-			
+
 			while(index >= 0) {
-				
+
 				// If result acceptable then add it
 				result.addMatch(line, index, index + searchDTO.searchString.length(), sourceLine);
 				index = lineMod.indexOf(match, index+1);
 			}
 		}
 	}
-	
+
 	private List<File> removeBinaries(List<File> sources){
 		List<File> filtered = new ArrayList<>();
 		for(File source : sources) {
@@ -299,23 +299,23 @@ public class FileContentSearch {
 				logger.error("Cannot check if " + source + " is binary or not", e);
 			}
 		}
-		
+
 		return filtered;
 	}
-	
+
 	public static boolean isExclusionFilter(String filter) {
 		boolean exclusionFilter = false;
-		
+
 		if(filter != null && !filter.isEmpty()) {
 			exclusionFilter = filter.trim().startsWith(NEGATION_FILTER);
 		}
-		
+
 		return exclusionFilter;
 	}
-	
+
 	public static String[] getInclusionFileFilters(String[] filters) {
 		List<String> inclusionFilters = new ArrayList<>();
-		
+
 		if(filters != null && filters.length > 0) {
 			for(String filter : filters) {
 				boolean inclusionFilter = !isExclusionFilter(filter);
@@ -324,12 +324,12 @@ public class FileContentSearch {
 				}
 			}
 		}
-		
+
 		return inclusionFilters.toArray(new String[inclusionFilters.size()]);
 	}
 	public static String[] getExclusionFileFilters(String[] filters) {
 		List<String> exclusionFilters = new ArrayList<>();
-		
+
 		if(filters != null && filters.length > 0) {
 			for(String filter : filters) {
 				boolean exclusionFilter = isExclusionFilter(filter);
@@ -338,16 +338,16 @@ public class FileContentSearch {
 				}
 			}
 		}
-		
+
 		return exclusionFilters.toArray(new String[exclusionFilters.size()]);
 	}
 
 	public static String removeExclusionFlag(String filter) {
-		
+
 		if(isExclusionFilter(filter)) {
 			return filter.substring(NEGATION_FILTER.length(), filter.length()).trim();
 		}
-		
+
 		return filter;
 	}
 
@@ -355,21 +355,21 @@ public class FileContentSearch {
 		List<File> filtered = new ArrayList<>();
 		String[] inclusionFilters = getInclusionFileFilters(dto.fileFilters);
 		String[] exclusionFilters = getExclusionFileFilters(dto.fileFilters);;
-		
+
 		if(inclusionFilters.length > 0) {
 			for(File source : sources) {
 				Boolean matches = false;
-				
+
 				// Check inclusion filters
 				for(String filter : inclusionFilters) {
-					
+
 					if(!StringWorker.isEmpty(filter) && StringWorker.checkWildcardMatch(FileVarious.getCanonicalPathSafeNormalized(source, "/"), filter, false)) {
 						matches = true;
 						break;
-					} 
+					}
 				}
-				
-				if(matches) 
+
+				if(matches)
 					filtered.add(source);
 			}
 		} else {
@@ -387,46 +387,46 @@ public class FileContentSearch {
 						break;
 					}
 				}
-				
-				if(matches) 
+
+				if(matches)
 					filteredFinal.add(filteredIncluded);
 			}
 		} else {
 			filteredFinal.addAll(filtered);
 		}
-		
+
 		return filteredFinal;
 	}
-	
+
 	private int sourceTotalSize() {
 		int n = 0;
 		for(File source : sourceFiles) {
 			if(source != null)
 				n++;
 		}
-		
+
 		return n;
 	}
-	
+
 	public int scannedFilesTotal() {
 		return totalSourcesScanned.get();
 	}
-	
+
 	public int getOccurrencesFound() {
 		int occurrences = 0;
 		for(SearchResult result : results) {
 			Iterator<Integer> iteratorLine = result.resultLines.keySet().iterator();
-			
+
 			while(iteratorLine.hasNext()) {
 				Integer line = iteratorLine.next();
 				int lineOccurrences = result.resultLines.get(line).size();
 				occurrences += lineOccurrences;
 			}
 		}
-		
+
 		return occurrences;
 	}
-	
+
 	public void threadSearch(File parent) {
 		// TODO
 	}

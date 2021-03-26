@@ -1,73 +1,73 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>ScreepT_Crypter</groupId>
-  <artifactId>ScreepT_Crypter</artifactId>
-  <version>1.0</version>
-  
-  <packaging>jar</packaging>
-  
-  <name>ScreepT_Crypter</name>
-  <description>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ScreepT_Crypter</groupId>
+	<artifactId>ScreepT_Crypter</artifactId>
+	<version>1.0</version>
+
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>CommonParentGlobal</groupId>
+		<artifactId>CommonParentGlobal</artifactId>
+		<version>${parent.common.version}</version>
+		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
+	</parent>
+
+	<name>ScreepT_Crypter</name>
+	<description>
   	This module contains the core cripting functionalities of ScreepT, including the built-in brand new algorithm CryptoSTEG.
   	Furthermore, here you can find different utilities to encode and entrophize bytes to use and reorder them back.
   </description>
-  <url>${project.main.url}</url>
-  <inceptionYear>${inception.year}</inceptionYear>
-  <licenses>
-    <license>
-      <name>${project.license.name}</name>
-      <url>${project.license.url}</url>
-    </license>
-  </licenses>
-  <developers>
-    <developer>
-      <name>${developer.name}</name>
-    </developer>
-  </developers>
-  
-  <!-- <parent>
-  	<groupId>ScreepT_Parent</groupId>
-  	<artifactId>ScreepT_Parent</artifactId>
-  	<version>${parent.build.version.screept}</version>
-  	<relativePath>../ScreepT_Parent</relativePath>
-  </parent> -->
-  
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+	<url>${project.main.url}</url>
+	<inceptionYear>${inception.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${project.license.name}</name>
+			<url>${project.license.url}</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
 
-  <dependencies>
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-	<dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
-	    <version>4.12</version>
-	    <scope>provided</scope>
-	</dependency>
-	
-	<dependency>
-		<groupId>testUtils</groupId>
-		<artifactId>testUtils</artifactId>
-		<version>1.0</version>
-	    <scope>test</scope>
-	</dependency>
-	
-	<dependency>
-		<groupId>VariousCommonsLight</groupId>
-		<artifactId>VariousCommonsLight</artifactId>
-		<version>1.0</version>
-	</dependency>
-	
-  </dependencies>
+	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>testUtils</groupId>
+			<artifactId>testUtils</artifactId>
+			<version>${test.utils.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>VariousCommonsLight</groupId>
+			<artifactId>VariousCommonsLight</artifactId>
+			<version>${various.common.version}</version>
+		</dependency>
+
+	</dependencies>
 </project>

@@ -1,14 +1,3 @@
-/**
- *
- * =========================================================================================
- *  Copyright (C) 2019-2020
- *
- *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
- * =========================================================================================
- *
- * You should have received a copy of the license with this file.
- * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
- */
 package om;
 
 /*
@@ -25,6 +14,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
@@ -44,7 +34,9 @@ import javax.swing.text.JTextComponent;
 
 import org.fife.rsta.ui.UIUtil;
 import org.fife.rsta.ui.search.AbstractSearchDialog;
+import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.FindReplaceButtonsEnableResult;
+import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.SearchContext;
