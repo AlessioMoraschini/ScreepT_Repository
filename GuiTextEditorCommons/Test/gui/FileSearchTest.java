@@ -2,8 +2,8 @@ package gui;
 
 import javax.swing.JFrame;
 
-import gui.filesearch.FileSearchActions;
-import gui.filesearch.content.FileContentSearchDialog;
+import gui.texteditor.commons.filesearch.FileSearchActions;
+import gui.texteditor.commons.filesearch.content.FileContentSearchDialog;
 import various.common.light.files.om.SearchResult;
 
 public class FileSearchTest {

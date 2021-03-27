@@ -8,6 +8,8 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import gui.texteditor.commons.utils.AutoComplete;
+
 public class GuiTextRSyntaxTest extends JFrame{
 	private static final long serialVersionUID = 1987545794216L;
 

@@ -3,6 +3,7 @@ package gui;
 import java.awt.Font;
 import java.io.File;
 
+import gui.texteditor.commons.SchemeManagerGui;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 
 public class ThemeEditorTest {

@@ -2,7 +2,7 @@ package JUnit;
 
 import org.junit.Test;
 
-import launcherutils.JvmHelper;
+import screept.launcher.utils.JvmHelper;
 import test.util.utils.TestUtils;
 
 public class CompareVersionTest {

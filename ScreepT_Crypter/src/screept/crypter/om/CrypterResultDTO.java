@@ -1,0 +1,51 @@
+/**
+ *
+ * =========================================================================================
+ *  Copyright (C) 2019-2020
+ *
+ *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
+ * =========================================================================================
+ *
+ * You should have received a copy of the license with this file.
+ * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
+ */
+package screept.crypter.om;
+
+public class CrypterResultDTO {
+	
+	public boolean resultOK;
+	public boolean interrupted;
+	
+	public CrypterResultDTO() {
+		resultOK = false;    
+		interrupted = false; 
+	}
+
+	public CrypterResultDTO(boolean resultOK, boolean interrupted) {
+		this.resultOK = resultOK;
+		this.interrupted = interrupted;
+	}
+
+	
+	public boolean isResultOK() {
+		return resultOK;
+	}
+
+	public void setResultOK(boolean resultOK) {
+		this.resultOK = resultOK;
+	}
+
+	public boolean isInterrupted() {
+		return interrupted;
+	}
+
+	public void setInterrupted(boolean interrupted) {
+		this.interrupted = interrupted;
+	}
+
+
+	@Override
+	public String toString() {
+		return "CrypterResultDTO [resultOK=" + resultOK + ", interrupted=" + interrupted + "]";
+	}
+}

@@ -7,8 +7,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import gui.filesearch.FileSearchActions;
-import gui.filesearch.content.FileContentSearch;
+import gui.texteditor.commons.filesearch.FileSearchActions;
+import gui.texteditor.commons.filesearch.content.FileContentSearch;
 import various.common.light.files.om.FileContentSearchDTO;
 import various.common.light.files.om.SearchResult;
 

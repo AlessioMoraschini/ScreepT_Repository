@@ -14,7 +14,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import frameutils.utils.GuiUtilsExtended;
+import gui.commons.frameutils.utils.GuiUtilsExtended;
 import resources.IconsPathConfigurator;
 
 public class FramePointerCursorTest extends JFrame{

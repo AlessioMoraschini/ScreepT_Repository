@@ -16,15 +16,17 @@
 
 	<name>ScreepT</name>
 	<description>
-  	This is the main module, that comprends the main GUI and all the methods specific for ScreepT implementation.
-  	Furthermore, here you can find many classes useful to manage and keep separated the various functions, keeping the GUI more mainainable.
-  </description>
+	  	This is the main module, that comprends the main GUI and all the methods specific for ScreepT implementation.
+	  	Furthermore, here you can find many classes useful to manage and keep separated the various functions, keeping the GUI more mainainable.
+  	</description>
 	<url>${project.main.url}</url>
-	<inceptionYear>${inception.year}</inceptionYear>
+
+	<!-- SCREEPT LICENSE -->
+	<inceptionYear>${screept.start.year}</inceptionYear>
 	<licenses>
 		<license>
-			<name>${project.license.name}</name>
-			<url>${project.license.url}</url>
+			<name>${screept.license.name}</name>
+			<url>${screept.license.url}</url>
 		</license>
 	</licenses>
 	<developers>
@@ -895,20 +897,20 @@
 			<artifactId>AM_Rkanoid</artifactId>
 			<version>${puppynoid.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>ExternalPluginInterface</groupId>
 			<artifactId>external.plugin.interface</artifactId>
 			<version>${ext.plugin.interface.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>CodeComparator</groupId>
 			<artifactId>CodeComparator</artifactId>
 			<version>${codecomparator.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 </project>

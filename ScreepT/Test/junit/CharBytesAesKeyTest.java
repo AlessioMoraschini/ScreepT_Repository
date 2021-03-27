@@ -19,7 +19,7 @@ import javax.swing.text.BadLocationException;
 import org.junit.Rule;
 import org.junit.Test;
 
-import crypt.aes.AesCipher;
+import screept.crypter.impl.aes.AesCipher;
 import test.util.configuration.RepeatTest;
 import test.util.configuration.RepeatedTestRule;
 import testUtils.TestUtils;

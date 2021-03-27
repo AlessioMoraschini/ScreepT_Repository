@@ -8,9 +8,9 @@ import easteregg.EasterEggsManager;
 import easteregg.PhraseEasterEgg;
 import easteregg.PhrasesCollection;
 import easteregg.games.snake.Snake;
-import gui.StartFrame;
+import puppynoid.gui.StartFrame;
+import puppynoid.utils.config.GameConfigs;
 import resources.GeneralConfig;
-import utils.config.GameConfigs;
 
 public class EasterEggsInitializer {
 

@@ -13,7 +13,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.junit.Test;
 
-import crypt.aes.AesCipher;
+import screept.crypter.impl.aes.AesCipher;
 import test.util.utils.Generator;
 
 public class AesLongStringTest {

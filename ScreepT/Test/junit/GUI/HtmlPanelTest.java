@@ -9,8 +9,8 @@ import java.net.MalformedURLException;
 import javax.swing.JFrame;
 import javax.swing.text.BadLocationException;
 
-import frameutils.html.HtmlPanel;
-import frameutils.utils.GuiUtilsExtended;
+import gui.commons.frameutils.html.HtmlPanel;
+import gui.commons.frameutils.utils.GuiUtilsExtended;
 import resources.GeneralConfig;
 
 public class HtmlPanelTest {

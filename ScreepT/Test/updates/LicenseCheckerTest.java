@@ -7,8 +7,8 @@ import java.net.URL;
 
 import org.junit.Test;
 
-import general.utils.WindowCreator;
 import resources.GeneralConfig;
+import screept.general.utils.WindowCreator;
 import various.common.light.gui.LightLicenseViewer;
 import various.common.light.gui.LightLicenseViewer.UserLicenseChoice;
 import various.common.light.network.utils.DownloadUtils;

@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import frameutils.utils.GuiUtilsExtended;
+import gui.commons.frameutils.utils.GuiUtilsExtended;
 import resources.GeneralConfig;
 
 public class NetworkInfoFrameLauncher {

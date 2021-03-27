@@ -16,15 +16,17 @@
 
 	<name>ScreepT_Crypter</name>
 	<description>
-  	This module contains the core cripting functionalities of ScreepT, including the built-in brand new algorithm CryptoSTEG.
-  	Furthermore, here you can find different utilities to encode and entrophize bytes to use and reorder them back.
-  </description>
+	  	This module contains the core cripting functionalities of ScreepT, including the built-in brand new algorithm CryptoSTEG.
+	  	Furthermore, here you can find different utilities to encode and entrophize bytes to use and reorder them back.
+  	</description>
 	<url>${project.main.url}</url>
-	<inceptionYear>${inception.year}</inceptionYear>
+
+	<!-- SCREEPT LICENSE -->
+	<inceptionYear>${screept.start.year}</inceptionYear>
 	<licenses>
 		<license>
-			<name>${project.license.name}</name>
-			<url>${project.license.url}</url>
+			<name>${screept.license.name}</name>
+			<url>${screept.license.url}</url>
 		</license>
 	</licenses>
 	<developers>

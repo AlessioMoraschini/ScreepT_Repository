@@ -2,7 +2,7 @@ package gui;
 
 import javax.swing.SwingUtilities;
 
-import gui.filesearch.name.FileNameSearchDialog;
+import gui.texteditor.commons.filesearch.name.FileNameSearchDialog;
 
 public class FileNameSearchGUITest {
 

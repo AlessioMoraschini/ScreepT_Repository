@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 import org.junit.Test;
 
-import gUI.utils.progressDialog.ProgressCancelableDialog;
+import screept.gui.utils.progressDialog.ProgressCancelableDialog;
 
 public class ProgressBarTest {
 	
