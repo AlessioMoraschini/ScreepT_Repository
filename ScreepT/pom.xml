@@ -106,6 +106,7 @@
 					<forceDownload>true</forceDownload>
 					<excludedScopes>${report.excluded.scopes}</excludedScopes>
 					<excludedArtifacts>(?:^testUtils$|^ScreepT_Parent$|^CommonParentGlobal$)</excludedArtifacts>
+					<includedArtifacts>(?:^CodeComparator$)</includedArtifacts>
 					<skipDownloadLicenses>${report.licenses.update.skip}</skipDownloadLicenses>
 					<licensesOutputFile>${report.licenses.raw.dir}/license_list_${project.artifactId}.xml</licensesOutputFile>
 				</configuration>
