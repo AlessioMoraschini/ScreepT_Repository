@@ -92,7 +92,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<skipThirdPartyReport>${license.thirdyparty.report.skip}</skipThirdPartyReport>
+					<skipThirdPartyReport>${report.licenses.update.skip}</skipThirdPartyReport>
 				</configuration>
 			</plugin>
 
@@ -106,7 +106,8 @@
 					<forceDownload>true</forceDownload>
 					<excludedScopes>${report.excluded.scopes}</excludedScopes>
 					<excludedArtifacts>(?:^testUtils$|^ScreepT_Parent$|^CommonParentGlobal$)</excludedArtifacts>
-					<skipDownloadLicenses>${report.licenses.update.skip}</skipDownloadLicenses>				
+					<skipDownloadLicenses>${report.licenses.update.skip}</skipDownloadLicenses>
+					<licensesOutputFile>${report.licenses.raw.dir}/license_list_${project.artifactId}.xml</licensesOutputFile>
 				</configuration>
 				<executions>
 					<execution>
@@ -117,6 +118,46 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+
+			<!-- GENERATE LICENSES HTML DETAIL -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<id>ScreepT: enrich rawLicenses from complete list</id>
+						<phase>package</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>screept.license.tools.extractor.ScreepTRawLicensesInfoExtractor</mainClass>
+							<arguments>
+								<argument>true</argument> <!-- Copy generated raws to next phase sources -->
+								<argument>${screept.local.repository.folder}/ScreepT</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>ScreepT: regenerate html license details</id>
+						<phase>package</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>screept.license.tools.extractor.ScreepTLicensesInfoExtractor</mainClass>
+							<arguments>
+								<argument>true</argument> <!-- Copy generated to ROOT_DIR_APP_FILES -->
+								<argument>${screept.local.repository.folder}/ScreepT</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<skip>${report.licenses.update.skip}</skip>
+				</configuration>
 			</plugin>
 
 			<!-- Generate changelog -->

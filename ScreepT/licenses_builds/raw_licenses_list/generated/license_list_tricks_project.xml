@@ -1,64 +1,64 @@
 <dependencies>
-	<dependency>
-		<groupId>com.1stleg</groupId>
-		<artifactId>jnativehook</artifactId>
-		<version>2.1.0</version>
-		<licenses>
-			<license>
-				<name>GNU General Public License (GPL), Version 3.0</name>
-				<url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
-			</license>
-			<license>
-				<name>GNU Lesser General Public License (LGPL), Version 3.0</name>
-				<url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
-			</license>
-		</licenses>
-	</dependency>
-	<dependency>
-		<groupId>com.fasterxml.jackson.core</groupId>
-		<artifactId>jackson-annotations</artifactId>
-		<version>2.9.8</version>
-		<licenses>
-			<license>
-				<name>The Apache Software License, Version 2.0</name>
-				<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-				<distribution>repo</distribution>
-			</license>
-		</licenses>
-	</dependency>
-	<dependency>
-		<groupId>com.fasterxml.jackson.core</groupId>
-		<artifactId>jackson-core</artifactId>
-		<version>2.9.8</version>
-		<licenses>
-			<license>
-				<name>The Apache Software License, Version 2.0</name>
-				<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-				<distribution>repo</distribution>
-			</license>
-		</licenses>
-	</dependency>
-	<dependency>
-		<groupId>com.fasterxml.jackson.core</groupId>
-		<artifactId>jackson-databind</artifactId>
-		<version>2.9.8</version>
-		<licenses>
-			<license>
-				<name>The Apache Software License, Version 2.0</name>
-				<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-				<distribution>repo</distribution>
-			</license>
-		</licenses>
-	</dependency>
-	<dependency>
-		<groupId>testUtils</groupId>
-		<artifactId>testUtils</artifactId>
-		<version>1.0</version>
-		<licenses>
-			<!-- No license information available. -->
-		</licenses>
-	</dependency>
-<dependency>
+    <dependency>
+      <groupId>com.1stleg</groupId>
+      <artifactId>jnativehook</artifactId>
+      <version>2.1.0</version>
+      <licenses>
+        <license>
+          <name>GNU General Public License (GPL), Version 3.0</name>
+          <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+        <license>
+          <name>GNU Lesser General Public License (LGPL), Version 3.0</name>
+          <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.9.8</version>
+      <licenses>
+        <license>
+          <name>The Apache Software License, Version 2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.9.8</version>
+      <licenses>
+        <license>
+          <name>The Apache Software License, Version 2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.9.8</version>
+      <licenses>
+        <license>
+          <name>The Apache Software License, Version 2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>testUtils</groupId>
+      <artifactId>testUtils</artifactId>
+      <version>1.0</version>
+      <licenses>
+        <!-- No license information available. -->
+      </licenses>
+    </dependency>
+  <dependency>
 		<groupId>com.miglayout</groupId>
 		<artifactId>miglayout</artifactId>
 		<version>3.7.4</version>
