@@ -1,4 +1,4 @@
-package plugins;
+package screept.plugins;
 
 import java.io.File;
 import java.util.ArrayList;

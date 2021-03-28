@@ -68,7 +68,7 @@
 							<archive>
 								<manifest>
 									<mainClass>
-										guiVersion.NetworkInfoFrameLauncher
+										network.main.NetworkInfoFrameLauncher
 									</mainClass>
 								</manifest>
 							</archive>

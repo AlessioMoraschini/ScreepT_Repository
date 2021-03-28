@@ -84,6 +84,7 @@
 							<generateBundle>true</generateBundle>
 							<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
 							<excludedScopes>${report.excluded.scopes}</excludedScopes>
+							<licensesOutputDirectory>${project.build.directory}/licenses</licensesOutputDirectory>
 						</configuration>
 						<goals>
 							<goal>third-party-report</goal>
@@ -93,6 +94,29 @@
 				<configuration>
 					<skipThirdPartyReport>${license.thirdyparty.report.skip}</skipThirdPartyReport>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.0.0</version>
+				<configuration>
+					<licensesOutputFileEncoding>UTF-8</licensesOutputFileEncoding>
+					<includeTransitiveDependencies>true</includeTransitiveDependencies>
+					<forceDownload>true</forceDownload>
+					<excludedScopes>${report.excluded.scopes}</excludedScopes>
+					<excludedArtifacts>(?:^testUtils$|^ScreepT_Parent$|^CommonParentGlobal$)</excludedArtifacts>
+					<skipDownloadLicenses>${report.licenses.update.skip}</skipDownloadLicenses>				
+				</configuration>
+				<executions>
+					<execution>
+						<id>download-licenses</id>
+						<phase>install</phase>
+						<goals>
+							<goal>download-licenses</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- Generate changelog -->

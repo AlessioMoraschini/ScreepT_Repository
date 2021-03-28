@@ -1,0 +1,532 @@
+<dependencies>
+	<dependency>
+		<groupId>com.fifesoft</groupId>
+		<artifactId>autocomplete</artifactId>
+		<version>3.0.0</version>
+		<sources_url>https://github.com/bobbylight/AutoComplete</sources_url>
+		<licenses>
+			<license>
+				<name>Modified BSD License</name>
+				<url>http://fifesoft.com/rsyntaxtextarea/RSyntaxTextArea.License.txt
+				</url>
+				<distribution>repo</distribution>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>com.fifesoft</groupId>
+		<artifactId>rstaui</artifactId>
+		<version>3.0.0</version>
+		<sources_url>https://github.com/bobbylight/RSTAUI</sources_url>
+		<licenses>
+			<license>
+				<name>Modified BSD License</name>
+				<url>http://fifesoft.com/rsyntaxtextarea/RSyntaxTextArea.License.txt
+				</url>
+				<distribution>repo</distribution>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>com.fifesoft</groupId>
+		<artifactId>rsyntaxtextarea</artifactId>
+		<version>3.1.2</version>
+		<sources_url>https://github.com/bobbylight/RSyntaxTextArea
+		</sources_url>
+		<licenses>
+			<license>
+				<name>BSD-3-Clause</name>
+				<url>https://github.com/bobbylight/RSyntaxTextArea/tree/master/RSyntaxTextArea/src/main/resources/META-INF/LICENSE
+				</url>
+				<file>bsd-3-clause - license.html</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>com.fifesoft</groupId>
+		<artifactId>spellchecker</artifactId>
+		<version>3.0.0</version>
+		<sources_url>https://github.com/bobbylight/SpellChecker</sources_url>
+		<licenses>
+			<license>
+				<name>Modified BSD License</name>
+				<url>http://fifesoft.com/rsyntaxtextarea/RSyntaxTextArea.License.txt
+				</url>
+				<distribution>repo</distribution>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>com.github.depsypher</groupId>
+		<artifactId>pngtastic</artifactId>
+		<version>1.5</version>
+		<sources_url>https://github.com/depsypher/pngtastic</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>http://opensource.org/licenses/MIT</url>
+				<file>mit - mit.html</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>com.jgoodies</groupId>
+		<artifactId>looks</artifactId>
+		<version>2.2.2</version>
+		<sources_url>https://repo1.maven.org/maven2/com/jgoodies/looks/2.2.2/
+		</sources_url>
+		<licenses>
+			<license>
+				<name>The BSD License</name>
+				<url>http://www.opensource.org/licenses/bsd-license.html</url>
+				<file>the bsd license - bsd-license.html</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>com.miglayout</groupId>
+		<artifactId>miglayout</artifactId>
+		<version>3.7.4</version>
+		<sources_url>https://github.com/mikaelgrev/miglayout</sources_url>
+		<licenses>
+			<license>
+				<name>BSD</name>
+				<url>http://www.debian.org/misc/bsd.license</url>
+				<distribution>repo</distribution>
+				<file>bsd - bsd.license.html</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>com.rover12421.opensource</groupId>
+		<artifactId>JFontChooser</artifactId>
+		<version>1.0.5-3</version>
+		<sources_url>https://repo1.maven.org/maven2/com/rover12421/opensource/JFontChooser/1.0.5-3/
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT License</name>
+				<url>https://opensource.org/licenses/mit-license.php</url>
+				<distribution>repo</distribution>
+				<file>mit license - mit-license.html</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>commons-codec</groupId>
+		<artifactId>commons-codec</artifactId>
+		<version>1.11</version>
+		<sources_url>https://repo1.maven.org/maven2/commons-codec/commons-codec/1.11/
+		</sources_url>
+		<licenses>
+			<license>
+				<name>Apache License, Version 2.0</name>
+				<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+				<file>apache license, version 2.0 - license-2.0.txt</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>commons-io</groupId>
+		<artifactId>commons-io</artifactId>
+		<version>2.6</version>
+		<sources_url>https://github.com/apache/commons-io</sources_url>
+		<licenses>
+			<license>
+				<name>Apache License, Version 2.0</name>
+				<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+				<file>apache license, version 2.0 - license-2.0.txt</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>commons-logging</groupId>
+		<artifactId>commons-logging</artifactId>
+		<version>1.2</version>
+		<sources_url>https://github.com/apache/commons-io</sources_url>
+		<licenses>
+			<license>
+				<name>The Apache Software License, Version 2.0</name>
+				<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+				<file>the apache software license, version 2.0 - license-2.0.txt
+				</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>commons-net</groupId>
+		<artifactId>commons-net</artifactId>
+		<version>3.6</version>
+		<sources_url>https://github.com/apache/commons-net</sources_url>
+		<licenses>
+			<license>
+				<name>Apache License, Version 2.0</name>
+				<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+				<file>apache license, version 2.0 - license-2.0.txt</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<version>1.2.17</version>
+		<sources_url>https://logging.apache.org/log4j/2.x/source-repository.html
+		</sources_url>
+		<licenses>
+			<license>
+				<name>The Apache Software License, Version 2.0</name>
+				<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+				<file>the apache software license, version 2.0 - license-2.0.txt
+				</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-lang3</artifactId>
+		<version>3.9</version>
+		<sources_url>https://github.com/apache/commons-lang</sources_url>
+		<licenses>
+			<license>
+				<name>Apache License, Version 2.0</name>
+				<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+				<file>apache license, version 2.0 - license-2.0.txt</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.httpcomponents</groupId>
+		<artifactId>httpclient</artifactId>
+		<version>4.5.7</version>
+		<sources_url>https://github.com/apache/httpcomponents-client
+		</sources_url>
+		<licenses>
+			<license>
+				<name>Apache License, Version 2.0</name>
+				<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+				<file>the apache software license, version 2.0 - license-2.0.txt
+				</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.httpcomponents</groupId>
+		<artifactId>httpcore</artifactId>
+		<version>4.4.11</version>
+		<sources_url>https://github.com/apache/httpcomponents-core
+		</sources_url>
+		<licenses>
+			<license>
+				<name>Apache License, Version 2.0</name>
+				<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+				<file>the apache software license, version 2.0 - license-2.0.txt
+				</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>org.ini4j</groupId>
+		<artifactId>ini4j</artifactId>
+		<version>0.5.4</version>
+		<sources_url>https://sourceforge.net/projects/ini4j/</sources_url>
+		<licenses>
+			<license>
+				<name>Apache 2</name>
+				<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+				<file>the apache software license, version 2.0 - license-2.0.txt
+				</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>org.javassist</groupId>
+		<artifactId>javassist</artifactId>
+		<version>3.26.0-GA</version>
+		<sources_url>https://github.com/jboss-javassist/javassist
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MPL 1.1</name>
+				<url>http://www.mozilla.org/MPL/MPL-1.1.html</url>
+				<file>mozilla public license - mpl-1.1.html</file>
+			</license>
+			<license>
+				<name>LGPL 2.1</name>
+				<url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+				<file>lgpl 2.1 - lgpl-2.1.html</file>
+			</license>
+			<license>
+				<name>Apache License 2.0</name>
+				<url>http://www.apache.org/licenses/</url>
+				<file>apache license 2.0 - licenses.html</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>org.reflections</groupId>
+		<artifactId>reflections</artifactId>
+		<version>0.9.12</version>
+		<sources_url>https://github.com/ronmamo/reflections</sources_url>
+		<licenses>
+			<license>
+				<name>WTFPL</name>
+				<url>http://www.wtfpl.net/</url>
+				<file>wtfpl - .html</file>
+			</license>
+			<license>
+				<name>The New BSD License</name>
+				<url>http://www.opensource.org/licenses/bsd-license.html</url>
+				<file>the bsd license - bsd-license.html</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>jcl-over-slf4j</artifactId>
+		<version>1.7.25</version>
+		<sources_url>https://github.com/qos-ch/slf4j/tree/master/jcl-over-slf4j
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT License</name>
+				<url>http://www.opensource.org/licenses/mit-license.php</url>
+				<distribution>repo</distribution>
+				<file>mit license - mit-license.html</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>log4j-over-slf4j</artifactId>
+		<version>1.7.25</version>
+		<sources_url>https://github.com/qos-ch/slf4j/tree/master/log4j-over-slf4j
+		</sources_url>
+		<licenses>
+			<license>
+				<name>Apache Software Licenses</name>
+				<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<file>the apache software license, version 2.0 - license-2.0.txt
+				</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-api</artifactId>
+		<version>1.7.25</version>
+		<sources_url>https://github.com/qos-ch/slf4j</sources_url>
+		<licenses>
+			<license>
+				<name>MIT License</name>
+				<url>http://www.opensource.org/licenses/mit-license.php</url>
+				<distribution>repo</distribution>
+				<file>mit license - mit-license.html</file>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>AM_Rkanoid</groupId>
+		<artifactId>AM_Rkanoid</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>ExternalPluginInterface</groupId>
+		<artifactId>external.plugin.interface</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>GuiCommons</groupId>
+		<artifactId>GuiCommons</artifactId>
+		<version>1.0</version>
+		<licenses>
+			<license>
+				<name>SceepT EULA - Copyright</name>
+				<url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>GuiTextEditorCommons</groupId>
+		<artifactId>GuiTextEditorCommons</artifactId>
+		<version>1.0</version>
+		<licenses>
+			<license>
+				<name>SceepT EULA - Copyright</name>
+				<url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>HardwareCommons</groupId>
+		<artifactId>HardwareCommons</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>Initializer_Configs</groupId>
+		<artifactId>Initializer_Configs</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>MultimediaConversion</groupId>
+		<artifactId>MultimediaConversion</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>NetworkCommons</groupId>
+		<artifactId>NetworkCommons</artifactId>
+		<version>1.0</version>
+		<licenses>
+			<license>
+				<name>SceepT EULA - Copyright</name>
+				<url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>OsCommons</groupId>
+		<artifactId>OsCommons</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>Resources</groupId>
+		<artifactId>Resources</artifactId>
+		<version>1.0</version>
+		<licenses>
+			<license>
+				<name>SceepT EULA - Copyright</name>
+				<url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>ScreepT_Crypter</groupId>
+		<artifactId>ScreepT_Crypter</artifactId>
+		<version>1.0</version>
+		<licenses>
+			<license>
+				<name>SceepT EULA - Copyright</name>
+				<url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>ScreepT_Launcher</groupId>
+		<artifactId>ScreepT_Launcher</artifactId>
+		<version>1.1-SNAPSHOT</version>
+		<licenses>
+			<license>
+				<name>SceepT EULA - Copyright</name>
+				<url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>UltimateCalculator</groupId>
+		<artifactId>UltimateCalculator</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>UpdaterModule</groupId>
+		<artifactId>UpdaterModule</artifactId>
+		<version>1.0</version>
+		<licenses>
+			<license>
+				<name>SceepT EULA - Copyright</name>
+				<url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+	<dependency>
+		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+</dependencies>

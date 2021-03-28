@@ -3,14 +3,14 @@ package maingUI;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 
-import easteregg.EasterEgg;
-import easteregg.EasterEggsManager;
-import easteregg.PhraseEasterEgg;
-import easteregg.PhrasesCollection;
-import easteregg.games.snake.Snake;
 import puppynoid.gui.StartFrame;
 import puppynoid.utils.config.GameConfigs;
 import resources.GeneralConfig;
+import various.common.light.easteregg.EasterEgg;
+import various.common.light.easteregg.EasterEggsManager;
+import various.common.light.easteregg.PhraseEasterEgg;
+import various.common.light.easteregg.PhrasesCollection;
+import various.common.light.easteregg.games.snake.Snake;
 
 public class EasterEggsInitializer {
 
