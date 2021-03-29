@@ -44,7 +44,8 @@
 		<groupId>com.jgoodies</groupId>
 		<artifactId>looks</artifactId>
 		<version>2.2.2</version>
-		<sources_url>https://repo1.maven.org/maven2/com/jgoodies/looks/2.2.2/</sources_url>
+		<sources_url>https://repo1.maven.org/maven2/com/jgoodies/looks/2.2.2/
+		</sources_url>
 		<licenses>
 			<license>
 				<name>The BSD License</name>
@@ -71,7 +72,8 @@
 		<groupId>com.rover12421.opensource</groupId>
 		<artifactId>JFontChooser</artifactId>
 		<version>1.0.5-3</version>
-		<sources_url>https://repo1.maven.org/maven2/com/rover12421/opensource/JFontChooser/1.0.5-3/</sources_url>
+		<sources_url>https://repo1.maven.org/maven2/com/rover12421/opensource/JFontChooser/1.0.5-3/
+		</sources_url>
 		<licenses>
 			<license>
 				<name>MIT License</name>
@@ -113,7 +115,8 @@
 		<groupId>log4j</groupId>
 		<artifactId>log4j</artifactId>
 		<version>1.2.17</version>
-		<sources_url>https://logging.apache.org/log4j/2.x/source-repository.html</sources_url>
+		<sources_url>https://logging.apache.org/log4j/2.x/source-repository.html
+		</sources_url>
 		<licenses>
 			<license>
 				<name>The Apache Software License, Version 2.0</name>
@@ -210,72 +213,87 @@
 		</licenses>
 	</dependency>
   <dependency>
-      <groupId>GuiCommons</groupId>
-      <artifactId>GuiCommons</artifactId>
-      <version>1.0</version>
-      <licenses>
-        <license>
-          <name>SceepT EULA - Copyright</name>
-          <url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html</url>
-        </license>
-      </licenses>
-    </dependency>
+		<groupId>GuiCommons</groupId>
+		<artifactId>GuiCommons</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>SceepT EULA - Copyright</name>
+				<url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html
+				</url>
+			</license>
+		</licenses>
+	</dependency>
   <dependency>
-      <groupId>Initializer_Configs</groupId>
-      <artifactId>Initializer_Configs</artifactId>
-      <version>1.0</version>
-      <sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master</sources_url>
-      <licenses>
-        <license>
-          <name>MIT</name>
-          <url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt</url>
-        </license>
-      </licenses>
-    </dependency>
+		<groupId>Initializer_Configs</groupId>
+		<artifactId>Initializer_Configs</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
   <dependency>
-      <groupId>OsCommons</groupId>
-      <artifactId>OsCommons</artifactId>
-      <version>1.0</version>
-      <sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master</sources_url>
-      <licenses>
-        <license>
-          <name>MIT</name>
-          <url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt</url>
-        </license>
-      </licenses>
-    </dependency>
+		<groupId>OsCommons</groupId>
+		<artifactId>OsCommons</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
   <dependency>
-      <groupId>Resources</groupId>
-      <artifactId>Resources</artifactId>
-      <version>1.0</version>
-      <licenses>
-        <license>
-          <name>SceepT EULA - Copyright</name>
-          <url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html</url>
-        </license>
-      </licenses>
-    </dependency>
+		<groupId>Resources</groupId>
+		<artifactId>Resources</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>SceepT EULA - Copyright</name>
+				<url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html
+				</url>
+			</license>
+		</licenses>
+	</dependency>
   <dependency>
-      <groupId>UpdaterModule</groupId>
-      <artifactId>UpdaterModule</artifactId>
-      <version>1.0</version>
-      <licenses>
-        <license>
-          <name>SceepT EULA - Copyright</name>
-          <url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html</url>
-        </license>
-      </licenses>
-    </dependency>
+		<groupId>UpdaterModule</groupId>
+		<artifactId>UpdaterModule</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>SceepT EULA - Copyright</name>
+				<url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html
+				</url>
+			</license>
+		</licenses>
+	</dependency>
   <dependency>
-      <groupId>VariousCommonsLight</groupId>
-      <artifactId>VariousCommonsLight</artifactId>
-      <version>1.0</version>
-      <sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master</sources_url>
-      <licenses>
-        <license>
-          <name>MIT</name>
-          <url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt</url>
-        </license>
-      </licenses>
-    </dependency>
+		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
 </dependencies>

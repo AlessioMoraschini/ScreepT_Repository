@@ -1,20 +1,5 @@
 <dependencies>
     <dependency>
-      <groupId>com.1stleg</groupId>
-      <artifactId>jnativehook</artifactId>
-      <version>2.1.0</version>
-      <licenses>
-        <license>
-          <name>GNU General Public License (GPL), Version 3.0</name>
-          <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
-        </license>
-        <license>
-          <name>GNU Lesser General Public License (LGPL), Version 3.0</name>
-          <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
-        </license>
-      </licenses>
-    </dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
       <version>2.9.8</version>
@@ -50,12 +35,20 @@
         </license>
       </licenses>
     </dependency>
-    <dependency>
-      <groupId>testUtils</groupId>
-      <artifactId>testUtils</artifactId>
-      <version>1.0</version>
+  <dependency>
+      <groupId>com.1stleg (Used in Tricks Project)</groupId>
+      <artifactId>jnativehook</artifactId>
+      <version>2.1.0</version>
+		<sources_url>https://github.com/kwhat/jnativehook</sources_url>
       <licenses>
-        <!-- No license information available. -->
+        <license>
+          <name>GNU General Public License (GPL), Version 3.0</name>
+          <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+        <license>
+          <name>GNU Lesser General Public License (LGPL), Version 3.0</name>
+          <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
       </licenses>
     </dependency>
   <dependency>
@@ -76,7 +69,8 @@
 		<groupId>com.rover12421.opensource</groupId>
 		<artifactId>JFontChooser</artifactId>
 		<version>1.0.5-3</version>
-		<sources_url>https://repo1.maven.org/maven2/com/rover12421/opensource/JFontChooser/1.0.5-3/</sources_url>
+		<sources_url>https://repo1.maven.org/maven2/com/rover12421/opensource/JFontChooser/1.0.5-3/
+		</sources_url>
 		<licenses>
 			<license>
 				<name>MIT License</name>
@@ -118,7 +112,8 @@
 		<groupId>javax.validation (Used in Validation Framework)</groupId>
 		<artifactId>validation-api</artifactId>
 		<version>2.0.1.Final</version>
-		<sources_url>https://github.com/beanvalidation/beanvalidation-api</sources_url>
+		<sources_url>https://github.com/beanvalidation/beanvalidation-api
+		</sources_url>
 		<licenses>
 			<license>
 				<name>Apache License 2.0</name>
@@ -160,7 +155,8 @@
 		<groupId>org.javassist</groupId>
 		<artifactId>javassist</artifactId>
 		<version>3.26.0-GA</version>
-		<sources_url>https://github.com/jboss-javassist/javassist</sources_url>
+		<sources_url>https://github.com/jboss-javassist/javassist
+		</sources_url>
 		<licenses>
 			<license>
 				<name>MPL 1.1</name>
@@ -198,27 +194,45 @@
 		</licenses>
 	</dependency>
   <dependency>
-      <groupId>ExternalPluginInterface</groupId>
-      <artifactId>external.plugin.interface</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master</sources_url>
-      <licenses>
-        <license>
-          <name>MIT</name>
-          <url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt</url>
-        </license>
-      </licenses>
+      <groupId>testUtils</groupId>
+      <artifactId>testUtils</artifactId>
+      <version>1.0</version>
+      <sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
     </dependency>
   <dependency>
-      <groupId>VariousCommonsLight</groupId>
-      <artifactId>VariousCommonsLight</artifactId>
-      <version>1.0</version>
-      <sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master</sources_url>
-      <licenses>
-        <license>
-          <name>MIT</name>
-          <url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt</url>
-        </license>
-      </licenses>
-    </dependency>
+		<groupId>ExternalPluginInterface</groupId>
+		<artifactId>external.plugin.interface</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
+  <dependency>
+		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
 </dependencies>

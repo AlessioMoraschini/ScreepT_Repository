@@ -105,10 +105,9 @@
 					<includeTransitiveDependencies>true</includeTransitiveDependencies>
 					<forceDownload>true</forceDownload>
 					<excludedScopes>${report.excluded.scopes}</excludedScopes>
-					<excludedArtifacts>(?:^testUtils$|^ScreepT_Parent$|^CommonParentGlobal$)</excludedArtifacts>
-					<includedArtifacts>(?:^CodeComparator$)</includedArtifacts>
 					<skipDownloadLicenses>${report.licenses.update.skip}</skipDownloadLicenses>
-					<licensesOutputFile>${report.licenses.raw.dir}/license_list_${project.artifactId}.xml</licensesOutputFile>
+					<licensesOutputFile>${report.licenses.raw.dir}/license_list_screept.xml</licensesOutputFile>
+					<overrideFile>true</overrideFile>
 				</configuration>
 				<executions>
 					<execution>
@@ -134,8 +133,9 @@
 							<goal>java</goal>
 						</goals>
 						<configuration>
-							<mainClass>screept.license.tools.extractor.ScreepTRawLicensesInfoExtractor</mainClass>
+							<mainClass>screept.license.tools.extractor.LicenseExtractor</mainClass>
 							<arguments>
+								<argument>-raw</argument>
 								<argument>true</argument> <!-- Copy generated raws to next phase sources -->
 								<argument>${screept.local.repository.folder}/ScreepT</argument>
 							</arguments>
@@ -148,8 +148,9 @@
 							<goal>java</goal>
 						</goals>
 						<configuration>
-							<mainClass>screept.license.tools.extractor.ScreepTLicensesInfoExtractor</mainClass>
+							<mainClass>screept.license.tools.extractor.LicenseExtractor</mainClass>
 							<arguments>
+								<argument>-generateHtml</argument>
 								<argument>true</argument> <!-- Copy generated to ROOT_DIR_APP_FILES -->
 								<argument>${screept.local.repository.folder}/ScreepT</argument>
 							</arguments>

@@ -30,7 +30,8 @@
 		<groupId>com.rover12421.opensource</groupId>
 		<artifactId>JFontChooser</artifactId>
 		<version>1.0.5-3</version>
-		<sources_url>https://repo1.maven.org/maven2/com/rover12421/opensource/JFontChooser/1.0.5-3/</sources_url>
+		<sources_url>https://repo1.maven.org/maven2/com/rover12421/opensource/JFontChooser/1.0.5-3/
+		</sources_url>
 		<licenses>
 			<license>
 				<name>MIT License</name>
@@ -72,7 +73,8 @@
 		<groupId>org.javassist</groupId>
 		<artifactId>javassist</artifactId>
 		<version>3.26.0-GA</version>
-		<sources_url>https://github.com/jboss-javassist/javassist</sources_url>
+		<sources_url>https://github.com/jboss-javassist/javassist
+		</sources_url>
 		<licenses>
 			<license>
 				<name>MPL 1.1</name>
@@ -110,27 +112,31 @@
 		</licenses>
 	</dependency>
   <dependency>
-      <groupId>ExternalPluginInterface</groupId>
-      <artifactId>external.plugin.interface</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master</sources_url>
-      <licenses>
-        <license>
-          <name>MIT</name>
-          <url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt</url>
-        </license>
-      </licenses>
-    </dependency>
+		<groupId>ExternalPluginInterface</groupId>
+		<artifactId>external.plugin.interface</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
   <dependency>
-      <groupId>VariousCommonsLight</groupId>
-      <artifactId>VariousCommonsLight</artifactId>
-      <version>1.0</version>
-      <sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master</sources_url>
-      <licenses>
-        <license>
-          <name>MIT</name>
-          <url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt</url>
-        </license>
-      </licenses>
-    </dependency>
+		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
+		<sources_url>https://github.com/AlessioMoraschini/ScreepT-public/tree/master
+		</sources_url>
+		<licenses>
+			<license>
+				<name>MIT</name>
+				<url>https://www.am-design-development.com/ScreepT/Plugins/License-MIT.txt
+				</url>
+			</license>
+		</licenses>
+	</dependency>
 </dependencies>
