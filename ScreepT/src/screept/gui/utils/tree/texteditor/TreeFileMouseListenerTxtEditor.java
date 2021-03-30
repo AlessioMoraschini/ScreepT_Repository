@@ -53,9 +53,9 @@ import gui.texteditor.commons.tabbededitor.CustomTabbedEditor;
 import gui.texteditor.commons.utils.dialog.ColorDialogUtils;
 import initializer.configs.impl.INItializer;
 import maingUI.MainGuiGeneralAppStarter;
-import multimedia.conversion.gui.PdfSelector2TextFrame;
 import plugin.api.AbstractPluginApplicationApi.PluginType;
 import plugin.external.arch.IPlugin;
+import plugin.external.arch.IPluginParentExecutor.FunctionType;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import screept.gui.panels.TextEditor;
@@ -66,7 +66,6 @@ import various.common.light.files.om.FileNamed;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.MenuSetter;
 import various.common.light.utility.manipulation.ConversionUtils;
-import various.common.light.utility.string.StringWorker;
 
 public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFileNamed {
 
@@ -735,28 +734,24 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 
 			pluginsMenuItem.removeAll();
 
-			IPlugin pdfReader;
-			if(MainGuiGeneralAppStarter.tesseractAvailable) {
-				pdfReader = new PdfSelector2TextFrame.PDFReaderPlugin();
-				plugins.add(pdfReader);
+			if(!MainGuiGeneralAppStarter.tesseractAvailable) {
+				for(IPlugin plugin : plugins) {
+					if("PDFReaderPlugin".equals(plugin.getClass().getSimpleName()))
+						plugins.remove(plugin);
+				}
 			}
 
 			Iterator<IPlugin> iterator = plugins.iterator();
 			while (iterator.hasNext()) {
 				IPlugin plugin = iterator.next();
 				if (plugin != null) {
-					JMenuItem newOccurrence = new JMenuItem(plugin.getPluginName());
-					newOccurrence.setFont(GeneralConfig.MENU_LASTFILES_FONT);
-					if(!StringWorker.isEmpty(plugin.getTooltip()))
-						newOccurrence.setToolTipText(plugin.getTooltip());
 
-					pluginsMenuItem.add(newOccurrence);
+					pluginsMenuItem.add(ScreepTApplicationApi
+							.getPluginsMenu(
+									FunctionType.FILE_TREE_RIGHT_CLICK_MENU,
+									getSelectedFiles(),
+									plugin));
 
-					// TODO: add functions lookup and submenu creation
-
-					newOccurrence.addActionListener((e)->{
-						plugin.launchMain(FileVarious.getStringListFromFiles(getSelectedFiles()).toArray(new String[0]));
-					});
 				}
 			}
 		} catch (Exception e) {

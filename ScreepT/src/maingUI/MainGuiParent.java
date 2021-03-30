@@ -52,10 +52,10 @@ import gui.commons.jmenu.BrowserOpenerMenu;
 import gui.commons.jmenu.CustomJmenuItem;
 import gui.texteditor.commons.om.TabTextEditorObject;
 import initializer.configs.impl.INItializer;
-import multimedia.conversion.gui.PdfSelector2TextFrame;
 import os.commons.om.OSinfo;
 import plugin.api.AbstractPluginApplicationApi.PluginType;
 import plugin.external.arch.IPlugin;
+import plugin.external.arch.IPluginParentExecutor.FunctionType;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import screept.general.utils.ToggleAction;
@@ -67,7 +67,6 @@ import various.common.light.files.om.FileNamed;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.MenuSetter;
 import various.common.light.om.LimitedConcurrentList;
-import various.common.light.utility.string.StringWorker;
 
 public class MainGuiParent {
 
@@ -915,26 +914,25 @@ public class MainGuiParent {
 			mnPlugins.add(mntmLookForPlugins);
 			mnPlugins.add(new JSeparator());
 
-			IPlugin pdfReader;
-			if(MainGuiGeneralAppStarter.tesseractAvailable) {
-				pdfReader = new PdfSelector2TextFrame.PDFReaderPlugin();
-				plugins.add(pdfReader);
+			if(!MainGuiGeneralAppStarter.tesseractAvailable) {
+				for(IPlugin plugin : plugins) {
+					if("PDFReaderPlugin".equals(plugin.getClass().getSimpleName()))
+						plugins.remove(plugin);
+				}
 			}
 
 			Iterator<IPlugin> iterator = plugins.iterator();
 			while (iterator.hasNext()) {
 				IPlugin plugin = iterator.next();
 				if (plugin != null) {
-					JMenuItem newOccurrence = new JMenuItem(plugin.getPluginName());
-					newOccurrence.setFont(GeneralConfig.MENU_LASTFILES_FONT);
-					if(!StringWorker.isEmpty(plugin.getTooltip()))
-						newOccurrence.setToolTipText(plugin.getTooltip());
 
-					mnPlugins.add(newOccurrence);
 					String[] filesToLoad = MainGuiGeneralAppStarter.externalPluginAppProvider.getFilesToLoad(plugin);
-					newOccurrence.addActionListener((e)->{
-						plugin.launchMain(filesToLoad);
-					});
+					mnPlugins.add(ScreepTApplicationApi
+							.getPluginsMenu(
+									FunctionType.STANDALONE_STR_ARGS,
+									filesToLoad,
+									plugin));
+
 				}
 			}
 		} catch (Exception e) {

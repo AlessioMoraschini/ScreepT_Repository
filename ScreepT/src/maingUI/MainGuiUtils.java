@@ -196,7 +196,7 @@ public class MainGuiUtils {
 			File newLicense = DownloadUtils.downloadFile(false, new URL(GeneralConfig.WEB_UPDATES_LICENSE_URL), GeneralConfig.TEMP_DIRECTORY+"tempNewLicense.html", null);
 
 			if (!ChecksumHasher.equalsFilesChecksum(newLicense, GeneralConfig.LICENSE_FILE, HashingFunction.SHA512)) {
-				LightLicenseViewer licenseViewer = MainGUI.mainAPP.windowCreator.newLicenseFrame(newLicense, true, false);
+				LightLicenseViewer licenseViewer = MainGUI.mainAPP.windowCreator.newLicenseFrame(newLicense, true, false, new boolean[] {true, false, false});
 				return UserLicenseChoice.ACCEPTED.equals(licenseViewer.userChoice);
 			} else {
 				return true;
@@ -718,10 +718,17 @@ public class MainGuiUtils {
 	public static void welcomeMethodFirstTime() {
 
 		EOL.defaultEol = EOL.getOsBasedEOL();
+		MainGUI.currentConfiguration.getTextEditorOpt().setEol(EOL.defaultEol);
 
 		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 			@Override
 			public void run() {
+				try {
+					Thread.sleep(4000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
 				// ASK FOR USERNAME IF NULL OR FIRST TIME
 				INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
 				GenericOption genOpt = currentConfiguration.getGenOpt();

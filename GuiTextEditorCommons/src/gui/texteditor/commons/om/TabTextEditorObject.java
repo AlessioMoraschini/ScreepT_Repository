@@ -31,6 +31,8 @@ import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -71,6 +73,11 @@ import gui.texteditor.commons.utils.RsyntaxUtils;
 import initializer.configs.impl.INItializer;
 import initializer.configs.impl.om.TextEditorOption;
 import os.commons.utils.SysUtils;
+import plugin.api.AbstractPluginApplicationApi;
+import plugin.api.AbstractPluginApplicationApi.PluginType;
+import plugin.api.PluginJMenuCreator;
+import plugin.external.arch.IPlugin;
+import plugin.external.arch.IPluginParentExecutor.FunctionType;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import various.common.light.files.FileVarious;
@@ -392,6 +399,24 @@ public class TabTextEditorObject {
 		browserOpener.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
 		textArea.getPopupMenu().add(browserOpener);
 
+
+		// PLUGINS
+		JMenu pluginsMenu = new JMenu("Plugins");
+		textArea.getPopupMenu().add(pluginsMenu);
+
+		Set<IPlugin> plugins = AbstractPluginApplicationApi.getAvailablePlugins(PluginType.TEXT_EDITOR, false, true);
+		Iterator<IPlugin> iterator = plugins.iterator();
+		while (iterator.hasNext()) {
+			IPlugin plugin = iterator.next();
+			if (plugin != null) {
+
+				pluginsMenu.add(getPluginsMenu(
+								FunctionType.TEXT_AREA_RIGHT_CLICK_MENU,
+								getSelectionDto(),
+								plugin));
+			}
+		}
+
 		// Color picker
 		JMenuItem showColorPicker = new JMenuItem("Color picker/converter");
 		showColorPicker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
@@ -497,6 +522,22 @@ public class TabTextEditorObject {
 			public void popupMenuCanceled(PopupMenuEvent e) {
 			}
 		});
+	}
+
+	public SelectionDtoFull getSelectionDto() {
+		return new SelectionDtoFull(textArea, loadedFile);
+	}
+
+	public static JMenu getPluginsMenu(FunctionType type, Object param, IPlugin plugin) {
+		JMenu newOccurrence = new PluginJMenuCreator()
+				.getPluginMenu(param, type, plugin, false);
+
+		newOccurrence.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+		MenuSetter.setFont(newOccurrence, GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+		if(!StringWorker.isEmpty(plugin.getTooltip()))
+			newOccurrence.setToolTipText(plugin.getTooltip());
+
+		return newOccurrence;
 	}
 
 	public void enrichPopUpMenuStringActions(final JMenu stringActions) {

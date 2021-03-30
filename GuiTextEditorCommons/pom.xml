@@ -102,6 +102,12 @@
 			<artifactId>Initializer_Configs</artifactId>
 			<version>${initializer.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>ExternalPluginInterface</groupId>
+			<artifactId>external.plugin.interface</artifactId>
+			<version>${ext.plugin.interface.version}</version>
+		</dependency>
 
 		<!-- Exclude test only dependencies from build -->
 		<dependency>
