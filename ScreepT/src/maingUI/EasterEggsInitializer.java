@@ -16,37 +16,38 @@ public class EasterEggsInitializer {
 
 	public EasterEggsManager manager;
 	public MainGuiUtils mainGuiUtils;
-	
+
 	public EasterEggsInitializer(MainGuiUtils mainGuiUtils) {
 		manager = new EasterEggsManager();
 		init();
 		manager.applyKeyListener();
 		this.mainGuiUtils = mainGuiUtils;
 	}
-	
+
 	public void init() {
-		
+
 		// Initialize easterEggs
 		PhraseEasterEgg poetryRandomEgg = new PhraseEasterEgg(
 				"poetryEasterEgg01",
 				PhrasesCollection.getSingleton(),
 				(e) -> {
 					return KeyEvent.VK_U == e.getKeyCode() &&
-							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, true, true, false, 600) && 
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, true, true, false, 600) &&
 						   (mainGuiUtils.isCrypterActive() || mainGuiUtils.isTextEditorActive());
-					} 
+					}
 		);
-		
+
 		EasterEgg snakeGame = new EasterEgg(
 				"snakeGameEgg01",
-				() -> {Snake.getInstance("Snake - Easter Egg found!");}, 
+				() -> {Snake.getInstance("Snake - Easter Egg found!");},
 				(e) -> {
 					return KeyEvent.VK_S == e.getKeyCode() &&
-							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 600) && 
-							mainGuiUtils.mainAppReference.isOnHomePage.get();
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 600) &&
+							mainGuiUtils.isOnHomePage(true) &&
+							StartFrame.instance == null;
 					}
-		); 
-		
+		);
+
 		EasterEgg arkanoidGame = new EasterEgg(
 				"arkanoidGameEgg01",
 				() -> {
@@ -55,14 +56,15 @@ public class EasterEggsInitializer {
 					GameConfigs.SOUNDS_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/sounds/";
 					StartFrame.size = new Dimension(450,150);
 					StartFrame.getInstance("Puppynoid - Easter Egg found!");
-				}, 
+				},
 				(e) -> {
 					return KeyEvent.VK_A == e.getKeyCode() &&
-							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 500) && 
-						   mainGuiUtils.mainAppReference.isOnHomePage.get();
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 500) &&
+						   mainGuiUtils.mainAppReference.isOnHomePage.get() &&
+						   Snake.instance == null;
 					}
-		); 
-		
+		);
+
 		// Add easter eggs to manager
 		manager.addEasterEgg(poetryRandomEgg);
 		manager.addEasterEgg(snakeGame);

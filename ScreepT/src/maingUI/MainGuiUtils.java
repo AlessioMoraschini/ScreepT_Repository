@@ -59,6 +59,7 @@ import various.common.light.utility.hash.HashingFunction;
 import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.properties.PropertiesManager;
 import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker.EOL;
 
 public class MainGuiUtils {
 
@@ -413,6 +414,9 @@ public class MainGuiUtils {
     	mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 	}
 
+	public boolean isOnHomePage(boolean withFocus) {
+		return mainAppReference.isOnHomePage.get() && (!withFocus || mainAppReference.getMainFrame().isFocusableWindow());
+	}
 	public boolean isTextEditorActive() {
 		return getMainPanel().getComponent(0) instanceof TextEditor;
 	}
@@ -712,6 +716,8 @@ public class MainGuiUtils {
 	}
 
 	public static void welcomeMethodFirstTime() {
+
+		EOL.defaultEol = EOL.getOsBasedEOL();
 
 		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 			@Override

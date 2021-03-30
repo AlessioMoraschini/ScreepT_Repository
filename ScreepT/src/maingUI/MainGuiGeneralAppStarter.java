@@ -523,7 +523,12 @@ public class MainGuiGeneralAppStarter {
 			LightLicenseViewer licenseViewer;
 			UserLicenseChoice choice;
 			do{
-				licenseViewer = new LightLicenseViewer(GeneralConfig.LICENSE_FILE, "You must accept this EULA before to start using ScreepT", "License acceptance");
+				licenseViewer = new LightLicenseViewer(
+						GeneralConfig.LICENSE_FILE,
+						"You must accept this EULA before to start using ScreepT",
+						"License acceptance",
+						new boolean[] {true, false, false}
+						);
 				choice = licenseViewer.userChoice;
 				if(choice.equals(UserLicenseChoice.REJECTED)) {
 					if (new JOptionHelper(null).yesOrNo("You cannot use ScreepT without accepting License, wanna exit launch procedure?")) {

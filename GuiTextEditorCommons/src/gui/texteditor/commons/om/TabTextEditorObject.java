@@ -82,25 +82,25 @@ import various.common.light.gui.dnd.FileDrop;
 import various.common.light.om.ICommonShortcuts;
 import various.common.light.om.SelectionDtoFull;
 import various.common.light.utility.string.StringWorker;
-import various.common.light.utility.string.TextAreaStringEditor;
 import various.common.light.utility.string.StringWorker.EOL;
+import various.common.light.utility.string.TextAreaStringEditor;
 import various.common.light.utility.time.AmAsyncAction;
 
 public class TabTextEditorObject {
-	
+
 	static Logger logger = Logger.getLogger(TabTextEditorObject.class);
-	
+
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.BOLD, 18);
 
 	public static final int TXT_AREA_PARSER_DELAY = 500;
-	
+
 	public Parser lastLazyInitParser;
 	public String lastLazyInitParserDict;
-	
+
 	// Interfaces for file monitor actions and shortcuts commons
 	public ICommonShortcuts shortcutsManager;
 	public IChangeMonManager checkChangesMonitor;
-	
+
 	public ITabsManager iTabsManager;
 
 	// Normal Pojo fields
@@ -111,70 +111,70 @@ public class TabTextEditorObject {
 //	public FocusListener focusTxtAreaMonitor;
 	public boolean unsaved = false;
 	public Parser currentParser;
-	
+
 	public FileDrop fileDrop;
-	
+
 	public INItializer currentConfig;
-	
+
 	private HyperlinkListener hyperLinkListener;
 	private MouseMotionListener mouseMotionListener;
 	private java.awt.event.MouseListener mouseListener;
-	
+
 	private TabTextEditorObject selfReference;
-	
+
 	private AtomicInteger lastLine;
-	
+
 	private SelectionDtoFull textAreaContentBackup;
 	private int linePositionBackup = 0;
-	
+
 	public TabTextEditorObject(ITabsManager iTabsManager, File file, String text, DocumentListener docListener, final INItializer configuration, IChangeMonManager checkChangesMonitor, ICommonShortcuts shortcutsManager) {
-		
+
 		ColumnTextArea.UNDO_LIMIT = GeneralConfig.UNDO_MAX_LIM;
-		
+
 		selfReference = this;
 		loadedFile = file;
 		this.checkChangesMonitor = checkChangesMonitor;
 		this.shortcutsManager = shortcutsManager;
-		
+
 		this.currentConfig = configuration;
-		
+
 		this.iTabsManager = iTabsManager;
-		
+
 		lastLazyInitParserDict = currentConfig.getTextEditorOpt().prefDictspellChecker;
-		
+
 		textArea = new ColumnTextArea(GeneralConfig.RECTANGULAR_TXT_SELECTION_ALLOWED, shortcutsManager);
 		textArea.setMinimumSize(new Dimension(300,100));
 		textArea.setParserDelay(TXT_AREA_PARSER_DELAY);
 		textArea.setEditable(true);
-		
+
 		Border dropBorder = new MatteBorder(12,12,12,12, new Color(61, 111, 191,80));
-		fileDrop = new FileDrop(textArea, dropBorder, 
+		fileDrop = new FileDrop(textArea, dropBorder,
 				(files)->{SwingUtilities.invokeLater(()->{iTabsManager.loadFiles(files);});});
-		
+
 		currentScrollPane = new RTextScrollPane(textArea);
-		
+
 		currentScrollPane.setBorder(new LineBorder(Color.GRAY, 2));
 		currentScrollPane.setBackground(Color.DARK_GRAY);
 		currentScrollPane.setMinimumSize(new Dimension(300,100));
-		
+
 		currentScrollPane.getGutter().setBackground(new Color(30,30,30));
 		currentScrollPane.getGutter().setForeground(Color.LIGHT_GRAY);
 		currentScrollPane.getGutter().setLineNumberFont(DEFAULT_FONT);
-		
+
 		currentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		currentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		// TEXT AREA LISTENER
 		textArea.getDocument().addDocumentListener(docListener);
 //		focusTxtAreaMonitor = getFocusListenerTxtCursor();
-		
+
 		// TAB FOCUS CHANGES LISTENER
 //		textArea.addFocusListener(focusTxtAreaMonitor);
-		
+
 		lastLine = new AtomicInteger(textArea.getCaretLineNumber());
-		
+
 		textArea.addMouseListener(new MouseAdapter() {
-			
+
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				int currentLine = textArea.getCaretLineNumber();
@@ -184,8 +184,9 @@ public class TabTextEditorObject {
 				}
 			}
 		});
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				defaultAddsToPopupMenu();
 				updateTextAreaPreferences(currentConfig);
@@ -193,7 +194,7 @@ public class TabTextEditorObject {
 			}
 		});
 	}
-	
+
 	public void resetData() {
 		try {
 			loadedFile = null;
@@ -206,7 +207,7 @@ public class TabTextEditorObject {
 			logger.error("An error ocurred while resetting data");
 		}
 	}
-	
+
 	public void updateSpellCheckerParser(String newDictionaryPath, boolean forceReload) {
 		RsyntaxUtils.removeAllParsers(textArea);
 		try {
@@ -215,7 +216,7 @@ public class TabTextEditorObject {
 					currentParser = RsyntaxUtils.createNapplySpellingParser(newDictionaryPath, textArea);
 				} catch (IOException e) {
 					logger.error("Error refreshing current spellChecker parser: ", e);
-				} 
+				}
 			}else {
 				try {
 					RsyntaxUtils.applySpellingParser((SpellingParser)lastLazyInitParser, textArea);
@@ -225,9 +226,9 @@ public class TabTextEditorObject {
 			}
 		} catch (Exception e) {
 		}
-		
+
 	}
-	
+
 	public boolean storeSelectionDto(boolean onlyCaretPsition) {
 		if(textArea != null) {
 			if(!onlyCaretPsition)
@@ -236,25 +237,25 @@ public class TabTextEditorObject {
 			linePositionBackup = textArea.getCaretPosition();
 		}
 		else return false;
-		
+
 		return true;
 	}
-	
+
 	public boolean restoreSelectionDto(boolean lineOnly) {
 		boolean done = true;
-		if(textAreaContentBackup == null) 
+		if(textAreaContentBackup == null)
 			done = storeSelectionDto(lineOnly);
-		
+
 		if(lineOnly) {
 			textArea.setCaretPosition(linePositionBackup);
 			RXTextUtilities.centerLineInScrollPane(textArea);
 		} else {
 			textAreaContentBackup.applySelectionDTO(textArea);
 		}
-		
+
 		return done;
 	}
-	
+
 	public synchronized void freeRenderingMemory(boolean runGc) {
 		storeSelectionDto(false);
 		textArea.setText(null);
@@ -263,26 +264,28 @@ public class TabTextEditorObject {
 			Runtime.getRuntime().gc();
 		}
 	}
-	
+
 	public synchronized void resetFromRenderingMemory() {
 		restoreSelectionDto(false);
 	}
-	
+
 	public FocusListener getFocusListenerTxtCursor() {
 		return new FocusListener() {
-			
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 					}
 				});
 			}
-			
+
 			@Override
 			public void focusGained(FocusEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						checkChangesMonitor.checkChanges();
 						textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
@@ -291,12 +294,12 @@ public class TabTextEditorObject {
 			}
 		};
 	}
-	
-	
+
+
 	public void updateTextAreaPreferences(INItializer configuration) {
-		
+
 		TextEditorOption txtOptions = configuration.getTextEditorOpt();
-		
+
 		textArea.setTabSize(txtOptions.tabSize);
 		textArea.setPaintTabLines(txtOptions.isTabLineVisible());
 		textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
@@ -325,50 +328,50 @@ public class TabTextEditorObject {
 		textArea.setLocale(configuration.getGenOpt().getLocale());
 		textArea.setCloseMarkupTags(txtOptions.closeMarkupTags);
 		ColumnTextArea.INTERLINE = txtOptions.interline;
-		
+
 		textArea.setUseFocusableTips(true);
-		
+
 		textArea.repaint();
 	}
-	
+
 	public void enrichJPopUpMenu(ArrayList<Component> menuItemList) {
-		
+
 		if (menuItemList != null) {
 			for (Component menuItem : menuItemList) {
 				textArea.getPopupMenu().add(menuItem);
 			}
 		}
 	}
-	
+
 	private void defaultAddsToPopupMenu() {
-		
+
 		int iconGap = 10;
 		try {
 			JMenuItem undoItem = (JMenuItem)textArea.getPopupMenu().getComponent(0);
 			undoItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
 			undoItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Z, KeyEvent.CTRL_MASK));
-			
+
 			JMenuItem redoItem = (JMenuItem)textArea.getPopupMenu().getComponent(1);
 			redoItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REDO));
 			redoItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y, KeyEvent.CTRL_MASK));
-			
+
 			JMenuItem cutItem = (JMenuItem)textArea.getPopupMenu().getComponent(3);
 			cutItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CUT));
 			cutItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_X, KeyEvent.CTRL_MASK));
-			
+
 			JMenuItem copyItem = (JMenuItem)textArea.getPopupMenu().getComponent(4);
 			copyItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY));
 			copyItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, KeyEvent.CTRL_MASK));
-			
+
 			JMenuItem pasteItem = (JMenuItem)textArea.getPopupMenu().getComponent(5);
 			pasteItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PASTE));
 			pasteItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_V, KeyEvent.CTRL_MASK));
 
 			JMenuItem selectAllItem = (JMenuItem)textArea.getPopupMenu().getComponent(8);
 			selectAllItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_A, KeyEvent.CTRL_MASK));
-			
+
 		} catch (Exception e) {}
-		
+
 		// Copy with syntax highlighting
 		JMenuItem copySyntaxHighlightItem = new JMenuItem("Copy with syntax highlighting");
 		copySyntaxHighlightItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE));
@@ -377,7 +380,7 @@ public class TabTextEditorObject {
 		});
 		textArea.getPopupMenu().add(new JSeparator());
 		textArea.getPopupMenu().add(copySyntaxHighlightItem);
-		
+
 		// OPEN IN WEB BROWSER
 		BrowserOpenerMenu browserOpener = new BrowserOpenerMenu("Open with browser", (Insets)null, (Font)null, () -> {
 			try {
@@ -388,7 +391,7 @@ public class TabTextEditorObject {
 		});
 		browserOpener.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
 		textArea.getPopupMenu().add(browserOpener);
-		
+
 		// Color picker
 		JMenuItem showColorPicker = new JMenuItem("Color picker/converter");
 		showColorPicker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
@@ -421,10 +424,10 @@ public class TabTextEditorObject {
 				enrichPopUpMenuEolActions(eolActions);
 			}
 		});
-		
+
 		// TEXT TRANSFORMATION
 		final JMenu menuStringActions = new JMenu("Text transformation");
-		
+
 		textArea.getPopupMenu().add(menuStringActions);
 		enrichPopUpMenuStringActions(menuStringActions);
 		menuStringActions.addMouseListener(new MouseAdapter() {
@@ -432,6 +435,7 @@ public class TabTextEditorObject {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						enrichPopUpMenuStringActions(menuStringActions);
 					}
@@ -450,20 +454,20 @@ public class TabTextEditorObject {
 		});
 		textArea.getPopupMenu().add(new JSeparator());
 		textArea.getPopupMenu().add(filePropertiesItem);
-		
+
 		MenuSetter.setIconTextGap(textArea.getPopupMenu(), iconGap);
 		MenuSetter.setMargin(textArea.getPopupMenu(), new Insets(3, 3, 3, 3));
 		MenuSetter.setFont(textArea.getPopupMenu(), new Font("Segoe UI", Font.PLAIN, 16));
-		
-		
+
+
 		filePropertiesItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, ALT_MASK));
 		copySyntaxHighlightItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, ALT_MASK));
 		showColorPicker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P, KeyEvent.CTRL_MASK | SHIFT_MASK | ALT_MASK));
 
-		
+
 		// SHOW/HIDE listener
 		textArea.getPopupMenu().addPopupMenuListener(new PopupMenuListener() {
-			
+
 			@Override
 			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
 				String selection = textArea.getSelectedText();
@@ -472,7 +476,7 @@ public class TabTextEditorObject {
 				} else {
 					copySyntaxHighlightItem.setEnabled(false);
 				}
-				
+
 				if(FileVarious.validateFileOrDir(loadedFile)) {
 					showFileLineTerminators.setEnabled(true);
 					filePropertiesItem.setEnabled(true);
@@ -483,44 +487,45 @@ public class TabTextEditorObject {
 					browserOpener.setEnabled(false);
 				}
 			}
-			
+
 			@Override
 			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-				
+
 			}
-			
+
 			@Override
 			public void popupMenuCanceled(PopupMenuEvent e) {
 			}
 		});
 	}
-	
+
 	public void enrichPopUpMenuStringActions(final JMenu stringActions) {
 		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {		
+			@Override
+			public void run() {
 				stringActions.removeAll();
-				
+
 				final JMenuItem uppercaseItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>TT</b> - Uppercase/Lowercase text"));
 				uppercaseItem.setToolTipText(TextEditTooltips.tooltipTT);
 				uppercaseItem.addActionListener(getUppercaseListener());
-		
+
 				final JMenuItem uppercaseFirstItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>Tt Tt</b> - Uppercase first letters"));
 				uppercaseFirstItem.setToolTipText(TextEditTooltips.tooltipTtTt);
 				uppercaseFirstItem.addActionListener(getWordsUppercaseListener());
-		
+
 				final JMenuItem uppercasePostDotsItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>.Tt</b> - Uppercase after significant brokers"));
 				uppercasePostDotsItem.setToolTipText(TextEditTooltips.tooltipUpperPostDots);
 				uppercasePostDotsItem.addActionListener(getPostDotsUppercaseListener());
-				
+
 				final JMenuItem lowercasePostDotsItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>.tt</b> - Lowercase after significant brokers"));
 				uppercasePostDotsItem.setToolTipText(TextEditTooltips.tooltipLowerPostDots);
 				lowercasePostDotsItem.addActionListener(getPostDotsLowercaseListener());
 
 				final JMenuItem encapsulateTag = new JMenuItem(GuiUtils.encapsulateInHtml("<b>Sorround with tag</b> - Ctrl+Alt+T"));
 				encapsulateTag.addActionListener(getEncapsulateTagListener());
-				
+
 				String tabHint = "(See tabSize in textEditor subHead panel)";
-		
+
 				String tooltipTabsToSpaces = "Replace every tab with " + textArea.getTabSize() + " spaces " + tabHint;
 				final JMenuItem replaceTabsWithSpaces = new JMenuItem(tooltipTabsToSpaces);
 				replaceTabsWithSpaces.setToolTipText(tooltipTabsToSpaces);
@@ -530,7 +535,7 @@ public class TabTextEditorObject {
 						textArea.setText(StringWorker.replaceTabsWithSpaces(textArea.getText(), textArea.getTabSize()));
 						resetPositionAndRevalidate(linePosition);
 					});
-				
+
 				String tooltipSpacesToTabs = "Replace every " + textArea.getTabSize() + " spaces with a tab " + tabHint;
 				final JMenuItem replaceSpacesWithTabs = new JMenuItem(tooltipSpacesToTabs);
 				replaceSpacesWithTabs.setToolTipText(tooltipSpacesToTabs);
@@ -549,15 +554,16 @@ public class TabTextEditorObject {
 				stringActions.add(new JSeparator());
 				stringActions.add(replaceTabsWithSpaces);
 				stringActions.add(replaceSpacesWithTabs);
-				
+
 				MenuSetter.setMargin(stringActions, new Insets(3, 3, 3, 3));
 				MenuSetter.setFont(stringActions, new Font("Segoe UI", Font.PLAIN, 16));
 			}
 		});
 	}
-	
+
 	private void resetPositionAndRevalidate(int linePosition) {
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				shortcutsManager.revalidateUnsaved();
 				textArea.requestFocus();
@@ -572,47 +578,47 @@ public class TabTextEditorObject {
 			}
 		});
 	}
-	
+
 	private void enrichPopUpMenuEolActions(JMenu eolActions) {
 		eolActions.removeAll();
-		
+
 		JMenuItem replacePrintedToLF = new JMenuItem("Normalize to LF (\\n) - Linux's default");
 		replacePrintedToLF.addActionListener(getReplaceEol(EOL.LF, false));
 		JMenuItem replacePrintedToCR = new JMenuItem("Normalize to Mac CR (\\r) - Old MAC's default");
 		replacePrintedToCR.addActionListener(getReplaceEol(EOL.CR, false));
 		JMenuItem replacePrintedToCRLF = new JMenuItem("Normalize to Windows CRLF (\\r\\n) - Windows' default");
 		replacePrintedToCRLF.addActionListener(getReplaceEol(EOL.CRLF, false));
-		
+
 		JSeparator separator = new JSeparator();
-		
+
 		JMenuItem replacePrintedToFileLF = new JMenuItem("Normalize to LF and write to file (\\n) - Linux's default");
 		replacePrintedToFileLF.addActionListener(getReplaceEol(EOL.LF, true));
 		JMenuItem replacePrintedToFileCR = new JMenuItem("Normalize to Mac CR and write to file (\\r) - Old MAC's default");
 		replacePrintedToFileCR.addActionListener(getReplaceEol(EOL.CR, true));
 		JMenuItem replacePrintedToFileCRLF = new JMenuItem("Normalize to Windows CRLF and write to file (\\r\\n) - Windows' default");
 		replacePrintedToFileCRLF.addActionListener(getReplaceEol(EOL.CRLF, true));
-		
+
 		eolActions.add(replacePrintedToLF);
 		eolActions.add(replacePrintedToCR);
 		eolActions.add(replacePrintedToCRLF);
 
 		eolActions.add(separator);
-		
+
 		eolActions.add(replacePrintedToFileLF);
 		eolActions.add(replacePrintedToFileCR);
 		eolActions.add(replacePrintedToFileCRLF);
-		
+
 		MenuSetter.setMargin(eolActions, new Insets(3, 3, 3, 3));
 		MenuSetter.setFont(eolActions, new Font("Segoe UI", Font.PLAIN, 16));
 	}
-	
+
 	private AbstractAction getReplaceEol(EOL eolType, boolean saveToFile) {
 		return new AbstractAction() {
 			private static final long serialVersionUID = -6402837968440937281L;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				textArea.setText(StringWorker.normalizeStringToEol(textArea.getText(), eolType));
 				if(saveToFile) {
 					shortcutsManager.saveAsShortcut(eolType);
@@ -620,7 +626,7 @@ public class TabTextEditorObject {
 			}
 		};
 	}
-	
+
 	private AbstractAction getShowLineTerminatorsPreview(boolean fromFile) {
 		return new AbstractAction() {
 			private static final long serialVersionUID = 5019052743964361436L;
@@ -632,7 +638,7 @@ public class TabTextEditorObject {
 				JScrollPane scrollPane = new JScrollPane(textAreaPopUp);
 				textAreaPopUp.setBackground(new Color(254, 255, 205));
 				textAreaPopUp.setMargin(new Insets(12, 12, 12, 12));
-				
+
 				if(fromFile)try {
 					textAreaPopUp.setText( loadedFile != null? StringWorker.makeCRLFvisible(loadedFile) : "Undefined File");
 				} catch (IOException e1) {}
@@ -640,7 +646,7 @@ public class TabTextEditorObject {
 					textAreaPopUp.setText( textArea != null? StringWorker.makeCRLFvisible(textArea.getText()) : "Text unavailable");
 					textAreaPopUp.setCaretPosition(textArea.getCaretPosition());
 				}
-				
+
 				textAreaPopUp.setFont(new Font("DejaVu Sans Mono", Font.PLAIN, 13));
 				scrollPane.setViewportView(textAreaPopUp);
 				frame.add(scrollPane);
@@ -649,7 +655,7 @@ public class TabTextEditorObject {
 				frame.setAlwaysOnTop(true);
 				GuiUtils.centerComponent(frame, 65);
 				frame.setLocationRelativeTo(textArea.getTopLevelAncestor());
-				GuiUtils.addEscDisposeListener(frame);
+				GuiUtils.addEscAdapter(frame);
 				try {
 					if(mouseListener != null)
 						textArea.removeMouseListener(mouseListener);
@@ -662,18 +668,18 @@ public class TabTextEditorObject {
 				textArea.addMouseMotionListener(GuiUtils.getMouseExitedDisposeListener(frame));
 				textAreaPopUp.addFocusListener(GuiUtils.getFocusOutDisposeListener(frame));
 				frame.setVisible(true);
-				
+
 			}
 		};
 	}
-	
+
 	public void hyperLinksEnabled(boolean enabled) {
 		textArea.setHyperlinksEnabled(enabled);
 		if (enabled) {
 			hyperLinkListener = hyperLinkListener != null ? hyperLinkListener : new HyperlinkListener() {
 				AtomicBoolean canOpenAgain = new AtomicBoolean(true);
 				AmAsyncAction timer = new AmAsyncAction(() -> {canOpenAgain.set(true);}, 4000);
-				
+
 				@Override
 				public void hyperlinkUpdate(HyperlinkEvent e) {
 					if(e != null && e.getURL() != null && canOpenAgain.get()) {
@@ -692,7 +698,7 @@ public class TabTextEditorObject {
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		try {
@@ -702,7 +708,7 @@ public class TabTextEditorObject {
 			return "EXCEPTION_WHILE_LOGGING";
 		}
 	}
-	
+
 	public ActionListener getLowercaseListener() {
 		return e -> {
 			int linePosition = textArea.getCaretLineNumber();
@@ -720,7 +726,7 @@ public class TabTextEditorObject {
 			shortcutsManager.revalidateUnsaved();
 		};
 	}
-	
+
 	public ActionListener getWordsUppercaseListener() {
 		return e -> {
 			int linePosition = textArea.getCaretLineNumber();
@@ -751,7 +757,7 @@ public class TabTextEditorObject {
 	public ActionListener getEncapsulateTagListener() {
 		return e -> {
 			boolean htmlLike = false;
-			if(textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_XML) || 
+			if(textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_XML) ||
 			   textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_MXML) ||
 			   textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_HTML)) {
 				htmlLike = true;
@@ -759,22 +765,22 @@ public class TabTextEditorObject {
 			int linePosition = textArea.getCaretLineNumber();
 			Vector<String> tags = currentConfig.getTextEditorOpt().lastTagsUsed.getList();
 			String tag = RsyntaxUtils.askForStringComboNullable(currentScrollPane, tags, "Specify the tag to use for sorrounding", "Specify tag");
-			
+
 //				String tag = new JOptionHelper(currentScrollPane).askForStringNullable("Specify the tag to use for sorrounding", "Specify tag");
 			if(tag != null) {
 				tags.add(tag);
 				currentConfig.getTextEditorOpt().lastTagsUsed.setList(tags);
 				currentConfig.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastTagsUsed", currentConfig.getTextEditorOpt().lastTagsUsed.toCharSeparatedString(";"));
-				
+
 				String text = StringWorker.trimToEmpty(textArea.getSelectedText());
 				tag = htmlLike ? GuiUtils.encapsulateInTag(text, tag) : tag+text+tag;
 				int selStart = textArea.getSelectionStart();
 				textArea.replaceSelection(tag);
 				resetPositionAndRevalidate(linePosition);
 				shortcutsManager.revalidateUnsaved();
-				
+
 				int selLength = tag.length();
-				
+
 				GuiUtils.launchThreadSafeSwing(()-> {
 					try {
 						Thread.sleep(200);
