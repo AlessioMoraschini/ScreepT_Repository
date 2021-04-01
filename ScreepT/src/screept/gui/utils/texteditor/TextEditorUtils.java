@@ -41,7 +41,6 @@ import org.fife.ui.rtextarea.Gutter;
 
 import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.frame.panels.ShellReadWritePanel;
-import gui.commons.frameutils.frame.panels.arch.ParentPanel;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.guistyle.GUIStyelSettingsExtended;
 import gui.commons.splitpanel.SplitPaneUtils;
@@ -77,6 +76,7 @@ import screept.gui.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.files.om.FileNamed;
+import various.common.light.gui.ScreepTGuiFactory;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.utility.reflection.ReflectionUtils;
 import various.common.light.utility.string.StringWorker;
@@ -794,7 +794,7 @@ public class TextEditorUtils {
 			currentTextEditor.splitPaneVerticalAllAndBottomToggle.getBottomComponent().setVisible(false);
 			currentTextEditor.splitPaneVerticalAllAndBottomToggle.setDividerLocation(1.0D);
 		}
-		RsyntaxUtils.setFont((RSyntaxTextArea)getBottomShellPanel().commandTextArea, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
+		RsyntaxUtils.setFont((RSyntaxTextArea)getBottomShellPanel().commandTextArea, ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		
 		currentTextEditor.subHeaderPanel.toggleBtnConsole.setSelected(active);
 		

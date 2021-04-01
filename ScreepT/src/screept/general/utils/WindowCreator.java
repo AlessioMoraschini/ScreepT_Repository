@@ -32,7 +32,6 @@ import gui.commons.frameutils.frame.HashCheckerFrame;
 import gui.commons.frameutils.frame.ShellFrame;
 import gui.commons.frameutils.frame.arch.ParentFrame;
 import gui.commons.frameutils.frame.panels.ShellReadWritePanel;
-import gui.commons.frameutils.frame.panels.arch.ParentPanel;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.texteditor.commons.SchemeManagerGui;
 import gui.texteditor.commons.filesearch.FileSearchActions;
@@ -64,6 +63,7 @@ import various.common.light.files.om.SearchResult;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.LightLicenseViewer;
 import various.common.light.gui.LightLicenseViewer.UserLicenseChoice;
+import various.common.light.gui.ScreepTGuiFactory;
 import various.common.light.gui.UpdateProgressPanel;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.om.LimitedConcurrentList;
@@ -190,8 +190,8 @@ public class WindowCreator {
 		txtArea.setCurrentLineHighlightColor(Color.DARK_GRAY.darker());
 		txtArea.setSelectedTextColor(Color.DARK_GRAY);
 		txtArea.setSelectionColor(Color.DARK_GRAY);
-		txtArea.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
-		RsyntaxUtils.setFont(txtArea, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
+		txtArea.setFont(ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
+		RsyntaxUtils.setFont(txtArea, ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		return txtArea;
 	}
 

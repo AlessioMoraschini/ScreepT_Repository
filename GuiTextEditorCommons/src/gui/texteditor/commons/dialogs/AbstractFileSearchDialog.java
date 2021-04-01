@@ -46,8 +46,8 @@ import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 
 import gui.commons.dialogutils.GenericFileChooserDialog;
-import gui.commons.frameutils.frame.panels.arch.ParentPanel;
 import various.common.light.gui.GuiUtils;
+import various.common.light.gui.ScreepTGuiFactory;
 
 /**
  * This is the base class for {@link FindDialog} and {@link ReplaceDialog}. It
@@ -294,11 +294,11 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		txtFieldSelectedFiles.setMargin(new Insets(8, 8, 8, 8));
 		txtFieldSelectedFiles.setMinimumSize(new Dimension(320, 70));
 		txtFieldSelectedFiles.setPreferredSize(new Dimension(320, 70));
-		txtFieldSelectedFiles.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(17f));
+		txtFieldSelectedFiles.setFont(ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(17f));
 		txtFieldSelectedFiles.setEditable(false);
 		txtFieldSelectedFiles.setAutoscrolls(true);
 		txtFieldSelectedFiles.setBorder(new LineBorder(Color.DARK_GRAY));
-		JScrollPane scroller = ParentPanel.getScrollPane(true, true);
+		JScrollPane scroller = ScreepTGuiFactory.getScrollPane(true, true);
 		scroller.setViewportView(txtFieldSelectedFiles);
 		temp.add(scroller);
 		searchConditionsPanel.add(temp, BorderLayout.LINE_END);

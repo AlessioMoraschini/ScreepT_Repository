@@ -24,7 +24,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import gui.commons.frameutils.frame.arch.ParentDialog;
-import gui.commons.frameutils.frame.panels.arch.ParentPanel;
 import gui.commons.list.FileDropList;
 import initializer.configs.impl.INItializer;
 import initializer.configs.impl.om.FileOptions;
@@ -37,6 +36,7 @@ import various.common.light.files.om.FileSearchDTO;
 import various.common.light.files.search.FileNameSearchAdvanced;
 import various.common.light.files.search.FileNameSearchAdvanced.SearchType;
 import various.common.light.gui.GuiUtils;
+import various.common.light.gui.ScreepTGuiFactory;
 import various.common.light.gui.dnd.FileDropListenerSingle;
 import various.common.light.utility.string.StringWorker;
 import various.common.light.utility.time.AmAsyncAction;
@@ -114,7 +114,7 @@ public class FileNameSearchDialog extends ParentDialog {
 				"[][][60px, grow]",
 				"[25px:25px][30px, grow][][25px:25px:25px]"));
 
-		textField = ParentPanel.getTextField(null, null, Color.LIGHT_GRAY, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(15f), false);
+		textField = ScreepTGuiFactory.getTextField(null, null, Color.LIGHT_GRAY, ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(15f), false);
 		add(textField, "cell 0 0 3 1,grow");
 
 		fileDropList = new FileDropList();
@@ -135,23 +135,23 @@ public class FileNameSearchDialog extends ParentDialog {
 				lblCurrentSelectionPath.setText(NO_SELECTION);
 		});
 
-		lblPopUpMessage = ParentPanel.getLabel("", null, null, null, true);
+		lblPopUpMessage = ScreepTGuiFactory.getLabel("", null, null, null, true);
 		lblPopUpMessage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
 		lblPopUpMessage.setVisible(false);
 		lblPopUpMessage.setBorder(new LineBorder(Color.GRAY));
 		add(lblPopUpMessage, "cell 0 2 3 1,grow");
 
-		radioUseWorkspace = ParentPanel.getRadioButton(
+		radioUseWorkspace = ScreepTGuiFactory.getRadioButton(
 				"Use workspace",
 				"When selected, workspace will be used as root. If not selected, the manual root folder will be used (click on root dir name to change it)",
 				false);
 		add(radioUseWorkspace, "cell 0 3 1 1,grow");
 
-		lblCurrentRootFolder = ParentPanel.getLabel("", null, null, null, true);
+		lblCurrentRootFolder = ScreepTGuiFactory.getLabel("", null, null, null, true);
 		lblCurrentRootFolder.setCursor(GuiUtils.CURSOR_HAND);
 		add(lblCurrentRootFolder, "cell 1 3 1 1,grow");
 
-		lblCurrentSelectionPath = ParentPanel.getLabel(NO_SELECTION, null, null, null, true);
+		lblCurrentSelectionPath = ScreepTGuiFactory.getLabel(NO_SELECTION, null, null, null, true);
 		add(lblCurrentSelectionPath, "cell 2 3 1 1,grow");
 
 		applyDarkColor();

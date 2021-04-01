@@ -31,15 +31,17 @@ import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import screept.gui.panels.TextEditor;
 import screept.gui.utils.texteditor.TextEditorUtils;
+import various.common.light.gui.GuiUtils;
 
 public class TextEditorFooterPanel extends JPanel{
 	private static final long serialVersionUID = 6053593284206473287L;
-	
+
 	public TextEditor parent;
 	public TextEditorUtils parentUtils;
 	public INItializer currentConfiguration;
-	
+
 	public JRadioButton rdbtnShowCompletePath;
+	public final static String[] radioButtonOptions = {"Path", "Name"};
 
 	public JLabel lblCurrentFileLBL;
 	public JLabel labelTotLines;
@@ -58,16 +60,16 @@ public class TextEditorFooterPanel extends JPanel{
 	public JLabel lblAdvice;
 
 	public JTextField lblCurrentFile;
-	
+
 	public TextEditorFooterPanel(TextEditor parent) {
 		super();
 		this.parent = parent;
 		this.parentUtils = parent.textEditorUtils;
 		this.currentConfiguration = parent.currentConfiguration;
-		
+
 		setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		setBackground(Color.GRAY);
-		setLayout(new MigLayout("fill,insets 3, hidemode 3", 
+		setLayout(new MigLayout("fill,insets 3, hidemode 3",
 				"[][50px,grow][50px][][:50px:120px][][:30px:90px][][:50px:120px][][:20px:120px][][:20px:120px][][:50px:120px][grow][70px:n][]",
 				"[fill]"));
 
@@ -84,11 +86,13 @@ public class TextEditorFooterPanel extends JPanel{
 		lblCurrentFile.setForeground(SystemColor.activeCaption);
 		add(lblCurrentFile, "cell 1 0,growx");
 
-		rdbtnShowCompletePath = new JRadioButton("Path");
+		rdbtnShowCompletePath = new JRadioButton(radioButtonOptions[0]);
 		rdbtnShowCompletePath.setOpaque(false);
+		rdbtnShowCompletePath.setCursor(GuiUtils.CURSOR_HAND);
 		rdbtnShowCompletePath.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		add(rdbtnShowCompletePath, "cell 2 0");
 		rdbtnShowCompletePath.setSelected(true);
+		rdbtnShowCompletePath.setForeground(Color.WHITE);
 
 		labelCharset = new JLabel("Charset:");
 		labelCharset.setForeground(SystemColor.controlHighlight);
@@ -165,22 +169,26 @@ public class TextEditorFooterPanel extends JPanel{
 		lblAdvice.setForeground(Color.LIGHT_GRAY);
 		lblAdvice.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAdvice.setText("[Type: .txt]");
-		
+
 		addHandlers();
-		
+
 	}
-	
+
 	private void addHandlers() {
 		// FOOTER UI RADIOBOX COMPLETE PATH (current file)
 		rdbtnShowCompletePath.setForeground(Color.LIGHT_GRAY);
 		rdbtnShowCompletePath.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						if (rdbtnShowCompletePath.isSelected()) {
 							rdbtnShowCompletePath.setForeground(Color.WHITE);
+							rdbtnShowCompletePath.setText(radioButtonOptions[0]);
 						} else {
 							rdbtnShowCompletePath.setForeground(Color.LIGHT_GRAY);
+							rdbtnShowCompletePath.setText(radioButtonOptions[1]);
 						}
 					}
 				});
