@@ -1191,13 +1191,9 @@ public class MainGUI extends MainGuiParent{
 							MainGuiGeneralAppStarter.pluginManager.discoverLatestPlugins();
 
 							if (pluginManagerGUI == null || !PluginManagerGUI.active) {
-								Runnable libCheckNRefreshGUI = new Runnable() {
-									@Override
-									public void run() {
-									}
-								};
+								Runnable libCheckNRefreshGUI = ()->{};
 
-								pluginManagerGUI = new PluginManagerGUI(null, MainGuiGeneralAppStarter.pluginManager, libCheckNRefreshGUI);
+								pluginManagerGUI = new PluginManagerGUI(getMainFrame(), MainGuiGeneralAppStarter.pluginManager, libCheckNRefreshGUI);
 								GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_PLUGINS, pluginManagerGUI);
 							} else {
 								pluginManagerGUI.toFront();

@@ -70,7 +70,7 @@ public class TextEditorFooterPanel extends JPanel{
 		setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		setBackground(Color.GRAY);
 		setLayout(new MigLayout("fill,insets 3, hidemode 3",
-				"[][50px,grow][50px][][:50px:120px][][:30px:90px][][:50px:120px][][:20px:120px][][:20px:120px][][:50px:120px][grow][70px:n][]",
+				"[][50px,grow][50px][][:50px:120px][][:45px:90px][][:50px:120px][][:20px:120px][][:20px:120px][][:50px:120px][grow][70px:n][]",
 				"[fill]"));
 
 		lblCurrentFileLBL = new JLabel(" Current file:");
@@ -114,7 +114,7 @@ public class TextEditorFooterPanel extends JPanel{
 		dynLblTotLines.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		add(dynLblTotLines, "cell 6 0");
 
-		labelTotalChars = new JLabel("N° Chars:");
+		labelTotalChars = new JLabel("Length:");
 		labelTotalChars.setForeground(SystemColor.controlHighlight);
 		labelTotalChars.setFont(new Font("Segoe UI", Font.BOLD, 10));
 		add(labelTotalChars, "cell 7 0,alignx right");

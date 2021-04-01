@@ -210,20 +210,6 @@ public class CustomTabbedEditor implements ITabsManager {
 		return indexTabObj;
 	}
 
-	public TabTextEditorObject getTabObjByFile(File match) {
-		TabTextEditorObject indexTabObj = this.loadedTabObj;
-
-		for (int i = 0; i < loadedList.getSize(); i++) {
-			try {
-				if(match.getCanonicalFile().equals(loadedList.getList().get(i).loadedFile.getAbsoluteFile())) {
-					return loadedList.getList().get(i);
-				}
-			} catch (IOException e) {}
-		}
-
-		return indexTabObj;
-	}
-
 	public boolean setIconToTab(String iconPath, Integer index) {
 		try {
 			JLabel tabHeadIcon = (JLabel) (getPanelFromTabHeader(index)).getComponent(TabUtils.TAB_ICON_ORDER);
@@ -324,6 +310,21 @@ public class CustomTabbedEditor implements ITabsManager {
 
 		return null;
 	}
+
+	public TabTextEditorObject getTabObjByFile(File match) {
+		TabTextEditorObject indexTabObj = this.loadedTabObj;
+
+		for (int i = 0; i < loadedList.getSize(); i++) {
+			try {
+				if(match.getCanonicalFile().equals(loadedList.getList().get(i).loadedFile.getAbsoluteFile())) {
+					return loadedList.getList().get(i);
+				}
+			} catch (IOException e) {}
+		}
+
+		return indexTabObj;
+	}
+
 
 	public boolean isImageFileSupported(File toCheck) {
 		if (toCheck != null) {
