@@ -33,7 +33,7 @@ public class EasterEggsInitializer {
 				(e) -> {
 					return KeyEvent.VK_U == e.getKeyCode() &&
 							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, true, true, false, 600) &&
-						   (mainGuiUtils.isCrypterActive() || mainGuiUtils.isTextEditorActive());
+						   (mainGuiUtils.isCrypterActive(true) || mainGuiUtils.isTextEditorActive(true));
 					}
 		);
 

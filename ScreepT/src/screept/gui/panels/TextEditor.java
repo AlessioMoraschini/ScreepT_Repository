@@ -94,6 +94,7 @@ import various.common.light.files.om.FileNamed;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.RXTextUtilities;
 import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker.EOL;
 
 public class TextEditor extends ModulePanel {
 	private static final long serialVersionUID = 4754281928324097410L;
@@ -1159,13 +1160,15 @@ public class TextEditor extends ModulePanel {
 		boolean loadedAlmostOne = false;
 		currentTabbedEditor.alreadyLoading = true;
 		List<String> toRemove = new ArrayList<>();
+
+		// Load previous opened files
 		if (currentConfiguration.getTextEditorOpt().getOpenedFileList() != null
 				&& currentConfiguration.getTextEditorOpt().getOpenedFileList().size() != 0) {
 
 			for (String pathToOpen : currentConfiguration.getTextEditorOpt().getOpenedFileList()) {
 				File toLoadFile = new File(pathToOpen);
 				if (toLoadFile.exists()) {
-					if(!validateFile(toLoadFile)) {
+					if(!currentTabbedEditor.validateFileToOpen(toLoadFile)) {
 						toRemove.add(pathToOpen);
 						continue;
 					}
@@ -1179,6 +1182,21 @@ public class TextEditor extends ModulePanel {
 
 			for(String toRemoStr : toRemove) {
 				currentConfiguration.getTextEditorOpt().getOpenedFileList().remove(toRemoStr);
+			}
+		}
+
+		for(String tempFilePath : currentConfiguration.getTextEditorOpt().getOpenedTempFileList()) {
+			File temp = FileVarious.getCanonicalFileSafe(tempFilePath);
+			if (temp.exists()) {
+				if(!currentTabbedEditor.validateFileToOpen(temp)) {
+					continue;
+				}
+
+				TabTextEditorObject obj = currentTabbedEditor.addTab(null);
+				obj.tempFile = temp;
+				FileWorker.appendFileTxtArea(temp, obj.textArea, true, EOL.defaultEol);
+				obj.unsaved = true;
+				loadedAlmostOne = true;
 			}
 		}
 
@@ -1242,7 +1260,7 @@ public class TextEditor extends ModulePanel {
 			}
 		});
 
-		if(!loadedAlmostOne && currentTabbedEditor.loadedTabObj.loadedFile == null || !currentTabbedEditor.loadedTabObj.loadedFile.exists()) {
+		if(!loadedAlmostOne && (currentTabbedEditor.loadedTabObj.loadedFile == null || !currentTabbedEditor.loadedTabObj.loadedFile.exists())) {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {

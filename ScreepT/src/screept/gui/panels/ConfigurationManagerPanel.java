@@ -11,8 +11,35 @@
  */
 package screept.gui.panels;
 
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.tree.TreeModel;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -44,52 +71,20 @@ import screept.gui.utils.tree.iniconfmanager.FileCellRendererIni;
 import screept.gui.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
 import various.common.light.files.FileWorker;
 
-import java.awt.Font;
-import java.awt.Insets;
-import java.awt.Point;
-
-import javax.swing.JLabel;
-import java.awt.SystemColor;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.awt.event.ActionEvent;
-import java.awt.Color;
-
-import javax.swing.ImageIcon;
-import javax.swing.border.LineBorder;
-import javax.swing.tree.TreeModel;
-
-import java.awt.Cursor;
-import java.awt.Dialog;
-
-import javax.swing.border.BevelBorder;
-import javax.swing.JTree;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import java.awt.Dimension;
-
 public class ConfigurationManagerPanel extends ModulePanel {
 	private static final long serialVersionUID = 5166978306767024195L;
 
-	// INItializer logger creation		
-	static Logger logger = Logger.getLogger(ConfigurationManagerPanel.class); 
-	
+	// INItializer logger creation
+	static Logger logger = Logger.getLogger(ConfigurationManagerPanel.class);
+
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_hh:mm:ss");
-	
+
 	public TreeFileMouseListenerIni menuMouseListener;
-	
+
 	private INItializer config;
 	public MainGUI parent;
 	private ConfigurationManagerPanel thisPanel;
-	
+
 	// GUI ELEMENTS //
 	public RSyntaxTextArea textArea;
 	private JScrollPane scrollPaneTreeConfigs;
@@ -100,7 +95,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 	private JButton btnCurrentRefresh;
 	private JButton btnSaveCurrentAsDefault;
 	private JButton btnResetOriginalConfig;
-	
+
 	public JLabel lblAvviso;
 	public JLabel config_PATH;
 	public JPanel panelDynPath;
@@ -110,32 +105,32 @@ public class ConfigurationManagerPanel extends ModulePanel {
 	private JTree tree;
 	private JButton btnSave;
 	private JButton btnViewCurrentFile;
-	
+
 	private JOptionHelperExtended dialogHelper;
 	public JSplitPane splitPane;
 	private JButton btnFind;
-	
+
 	private TextAreaDialogs textAreaDialogs;
 	private FindDialogFork searchBox;
 
 	public ConfigurationManagerPanel(INItializer configuration, MainGUI parentFrame) {
 		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(112, 128, 144), new Color(105, 105, 105), new Color(0, 0, 0), new Color(0, 0, 0)));
-		
+
 		thisPanel = this;
 		parent = parentFrame;
 		config = configuration;
-		
+
 		textAreaDialogs = new TextAreaDialogs(new ITextAreaDialogs() {
-			
+
 			@Override
 			public void loadThemeIntoTarget(RSyntaxTextArea txtArea) {
 			}
-			
+
 			@Override
 			public RSyntaxTextArea getTargetTextArea() {
 				return textArea;
 			}
-			
+
 			@Override
 			public String getCurrentClipboard() {
 				return null;
@@ -151,17 +146,17 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				return null;
 			}
 		});
-		
+
 		dialogHelper = new JOptionHelperExtended(parent.getMainFrame());
-		
+
 		logger.info(this.getClass().getName() + " Starting...");
-		
+
 		setBackground(Color.DARK_GRAY);
-		
-		setLayout(new MigLayout("", 
-				"[120px:130px][80px:90px][70px:80px][135px:150px][30px][150px:160px][140px:140px][][140px:140px,grow][grow][50][100px,grow,leading][120px:130px,grow]", 
+
+		setLayout(new MigLayout("",
+				"[120px:130px][80px:90px][70px:80px][135px:150px][30px][150px:160px][140px:140px][][140px:140px,grow][grow][50][100px,grow,leading][120px:130px,grow]",
 				"[:35px:40px][28px][][20px][400px,grow]"));
-		
+
 		textArea = new RSyntaxTextArea();
 		textArea.setUseSelectedTextColor(true);
 		textArea.setBorder(null);
@@ -170,7 +165,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		scrollPaneTextArea = new RTextScrollPane(textArea);
 		scrollPaneTextArea.setAutoscrolls(false);
 		scrollPaneTextArea.setBorder(new LineBorder(Color.BLACK, 2));
-		
+
 		btnExportConfig = new JButton("Export");
 		btnExportConfig.setMinimumSize(new Dimension(62, 20));
 		btnExportConfig.setPreferredSize(new Dimension(62, 20));
@@ -180,7 +175,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnExportConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnExportConfig.setBackground(Color.LIGHT_GRAY);
 		add(btnExportConfig, "cell 1 1,grow");
-		
+
 		btnSave = new JButton("Save");
 		btnSave.setPreferredSize(new Dimension(55, 20));
 		btnSave.setMinimumSize(new Dimension(55, 20));
@@ -190,7 +185,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnSave.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnSave.setBackground(Color.LIGHT_GRAY);
 		add(btnSave, "cell 2 1,grow");
-		
+
 		btnSaveCurrentAsDefault = new JButton("Save as Default");
 		btnSaveCurrentAsDefault.setMinimumSize(new Dimension(114, 20));
 		btnSaveCurrentAsDefault.setPreferredSize(new Dimension(114, 20));
@@ -200,7 +195,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnSaveCurrentAsDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnSaveCurrentAsDefault.setBackground(Color.LIGHT_GRAY);
 		add(btnSaveCurrentAsDefault, "cell 3 1 2 1,grow");
-		
+
 		btnViewCurrentFile = new JButton("Current Config. File");
 		btnViewCurrentFile.setPreferredSize(new Dimension(134, 20));
 		btnViewCurrentFile.setMinimumSize(new Dimension(134, 20));
@@ -210,7 +205,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnViewCurrentFile.setForeground(Color.BLACK);
 		btnViewCurrentFile.setBackground(new Color(176, 196, 222));
 		add(btnViewCurrentFile, "cell 5 1,grow");
-		
+
 		btnCurrentRefresh = new JButton("Current Volatile");
 		btnCurrentRefresh.setMinimumSize(new Dimension(112, 20));
 		btnCurrentRefresh.setPreferredSize(new Dimension(112, 20));
@@ -220,7 +215,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnCurrentRefresh.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnCurrentRefresh.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD2));
 		add(btnCurrentRefresh, "cell 6 1,grow");
-		
+
 		btnFind = new JButton("");
 		btnFind.setForeground(Color.BLACK);
 		btnFind.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
@@ -228,12 +223,12 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnFind.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnFind.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH));
 		add(btnFind, "cell 7 1,grow");
-		
+
 		panelDynPath = new JPanel();
 		panelDynPath.setOpaque(false);
 		add(panelDynPath, "cell 9 1 3 1,alignx center,growy");
 		panelDynPath.setLayout(new MigLayout("", "[grow][150px,grow]", "[]"));
-		
+
 		btnResetOriginalConfig = new JButton("Reset Original");
 		btnResetOriginalConfig.setMinimumSize(new Dimension(120, 20));
 		btnResetOriginalConfig.setPreferredSize(new Dimension(120, 20));
@@ -243,46 +238,46 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnResetOriginalConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnResetOriginalConfig.setBackground(new Color(250, 128, 114));
 		add(btnResetOriginalConfig, "cell 11 1 2 1,grow");
-		
+
 		separator = new JSeparator();
 		add(separator, "cell 0 2 13 1,growx");
-		
+
 		lblPreferredConfigurations = new JLabel("Preferred Configurations");
 		lblPreferredConfigurations.setForeground(Color.WHITE);
 		lblPreferredConfigurations.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		add(lblPreferredConfigurations, "cell 0 3 4 1,alignx center,aligny bottom");
-		
+
 		JLabel lblInitializationFrom = new JLabel("Current .ini file: ");
 		lblInitializationFrom.setForeground(Color.WHITE);
 		add(lblInitializationFrom, "cell 5 3 3 1");
 		lblInitializationFrom.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		
+
 		config_PATH = new JLabel("");
 		config_PATH.setForeground(Color.WHITE);
 		add(config_PATH, "cell 8 3 5 1");
 		config_PATH.setHorizontalAlignment(SwingConstants.LEFT);
 		config_PATH.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		config_PATH.setText(config.getIniFile().getFile().getPath());
-		
+
 		lblAvviso = new JLabel("[Configuration loaded]");
 		lblAvviso.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblAvviso.setForeground(Color.DARK_GRAY);
 		add(lblAvviso, "cell 8 1,growx");
-		
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setForeground(SystemColor.menu);
 		panel_1.setBorder(new LineBorder(Color.BLACK, 2));
 		panel_1.setBackground(Color.LIGHT_GRAY);
 		add(panel_1, "cell 0 0 13 1,grow");
 		panel_1.setLayout(new MigLayout("", "[100%]", "[grow]"));
-		
+
 		JLabel lblConfigurationManager = new JLabel("Configuration Manager");
 		lblConfigurationManager.setHorizontalAlignment(SwingConstants.CENTER);
 		lblConfigurationManager.setForeground(Color.BLACK);
 		lblConfigurationManager.setFont(new Font("Lithos Pro Regular", Font.BOLD, 15));
 		lblConfigurationManager.setBackground(SystemColor.activeCaptionBorder);
 		panel_1.add(lblConfigurationManager, "cell 0 0,alignx center");
-		
+
 		btnLoadCustomConfig = new JButton("Load Custom");
 		btnLoadCustomConfig.setPreferredSize(new Dimension(103, 20));
 		btnLoadCustomConfig.setMinimumSize(new Dimension(103, 20));
@@ -292,12 +287,12 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnLoadCustomConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnLoadCustomConfig.setBackground(Color.LIGHT_GRAY);
 		add(btnLoadCustomConfig, "cell 0 1,grow");
-		
+
 		scrollPaneTreeConfigs = new JScrollPane();
 		scrollPaneTreeConfigs.setBorder(new LineBorder(Color.BLACK, 2));
 		scrollPaneTreeConfigs.setOpaque(true);
 		scrollPaneTreeConfigs.setBackground(new Color(255, 255, 240));
-		
+
 		TreeModel treeModel = new FileTreeModel(new File(GeneralConfig.DEFAULT_INI_FOLDER));
 		tree = new JTree(treeModel);
 		menuMouseListener = new TreeFileMouseListenerIni(config, this, tree);
@@ -305,7 +300,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		tree.setBorder(null);
 		tree.setBackground(new Color(255, 255, 240));
 		scrollPaneTreeConfigs.setViewportView(tree);
-		
+
 		splitPane = new JSplitPane();
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setBackground(Color.DARK_GRAY);
@@ -315,26 +310,28 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		add(splitPane, "cell 0 4 13 1,grow");
 
 		addHandlers();
-		
+
 		initGuiFromConfig();
-		
+
 		logger.info(this.getClass().getName() + " Started");
 	}
-	
+
 	public void initGuiFromConfig() {
 		GUIStyelSettingsExtended.setStyle(config.getGuiOpt().getPreferredStyle(), config.getGuiOpt().nimbusSize);
 		GUIStyelSettingsExtended.applyNimbusSize(null, config.getGuiOpt().nimbusSize);
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				applyTextAreaStyle();
 			}
 		});
 	}
-	
+
 	public void applyTextAreaStyle(){
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
-				
+
 				boolean usePreloadedStringXml = GeneralConfig.XML_THEMES_CONTENT_MAP != null
 						&& GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(Themes.DARK.fileName);
 				if (usePreloadedStringXml) {
@@ -359,11 +356,12 @@ public class ConfigurationManagerPanel extends ModulePanel {
 			}
 		});
 	}
-	
+
 	public void addHandlers() {
-		
+
 		// LOAD CURRENT INI FILE LOADED
 		btnViewCurrentFile.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				lblAvviso.setText("[Current Configuration file]");
 				lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(0.2f));
@@ -375,6 +373,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 
 		// REFRESH VIEW CURRENT CONFIG VOLATILE MEMORY
 		btnCurrentRefresh.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					config.setIniFile(new Wini(config.getIniFile().getFile()));
@@ -394,23 +393,25 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				}
 			}
 		});
-		
+
 		// LOAD CUSTOM
 		btnLoadCustomConfig.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("Load CONFIG clicked");
 				INIfileChoosER.readNloadIniWithTextAreaOutput(config, textArea, lblAvviso);
 				lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n");
-				FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
+				FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
 				textAreaToTop();
 				MainGUI.updateGuiFromCurrConfig();
 			}
 		});
-		
+
 		// SAVE CURRENT CONFIG
 		btnSave.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("SAVE CONFIG clicked");
 				if(INIfileChoosER.saveCurrentConf(config, parent.getMainFrame())) {
@@ -419,18 +420,20 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				}
 			}
 		});
-		
+
 		// EXPORT CURRENT CONFIG
 		btnExportConfig.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("EXPORT CONFIG clicked");
 		    	INIfileChoosER.exportIniFile(config, lblAvviso);
 		    	lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 			}
 		});
-		
+
 		// RELOAD ORIGINAL SCREEPT CONFIGURATION
 		btnResetOriginalConfig.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (dialogHelper.yesOrNo("Really want to Reset standard ScreepT configuration? Unsaved changes will be lost! ", "Warning - Reset INI standard config?")) {
 					try {
@@ -438,7 +441,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 						config.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						lblAvviso.setText("[Configuration Resetted!]");
-						MainGuiUtils.askNameAtStartIfNotDefined();
+						MainGuiUtils.askNameAtStartIfNotDefined(MainGUI.mainAPP.getMainFrame());
 						dialogHelper.info("File '" + config.getIniFile().getFile().getName() + "' loaded!", "");
 						config.readConfigIniFile();
 						MainGUI.updateGuiFromCurrConfig();
@@ -446,35 +449,35 @@ public class ConfigurationManagerPanel extends ModulePanel {
 						dialogHelper.error("Error resetting standard configuration: it does not exist or IO error occurred, retry later!", "");
 						logger.error("Exception happened!", exc);
 					}
-					
+
 					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n");
-					FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
-					
+					FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
+
 					textAreaToTop();
 				} else {
 					dialogHelper.warn("Configuration not loaded, current CONFIG mantained!", "");
-				} 
+				}
 			}
 		});
-		
+
 		// SAVE CURRENT AS DEFAULT
 		btnSaveCurrentAsDefault.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					File backupIni = config.getIniFile().getFile();
 					if (dialogHelper.yesOrNo("Really want to overwrite default configuration?",	"Warning - Overwrite default configuration?")) {
-						
+
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						config.setIniReadFile(new Ini(new File(GeneralConfig.DEFAULT_INI)));
 						config.writeCurrentConfigIniFile();
 						lblAvviso.setText("[Configuration Saved as new Default!]");
 						config_PATH.setText(config.getIniFile().getFile().getPath());
 						textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" );
-						FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
+						FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
 						textAreaToTop();
 						dialogHelper.info("File " + config.getIniFile().getFile().getAbsolutePath() + " saved!", "");
 					} else {
@@ -490,13 +493,14 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				}
 			}
 		});
-		
+
 		// search text into configuration
 		btnFind.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						if (searchBox == null) {
 							searchBox = textAreaDialogs.getSearchDialog(thisPanel.parent.getMainFrame(),  null, null,"successAdvice", "errorAdvice");
@@ -513,7 +517,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 			}
 		});
 	}
-	
+
 	private void textAreaToTop() {
 		try {
 			scrollPaneTextArea.getViewport().setViewPosition(new Point(0,0));

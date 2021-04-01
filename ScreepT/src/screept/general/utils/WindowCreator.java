@@ -206,7 +206,7 @@ public class WindowCreator {
 			panel.loadAction(preloadFile).run();
 
 		panel.setSyncAction(() -> {
-			if(MainGUI.mainGuiUtils.isTextEditorActive())
+			if(MainGUI.mainGuiUtils.isTextEditorActive(false))
 				MainGUI.textEditorPanel.textEditorUtils.updateBottomDividerLocation();
 		});
 

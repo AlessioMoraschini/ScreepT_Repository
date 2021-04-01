@@ -57,6 +57,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.text.BadLocationException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -76,11 +77,13 @@ import os.commons.utils.SysUtils;
 import plugin.api.AbstractPluginApplicationApi;
 import plugin.api.AbstractPluginApplicationApi.PluginType;
 import plugin.api.PluginJMenuCreator;
+import plugin.api.PluginJMenuCreator.ObjectRetriever;
 import plugin.external.arch.IPlugin;
 import plugin.external.arch.IPluginParentExecutor.FunctionType;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
 import various.common.light.files.watcher.FileChangeMonitor;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.MenuSetter;
@@ -113,6 +116,7 @@ public class TabTextEditorObject {
 	// Normal Pojo fields
 	public FileChangeMonitor fileMonitorManager;
 	public File loadedFile;
+	public File tempFile;
 	public RTextScrollPane currentScrollPane;
 	public ColumnTextArea textArea;
 //	public FocusListener focusTxtAreaMonitor;
@@ -200,6 +204,19 @@ public class TabTextEditorObject {
 				textArea.repaint();
 			}
 		});
+	}
+
+	public File saveTempFile() throws IOException {
+		if(tempFile == null || !tempFile.exists() || !tempFile.canWrite())
+			tempFile = AbstractPluginApplicationApi.getAvailableProviders().get(0).saveTempFileInApplicationFolder("tempFile.txt", true, "COMMON_DATA/TXT/");
+
+		FileWorker.writeStringToFile(textArea.getText(), tempFile, true, EOL.defaultEol);
+
+		return tempFile;
+	}
+
+	public void deleteTempFile() {
+		FileUtils.deleteQuietly(tempFile);
 	}
 
 	public void resetData() {
@@ -400,6 +417,15 @@ public class TabTextEditorObject {
 		textArea.getPopupMenu().add(browserOpener);
 
 
+
+		// Color picker
+		JMenuItem showColorPicker = new JMenuItem("Color picker/converter");
+		showColorPicker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
+		showColorPicker.addActionListener((e)->{
+			iTabsManager.openColorPicker();
+		});
+		textArea.getPopupMenu().add(showColorPicker);
+
 		// PLUGINS
 		JMenu pluginsMenu = new JMenu("Plugins");
 		textArea.getPopupMenu().add(pluginsMenu);
@@ -410,21 +436,15 @@ public class TabTextEditorObject {
 			IPlugin plugin = iterator.next();
 			if (plugin != null) {
 
-				pluginsMenu.add(getPluginsMenu(
-								FunctionType.TEXT_AREA_RIGHT_CLICK_MENU,
-								getSelectionDto(),
-								plugin));
+				JMenu menu = getPluginsMenu(
+						FunctionType.TEXT_AREA_RIGHT_CLICK_MENU,
+						()->{return getSelectionDto();},
+						plugin);
+
+				if(menu != null && menu.getItemCount() > 0)
+					pluginsMenu.add(menu);
 			}
 		}
-
-		// Color picker
-		JMenuItem showColorPicker = new JMenuItem("Color picker/converter");
-		showColorPicker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
-		showColorPicker.addActionListener((e)->{
-			iTabsManager.openColorPicker();
-		});
-		textArea.getPopupMenu().add(showColorPicker);
-
 		// EOL
 
 		JMenuItem showFileLineTerminators = new JMenuItem("View lineFeeds (From File)");
@@ -528,9 +548,9 @@ public class TabTextEditorObject {
 		return new SelectionDtoFull(textArea, loadedFile);
 	}
 
-	public static JMenu getPluginsMenu(FunctionType type, Object param, IPlugin plugin) {
+	public static JMenu getPluginsMenu(FunctionType type, ObjectRetriever retriever, IPlugin plugin) {
 		JMenu newOccurrence = new PluginJMenuCreator()
-				.getPluginMenu(param, type, plugin, false);
+				.getPluginMenu(retriever, type, plugin, false);
 
 		newOccurrence.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 		MenuSetter.setFont(newOccurrence, GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);

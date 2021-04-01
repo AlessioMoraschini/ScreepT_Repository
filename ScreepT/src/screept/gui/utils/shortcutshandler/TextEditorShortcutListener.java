@@ -42,48 +42,48 @@ import various.common.light.utility.KeyListenerUtils;
 import various.common.light.utility.string.StringWorker.EOL;
 
 public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonShortcuts{
-	
+
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditorShortcutListener.class);
-	
+
 	public static AtomicBoolean flagCtrlDown = new AtomicBoolean(false);
 	public static AtomicBoolean flagShiftDown = new AtomicBoolean(false);
 	public static AtomicBoolean flagAltDown = new AtomicBoolean(false);
-	
+
 	public AtomicBoolean flagHoverBtnBase64 = new AtomicBoolean(false);
 	public AtomicBoolean flagHoverBtnViewExpCmd = new AtomicBoolean(false);
 	public AtomicBoolean flagHoverBtnRemoveSpaces = new AtomicBoolean(false);
-	
+
 	private TextEditor currentTextEditor;
 	private CustomTabbedEditor currentTabEditor;
 	private TextEditorSubHeadButtonsPanel subHeaderPanel;
-	
+
 	public TextEditorShortcutListener(TextEditor currentTextEdit) {
 		this.currentTextEditor = currentTextEdit;
 		this.subHeaderPanel = currentTextEditor.subHeaderPanel;
 		this.currentTabEditor = currentTextEditor.getCurrentTabEditor();
 	}
-	
+
 	@Override
 	  public boolean dispatchKeyEvent(final KeyEvent e) {
-		
+
 		if(GenericFileChooserDialog.blockEventsModal.get()) {
 			return false;
 		}
-	    
+
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
-		
-		if (e.getID() == KeyEvent.KEY_PRESSED && MainGUI.mainGuiUtils.isTextEditorPanelWithFocus()) {
+
+		if (e.getID() == KeyEvent.KEY_PRESSED && MainGUI.mainGuiUtils.isTextEditorActive(true)) {
 
 			updateCtrlAltShiftPressed(e);
-			
+
 			// ESC + search panel or replace visible: remove highlights
 			if(e.getKeyCode() == 27) {
 				searchOrReplaceActive();
 			}
-			
-			if (isShortcutKey(e)) {
-				
+
+			if (isShortcutKey(e)&& MainGUI.mainGuiUtils.isTextEditorActive(true)) {
+
 				// SCROLL UP -> Ctrl + arrow up
 				if (e.getKeyCode()==38 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, - GeneralConfig.KEY_SCROLL_SPEED, true);
@@ -92,7 +92,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				if (e.getKeyCode()==40 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, GeneralConfig.KEY_SCROLL_SPEED, true);
 				}
-				
+
 				// SCROLL RIGHT -> Ctrl + Alt + arrow right
 				if (e.getKeyCode()==39 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, 2*GeneralConfig.KEY_SCROLL_SPEED, false);
@@ -101,7 +101,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				if (e.getKeyCode()==37 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, - 2*GeneralConfig.KEY_SCROLL_SPEED, false);
 				}
-				
+
 				/*
 				 * UNDO x5 -  Ctrl+Alt+Z
 				 */
@@ -125,7 +125,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 						logger.warn(e2);
 					}
 				}
-				
+
 				/*
 				 *  REDO x5 - Ctrl+Alt+Y
 				 */
@@ -149,7 +149,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 							logger.warn(e2);
 					}
 				}
-				
+
 				/*
 				 *  ADJUST FONT-SIZE
 				 */
@@ -159,7 +159,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					int val = subHeaderPanel.sliderFontSize.getValue();
 					subHeaderPanel.sliderFontSize.setValue(val+1);
 				}
-				
+
 				//case Ctrl+Shift[numpad -] -> decrease
 				else if (e.getKeyCode() == KeyEvent.VK_MINUS && e.isControlDown() && !e.isAltDown() && e.isShiftDown())
 				{
@@ -168,15 +168,15 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				}
 			}
 		}
-		
+
 ////////////////LISTENER FOR KEY RELEASED EVENT - WHEN NEED TO TRIGGER ONLY ONE TIME EVEN WHILE KEEPING PRESSED  //////////////////////////
-		
-		if (e.getID() == KeyEvent.KEY_RELEASED && MainGUI.mainGuiUtils.isTextEditorPanelWithFocus()) {
-	      
+
+		if (e.getID() == KeyEvent.KEY_RELEASED && MainGUI.mainGuiUtils.isTextEditorActive(true)) {
+
 			updateCtrlAltShiftReleased(e);
-			
+
 			if (isShortcutKey(e)) {
-				
+
 				/*
 				 * UNDO -  Ctrl+Z : check and update unsaved variable only
 				 */
@@ -187,7 +187,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					} catch (Throwable e2) {
 						logger.warn(e2);
 					}
-					
+
 					currentTextEditor.getCurrentTabEditor().loadedTabObj.restoreSelectionDto(true);
 				}
 				/*
@@ -200,12 +200,12 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					} catch (Throwable e2) {
 						logger.warn(e2);
 					}
-					
+
 					SwingUtilities.invokeLater(()->{
 						currentTextEditor.getCurrentTabEditor().loadedTabObj.restoreSelectionDto(true);
 					});
 				}
-				
+
 				else if (e.getKeyCode() == KeyEvent.VK_K && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
 				{
 					try {
@@ -214,7 +214,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 						logger.warn(e2);
 					}
 				}
-								
+
 				/*
 				 *  RELOAD FROM DISK -> CTRL+Shift+R
 				 */
@@ -266,7 +266,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					currentTextEditor.headerPanel.btnDecrypt.doClick();
 				}
 				/*
-				 * Code/Decode using base 64, selected or all text: 
+				 * Code/Decode using base 64, selected or all text:
 				 * - Alt + 4 -> encode
 				 * - Ctrl + 4 -> decode
 				 */
@@ -276,7 +276,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				else if (e.getKeyCode() == 52 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.btnBase64Conversion.doClick();
 				}
-				
+
 				/*
 				 * 	DARK/LIGHT VIEW -> CTRL+B
 				 */
@@ -322,21 +322,21 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				else if (e.getKeyCode() == 84 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.btnTemplates.doClick();
 				}
-				
+
 				/*
 				 * 	FIND  TEXT -> CTRL+F
 				 */
 				else if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.btnFindText.doClick();
 				}
-				
+
 				/*
 				 * 	REPLACE SPECIALS/ESCAPES -> CTRL+E
 				 */
 				else if (e.getKeyCode() == 69 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.btnReplaceEscapesSeq.doClick();
 				}
-				
+
 				/*
 				 * 	REPLACE TEXT -> CTRL+R
 				 */
@@ -355,28 +355,28 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 						e1.printStackTrace();
 					}
 				}
-				
+
 				/*
 				 * 	GOTO LINE NUMBER -> CTRL+L
 				 */
 				else if (e.getKeyCode() == 76 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.btnGoToLine.doClick();
 				}
-				
+
 				/*
 				 * 	SHOW TABS GRID -> CTRL+Shift+G
 				 */
 				else if (e.getKeyCode() == 71 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.chckbxShowTabGrid.doClick();
 				}
-				
+
 				/*
 				 * 	OPEN/CLOSE FILE TREE PANEL -> ALT+Q
 				 */
 				else if (e.getKeyCode() == KeyEvent.VK_Q && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.btnToggleFileView.doClick();
 				}
-				
+
 				/*
 				 * 	OPEN/CLOSE CLIPBOARD PANEL -> ALT+A
 				 */
@@ -397,7 +397,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				else if (e.getKeyCode() == KeyEvent.VK_S && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.toggleBtnConsole.doClick();
 				}
-				
+
 				/*
 				 *  FILE TREE AUTO UPDATE on CURRENT FILE ON/OFF -> Ctrl+shift+U
 				 */
@@ -411,58 +411,60 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				else if (e.getKeyCode() == 38 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.btnDepthUp_nostyle.doClick();
 				}
-				
+
 				/*
 				 *  FILE TREE DEPTH  -1 -> Ctrl+Alt+shift+Arrow down
 				 */
 				else if (e.getKeyCode() == 40 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.btnDepthDown_nostyle.doClick();
 				}
-				
+
 				/**
 				 * TOGGLE MAXIMIZE TEXT AREA
 				 */
 				else if (e.getKeyCode() == KeyEvent.VK_M && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.toggleMaximizedTextArea();
 				}
-				
-				
+
+
 				/*
 				 *  HIDE/SHOW current workspace -> Ctrl+Shift+W
 				 */
 				else if (e.getKeyCode() == 87 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							currentTextEditor.toggleButtonFileTreeWorkspace.doClick();
 						}
 					});
 				}
-				
+
 				/*
 				 *  SELECT NEW workspace -> Alt+Shift+W
 				 */
 				else if (e.getKeyCode() == 87 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							currentTextEditor.toggleButtonFileTreeNewWorkspace.doClick();
 						}
 					});
 				}
-				
+
 				/*
 				 *  REFRESH TREE -> Ctrl+F5
 				 */
 				else if (e.getKeyCode() == 116 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.mouseListenerTreeFilePanel.getRefreshItem().doClick();
 				}
-				
+
 				/*
 				 * 	REMOVE SPACES/WORD -> CTRL+[-]
 				 */
 				else if (e.getKeyCode() == 45 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.btnRemoveSpaces.doClick();
 				}
-				
+
 				/*
 				 * OPEN CURRENT FILE'S PROPERTIES -> ALT+ENTER
 				 */
@@ -487,14 +489,14 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					} catch (Exception e2) {
 					}
 				}
-				
+
 				/*
 				 * 	NEXT TAB -> CTRL+TAB
 				 */
 				else if (e.getKeyCode() == 9 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTabEditor.goToNextTab();
 				}
-				
+
 				/*
 				 * 	PREVIOUS TAB -> CTRL+Shift+TAB
 				 */
@@ -514,19 +516,20 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 */
 				else if (e.getKeyCode() == 87 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTabEditor.closeCurrentTab();
-				} 
+				}
 				/*
 				 * 	CLOSE ALL TABS -> CTRL+ALT+SHIFT+ [-]
 				 */
 				else if (e.getKeyCode() == 45 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					subHeaderPanel.btnCloseAllTabs.doClick();
-				} 
-				
+				}
+
 				/*
 				 *  NEXT TAB IN HYSTORY -> Alt+ ->
 				 */
 				else if (e.getKeyCode() == 39 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							currentTextEditor.getCurrentTabEditor().goToNextInHistory();
 						}
@@ -538,33 +541,35 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 */
 				else if (e.getKeyCode() == 37 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							currentTextEditor.getCurrentTabEditor().goToPreviousInHistory();
 						}
 					});
 				}
-				
+
 				/*
 				 *  SWITCH INLINE TABS ON/OFF -> Ctrl+shift+I
 				 */
 				else if (e.getKeyCode() == 73 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.headerPanel.checkBoxInlineTabs.doClick();
 				}
-				
+
 				/*
 				 *  ADAPT WIDTH TO SCREEN SIZE -> Ctrl+shift+A
 				 */
 				else if (e.getKeyCode() == 65 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.headerPanel.chkCutWordsTo.doClick();
 				}
-				
+
 			/** VISUALIZATION SWITCHER **/
-				
+
 				/*
 				 *  HIDE/SHOW header panel -> Ctrl+shift+Alt+H
 				 */
 				else if (e.getKeyCode() == 72 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							currentTextEditor.textEditorUtils.hideOrShowHeaderPanelLevel1();
 						}
@@ -576,17 +581,19 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 */
 				else if (e.getKeyCode() == 85 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							currentTextEditor.textEditorUtils.hideOrShowHeaderPanelLevel2();
 						}
 					});
 				}
-				
+
 				/*
 				 *  HIDE/SHOW footer panel -> Ctrl+shift+Alt+L
 				 */
 				else if (e.getKeyCode() == 76 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							currentTextEditor.textEditorUtils.hideOrShowFooterPanel();
 						}
@@ -594,28 +601,30 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				}
 
 			/** END VISUALIZATION SWITCHER **/
-				
+
 				/*
 				 *  ON/OFF autoSync language from file type -> Ctrl+shift+L
 				 */
 				else if (e.getKeyCode() == 76 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							subHeaderPanel.chckbxLockLanguage.doClick();
 						}
 					});
 				}
-				
-				
+
+
 				/*********************************************
 				 * Text Editor  -  TEXT SPECIFIC SHORTCUTS
 				 *********************************************/
-				
+
 				/*
 				 *  CLONE CURRENT LINE UP -> Ctrl+Alt+UP arrow
 				 */
 				else if (e.getKeyCode() == 38 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							try {
 								boolean result = GuiUtilsExtended.duplicateTextAreaCurrentLine(
@@ -630,12 +639,13 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					});
 				}
 
-				
+
 				/*
 				 *  CLONE CURRENT LINE DOWN -> Ctrl+Alt+DOWN arrow
 				 */
 				else if (e.getKeyCode() == 40 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							try {
 								boolean result = GuiUtilsExtended.duplicateTextAreaCurrentLine(
@@ -654,45 +664,46 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 * 	FORMAT SUPPORTED CODE -> CTRL+SHIFT+F
 				 */
 				else if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					GuiUtilsExtended.formatTextLater(currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, 
-							currentTextEditor.CURRENT_EXT_OUT, 
+					GuiUtilsExtended.formatTextLater(currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea,
+							currentTextEditor.CURRENT_EXT_OUT,
 							currentTextEditor.currentConfiguration.getTextEditorOpt().tabSize
 					);
 				}
-				
+
 				/*
 				 *  Copy current with syntax style -> Alt+C
 				 */
 				else if (e.getKeyCode() == 67 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea.copyAsStyledText();
 						}
 					});
 				}
-				
-				
+
+
 //				/*
 //				 *  TEST MOVE TABS : Ctrl + shift + Alt + [->|<-]
 //				 */
 //				if(e.getKeyCode() == 37 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 //					currentTextEditor.moveCurrentTab(true);
 //				}
-//				
+//
 //				/*
 //				 *  TEST MOVE TABS : Ctrl + shift + Alt + [->|<-]
 //				 */
 //				if(e.getKeyCode() == 39 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 //					currentTextEditor.moveCurrentTab(false);
 //				}
-				
+
 			}
-			
+
 	    }
-	    
+
     return false;
 	}
-	
+
 	/**
 	 * This functions is to optimize performance, since controls will be fired only if ctrl/shift/alt is pressed
 	 * @param e
@@ -701,10 +712,11 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	private boolean isShortcutKey(KeyEvent e) {
 		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
 	}
-	
+
 	public synchronized void doControlActions() {
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				if (flagCtrlDown.get()) {
 					if (flagHoverBtnRemoveSpaces.get()) {
@@ -715,13 +727,13 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 						subHeaderPanel.btnViewInExplorer.setToolTipText(TextEditTooltips.tooltipViewInCommandLine);
 						subHeaderPanel.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 					}
-					
+
 					if(flagHoverBtnBase64.get()) {
 						subHeaderPanel.btnBase64Conversion.setToolTipText(TextEditTooltips.tooltipDecryptBase64);
 						subHeaderPanel.btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_RED));
 					}
 				}
-				
+
 				if (!flagCtrlDown.get() || !flagHoverBtnBase64.get()) {
 					subHeaderPanel.btnBase64Conversion.setToolTipText(TextEditTooltips.tooltipCryptBase64);
 					subHeaderPanel.btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_PURPLE));
@@ -737,11 +749,11 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				}
 			}
 		});
-		
+
 	}
-	
+
 	private void updateCtrlAltShiftPressed(final KeyEvent e) {
-		
+
 		/*
 		 * CTRL PRESSED FLAG
 		 */
@@ -750,7 +762,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		}else {
 			flagCtrlDown.set(false);
 		}
-		
+
 		/*
 		 * ALT PRESSED FLAG
 		 */
@@ -764,7 +776,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		}else {
 			flagAltDown.set(false);
 		}
-		
+
 		/*
 		 * SHIFT PRESSED FLAG
 		 */
@@ -776,9 +788,9 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 
 		doControlActions();
 	}
-	
+
 	private void updateCtrlAltShiftReleased(final KeyEvent e) {
-		
+
 		/*
 		 * CTRL PRESSED FLAG
 		 */
@@ -787,7 +799,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		}else {
 			flagCtrlDown.set(false);
 		}
-		
+
 		/*
 		 * ALT PRESSED FLAG
 		 */
@@ -797,7 +809,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 			flagAltDown.set(false);
 			currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 		}
-		
+
 		/*
 		 * SHIFT PRESSED FLAG
 		 */
@@ -834,12 +846,12 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	public void saveAsShortcut() {
 		subHeaderPanel.saveCurrentFileAs(null);
 	}
-	
+
 	@Override
 	public void saveAsShortcut(EOL eol) {
 		subHeaderPanel.saveCurrentFileAs(eol);
 	}
-	
+
 	private void searchOrReplaceActive() {
 		if(subHeaderPanel.searchBox != null || subHeaderPanel.replaceDialog != null) {
 			String searchFor = UUID.randomUUID().toString();

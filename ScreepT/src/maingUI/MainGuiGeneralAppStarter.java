@@ -52,6 +52,7 @@ import screept.launcher.gui.utils.LauncherLoaderFrame;
 import screept.launcher.utils.IniFileManager;
 import screept.plugins.ScreepTApplicationApi;
 import updater.UpdatesManager;
+import updater.module.gui.PluginManagerGUI;
 import updater.module.plugins.PluginManager;
 import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
@@ -80,6 +81,7 @@ public class MainGuiGeneralAppStarter {
 	public static Level LOG_LEVEL_AT_START;
 
 	// mainGUI logger
+	static File preInitializationLogFile = new File("./pre_initialization.log");
 	static SafeLogger logger = new SafeLogger(MainGuiGeneralAppStarter.class);
 
 	// LOADER
@@ -147,10 +149,28 @@ public class MainGuiGeneralAppStarter {
 		});
 	}
 
-	public static void main(String[] args) {
-		SCREEPT_BENCHMARKER.registerEvent("Main function entered");
+	public static void startAsyncDynaThreads(Thread... threads) {
+		String syncAsyncMode = GeneralConfig.ASYNC_MODULES_LOAD ? "asyncronous" : "syncronous";
 
+		for(Thread t : threads) {
+			SCREEPT_BENCHMARKER.registerEvent("Starting " + syncAsyncMode + " module...");
+			t.start();
+			if(!GeneralConfig.ASYNC_MODULES_LOAD)
+				try {
+					t.join();
+				} catch (InterruptedException e) {
+					logger.error("Interrupted thread!", e);
+				}
+		}
+	}
+
+
+	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
+		logger.setLoggerAvailable(false);
+
+		logger.info("Starting MainGuiGeneralAppStarter.main(" + Arrays.deepToString(args) + ")");
+		SCREEPT_BENCHMARKER.registerEvent("Main function entered");
 
 		SCREEPT_BENCHMARKER.registerEvent("Start EULA check");
 		checkEULAstatus();
@@ -176,17 +196,7 @@ public class MainGuiGeneralAppStarter {
 				SCREEPT_BENCHMARKER.registerEvent("General config initialization finished");
 				printElapsed("Main Properties initialized!", startTime);
 
-				String syncAsyncMode = GeneralConfig.ASYNC_MODULES_LOAD ? "asyncronous" : "syncronous";
-
-				SCREEPT_BENCHMARKER.registerEvent("Starting " + syncAsyncMode + " libraries checker thread");
-				libCheckerThread.start();
-				if(!GeneralConfig.ASYNC_MODULES_LOAD)
-					libCheckerThread.join();
-
-				SCREEPT_BENCHMARKER.registerEvent("Starting " + syncAsyncMode + " config initialization thread");
-				configInitializerThread.start();
-				if(!GeneralConfig.ASYNC_MODULES_LOAD)
-					configInitializerThread.join();
+				startAsyncDynaThreads(libCheckerThread, configInitializerThread);
 
 				SCREEPT_BENCHMARKER.registerEvent("Dialog helpers initialization started");
 				dialogHelper = new JOptionHelperExtended(null);
@@ -245,6 +255,8 @@ public class MainGuiGeneralAppStarter {
 				// Initialize logger properties
 				SCREEPT_BENCHMARKER.registerEvent("Loading logger properties");
 				PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);
+				logger.setLoggerAvailable(true);
+
 				logger.info(ScreepTLoggerUtils.getStartString(GeneralConfig.APPLICATION_NAME, true));
 
 				// Apply log level
@@ -349,17 +361,19 @@ public class MainGuiGeneralAppStarter {
 
 			easterEggInitializer = new EasterEggsInitializer(MainGUI.mainGuiUtils);
 
+			PluginManagerGUI.dialogHelper = dialogHelper;
+
 			SCREEPT_BENCHMARKER.registerEvent("Application launched correctly!");
 			SCREEPT_BENCHMARKER.finalize();
 			printElapsed("Launch completed", startTime);
 
-			logger.debug("\n\n(ASYNC_MODULES_LOAD: " + GeneralConfig.ASYNC_MODULES_LOAD + ")\n\n############################\nSCREEPT_BENCHMARKER Analysys:\n\n" + SCREEPT_BENCHMARKER.getSortedRecordsString()
+			logger.debug("\n\n(ASYNC_MODULES_LOAD: " + GeneralConfig.ASYNC_MODULES_LOAD + ")\n\n############################\nSCREEPT_BENCHMARKER Analysys:\n\n" + SCREEPT_BENCHMARKER.getSortedReportString()
 			+ "\n\n############################\n\n");
 			// CATCH ALL ERRORS DURING INITIALIZATION, ADVICE USER AND ASK TO EXIT
 		} catch (Throwable e) {
 			SCREEPT_BENCHMARKER.registerEvent("Error launching application");
 			SCREEPT_BENCHMARKER.finalize();
-			logger.debug("\n\n(ASYNC_MODULES_LOAD: " + GeneralConfig.ASYNC_MODULES_LOAD + ")\n\n############################\nSCREEPT_BENCHMARKER Analysys:\n\n" + SCREEPT_BENCHMARKER.getSortedRecordsString()
+			logger.debug("\n\n(ASYNC_MODULES_LOAD: " + GeneralConfig.ASYNC_MODULES_LOAD + ")\n\n############################\nSCREEPT_BENCHMARKER Analysys:\n\n" + SCREEPT_BENCHMARKER.getSortedReportString()
 			+ "\n\n############################\n\n");
 
 			printElapsed("Launch finished with errors" + Arrays.deepToString(e.getStackTrace()), startTime);
@@ -446,7 +460,6 @@ public class MainGuiGeneralAppStarter {
 	 */
 	private static void writeSignalFileForExternalJars(){
 		try {
-			GeneralConfig.mkDirUserDirScreepT();
 			GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE.createNewFile();
 			FileWorker.writeStringToFile(MAIN_SIGNAL_PROPERTY, GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE, true);
 		} catch (Exception e) {
@@ -464,7 +477,7 @@ public class MainGuiGeneralAppStarter {
 	private static long printElapsed(String msg, long startTime) {
 		long endTime = System.currentTimeMillis();
 		String totMsg = "\n\n [MAIN LOAD PROGRESS] => " + msg + " after " + (endTime - startTime) + " ms (Total time from first executed line)\n";
-		logger.debug(totMsg);
+		logger.info(totMsg);
 
 		return endTime;
 	}
@@ -475,31 +488,48 @@ public class MainGuiGeneralAppStarter {
 	public static void updateInstalledPlugins() {
 		ArrayList<String> installedPlugins = new ArrayList<>();
 
+		ArrayList<String> toRemove = new ArrayList<>();
+		ArrayList<String> toAdd = new ArrayList<>();
+
 		if(MainGuiGeneralAppStarter.tesseractAvailable) {
-			installedPlugins.add("Tesseract.zip");
+			toAdd.add("Tesseract.zip");
+		} else {
+			toRemove.add("Tesseract.zip");
 		}
 
 		if(MainGuiGeneralAppStarter.jnetPcapAvailable) {
-			installedPlugins.add("JnetPcap.zip");
+			toAdd.add("JnetPcap.zip");
+		} else {
+			toRemove.add("JnetPcap.zip");
 		}
 
 		if(MainGuiGeneralAppStarter.voiceSpeakerAvailable) {
-			installedPlugins.add("TextToSpeech.zip");
+			toAdd.add("TextToSpeech.zip");
+		} else {
+			toRemove.add("TextToSpeech.zip");
 		}
 
 		if(MainGuiGeneralAppStarter.hwInfoAvailable) {
-			installedPlugins.add("HardwareInfo.zip");
+			toAdd.add("HardwareInfo.zip");
+		} else {
+			toRemove.add("HardwareInfo.zip");
 		}
+
+		for(String rm : toRemove)
+			installedPlugins.remove(rm);
+
+		for(String add : toAdd)
+			installedPlugins.add(add);
 
 		Set<IPlugin> plugins = ScreepTApplicationApi.getAvailablePlugins(PluginType.ROOT, false, false);
 		if(plugins != null && !plugins.isEmpty()) {
 			for(IPlugin plugin : plugins) {
-				if(!plugin.isTestPlugin())
+				if(!plugin.isTestPlugin() && !toRemove.contains(plugin.getPluginZipName()))
 					installedPlugins.add(plugin.getPluginZipName());
 			}
 		}
 
-		PluginManager.installedPluginProperties.saveCommentedProperty(
+		PluginManager.installedPluginProperties.savePropertyChecked(
 				PluginManager.installedPluginPropsListKey, PropertiesManager.listToString(installedPlugins, PluginManager.installedPluginPropsListSeparator));
 	}
 

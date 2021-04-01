@@ -23,38 +23,38 @@ import screept.gui.panels.TextEditor;
 import screept.gui.utils.shortcutshandler.TextEditorShortcutListener;
 
 public class TextEditorMouseWheelListener implements MouseWheelListener{
-	
+
 	private TextEditor currentEditor;
 	private CustomTabbedEditor currentTabEditor;
-	
+
 	public TextEditorMouseWheelListener(TextEditor currentEditor) {
 		super();
 		GeneralConfig.initLazyGeneralConfig();
 		this.currentEditor = currentEditor;
 		this.currentTabEditor = currentEditor.getCurrentTabEditor();
 	}
-	
+
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		if(!MainGUI.mainGuiUtils.isTextEditorActive())
+		if(!MainGUI.mainGuiUtils.isTextEditorActive(true))
 			return;
-			
+
 		int rotation = e.getWheelRotation();
-		
+
 		if (TextEditorShortcutListener.flagCtrlDown.get() && TextEditorShortcutListener.flagShiftDown.get() && !TextEditorShortcutListener.flagAltDown.get()) {
 			// CASE CTRL+SHIFT
 			adjustFontSize(rotation);
 		} else if (((TextEditorShortcutListener.flagAltDown.get() && TextEditorShortcutListener.flagShiftDown.get()) || TextEditorShortcutListener.flagShiftDown.get()) && ! TextEditorShortcutListener.flagCtrlDown.get()){
 			// CASE ALT OR SHIFT
 			adjustHorizontalScroll(e);
-			
+
 		} else {
-			
+
 			adjustScroll(e);
 			syncMiniMapScroll(rotation);
 		}
 	}
-	
+
 	private void syncMiniMapScroll(int rotation) {
 //		try {
 //			if (currentEditor.textEditorUtils.isMiniTextAreaActive()) {
@@ -64,12 +64,12 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 //				float txtMiniSize = GeneralConfig.TXT_EDITOR_MINIMAP_FONT.getSize();
 //				pos.y += getVerticalScrollAmount() * (float)rotation * (txtMiniSize/txtSize) * 3;
 //				miniMap.getTxtAreaMiniMap().scrollRectToVisible(pos);
-//			} 
+//			}
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
 	}
-	
+
 	private int getVerticalScrollAmount() {
 		if (TextEditorShortcutListener.flagCtrlDown.get() && TextEditorShortcutListener.flagAltDown.get()
 				&& !TextEditorShortcutListener.flagShiftDown.get()) {
@@ -81,9 +81,10 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 			return GeneralConfig.NORMAL_WHEEL_SPEED;
 		}
 	}
-	
+
 	private void adjustScroll(MouseWheelEvent e) {
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(getVerticalScrollAmount());
 				// trigger scroll event on target
@@ -91,9 +92,10 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 			}
 		});
 	}
-	
+
 	private void adjustHorizontalScroll(MouseWheelEvent e) {
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				if (TextEditorShortcutListener.flagAltDown.get() && TextEditorShortcutListener.flagShiftDown.get()
 						&& !TextEditorShortcutListener.flagCtrlDown.get()) {
@@ -109,7 +111,7 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 			}
 		});
 	}
-	
+
 	private void adjustFontSize(int delta) {
 		if(currentTabEditor.loadedTabObj != null) {
 			currentEditor.subHeaderPanel.sliderFontSize.setValue(currentEditor.subHeaderPanel.sliderFontSize.getValue() - (delta*2));

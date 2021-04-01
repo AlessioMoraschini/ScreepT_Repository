@@ -212,7 +212,7 @@ public class ScreepTLauncher {
 		loaderGraphics.update("Starting Launcher...", 25);
 		start();
 
-		loaderGraphics.update("Launcher Ready!", 100, 500);
+		loaderGraphics.update("Launcher Ready!", 100, 0);
 
 	}// end main
 

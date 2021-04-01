@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import javax.swing.JFrame;
@@ -39,6 +40,7 @@ import gui.texteditor.commons.om.TabTextEditorObject;
 import gui.texteditor.commons.tabbededitor.CustomTabbedEditor;
 import initializer.configs.impl.INItializer;
 import initializer.configs.impl.om.GenericOption;
+import initializer.configs.impl.om.TextEditorOption;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
@@ -46,6 +48,7 @@ import screept.gui.panels.ConfigurationManagerPanel;
 import screept.gui.panels.CrypterPanel;
 import screept.gui.panels.TextEditor;
 import updater.module.exception.UpdatesUnavailableException;
+import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.files.watcher.ChangeDTO;
 import various.common.light.files.watcher.FileChangeMonitor;
@@ -214,14 +217,14 @@ public class MainGuiUtils {
 			@Override
 			public void run() {
 				// start correct panel
-				if(isConfManagerActive()) {
+				if(isTextEditorActive(true)) {
 					mainAppReference.mntmFullScreenMode.doClick();
 					fullScreenToggleMenuBar();
 
-				}else if(isTextEditorActive()) {
+				}else if(isTextEditorActive(true)) {
 					MainGUI.textEditorPanel.textEditorUtils.toggleImmersiveMode();
 
-				}else if(isCrypterActive()) {
+				}else if(isCrypterActive(true)) {
 					mainAppReference.mntmFullScreenMode.doClick();
 					fullScreenToggleMenuBar();
 
@@ -415,19 +418,22 @@ public class MainGuiUtils {
 	}
 
 	public boolean isOnHomePage(boolean withFocus) {
-		return mainAppReference.isOnHomePage.get() && (!withFocus || mainAppReference.getMainFrame().isFocusableWindow());
+		return mainAppReference.isOnHomePage.get() && (!withFocus || isMainFrameFocused());
 	}
-	public boolean isTextEditorActive() {
-		return getMainPanel().getComponent(0) instanceof TextEditor;
+
+	public boolean isTextEditorActive(boolean withFocus) {
+		return getMainPanel().getComponent(0) instanceof TextEditor && (!withFocus || isMainFrameFocused());
 	}
-	public boolean isTextEditorPanelWithFocus() {
-		return getMainPanel().getComponent(0) instanceof TextEditor && mainAppReference.getMainFrame().isFocusableWindow();
+	public boolean isCrypterActive(boolean withFocus) {
+		return getMainPanel().getComponent(0) instanceof CrypterPanel && (!withFocus || isMainFrameFocused());
 	}
-	public boolean isCrypterActive() {
-		return getMainPanel().getComponent(0) instanceof CrypterPanel;
+	public boolean isConfManagerActive(boolean withFocus) {
+		return getMainPanel().getComponent(0) instanceof ConfigurationManagerPanel && (!withFocus || isMainFrameFocused());
 	}
-	public boolean isConfManagerActive() {
-		return getMainPanel().getComponent(0) instanceof ConfigurationManagerPanel;
+
+	public boolean isMainFrameFocused() {
+		return mainAppReference.getMainFrame().getFocusOwner() != null &&
+				mainAppReference.getMainFrame().isFocusableWindow();
 	}
 
 	public void updateTitleRightPart(String newSuffix) {
@@ -511,7 +517,7 @@ public class MainGuiUtils {
 
 	public synchronized void openFilesInTextEditor(File[] filesToLoad, Runnable postOpenAction) {
 
-		if(!MainGUI.mainGuiUtils.isTextEditorActive()) {
+		if(!MainGUI.mainGuiUtils.isTextEditorActive(true)) {
 			MainGUI.mainGuiUtils.startTextEditor(MainGUI.textEditorPanel == null);
 		}
 
@@ -704,12 +710,12 @@ public class MainGuiUtils {
 		}
 	}
 
-	public static void askNameAtStartIfNotDefined() {
+	public static void askNameAtStartIfNotDefined(JFrame parent) {
 		INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
 		GenericOption genOpt = currentConfiguration.getGenOpt();
 		if (genOpt.getUserName().equals("") || genOpt.getUserName().length() > 20) {
 			logger.info("Current user input initialization: void user or lenght>20 detected!");
-			genOpt.setUserName(askUsername());
+			genOpt.setUserName(askUsername(parent));
 			currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", genOpt.getUserName());
 			logger.info("Current userName: " + genOpt.getUserName());
 		}
@@ -723,16 +729,17 @@ public class MainGuiUtils {
 		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					Thread.sleep(4000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 
 				// ASK FOR USERNAME IF NULL OR FIRST TIME
 				INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
 				GenericOption genOpt = currentConfiguration.getGenOpt();
 				if (genOpt.isFirstAccess()) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
 					String msg = "<html>Hi " + genOpt.getUserName() + ", and welcome to " + GeneralConfig.APPLICATION_NAME
 							+ "!<br/>I suggest you to take a look to documentation before to start, do you want to open it now?</html>";
 					if (dialogHelper.showYNDialog(msg, "Welcome to " + GeneralConfig.APPLICATION_NAME, JOptionHelperExtended.QUESTION)) {
@@ -745,12 +752,12 @@ public class MainGuiUtils {
 		});
 	}
 
-	public static String askUsername() {
+	public static String askUsername(JFrame parent) {
 		INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
 		boolean end=false;
 		String input="";
 		do {
-			input = MainGUI.dialogHelper.askForStringNullable("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
+			input = new JOptionHelperExtended(parent).askForStringNullable("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
 
 			if (input != null && (input.equals("") || input.length() > 26)) {
 				MainGUI.dialogHelper.warn("Username must be between 1-26 characters!", "UserName length Error");
@@ -801,17 +808,17 @@ public class MainGuiUtils {
 
 		Boolean somethingCleaned = Boolean.FALSE;
 
-		if(MainGUI.configManagerPanel != null && !isConfManagerActive()) {
+		if(MainGUI.configManagerPanel != null && !isConfManagerActive(false)) {
 			MainGUI.configManagerPanel = null;
 			somethingCleaned = Boolean.TRUE;
 		}
 
-		if(MainGUI.crypterPanel != null && !isCrypterActive() && MainGUI.crypterPanel.panelVDragNDropPane.getAllNodes().length == 0) {
+		if(MainGUI.crypterPanel != null && !isCrypterActive(false) && MainGUI.crypterPanel.panelVDragNDropPane.getAllNodes().length == 0) {
 			MainGUI.crypterPanel = null;
 			somethingCleaned = Boolean.TRUE;
 		}
 
-		if(MainGUI.textEditorPanel != null && !isTextEditorActive() && isAllSavedInTextEditor()) {
+		if(MainGUI.textEditorPanel != null && !isTextEditorActive(false) && isAllSavedInTextEditor()) {
 			MainGUI.textEditorPanel = null;
 			somethingCleaned = Boolean.TRUE;
 		}
@@ -839,16 +846,29 @@ public class MainGuiUtils {
 			return true;
 		}
 
+		TextEditorOption txtOpt = MainGUI.currentConfiguration.getTextEditorOpt();
+
 		CustomTabbedEditor currentTabEditor = initTxtWriter.getCurrentTabEditor();
 		boolean askCondition = false;
 		boolean atLeastOneTemp = false;
+		List<File> tempFiles = new ArrayList<>();
 
 		for (TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
 			if (tabElement.unsaved) {
-				askCondition = true;
+				askCondition = askCondition || (
+						tabElement.tempFile != null && !txtOpt.isAutosaveTempFiles());
 			}
 			if (tabElement.loadedFile == null) {
 				atLeastOneTemp = true;
+				try {
+					if(txtOpt.autosaveTempFiles && tabElement.unsaved) {
+						File temp = tabElement.saveTempFile();
+						tempFiles.add(temp);
+						logger.debug("Temp file saved: " + temp);
+					}
+				} catch (IOException e) {
+					logger.error("can't add to tempFiles : " + tabElement.tempFile, e);
+				}
 			}
 		}
 
@@ -887,6 +907,10 @@ public class MainGuiUtils {
 			return true;
 
 		}else {
+
+			MainGUI.currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "loadedTempFilesAtStart",
+					MainGUI.currentConfiguration.listToString(FileVarious.filesToPathList(tempFiles)));
+
 			return true;
 		}
 	}

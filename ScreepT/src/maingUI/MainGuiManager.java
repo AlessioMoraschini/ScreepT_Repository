@@ -219,16 +219,16 @@ public class MainGuiManager {
 		// Check and launch eventual pending updates
 		MainGuiManager.checkUpdatesWaitingForInstall();
 
-		boolean hasPendingPluginsToDelete = hasPendingPluginsToDelete();
+		boolean hasPendingPlugins = hasPendingPluginsToDelete() || !PluginManager.pluginsFreshlyInstalled.isEmpty();
 
 		MainGuiUtils.logger.info("Exit procedure completed succesfully, now software will shut down");
 
-		if(hasPendingPluginsToDelete) {
+		if(hasPendingPlugins) {
 			MainGuiUtils.logger.info("Pending plugins to delete found, restarting from launcher...");
 			restartFromLauncher();
 		}
 
-		if (hasPendingPluginsToDelete || exitCode != 999) {
+		if (hasPendingPlugins || exitCode != 999) {
 			System.exit(exitCode);
 		}
 	}

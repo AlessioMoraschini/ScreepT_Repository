@@ -188,6 +188,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmLicenseScreept;
 	CustomJmenuItem mntmChangeLog;
 	CustomJmenuItem mntmExportLog;
+	CustomJmenuItem mntmViewTempFolder;
 	CustomJmenuItem mntmEraseLogs;
 	CustomJmenuItem mntmViewWebsite;
 	CustomJmenuItem mntmLookForUpdates;
@@ -255,13 +256,13 @@ public class MainGuiParent {
 
 					BASE_TITLE = currentConfiguration.getGenOpt().getUserName() + " is using " + GeneralConfig.APPLICATION_NAME;
 
-					if(mainGuiUtils.isTextEditorActive()) {
+					if(mainGuiUtils.isTextEditorActive(false)) {
 						mainFrameScreept.setTitle(BASE_TITLE + " - Text Editor");
 
-					} else if(mainGuiUtils.isCrypterActive()) {
+					} else if(mainGuiUtils.isCrypterActive(false)) {
 						mainFrameScreept.setTitle(BASE_TITLE + " - Crypter");
 
-					} else if(mainGuiUtils.isConfManagerActive()) {
+					} else if(mainGuiUtils.isConfManagerActive(false)) {
 						mainFrameScreept.setTitle(BASE_TITLE + " - Configuration Manager");
 
 					} else {
@@ -434,6 +435,7 @@ public class MainGuiParent {
 			mnHelp.add(mntmLookForUpdates);
 			mnHelp.add(new JSeparator());
 			mnHelp.add(mntmExportLog);
+			mnHelp.add(mntmViewTempFolder);
 			mnHelp.add(mntmEraseLogs);
 			mnHelp.add(mntmUserDocumentation);
 			mnHelp.add(new JSeparator());
@@ -595,6 +597,7 @@ public class MainGuiParent {
 		mntmLicenseScreept.setFont(menuItemFont);
 		mntmChangeLog.setFont(menuItemFont);
 		mntmExportLog.setFont(menuItemFont);
+		mntmViewTempFolder.setFont(menuItemFont);
 		mntmEraseLogs.setFont(menuItemFont);
 		mntmUserDocumentation.setFont(menuItemFont);
 		mnWindowsRegistry.setFont(subMenuFont);
@@ -686,6 +689,7 @@ public class MainGuiParent {
 		mntmLicenseScreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LICENSE));
 		mntmChangeLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DIFFERENCES));
 		mntmExportLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_LOG));
+		mntmViewTempFolder.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLOCK));
 		mntmEraseLogs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 		mntmUserDocumentation.setIcon(new ImageIcon(IconsPathConfigurator.ICON_USER_GUIDE));
 		mntmReturnToWelcome.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HOME_PAGE));
@@ -805,7 +809,7 @@ public class MainGuiParent {
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				MenuSetter.setSubItemsEnabled(menuBrowserOpenerActions, mainGuiUtils.isTextEditorActive());
+				MenuSetter.setSubItemsEnabled(menuBrowserOpenerActions, mainGuiUtils.isTextEditorActive(false));
 			}
 		});
 
@@ -926,13 +930,13 @@ public class MainGuiParent {
 				IPlugin plugin = iterator.next();
 				if (plugin != null) {
 
-					String[] filesToLoad = MainGuiGeneralAppStarter.externalPluginAppProvider.getFilesToLoad(plugin);
-					mnPlugins.add(ScreepTApplicationApi
-							.getPluginsMenu(
+					JMenu menu = ScreepTApplicationApi.getPluginsMenu(
 									FunctionType.STANDALONE_STR_ARGS,
-									filesToLoad,
-									plugin));
+									()->{return MainGuiGeneralAppStarter.externalPluginAppProvider.getFilesToLoad(plugin);},
+									plugin);
 
+					if(menu != null && menu.getItemCount() > 0)
+						mnPlugins.add(menu);
 				}
 			}
 		} catch (Exception e) {
@@ -1105,7 +1109,7 @@ public class MainGuiParent {
 		stringActions.removeAll();
 
 		TabTextEditorObject loadedTabObj = getSafeTextEditorCurrentTabObject();
-		boolean enabled = loadedTabObj != null && mainGuiUtils.isTextEditorActive();
+		boolean enabled = loadedTabObj != null && mainGuiUtils.isTextEditorActive(false);
 
 		if(!enabled) {
 			JMenuItem uppercaseItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>TT</b> - Uppercase all/selected text"));

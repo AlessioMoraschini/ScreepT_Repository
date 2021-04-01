@@ -163,10 +163,7 @@ public class MainGUI extends MainGuiParent{
 
 		currentConfiguration = currentConf;
 		dialogHelper = new JOptionHelperExtended(MainGuiGeneralAppStarter.loaderGraphics);
-
-		MainGuiGeneralAppStarter.loaderGraphics.setVisible(false);
-		MainGuiUtils.askNameAtStartIfNotDefined();
-		MainGuiGeneralAppStarter.loaderGraphics.setVisible(true);
+		MainGuiUtils.askNameAtStartIfNotDefined(MainGuiGeneralAppStarter.loaderGraphics);
 		MainGuiGeneralAppStarter.loaderGraphics.toFront();
 
 		try {
@@ -275,7 +272,7 @@ public class MainGUI extends MainGuiParent{
 				@Override
 				public void run() {
 					// REFRESH GUI GENERAL
-					MainGuiGeneralAppStarter.loaderGraphics.update("Updating GUI style...", 75, 350);
+					MainGuiGeneralAppStarter.loaderGraphics.update("Updating GUI style...", 75, 0);
 					GUIStyelSettingsExtended.updateThemeByName(currentConfiguration.getGuiOpt().getPreferredThemeName());
 					if (GUIStyelSettingsExtended.isNimbus(currentConfiguration.getGuiOpt().getPreferredStyle())) {
 						if (GUIStyelSettingsExtended.isDarkNimbus(currentConfiguration.getGuiOpt())) {
@@ -294,7 +291,7 @@ public class MainGUI extends MainGuiParent{
 				}
 			});
 
-			MainGuiGeneralAppStarter.loaderGraphics.update("Resetting last viewed panel: " + currentConfiguration.getGenOpt().getLastPanelOpened() + " ...", 80, 350);
+			MainGuiGeneralAppStarter.loaderGraphics.update("Resetting last viewed panel: " + currentConfiguration.getGenOpt().getLastPanelOpened() + " ...", 80, 100);
 
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -314,7 +311,7 @@ public class MainGUI extends MainGuiParent{
 						}
 					}
 
-					MainGuiGeneralAppStarter.loaderGraphics.update("Restoring Gui Elements From configuration...", 99, 200);
+					MainGuiGeneralAppStarter.loaderGraphics.update("Restoring Gui Elements From configuration...", 99, 10);
 					updateGuiFromCurrConfig();
 
 					SwingUtilities.invokeLater(new Runnable() {
@@ -329,9 +326,10 @@ public class MainGUI extends MainGuiParent{
 						@Override
 						public void run() {
 
-							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScreepT", 100, 200);
+							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScreepT", 100, 10);
 
 							window.startTitleUpdater();
+							GuiUtils.forceToFront(mainFrameScreept, mainFrameScreept);
 
 							if(currentConfiguration.getGenOpt().isFirstAccess()) {
 								MainGuiUtils.welcomeMethodFirstTime();
@@ -783,6 +781,14 @@ public class MainGUI extends MainGuiParent{
 			}
 		});
 
+		mntmViewTempFolder = new CustomJmenuItem(new AbstractAction("Open ScreepT temp folder") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+					GuiUtilsExtended.openInFileSystem(GeneralConfig.F_USER_PERSONAL_DIR_SCREEPT_FOLDER_VERSION);
+			}
+		});
+
 		// NOT OPENING VIEW - LOG ERASE
 		mntmEraseLogs = new CustomJmenuItem(new AbstractAction("Erase Logs") {
 			@Override
@@ -1184,7 +1190,7 @@ public class MainGUI extends MainGuiParent{
 						try {
 							MainGuiGeneralAppStarter.pluginManager.discoverLatestPlugins();
 
-							if (pluginManagerGUI != null || !PluginManagerGUI.active) {
+							if (pluginManagerGUI == null || !PluginManagerGUI.active) {
 								Runnable libCheckNRefreshGUI = new Runnable() {
 									@Override
 									public void run() {
@@ -1463,17 +1469,17 @@ public class MainGUI extends MainGuiParent{
 	 */
 	public static void updateGuiFromCurrConfig() {
 		// TEXT EDITOR REFRESH
-		if(textEditorPanel != null && mainGuiUtils.isTextEditorActive()) {
+		if(textEditorPanel != null && mainGuiUtils.isTextEditorActive(false)) {
 			textEditorPanel.initGuiFromConfig(true, true);
 		}
 
 		// CRYPTER REFRESH
-		if(crypterPanel != null && mainGuiUtils.isCrypterActive()) {
+		if(crypterPanel != null && mainGuiUtils.isCrypterActive(false)) {
 			crypterPanel.initGuiFromConfig();
 		}
 
 		// CONFIGURATOR REFRESH
-		if(configManagerPanel != null && mainGuiUtils.isConfManagerActive()) {
+		if(configManagerPanel != null && mainGuiUtils.isConfManagerActive(false)) {
 			configManagerPanel.initGuiFromConfig();
 		}
 

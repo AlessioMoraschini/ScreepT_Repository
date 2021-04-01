@@ -746,11 +746,13 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				IPlugin plugin = iterator.next();
 				if (plugin != null) {
 
-					pluginsMenuItem.add(ScreepTApplicationApi
-							.getPluginsMenu(
+					JMenu menu = ScreepTApplicationApi.getPluginsMenu(
 									FunctionType.FILE_TREE_RIGHT_CLICK_MENU,
-									getSelectedFiles(),
-									plugin));
+									()->{return getSelectedFiles();},
+									plugin);
+
+					if(menu != null && menu.getItemCount() > 0)
+						pluginsMenuItem.add(menu);
 
 				}
 			}

@@ -61,6 +61,7 @@ import gui.texteditor.commons.om.TabTextEditorObject;
 import initializer.configs.impl.INItializer;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.files.watcher.ChangeDTO;
 import various.common.light.gui.GuiUtils;
@@ -280,7 +281,7 @@ public class CustomTabbedEditor implements ITabsManager {
 		});
 	}
 
-	private boolean validateFileToOpen(File fileToOpen) {
+	public boolean validateFileToOpen(File fileToOpen) {
 		if (fileToOpen != null) {
 			boolean exceedsLines = FileWorker.checkIfHasMoreThanNLines(fileToOpen, GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES);
 			boolean exceedsLength = fileToOpen.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB;
@@ -308,6 +309,20 @@ public class CustomTabbedEditor implements ITabsManager {
 			}
 		}
 		return true;
+	}
+
+	public TabTextEditorObject getTabObjectByFile(File file, boolean useTempFile) {
+
+		for(TabTextEditorObject obj : loadedList.getList()) {
+			if(useTempFile && FileVarious.checkIfSameFile(file, obj.tempFile)){
+				return obj;
+
+			} else if(FileVarious.checkIfSameFile(file, obj.loadedFile)) {
+				return obj;
+			}
+		}
+
+		return null;
 	}
 
 	public boolean isImageFileSupported(File toCheck) {
@@ -474,7 +489,7 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 
 
-	public void addTab(File file) {
+	public TabTextEditorObject addTab(File file) {
 		try {
 			isAddingTab = true;
 
@@ -554,13 +569,15 @@ public class CustomTabbedEditor implements ITabsManager {
 			applyStyleToTabs();
 			loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
 
+			return newTabNode;
 		} catch (Exception e) {
 			logger.error("An error occurred!", e);
 		} finally {
 			loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
+			isAddingTab = false;
 		}
-		isAddingTab = false;
 
+		return null;
 	}
 
 	public void reloadCurrentTab(boolean askDialogOn) {
@@ -680,6 +697,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 			if (index > 0 && mainTabList.getTabCount() > 1) {
 
+				loadedList.getList().get(index).deleteTempFile();
 				loadedList.getList().remove(index);
 				mainTabList.remove(index);
 				if (mainTabList.getTabCount() > index) {
@@ -693,6 +711,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 				if (!loadedList.getList().isEmpty()) {
 					loadedList.getList().remove(0);
+					loadedList.getList().get(0).deleteTempFile();
 				}
 				mainTabList.remove(0);
 				mainTabList.setSelectedIndex(0);
@@ -703,6 +722,7 @@ public class CustomTabbedEditor implements ITabsManager {
 					// IF LAST DO NOT REMOVE: EMPTY FIRST REFERENCES
 					if (!loadedList.getList().isEmpty()) {
 						TabTextEditorObject currentTab = loadedList.getList().get(0);
+						currentTab.deleteTempFile();
 						currentTab.resetData();
 						getPanelFromTabHeader(0).setToolTipText("Unexisting file");
 
