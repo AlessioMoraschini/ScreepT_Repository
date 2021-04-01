@@ -49,6 +49,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.rtextarea.RUndoManager;
 
@@ -77,6 +78,7 @@ import initializer.configs.impl.om.TextEditorOption;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import net.miginfocom.swing.MigLayout;
+import plugin.api.AbstractPluginApplicationApi;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
@@ -88,6 +90,7 @@ import screept.gui.utils.shortcutshandler.TextEditorShortcutListener;
 import screept.gui.utils.texteditor.TabbedEditorOwnerScreepT;
 import screept.gui.utils.texteditor.TextEditorUtils;
 import screept.gui.utils.tree.texteditor.TreeFileMouseListenerTxtEditor;
+import various.common.light.files.CustomFileFilters;
 import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.files.om.FileNamed;
@@ -1278,6 +1281,38 @@ public class TextEditor extends ModulePanel {
 					new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath), currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
 			mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 		}
+
+		startUnusedTempFilesCleanerThread(15*1000, true);
+	}
+
+	/**
+	 * can Throw exception only if async
+	 */
+	public void startUnusedTempFilesCleanerThread(final int delayMs, boolean async) {
+		GuiUtils.launchRunnable(()->{
+
+			logger.info("Temp files cleaner thread waiting for " + delayMs + "ms ...");
+			try {
+				Thread.sleep(delayMs);
+			} catch (InterruptedException e) {
+				logger.warn("Cannot wait!", e);
+			}
+			logger.info("Temp files cleaner Started!");
+
+			List<File> currentlyLoadedTempFiles = getCurrentTabEditor().getLoadedTempFiles(true);
+			File tempFilesDir = AbstractPluginApplicationApi.getAvailableProviders().get(0).getTempApplicationFolder(true, "COMMON_DATA/TXT/");
+			File[] tempFilesFound = tempFilesDir.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.FILE_ONLY));
+			logger.info("Found " + tempFilesFound.length);
+			for(File tempFile : tempFilesFound) {
+				if(!FileVarious.containedInList(currentlyLoadedTempFiles, tempFile)) {
+					logger.info(tempFile + " -> not used anymore, deleting it...");
+					// If not used by screept anymore, then delete it
+					boolean deleted = FileUtils.deleteQuietly(tempFile);
+					logger.info(tempFile + " deleted: " + deleted);
+				}
+			}
+
+		}, async, false, false);
 	}
 
 	public void startRefreshFooterThread() {
@@ -1287,7 +1322,7 @@ public class TextEditor extends ModulePanel {
 				while (MainGUI.mainAppRunning) {
 					TabTextEditorObject loadedTabObj = getCurrentTabEditor().loadedTabObj;
 
-					if (loadedTabObj != null && loadedTabObj.textArea != null) {
+					if (currentConfiguration.getTextEditorOpt().footerVisible && loadedTabObj != null && loadedTabObj.textArea != null) {
 
 						int selectionLength = loadedTabObj.textArea.getSelectionEnd() - loadedTabObj.textArea.getSelectionStart();
 						int charTotNum = loadedTabObj.textArea.getText().length();

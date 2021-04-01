@@ -855,8 +855,11 @@ public class MainGuiUtils {
 
 		for (TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
 			if (tabElement.unsaved) {
-				askCondition = askCondition || tabElement.loadedFile != null || (
-						tabElement.tempFile != null && !txtOpt.isAutosaveTempFiles());
+				askCondition =
+						askCondition ||
+						tabElement.loadedFile != null ||
+						tabElement.tempFile != null ||
+						!txtOpt.isAutosaveTempFiles();
 			}
 			if (tabElement.loadedFile == null) {
 				atLeastOneTemp = true;

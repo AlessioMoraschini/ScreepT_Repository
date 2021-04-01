@@ -10,15 +10,11 @@ package gui.texteditor.commons.dialogs;
  */
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -34,13 +30,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
 import javax.swing.event.EventListenerList;
 import javax.swing.text.JTextComponent;
 
 import org.fife.rsta.ui.UIUtil;
 import org.fife.rsta.ui.search.AbstractSearchDialog;
+import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.FindReplaceButtonsEnableResult;
+import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.rsta.ui.search.SearchComboBox;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
@@ -75,16 +72,16 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 	protected JButton clearFilesBtn;
 	protected JTextArea txtFieldSelectedFiles;
 	protected SearchComboBox fileFiltersTextCombo;
-	
+
 	protected JCheckBox includeBinariesCheckBox;
-	
+
 	public GenericFileChooserDialog fileDialogHelper;
 
 	/**
 	 * Folks listening for events in this dialog.
 	 */
 	private EventListenerList listenerList;
-	
+
 
 	/**
 	 * Constructor.
@@ -123,10 +120,10 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 
 		if ("UpRadioButtonClicked".equals(command)) {
 			context.setSearchForward(false);
-		
+
 		} else if ("DownRadioButtonClicked".equals(command)) {
 			context.setSearchForward(true);
-		
+
 		} else if (SearchEvent.Type.FIND.name().equals(command)) {
 
 			// Add the item to the combo box's list, if it isn't already there.
@@ -137,7 +134,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 			context.setSearchFor(getSearchString());
 
 			fireSearchEvent(e); // Let parent application know
-		
+
 		} else {
 			super.actionPerformed(e);
 		}
@@ -193,7 +190,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 	public void setChooseFileBtn(JButton chooseFileBtn) {
 		this.chooseFileBtn = chooseFileBtn;
 	}
-	
+
 	public JButton getAddFileBtn() {
 		return addFileBtn;
 	}
@@ -201,7 +198,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 	public void setAddFileBtn(JButton addFileBtn) {
 		this.addFileBtn = addFileBtn;
 	}
-	
+
 	public JButton getClearFilesBtn() {
 		return clearFilesBtn;
 	}
@@ -219,7 +216,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 	public final String getFindButtonText() {
 		return searchButton.getText();
 	}
-	
+
 
 	/**
 	 * Returns the label on the "Find what" text field.
@@ -251,11 +248,11 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 
 		styleComboText(findTextCombo, enable, er);
 		styleComboText(fileFiltersTextCombo, enable, er);
-		
+
 		return er;
 
 	}
-	
+
 	protected void styleComboText(SearchComboBox combo, boolean enable, FindReplaceButtonsEnableResult er) {
 		// setBackground doesn't show up with XP Look and Feel!
 		JTextComponent tc = UIUtil.getTextComponent(combo);
@@ -273,7 +270,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		// Make a panel containing the "search up/down" radio buttons.
 		dirPanel = new JPanel();
 		dirPanel.setLayout(new BoxLayout(dirPanel, BoxLayout.LINE_AXIS));
-		
+
 		includeBinariesCheckBox = new JCheckBox("Binary files");
 
 		// Rearrange the search conditions panel.
@@ -290,14 +287,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		searchConditionsPanel.add(temp, BorderLayout.LINE_START);
 		temp = new JPanel();
 		temp.setLayout(new BoxLayout(temp, BoxLayout.PAGE_AXIS));
-		txtFieldSelectedFiles = new JTextArea("\n Nothing selected (drop your files here to add them)");
-		txtFieldSelectedFiles.setMargin(new Insets(8, 8, 8, 8));
-		txtFieldSelectedFiles.setMinimumSize(new Dimension(320, 70));
-		txtFieldSelectedFiles.setPreferredSize(new Dimension(320, 70));
-		txtFieldSelectedFiles.setFont(ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(17f));
-		txtFieldSelectedFiles.setEditable(false);
-		txtFieldSelectedFiles.setAutoscrolls(true);
-		txtFieldSelectedFiles.setBorder(new LineBorder(Color.DARK_GRAY));
+		txtFieldSelectedFiles = ScreepTGuiFactory.getFileTextArea((f)->{});
 		JScrollPane scroller = ScreepTGuiFactory.getScrollPane(true, true);
 		scroller.setViewportView(txtFieldSelectedFiles);
 		temp.add(scroller);
@@ -305,7 +295,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 
 		// Create the "Find what" label.
 		findFieldLabel = UIUtil.newLabel(getBundle(), "FindWhat",findTextCombo);
-		
+
 		chooseFileBtn = new JButton("Select source(s)");
 		addFileBtn = new JButton("Add other sources");
 		clearFilesBtn = new JButton("Reset file selection");
@@ -314,13 +304,13 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		searchButton.setActionCommand(SearchEvent.Type.FIND.name());
 		searchButton.addActionListener(this);
 		searchButton.setDefaultCapable(true);
-		
+
 		searchButton.setEnabled(false);	// Initially, nothing to look for.
 
-		setSelectedFileLbl(null);
-		
+		ScreepTGuiFactory.setSelectedFileLbl(null, txtFieldSelectedFiles);
+
 		installKeyboardActions();
-		
+
 		searchButton.setCursor(GuiUtils.CURSOR_HAND);
 		cancelButton.setCursor(GuiUtils.CURSOR_HAND);
 		chooseFileBtn.setCursor(GuiUtils.CURSOR_HAND);
@@ -330,46 +320,9 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		includeBinariesCheckBox.setCursor(GuiUtils.CURSOR_HAND);
 		regexCheckBox.setCursor(GuiUtils.CURSOR_HAND);
 		wholeWordCheckBox.setCursor(GuiUtils.CURSOR_HAND);
-		
+
 		setMinimumSize(new Dimension(580, 240));
 		setPreferredSize(new Dimension(590, 250));
-	}
-	
-	public void setSelectedFileLbl(List<File> selected) {
-		if (selected == null || selected.isEmpty() || !selected.get(0).exists()) {
-			txtFieldSelectedFiles.setText("\n Nothing selected (drag your files here)");
-			txtFieldSelectedFiles.setBackground(new Color(252, 240, 146));
-		} else {
-			String fileConcatNames = "";
-			for(File iterator : selected) {
-				String identifier = iterator.isDirectory() ? "<b>Directory: </b>" : "<b>File: </b>";
-				fileConcatNames += identifier + iterator + "<br>";
-			}
-
-			txtFieldSelectedFiles.setBackground(new Color(208, 252, 146));
-			txtFieldSelectedFiles.setText(getStringSourcesSummary(selected));
-			txtFieldSelectedFiles.setToolTipText(GuiUtils.encapsulateInHtml(fileConcatNames));
-		}
-	}
-	
-	protected String getStringSourcesSummary(List<File> selected) {
-		String outcome = "\n Nothing selected (drag your files here)";
-		int directories = 0;
-		int files = 0;
-		if(selected != null) {
-			for(File f : selected) {
-				if(f != null && f.isDirectory())
-					directories ++;
-				else if(f != null)
-					files++;
-			}
-		}
-		
-		outcome = " Files selected: " + files + "\n";
-		outcome += " Directories selected: " + directories + "\n";
-		outcome += " (Hover this textArea to see details)";
-		
-		return outcome;
 	}
 
 

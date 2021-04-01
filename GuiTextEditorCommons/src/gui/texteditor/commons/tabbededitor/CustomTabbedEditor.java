@@ -24,6 +24,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -1017,6 +1019,18 @@ public class CustomTabbedEditor implements ITabsManager {
 		} catch (Exception e) {
 			logger.error("Error refreshing informations abount unsaved obj", e);
 		}
+	}
+
+
+	public List<File> getLoadedTempFiles(boolean skipUnexisting){
+		List<File> tempFiles = new ArrayList<>();
+		for(TabTextEditorObject obj : loadedList.getList()) {
+			if(obj != null && obj.tempFile != null && (!skipUnexisting || obj.tempFile.exists())) {
+				tempFiles.add(obj.tempFile);
+			}
+		}
+
+		return tempFiles;
 	}
 
 	private void backupCurrentBeforeSwitch() {

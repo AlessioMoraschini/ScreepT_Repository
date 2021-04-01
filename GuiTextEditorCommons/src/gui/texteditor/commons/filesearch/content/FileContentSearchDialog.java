@@ -38,16 +38,17 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.text.JTextComponent;
 import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 
 import org.fife.rsta.ui.AssistanceIconPanel;
 import org.fife.rsta.ui.RComboBoxModel;
 import org.fife.rsta.ui.ResizableFrameContentPane;
 import org.fife.rsta.ui.UIUtil;
+import org.fife.rsta.ui.search.FindToolBar;
 import org.fife.rsta.ui.search.SearchComboBox;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
@@ -63,6 +64,7 @@ import various.common.light.files.om.FileContentSearchDTO;
 import various.common.light.files.om.FileNamed;
 import various.common.light.gui.GUIStyelSettings;
 import various.common.light.gui.GuiUtils;
+import various.common.light.gui.ScreepTGuiFactory;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.gui.dnd.FileDrop;
 import various.common.light.utility.manipulation.ArrayHelper;
@@ -97,12 +99,12 @@ import various.common.light.utility.string.StringWorker;
 public class FileContentSearchDialog extends AbstractFileSearchDialog {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String COMMA_SEPARATOR = ",";
 	public static String FILTERS_SEPARATOR = COMMA_SEPARATOR;
-	
+
 	public static FileContentSearchDialog singletonInstance = null;
-	
+
 	// This helps us work around the "bug" where JComboBox eats the first Enter
 	// press.
 	private String lastSearchString;
@@ -112,16 +114,16 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 	 */
 	protected SearchListener searchListener;
 	public FileContentSearch fileSearchObj;
-	
+
 	public FileSearchActions searchActions;
-	
+
 	public List<File> selectedSearchFiles;
 	public JOptionHelper dialogHelper;
-	
+
 	protected Window owner;
-	
+
 	private FileOptions options;
-	
+
 	/**
 	 * Creates a new <code>FindDialog</code>.
 	 *
@@ -135,7 +137,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		init(getDefaultListener());
 		selectedSearchFiles = new ArrayList<>();
 		dialogHelper = new JOptionHelper(this);
-		
+
 		singletonInstance = this;
 	}
 
@@ -157,20 +159,20 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		}
 		selectedSearchFiles = new ArrayList<>();
 		dialogHelper = new JOptionHelper(this);
-		
+
 		singletonInstance = this;
 	}
-	
+
 	public void refreshFromFileOptions() {
 		for( String[] filters : options.getfSearchLastFileFilters().getList()) {
 			String currentFilter = "";
 			int i = 0;
 			for(String filter : filters) {
 				currentFilter += filter + (i < filters.length - 1 ? "," : "");
-				
+
 				i++;
 			}
-			
+
 			if(!StringWorker.isEmpty(currentFilter))
 				fileFiltersTextCombo.addItem(currentFilter);
 		}
@@ -179,13 +181,13 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 			if(!StringWorker.isEmpty(searchStrings))
 				findTextCombo.addItem(searchStrings);
 		}
-		
+
 		caseCheckBox.setSelected(options.isfSearchMatchCase());
 		includeBinariesCheckBox.setSelected(options.isfSearchBinaries());
 		regexCheckBox.setSelected(options.isfSearchRegex());
 		wholeWordCheckBox.setSelected(options.isfSearchWholeWord());
 	}
-	
+
 	public FileOptions getOptions() {
 		return options;
 	}
@@ -198,12 +200,12 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 
 	private SearchListener getDefaultListener() {
 		return new SearchListener() {
-			
+
 			@Override
 			public void searchEvent(SearchEvent e) {
-				
+
 			}
-			
+
 			@Override
 			public String getSelectedText() {
 				return null;
@@ -217,7 +219,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 	 * @param listener The component that listens for {@link SearchEvent}s.
 	 */
 	private void init(SearchListener listener) {
-		
+
 		this.options = new FileOptions();
 
 		this.searchListener = listener;
@@ -231,12 +233,12 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		textField.addFocusListener(new FindFocusAdapter());
 		textField.addKeyListener(new FindKeyListener());
 		textField.getDocument().addDocumentListener(new FindDocumentListener());
-		
+
 		JPanel temp = new JPanel(new BorderLayout());
 		temp.add(findTextCombo);
 		AssistanceIconPanel aip = new AssistanceIconPanel(findTextCombo);
 		temp.add(aip, BorderLayout.LINE_START);
-		
+
 		if (orientation.isLeftToRight()) {
 			enterTextPane.add(findFieldLabel);
 			enterTextPane.add(temp);
@@ -245,7 +247,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 			enterTextPane.add(temp);
 			enterTextPane.add(findFieldLabel);
 		}
-		
+
 		fileFiltersTextCombo = new SearchComboBox(null, false);
 		JTextComponent textField2 = UIUtil.getTextComponent(fileFiltersTextCombo);
 		textField2.addFocusListener(new FindFocusAdapter());
@@ -328,14 +330,14 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 
 		Dialog thisDialog = this;
 		textField.addFocusListener(new FocusListener() {
-			
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				SwingUtilities.invokeLater(() -> {
 					GUIStyelSettings.applyNimbusSize(thisDialog, 2);
 				});
 			}
-			
+
 			@Override
 			public void focusGained(FocusEvent e) {
 				SwingUtilities.invokeLater(() -> {
@@ -343,7 +345,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 				});
 			}
 		});
-		
+
 		chooseFileBtn.addActionListener((e) -> {
 			setSelectedFiles(fileDialogHelper.fileAndDirReadMulti(owner));
 			if(options != null) {
@@ -357,25 +359,25 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 				options.getfSearchLastLoadedFiles().addUniquesToTop(FileNamed.fromFileList(selectedSearchFiles));
 			}
 		});
-		
+
 		clearFilesBtn.addActionListener((e) -> {
 			clearSelectedFiles();
 		});
-		
+
 		searchButton.addActionListener((e) -> {
-			
+
 			if(selectedSearchFiles == null || selectedSearchFiles.isEmpty()) {
 				dialogHelper.info("Select source before to search!", "Missing source file(s)!");
 				return;
 			}
-			
+
 			FileContentSearchDTO dto = getSearchDTO();
 			if(options != null)
 				options.enrichFromDTO(dto);
-		
+
 			setEnabled(false);
 			fileSearchObj = new FileContentSearch(dto, selectedSearchFiles, searchActions);
-			
+
 			new Thread(()->{
 				try {
 					fileSearchObj.startSearch(true);
@@ -386,9 +388,9 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 				setEnabled(true);
 			}).start();
 		});
-		
+
 		addComboListener();
-		
+
 		new FileDrop(txtFieldSelectedFiles, (files)->{
 			SwingUtilities.invokeLater(()->{
 				addSelectedFiles(Arrays.asList(files));
@@ -396,64 +398,64 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 				this.toFront();
 			});
 		});
-		
+
 		setAlwaysOnTop(true);
 
 		GuiUtils.centerComponent(thisDialog, new Dimension(710, 200));
 	}
-	
+
 	public void setSelectedFiles(List<File> selection) {
-		selectedSearchFiles = selection != null 
-				? selection 
-				: selectedSearchFiles != null 
-					? selectedSearchFiles 
+		selectedSearchFiles = selection != null
+				? selection
+				: selectedSearchFiles != null
+					? selectedSearchFiles
 					: new ArrayList<>();
-		
-		setSelectedFileLbl(selectedSearchFiles);
+
+		ScreepTGuiFactory.setSelectedFileLbl(selectedSearchFiles, txtFieldSelectedFiles);
 	}
 
 	public void addSelectedFiles(List<File> selection) {
 		selectedSearchFiles = FileVarious.addWithoutRepetitions(selection, selectedSearchFiles);
-		setSelectedFileLbl(selectedSearchFiles);
+		ScreepTGuiFactory.setSelectedFileLbl(selectedSearchFiles, txtFieldSelectedFiles);
 	}
 
 	public void clearSelectedFiles() {
 		selectedSearchFiles = new ArrayList<>();
-		setSelectedFileLbl(selectedSearchFiles);
+		ScreepTGuiFactory.setSelectedFileLbl(selectedSearchFiles, txtFieldSelectedFiles);
 	}
-	
+
 	private String[] getFileFilters(String separator) {
 		String filtersRaw = StringWorker.trimToEmpty(fileFiltersTextCombo.getSelectedString());
 		if(filtersRaw.isEmpty())
 			return new String[0];
-		
+
 		String[] filters = filtersRaw.split(separator);
 		return ArrayHelper.removeEmpties(filters);
 	}
-	
+
 	private FileContentSearchDTO getSearchDTO() {
 		FileContentSearchDTO searchDTO = new FileContentSearchDTO(
-				findTextCombo.getSelectedString(), 
+				findTextCombo.getSelectedString(),
 				caseCheckBox.isSelected(),
 				wholeWordCheckBox.isSelected(),
 				regexCheckBox.isSelected(),
-				includeBinariesCheckBox.isSelected(), 
+				includeBinariesCheckBox.isSelected(),
 				getFileFilters(FILTERS_SEPARATOR));
-		
+
 		return searchDTO;
 	}
-	
+
 	private void checkComboWithText() {
-		String selectedItem = findTextCombo.getSelectedString(); 
+		String selectedItem = findTextCombo.getSelectedString();
 		boolean nonEmpty = selectedItem!=null && !selectedItem.isEmpty();
 		searchButton.setEnabled(nonEmpty);
 	}
-	
+
 	private void addComboListener() {
 		findTextCombo.addActionListener((e) -> {
 			checkComboWithText();
 		});
-		
+
 		findTextCombo.addMouseWheelListener(new MouseWheelListener() {
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
@@ -476,7 +478,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 				} catch (Exception e1) {}
 			}
 		});
-		
+
 		new Thread(()-> {
 			while(true) {
 				checkComboWithText();
@@ -488,7 +490,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 			}
 		}).start();
 	}
-	
+
 	public static void updateNimbusSize(Component reference) {
 		try {
 			for(JButton button : ReflectionUtils.retrieveFieldsByType(reference, JButton.class)) {
@@ -511,7 +513,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 				txtField.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
 				txtField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 			}
-			
+
 			SwingUtilities.updateComponentTreeUI(reference);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 		}
@@ -536,7 +538,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 			}
 
 			checkComboWithText();
-			
+
 			super.setVisible(true);
 			focusFindTextField();
 
@@ -570,7 +572,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 			}
 		});
 	}
-	
+
 	protected void updateCombo(SearchComboBox combo) {
 		JTextComponent textField = UIUtil.getTextComponent(combo);
 		textField.addFocusListener(new FindFocusAdapter());

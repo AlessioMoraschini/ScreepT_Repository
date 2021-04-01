@@ -345,7 +345,6 @@ public class MainGUI extends MainGuiParent{
 									logger.warn("Cannot wait " + GeneralConfig.UPDATES_AUTOCHECK_DELAY + " ms to check for updates", e);
 								}
 
-								mainFrameScreept.toFront();
 								GuiUtils.giveFocusToComponent(mainFrameScreept);
 							}
 
