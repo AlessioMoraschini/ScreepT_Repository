@@ -212,6 +212,18 @@ public class CustomTabbedEditor implements ITabsManager {
 		return indexTabObj;
 	}
 
+	public boolean forceIconToTab(String iconPath, Integer index) {
+		try {
+			JLabel tabHeadIcon = (JLabel) (getPanelFromTabHeader(index)).getComponent(TabUtils.TAB_ICON_ORDER);
+			tabHeadIcon.setIcon(new ImageIcon(iconPath));
+		} catch (Exception e) {
+			logger.error("Cannot force icon to tab: " + iconPath, e);
+			return false;
+		}
+
+		return true;
+	}
+
 	public boolean setIconToTab(String iconPath, Integer index) {
 		try {
 			JLabel tabHeadIcon = (JLabel) (getPanelFromTabHeader(index)).getComponent(TabUtils.TAB_ICON_ORDER);
@@ -270,32 +282,42 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 
 	public boolean validateFileToOpen(File fileToOpen) {
-		if (fileToOpen != null) {
+		if (fileToOpen != null && fileToOpen.exists()) {
 			boolean exceedsLines = FileWorker.checkIfHasMoreThanNLines(fileToOpen, GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES);
 			boolean exceedsLength = fileToOpen.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB;
 
-			if (fileToOpen.exists() && (exceedsLines || exceedsLength)) {
+			if (exceedsLines || exceedsLength) {
 				String msg = exceedsLines
 						? "This file has more than " + GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES + " lines, and can slow down or crash ScreepT. Load anyway?"
 						: "This file is bigger than max admitted size [" + ConversionUtils.coolFileSize((long) GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024) + "] and can slow down or crash ScreepT. Load anyway?";
 				boolean userAcceptance = dialogHelper.yesOrNo(msg);
 				if (userAcceptance) {
-					tabEditorManager.forceUnrecognizedFileType();
+					userAcceptance = standardSupportedFileLoad(fileToOpen, false);
 				}
+
 				return userAcceptance;
 
 			} else if(isImageFileSupported(fileToOpen)) {
 				ImageViewerFrame.loadIntoLastExistingInstance(fileToOpen);
 				return false;
 
-			} else if (!SupportedFileTextEditor.isSupported(fileToOpen)) {
-				boolean userAcceptance = dialogHelper.yesOrNo("This type of file is not fully supported [" + fileToOpen.getName() + "] : Load anyway?");
-				if (userAcceptance) {
-					tabEditorManager.forceUnrecognizedFileType();
-				}
-				return userAcceptance;
+			} else {
+				return standardSupportedFileLoad(fileToOpen, false);
 			}
+		} else {
+			return false;
 		}
+	}
+
+	private boolean standardSupportedFileLoad(File fileToOpen, boolean checkOnly) {
+		if (!SupportedFileTextEditor.isSupported(fileToOpen)) {
+			boolean userAcceptance = dialogHelper.yesOrNo("This type of file is not fully supported [" + fileToOpen.getName() + "] : Load anyway?");
+			if (!checkOnly && userAcceptance) {
+				tabEditorManager.forceUnrecognizedFileType();
+			}
+			return userAcceptance;
+		}
+
 		return true;
 	}
 
@@ -988,7 +1010,10 @@ public class CustomTabbedEditor implements ITabsManager {
 					}
 				}
 				// UPDATE ICON
-				if (tabHeadLbl.getText().equals(CustomTabbedEditor.DEFAULT_NEW_FILE_NAME)
+				if(loadedTabObj.getTailMode().get()) {
+					forceIconToTab(IconsPathConfigurator.ICON_EYE, indexChange);
+
+				} else if (tabHeadLbl.getText().equals(CustomTabbedEditor.DEFAULT_NEW_FILE_NAME)
 						&& ("".equals(indexTabObj.textArea.getText()) || alreadyLoading)) {
 					setIconToTab(IconsPathConfigurator.ICON_DOC_EMPTY, indexChange);
 				} else {
@@ -1016,6 +1041,7 @@ public class CustomTabbedEditor implements ITabsManager {
 				// UPDATE ICON
 				setIconToTab(IconsPathConfigurator.ICON_DOC_UNSAVED, indexChange);
 			}
+
 		} catch (Exception e) {
 			logger.error("Error refreshing informations abount unsaved obj", e);
 		}

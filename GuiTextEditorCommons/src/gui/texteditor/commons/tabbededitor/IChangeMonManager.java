@@ -23,4 +23,5 @@ public interface IChangeMonManager {
 	public Runnable getRunnableChanges();
 	public void cleanFromHistory(File target);
 	public void removePendingFiredChanges(File target);
+	public void finalize() throws Throwable;
 }

@@ -1,3 +1,15 @@
+2021-04-02  (HEAD -> refs/heads/BugFix, tag: refs/tags/0.9.49, refs/remotes/origin/BugFix) Version 0.9.49
+
+2021-04-02  File search bugfix + various improvements
+
+2021-04-01  (tag: refs/tags/0.9.48) V0.9.48 Released!
+
+2021-04-01  Improved plugin manager GUI
+
+2021-04-01  Plugins improved + many bugs fixed + added auto temp file save in text editor
+
+2021-03-31  (tag: refs/tags/0.9.47) New version 0.9.47 - Improved Plugins management
+
 2021-03-28  V 0.9.46 - updated codeComparator, licenses, and build process
 
 2021-03-28  Updated licenses with detailed report and sources references

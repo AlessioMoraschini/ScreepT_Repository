@@ -35,7 +35,6 @@ import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.guistyle.GUIStyelSettingsExtended;
 import gui.texteditor.commons.filesearch.name.FileNameSearchDialog;
-import gui.texteditor.commons.om.SupportedFileTextEditor;
 import gui.texteditor.commons.om.TabTextEditorObject;
 import gui.texteditor.commons.tabbededitor.CustomTabbedEditor;
 import initializer.configs.impl.INItializer;
@@ -316,14 +315,10 @@ public class MainGuiUtils {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					if (toLoad != null && toLoad.exists() && SupportedFileTextEditor.isSupported(toLoad)) {
-						try {
-							MainGUI.textEditorPanel.getCurrentTabEditor().loadFile(toLoad);
-						} catch (Exception e) {
-							logger.error("Cannot load file into text Editor: " + toLoad, e);
-						}
-					} else {
-						logger.error("FILE not existing or null: Cannot load into text Editor: " + toLoad);
+					try {
+						MainGUI.textEditorPanel.getCurrentTabEditor().loadFile(toLoad);
+					} catch (Exception e) {
+						logger.error("Cannot load file into text Editor: " + toLoad, e);
 					}
 				}
 			});

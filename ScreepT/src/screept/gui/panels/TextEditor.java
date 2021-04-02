@@ -1214,7 +1214,7 @@ public class TextEditor extends ModulePanel {
 
 		// ALSO ARGUMENTS IF THERE ARE
 		if (MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
-			logger.debug("ARGUMENTS FILES:" + Arrays.toString(MainGuiGeneralAppStarter.argumentsFiles));
+			logger.info("Loading from ARGUMENTS FILES:" + Arrays.toString(MainGuiGeneralAppStarter.argumentsFiles));
 			for (File file : MainGuiGeneralAppStarter.argumentsFiles) {
 				if(!validateFile(file)) {
 					continue;
@@ -1379,7 +1379,6 @@ public class TextEditor extends ModulePanel {
 
 	@Override
 	public void finalize() throws Throwable {
-		super.finalize();
 		try {
 			for(CustomTabbedEditor editor : tabbedEditorsList) {
 				if(editor == null)
@@ -1388,10 +1387,14 @@ public class TextEditor extends ModulePanel {
 				for(TabTextEditorObject obj : editor.loadedList.getList()) {
 					obj.fileMonitorManager.removeAllFromListener();
 				}
+
+				editor.changeMonManager.finalize();
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		super.finalize();
 	}
 
 	public CustomTabbedEditor getCurrentTabEditor() {

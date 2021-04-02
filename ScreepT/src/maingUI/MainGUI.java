@@ -403,7 +403,7 @@ public class MainGUI extends MainGuiParent {
 	@SuppressWarnings("serial")
 	private void initialize() {
 
-		MainGuiGeneralAppStarter.loaderGraphics.update("Initializing screen properties...", 0);
+		MainGuiGeneralAppStarter.loaderGraphics.update("Initializing screen properties...", 30);
 
 		// INITIALIZE SCREEN PROPOERTIES
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();

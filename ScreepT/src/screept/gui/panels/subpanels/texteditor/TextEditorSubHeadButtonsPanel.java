@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -138,7 +139,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JButton btnSpeak;
 	public JButton btnOpenInScreepT;
 	public JButton btnDark;
-	public JButton btnBackgroundCol;
+	public JButton btnTailMode;
 	public JButton btnParseImageText;
 	public JButton btnParsePdfText;
 	public JButton btnFontChooser;
@@ -335,10 +336,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		add(btnRedo, "cell 14 0,alignx center,grow");
 		btnRedo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REDO));
 
-		btnBackgroundCol = new JButton("");
-		btnBackgroundCol.setToolTipText(TextEditTooltips.tooltipBackgroundColor);
-		btnBackgroundCol.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_BG_COLOR));
-		add(btnBackgroundCol, "cell 15 0,alignx center,grow");
+		btnTailMode = new JButton("");
+		btnTailMode.setToolTipText(TextEditTooltips.tooltipTailMode);
+		btnTailMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EYE));
+		add(btnTailMode, "cell 15 0,alignx center,grow");
 
 		btnParseImageText = new JButton("");
 		btnParseImageText.setCursor(GuiUtilsExtended.CURSOR_HAND);
@@ -1117,17 +1118,38 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		});
 
 		// BACKGROUND TEXT COLOR
-		btnBackgroundCol.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				btnBackgroundCol.setEnabled(false);
-				Color esit = new ColorDialogUtils().askForColor(parent.getCurrentTabEditor().loadedTabObj.textArea, false);
-				if (esit != null) {
-					currentConfiguration.getTextEditorOpt().setBackCol(esit);
-					RsyntaxUtils.setBackground(parent.getCurrentTabEditor().loadedTabObj.textArea, esit);
+//		btnBackgroundCol.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				btnBackgroundCol.setEnabled(false);
+//				Color esit = new ColorDialogUtils().askForColor(parent.getCurrentTabEditor().loadedTabObj.textArea, false);
+//				if (esit != null) {
+//					currentConfiguration.getTextEditorOpt().setBackCol(esit);
+//					RsyntaxUtils.setBackground(parent.getCurrentTabEditor().loadedTabObj.textArea, esit);
+//				}
+//				btnBackgroundCol.setEnabled(true);
+//			}
+//		});
+
+		btnTailMode.addActionListener((e)->{
+			TabTextEditorObject obj = parent.getCurrentTabEditor().loadedTabObj;
+			boolean tailModeWasActive = obj.getTailMode().get();
+			obj.setTailMode(new AtomicBoolean(!tailModeWasActive), ()->{
+				if(!tailModeWasActive && (obj.unsaved || obj.loadedFile == null)) {
+					Boolean choiceY = dialogHelper.yesOrNo(
+							"File has unsaved changes, do you want to save it before to change tail mode?",
+							"There are some unsaved files in text Editor, do you want to save them?");
+
+					if(!choiceY)
+						return false;
+
+					saveCurrentTabText();
 				}
-				btnBackgroundCol.setEnabled(true);
-			}
+
+				return true;
+			});
+
+			parent.getCurrentTabEditor().updateSavedLabelNTab(null);
 		});
 
 		// FOREGROUND TEXT COLOR
@@ -1450,45 +1472,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				final TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
-
-				boolean done = false;
-				if (loadedTabObj.loadedFile == null || !loadedTabObj.loadedFile.exists()) {
-					btnSaveTextFileAs.doClick();
-					return;
-				} else {
-					try {
-						String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), EOL.defaultEol);
-
-						done = FileWorker.writeStringToFile(outString, loadedTabObj.loadedFile, true);
-					} catch (IOException e1) {
-						dialogHelper.error("error Saving the selected file :(");
-						logger.error("Exception happened!", e1);
-					}
-
-					if (done) {
-						loadedTabObj.unsaved = false;
-						parent.getCurrentTabEditor().updateSavedLabelNTab(null);
-						textEditorUtils.refreshMessageAndTabTooltip("[File saved]");
-
-						SwingUtilities.invokeLater(() -> {
-							// Clean memorized changes triggered by save
-							logger.debug("Cleaning changes from tabbedPane history");
-							parent.getCurrentTabEditor().changeMonManager.removePendingFiredChanges(loadedTabObj.loadedFile);
-							logger.debug("Cleaned changes from tabbedPane history");
-						});
-
-					} else {
-						textEditorUtils.errorAdvice("[Error - not saved]");
-						parent.footerPanel.lblCurrentFile.setText("(*)" + loadedTabObj.loadedFile.getName());
-						parent.footerPanel.lblCurrentFile.setForeground(Color.RED);
-					}
-					try {
-						parent.footerPanel.lblCurrentFile.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
-					} catch (IOException e1) {
-						logger.error(e);
-					}
-				}
+				saveCurrentTabText();
 			}
 		});
 
@@ -1547,6 +1531,48 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		});
 
 		enableDependenciesFunctions();
+	}
+
+	private void saveCurrentTabText() {
+		final TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+
+		boolean done = false;
+		if (loadedTabObj.loadedFile == null || !loadedTabObj.loadedFile.exists()) {
+			saveCurrentFileAs(null);
+			return;
+		} else {
+			try {
+				String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), EOL.defaultEol);
+
+				done = FileWorker.writeStringToFile(outString, loadedTabObj.loadedFile, true);
+			} catch (IOException e1) {
+				dialogHelper.error("error Saving the selected file :(");
+				logger.error("Exception happened!", e1);
+			}
+
+			if (done) {
+				loadedTabObj.unsaved = false;
+				parent.getCurrentTabEditor().updateSavedLabelNTab(null);
+				textEditorUtils.refreshMessageAndTabTooltip("[File saved]");
+
+				SwingUtilities.invokeLater(() -> {
+					// Clean memorized changes triggered by save
+					logger.debug("Cleaning changes from tabbedPane history");
+					parent.getCurrentTabEditor().changeMonManager.removePendingFiredChanges(loadedTabObj.loadedFile);
+					logger.debug("Cleaned changes from tabbedPane history");
+				});
+
+			} else {
+				textEditorUtils.errorAdvice("[Error - not saved]");
+				parent.footerPanel.lblCurrentFile.setText("(*)" + loadedTabObj.loadedFile.getName());
+				parent.footerPanel.lblCurrentFile.setForeground(Color.RED);
+			}
+			try {
+				parent.footerPanel.lblCurrentFile.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
+			} catch (IOException e1) {
+				logger.error(e1);
+			}
+		}
 	}
 
 	private void checkFormatterEnabled() {

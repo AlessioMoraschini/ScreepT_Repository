@@ -91,6 +91,7 @@ import various.common.light.gui.RXTextUtilities;
 import various.common.light.gui.dnd.FileDrop;
 import various.common.light.om.ICommonShortcuts;
 import various.common.light.om.SelectionDtoFull;
+import various.common.light.utility.primitive.DynaBoolean;
 import various.common.light.utility.string.StringWorker;
 import various.common.light.utility.string.StringWorker.EOL;
 import various.common.light.utility.string.TextAreaStringEditor;
@@ -139,10 +140,13 @@ public class TabTextEditorObject {
 	private SelectionDtoFull textAreaContentBackup;
 	private int linePositionBackup = 0;
 
+	private AtomicBoolean tailMode;
+
 	public TabTextEditorObject(ITabsManager iTabsManager, File file, String text, DocumentListener docListener, final INItializer configuration, IChangeMonManager checkChangesMonitor, ICommonShortcuts shortcutsManager) {
 
 		ColumnTextArea.UNDO_LIMIT = GeneralConfig.UNDO_MAX_LIM;
 
+		tailMode = new AtomicBoolean();
 		selfReference = this;
 		loadedFile = file;
 		this.checkChangesMonitor = checkChangesMonitor;
@@ -862,5 +866,32 @@ public class TabTextEditorObject {
 				});
 			}
 		};
+	}
+
+	public void checkAndApplyTailMode() {
+		if(tailMode.get()) {
+			textArea.setEditable(false);
+		} else {
+			textArea.setEditable(true);
+		}
+	}
+
+	public AtomicBoolean getTailMode() {
+		return tailMode;
+	}
+
+	public void setTailMode(AtomicBoolean tailMode, DynaBoolean canActivate) {
+		if(loadedFile != null && loadedFile.exists() && canActivate.isTrue()) {
+			this.tailMode = tailMode;
+			unsaved = tailMode.get() ? false : unsaved;
+
+		} else if(!tailMode.get()){
+			this.tailMode.set(false);
+
+		} else {
+			return;
+		}
+
+		checkAndApplyTailMode();
 	}
 }
