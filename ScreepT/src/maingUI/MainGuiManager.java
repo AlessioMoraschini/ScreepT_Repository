@@ -383,6 +383,8 @@ public class MainGuiManager {
 
 		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
 
+		MainGUI.mainAPP.getMainFrame().setVisible(true);
+		MainGUI.dialogHelper.setParentComponent(MainGUI.mainAPP.getMainFrame());
 		if (MainGUI.dialogHelper.showYNDialog("Really want to exit?", "Exit Program", JOptionHelperExtended.YES_OR_NO)) {
 
 			MainGUI.mainAPP.getMainFrame().setAlwaysOnTop(true);

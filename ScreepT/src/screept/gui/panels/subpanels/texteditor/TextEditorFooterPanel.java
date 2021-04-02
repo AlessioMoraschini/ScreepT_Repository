@@ -56,6 +56,8 @@ public class TextEditorFooterPanel extends JPanel{
 	public JLabel dynLblColumn;
 	public JLabel lblLine;
 	public JLabel dynLblCurrLine;
+	public JLabel labelCurrPos;
+	public JLabel dynLblCurrPos;
 	public JLabel dynLblSearchEsit;
 	public JLabel lblAdvice;
 
@@ -70,7 +72,7 @@ public class TextEditorFooterPanel extends JPanel{
 		setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		setBackground(Color.GRAY);
 		setLayout(new MigLayout("fill,insets 3, hidemode 3",
-				"[][50px,grow][50px][][:50px:120px][][:45px:90px][][:50px:120px][][:20px:120px][][:20px:120px][][:50px:120px][grow][70px:n][]",
+				"[][50px,grow][50px][][:50px:120px][][:45px:90px][][:50px:120px][][:20px:120px][:60px:120px][][:60px:110px][][:20px:120px][][:50px:120px][grow][70px:n][]",
 				"[fill]"));
 
 		lblCurrentFileLBL = new JLabel(" Current file:");
@@ -104,9 +106,9 @@ public class TextEditorFooterPanel extends JPanel{
 		dynLabelCharset.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		add(dynLabelCharset, "cell 4 0");
 
-		labelTotLines = new JLabel("Tot Lines:");
+		labelTotLines = new JLabel("Lines:");
 		labelTotLines.setForeground(SystemColor.controlHighlight);
-		labelTotLines.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		labelTotLines.setFont(new Font("Segoe UI", Font.BOLD, 11));
 		add(labelTotLines, "cell 5 0,alignx right,aligny center");
 
 		dynLblTotLines = new JLabel("");
@@ -116,7 +118,7 @@ public class TextEditorFooterPanel extends JPanel{
 
 		labelTotalChars = new JLabel("Length:");
 		labelTotalChars.setForeground(SystemColor.controlHighlight);
-		labelTotalChars.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		labelTotalChars.setFont(new Font("Segoe UI", Font.BOLD, 11));
 		add(labelTotalChars, "cell 7 0,alignx right");
 
 		dynLblTotChars = new JLabel("");
@@ -124,7 +126,7 @@ public class TextEditorFooterPanel extends JPanel{
 		dynLblTotChars.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		add(dynLblTotChars, "cell 8 0");
 
-		lblLine = new JLabel("Sel. Line:");
+		lblLine = new JLabel("Sel. line:");
 		lblLine.setForeground(SystemColor.controlHighlight);
 		lblLine.setFont(new Font("Segoe UI", Font.BOLD, 11));
 		add(lblLine, "cell 9 0");
@@ -134,36 +136,46 @@ public class TextEditorFooterPanel extends JPanel{
 		dynLblCurrLine.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		add(dynLblCurrLine, "cell 10 0");
 
+		labelCurrPos = new JLabel("Position:");
+		labelCurrPos.setForeground(SystemColor.controlHighlight);
+		labelCurrPos.setFont(new Font("Segoe UI", Font.BOLD, 11));
+		add(labelCurrPos, "cell 11 0,alignx right");
+
+		dynLblCurrPos = new JLabel("");
+		dynLblCurrPos.setForeground(SystemColor.inactiveCaptionBorder);
+		dynLblCurrPos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		add(dynLblCurrPos, "cell 12 0");
+
 		lblColumn = new JLabel("Sel. Column:");
 		lblColumn.setForeground(SystemColor.controlHighlight);
 		lblColumn.setFont(new Font("Segoe UI", Font.BOLD, 11));
-		add(lblColumn, "cell 11 0");
+		add(lblColumn, "cell 13 0");
 
 		dynLblColumn = new JLabel("");
 		dynLblColumn.setForeground(SystemColor.inactiveCaptionBorder);
 		dynLblColumn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		add(dynLblColumn, "cell 12 0");
+		add(dynLblColumn, "cell 14 0");
 
 		labelSelectionLength = new JLabel("Sel. length:");
 		labelSelectionLength.setForeground(SystemColor.controlHighlight);
 		labelSelectionLength.setFont(new Font("Segoe UI", Font.BOLD, 11));
-		add(labelSelectionLength, "cell 13 0,alignx right");
+		add(labelSelectionLength, "cell 15 0,alignx right");
 
 		dynLblSelLength = new JLabel("");
 		dynLblSelLength.setForeground(SystemColor.inactiveCaptionBorder);
 		dynLblSelLength.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		add(dynLblSelLength, "cell 14 0");
+		add(dynLblSelLength, "cell 16 0");
 
 		dynLblSearchEsit = new JLabel("");
 		dynLblSearchEsit.setHorizontalAlignment(SwingConstants.CENTER);
 		dynLblSearchEsit.setForeground(new Color(255, 222, 173));
 		dynLblSearchEsit.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		dynLblSearchEsit.setBackground(Color.WHITE);
-		add(dynLblSearchEsit, "cell 15 0,alignx center");
+		add(dynLblSearchEsit, "cell 17 0,alignx center");
 
 		lblAdvice = new JLabel("");
 		lblAdvice.setAlignmentX(0.9f);
-		add(lblAdvice, "cell 16 0,alignx right,aligny center");
+		add(lblAdvice, "cell 18 0,alignx right,aligny center");
 		lblAdvice.setBackground(SystemColor.info);
 		lblAdvice.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		lblAdvice.setForeground(Color.LIGHT_GRAY);

@@ -96,6 +96,7 @@ import various.common.light.files.FileWorker;
 import various.common.light.files.om.FileNamed;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.RXTextUtilities;
+import various.common.light.om.ICommonShortcuts.ShortcutsEnabler;
 import various.common.light.utility.string.StringWorker;
 import various.common.light.utility.string.StringWorker.EOL;
 
@@ -177,10 +178,18 @@ public class TextEditor extends ModulePanel {
 	private JToggleButton preMaximizationBackupLeft;
 	private JToggleButton preMaximizationBackupRight;
 
+	protected ShortcutsEnabler enabler;
+
 	//////////////// CONSTRUCTOR /////////////////////
 
 	public TextEditor(MainGUI mainGui, INItializer currentConf) {
+		this(mainGui, currentConf, null);
+	}
+
+	public TextEditor(MainGUI mainGui, INItializer currentConf, ShortcutsEnabler enabler) {
 		setFont(new Font("SansSerif", Font.PLAIN, 14));
+
+		this.enabler = enabler;
 
 		// skip refresh during preload in case of settings to false
 		isPreloading = !GeneralConfig.PRELOAD_TXT_EDITOR_FLAG;
@@ -433,7 +442,7 @@ public class TextEditor extends ModulePanel {
 		/*
 		 * KEYBOARD SHORTCUTS - use custom listener
 		 */
-		shortcutsListener = new TextEditorShortcutListener(currentTextEditor);
+		shortcutsListener = new TextEditorShortcutListener(currentTextEditor, enabler);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(shortcutsListener);
 
 		try {
@@ -1331,11 +1340,12 @@ public class TextEditor extends ModulePanel {
 
 						try {
 							int line = loadedTabObj.textArea.getLineOfOffset(loadedTabObj.textArea.getCaretPosition());
-							footerPanel.dynLblCurrLine.setText(String.valueOf(line) + 1);
+							footerPanel.dynLblCurrLine.setText(String.valueOf(line+1));
 						} catch (BadLocationException e1) {
 							logger.error("Error refreshing current line in footer", e1);
 						}
 
+						footerPanel.dynLblCurrPos.setText(String.valueOf(loadedTabObj.textArea.getCaretPosition()));
 						footerPanel.dynLblSelLength.setText(String.valueOf(selectionLength));
 						footerPanel.dynLblTotChars.setText(String.valueOf(charTotNum));
 						footerPanel.dynLblTotLines.setText(String.valueOf(textLines));
@@ -1365,6 +1375,23 @@ public class TextEditor extends ModulePanel {
 				}
 			}
 		}).start();
+	}
+
+	@Override
+	public void finalize() throws Throwable {
+		super.finalize();
+		try {
+			for(CustomTabbedEditor editor : tabbedEditorsList) {
+				if(editor == null)
+					continue;
+
+				for(TabTextEditorObject obj : editor.loadedList.getList()) {
+					obj.fileMonitorManager.removeAllFromListener();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public CustomTabbedEditor getCurrentTabEditor() {

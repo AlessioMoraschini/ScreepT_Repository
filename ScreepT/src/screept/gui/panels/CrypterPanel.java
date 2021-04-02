@@ -227,6 +227,8 @@ public class CrypterPanel extends ModulePanel {
 	private JCheckBox chckbxShuffle;
 	private JCheckBox chckbxHashKey;
 
+	private volatile boolean isKilled = false;
+
 
 ///////////////////////////////////////////////
 		// CODING-RELATED-OBJECTS //
@@ -590,7 +592,7 @@ public class CrypterPanel extends ModulePanel {
 
 			@Override
 			public void run() {
-				while (true) {
+				while (!thisPanel.isKilled) {
 					try {
 						// refresh tree gui
 						ChangeDTO changes = dictionaryMonitor.checkForEverithing();
@@ -658,6 +660,14 @@ public class CrypterPanel extends ModulePanel {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(shortcutsListener);
 
 		refreshRightSplitSize();
+	}
+
+	@Override
+	public void finalize() throws Throwable {
+		super.finalize();
+		isKilled = true;
+		if(fileMonitor != null)
+			fileMonitor.removeAllFromListener();
 	}
 
 	public void resizeRightSplitter() {
@@ -863,6 +873,24 @@ public class CrypterPanel extends ModulePanel {
 		return panelVDragNDropPane.isFileAlreadyPresent(toCheck);
 	}
 
+	private void appendMainTextArea(String text) {
+		try {
+			textAreaMain.append(text);
+			textAreaMain.setCaretPosition(textAreaMain.getDocument().getLength()-1);
+		} catch (Exception e) {
+			logger.warn("Error while trying to append output to main text area", e);
+		}
+	}
+
+	private void appendLogTextArea(String text) {
+		try {
+			textAreaLog.append(text);
+			textAreaLog.setCaretPosition(textAreaLog.getDocument().getLength()-1);
+		} catch (Exception e) {
+			logger.warn("Error while trying to append output to main text area", e);
+		}
+	}
+
 	private Runnable decripterRunner() {
 		return new Runnable() {
 
@@ -876,7 +904,7 @@ public class CrypterPanel extends ModulePanel {
 				// ask user if he wants to delete decripted after closing ScreepT
 
 				if (dialogHelper.yesOrNo("Delete decripted file(s) after exiting ScreepT? (TEMP folder will be created on Desktop)", "Delete decripted when SW will be closed")) {
-					textAreaMain.append("Decripted files will be exported to temporary folder on user desktop folder\n");
+					appendMainTextArea("Decripted files will be exported to temporary folder on user desktop folder\n");
 					// if temporary mode create temp folder ScreepT on desktop
 					destinationDir = new File(GeneralConfig.TEMP_DECRIPTED_ROOT_PATH);
 
@@ -886,10 +914,10 @@ public class CrypterPanel extends ModulePanel {
 						flagCreateNewMonitor = false;
 					}
 				} else {
-					textAreaMain.append("Waiting input from user...\n");
+					appendMainTextArea("Waiting input from user...\n");
 					// get output asking to user
 					destinationDir = MainGuiGeneralAppStarter.fileDialogHelper.directoWrite(parentFrame);
-					textAreaMain.append("Chosen input: " + destinationDir + "\n\n");
+					appendMainTextArea("Chosen input: " + destinationDir + "\n\n");
 				}
 
 				CrypterResultDTO result = new CrypterResultDTO();
@@ -936,7 +964,7 @@ public class CrypterPanel extends ModulePanel {
 							generalProgress.getGeneralBar().setIndeterminate(true);
 						}
 
-						textAreaLog.append(builder.toString());
+						appendLogTextArea(builder.toString());
 						nProgrFile++;
 
 						boolean shuffle = chckbxShuffle.isSelected() && chckbxShuffle.isEnabled();
@@ -948,7 +976,7 @@ public class CrypterPanel extends ModulePanel {
 						}
 					}
 
-					textAreaMain.append(screeptManagerFoF.getOutputStats());
+					appendMainTextArea(screeptManagerFoF.getOutputStats());
 				}
 
 				if (generalProgress != null) {
@@ -963,21 +991,21 @@ public class CrypterPanel extends ModulePanel {
 
 					GuiUtilsExtended.openInFileSystem(destinationDir);
 
-					textAreaLog.append("\n" + msg);
+					appendLogTextArea("\n" + msg);
 					srcFile = null;
 
 				} else {
 					if(result.interrupted) {
 						String msg = "Process interrupted.";
 						dialogHelper.info(msg, (String)null);
-						textAreaLog.append("\n" + msg);
+						appendLogTextArea("\n" + msg);
 
 						askUserIfWantsToDelete(destinationDir);
 
 					} else if (destinationDir != null) {
 						String msg = "Something went wrong :(";
 						dialogHelper.error(msg, (String)null);
-						textAreaLog.append("\n" + msg);
+						appendLogTextArea("\n" + msg);
 
 						askUserIfWantsToDelete(destinationDir);
 					} else {
@@ -986,14 +1014,14 @@ public class CrypterPanel extends ModulePanel {
 
 				}
 
-				textAreaMain.append(screeptManagerFoF.getOutputStats());
+				appendMainTextArea(screeptManagerFoF.getOutputStats());
 				tabbedPane.setSelectedIndex(0);
 
 				if (flagCreateNewMonitor && fileMonitor == null) {
 					fileMonitor = new FileChangeMonitor(destinationDir, null);
 				}
 
-				textAreaMain.append("\n\n => Completed !\n\n #####################################################");
+				appendMainTextArea("\n\n => Completed !\n\n #####################################################");
 
 				runRunnableImpExp(result.resultOK, destinationDir);
 			}
@@ -1010,7 +1038,7 @@ public class CrypterPanel extends ModulePanel {
 				// get output asking to user
 				File destinationDir = MainGuiGeneralAppStarter.fileDialogHelper.directoWrite(parentFrame);
 
-				textAreaMain.append("Chosen input: " + destinationDir + "\n\n");
+				appendMainTextArea("Chosen input: " + destinationDir + "\n\n");
 
 				// retrieve source file array from dragNDrop panel
 				srcFiles = panelVDragNDropPane.getTreeNodes();
@@ -1059,7 +1087,7 @@ public class CrypterPanel extends ModulePanel {
 							generalProgress.getGeneralBar().setIndeterminate(true);
 						}
 
-						textAreaLog.append(builder.toString());
+						appendLogTextArea(builder.toString());
 						nProgrFile ++;
 
 						boolean shuffle = chckbxShuffle.isSelected() && chckbxShuffle.isEnabled();
@@ -1070,7 +1098,7 @@ public class CrypterPanel extends ModulePanel {
 							result.resultOK = false;
 						}
 					}
-					textAreaMain.append(screeptManagerFoF.getOutputStats());
+					appendMainTextArea(screeptManagerFoF.getOutputStats());
 				}
 
 				if (generalProgress != null) {
@@ -1086,7 +1114,7 @@ public class CrypterPanel extends ModulePanel {
 					GuiUtilsExtended.openInFileSystem(destinationDir);
 
 					logger.info(msg);
-					textAreaLog.append("\n" + msg);
+					appendLogTextArea("\n" + msg);
 
 					srcFile = null;
 
@@ -1094,7 +1122,7 @@ public class CrypterPanel extends ModulePanel {
 					if(result.interrupted) {
 						String msg = "Process interrupted.";
 						dialogHelper.info(msg, "Process Interrupted");
-						textAreaLog.append("\n" + msg);
+						appendLogTextArea("\n" + msg);
 
 						askUserIfWantsToDelete(destinationDir);
 
@@ -1102,7 +1130,7 @@ public class CrypterPanel extends ModulePanel {
 						String msg = "Something went wrong :(";
 						dialogHelper.error(msg,"An error occurred");
 						logger.error(msg);
-						textAreaLog.append("\n" + msg);
+						appendLogTextArea("\n" + msg);
 
 						askUserIfWantsToDelete(destinationDir);
 					}
@@ -1111,10 +1139,10 @@ public class CrypterPanel extends ModulePanel {
 					}
 				}
 
-				textAreaMain.append(screeptManagerFoF.getOutputStats());
+				appendMainTextArea(screeptManagerFoF.getOutputStats());
 				tabbedPane.setSelectedIndex(0);
 
-				textAreaMain.append("\n\n => Completed !\n\n #####################################################");
+				appendMainTextArea("\n\n => Completed !\n\n #####################################################");
 
 				runRunnableImpExp(result.resultOK, destinationDir);
 			}
@@ -1216,7 +1244,7 @@ public class CrypterPanel extends ModulePanel {
 //		panelMainContainer.add(scrollPaneText, "cell 2 2 1 4,grow");
 
 		textAreaMain.setText("   ###  WELCOME TO ScreepT :) ###\n\n Are you ready to crypt/decrypt your files? I will be your best friend... and attackers worst nightmare ;)");
-		textAreaMain.append("\n\n" + getInstructionsText());
+		appendMainTextArea("\n\n" + getInstructionsText());
 		textAreaMain.setCaretPosition(0);
 		textAreaMain.revalidate();
 		textAreaMain.repaint();
@@ -1260,15 +1288,15 @@ public class CrypterPanel extends ModulePanel {
 					if (thisFile != null) {
 						if (thisFile.isDirectory()) {
 							msg = "\n### Directory selected ### \n\n => " + thisFile.getName();
-							textAreaLog.append("\n" + msg);
+							appendLogTextArea("\n" + msg);
 						} else {
 							if (FilenameUtils.getExtension(thisFile.getAbsolutePath()).equals("png")) {
 								msg = " .png Key recognized ->" + thisFile.getName() + "\n\n ## SIZE: " + ConversionUtils.coolFileSize(thisFile) + "\n\n ## Path: "
 										+ thisFile.getAbsolutePath();
-								textAreaLog.append("\n" + msg);
+								appendLogTextArea("\n" + msg);
 							} else {
 								msg = "File not recognized as Key: \n\n => " + thisFile.getName();
-								textAreaLog.append("\n" + msg);
+								appendLogTextArea("\n" + msg);
 							}
 						}
 					}
@@ -1482,10 +1510,10 @@ public class CrypterPanel extends ModulePanel {
 		if (thisFile.exists()) {
 			try {
 				if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equalsIgnoreCase("png") && ImageIO.read(thisFile)!=null) {
-					textAreaLog.append("\n" + "");
+					appendLogTextArea("\n" + "");
 					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+ConversionUtils.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
 					logger.info(msg);
-					textAreaLog.append("\n" + msg);
+					appendLogTextArea("\n" + msg);
 
 					String newdisplayed = StringWorker.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
 
@@ -1496,12 +1524,12 @@ public class CrypterPanel extends ModulePanel {
 					dialogHelper.info("Key Image file correctly loaded and selected :)","Key Image Selected :)");
 				}else {
 					String msg = " File not recognized as Key: \n\n => "+thisFile.getName();
-					textAreaLog.append("\n" + msg);
+					appendLogTextArea("\n" + msg);
 					dialogHelper.error("Key Image file not recognized :(","Key Image not recognized :(");
 				}
 			} catch (IOException e) {
 				String msg = "Some Error Occurred :(";
-				textAreaLog.append("\n" + msg);
+				appendLogTextArea("\n" + msg);
 				dialogHelper.error(msg, msg);
 			}
 		}
@@ -1527,7 +1555,7 @@ public class CrypterPanel extends ModulePanel {
 				String msg = "\n\n### Image values ###\n\n Width: " + img.getWidth() + " Px\n Height: "
 						+ img.getHeight() + " Px\n\n=> File Size: " + ConversionUtils.coolFileSize(thisFile)
 						+ "\n\n => ImgType: " + img.toString();
-				textAreaLog.append("\n" + msg);
+				appendLogTextArea("\n" + msg);
 				logger.info(msg);
 
 				String newdisplayed = StringWorker.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
@@ -1536,7 +1564,7 @@ public class CrypterPanel extends ModulePanel {
 			}else {
 
 				String msg = "Image type not supported by cripter: ";
-				textAreaLog.append("\n" + msg);
+				appendLogTextArea("\n" + msg);
 				logger.info(msg);
 
 				String newdisplayed = StringWorker.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
@@ -1553,7 +1581,7 @@ public class CrypterPanel extends ModulePanel {
 		} catch (IOException e1) {
 			String msg = "Error reading the image, something went wrong :(";
 			logger.debug(msg);
-			textAreaLog.append("\n" + msg);
+			appendLogTextArea("\n" + msg);
 			if (this.srcKeyImageFile == null) {
 				lblKeyImageSelected.setText(msg);
 				panelKeyImgDisp.removeAll();
@@ -1647,8 +1675,8 @@ public class CrypterPanel extends ModulePanel {
 		textAreaLog.setSelectionStart(textAreaLog.getText().length()-1);
 		textAreaMain.setSelectionStart(textAreaMain.getText().length()-1);
 
-		textAreaLog.append(out);
-		textAreaMain.append(out);
+		appendLogTextArea(out);
+		appendMainTextArea(out);
 		tabbedPane.setSelectedIndex(0);
 	}
 

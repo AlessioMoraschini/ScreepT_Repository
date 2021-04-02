@@ -432,8 +432,7 @@ public class MainGuiUtils {
 	}
 
 	public boolean isMainFrameFocused() {
-		return mainAppReference.getMainFrame().getFocusOwner() != null &&
-				mainAppReference.getMainFrame().isFocusableWindow();
+		return GuiUtils.isFocusedOnTop(mainAppReference.getMainFrame());
 	}
 
 	public void updateTitleRightPart(String newSuffix) {
@@ -468,6 +467,13 @@ public class MainGuiUtils {
 				}
 
 				if (MainGUI.crypterPanel == null || forceStart) {
+					if(MainGUI.crypterPanel != null) {
+						try {
+							MainGUI.crypterPanel.finalize();
+						} catch (Throwable e) {
+							logger.warn("Can't finalize before to start text editor");
+						}
+					}
 					SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 					MainGUI.crypterPanel = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
 				}
@@ -497,8 +503,15 @@ public class MainGuiUtils {
 					removeAllListeners(MainGUI.textEditorPanel);
 				}
 				if (MainGUI.textEditorPanel == null || forceRestart) {
+					if(MainGUI.textEditorPanel != null) {
+						try {
+							MainGUI.textEditorPanel.finalize();
+						} catch (Throwable e) {
+							logger.warn("Can't finalize before to start text editor");
+						}
+					}
 					SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-					MainGUI.textEditorPanel = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
+					MainGUI.textEditorPanel = new TextEditor(mainAppReference, MainGUI.currentConfiguration, ()-> {return isTextEditorActive(true);});
 				}
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
@@ -735,7 +748,7 @@ public class MainGuiUtils {
 				GenericOption genOpt = currentConfiguration.getGenOpt();
 				if (genOpt.isFirstAccess()) {
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(400);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -814,11 +827,21 @@ public class MainGuiUtils {
 		}
 
 		if(MainGUI.crypterPanel != null && !isCrypterActive(false) && MainGUI.crypterPanel.panelVDragNDropPane.getAllNodes().length == 0) {
+			try {
+				MainGUI.crypterPanel.finalize();
+			} catch (Throwable e) {
+				logger.warn("Cannot finalize crypter panel", e);
+			}
 			MainGUI.crypterPanel = null;
 			somethingCleaned = Boolean.TRUE;
 		}
 
 		if(MainGUI.textEditorPanel != null && !isTextEditorActive(false) && isAllSavedInTextEditor()) {
+			try {
+				MainGUI.textEditorPanel.finalize();
+			} catch (Throwable e) {
+				logger.warn("Cannot finalize text editor panel", e);
+			}
 			MainGUI.textEditorPanel = null;
 			somethingCleaned = Boolean.TRUE;
 		}
@@ -858,8 +881,7 @@ public class MainGuiUtils {
 				askCondition =
 						askCondition ||
 						tabElement.loadedFile != null ||
-						tabElement.tempFile != null ||
-						!txtOpt.isAutosaveTempFiles();
+						(tabElement.tempFile != null &&	!txtOpt.isAutosaveTempFiles());
 			}
 			if (tabElement.loadedFile == null) {
 				atLeastOneTemp = true;

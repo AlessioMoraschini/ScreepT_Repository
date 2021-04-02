@@ -119,6 +119,7 @@ public class TabTextEditorObject {
 	public File tempFile;
 	public RTextScrollPane currentScrollPane;
 	public ColumnTextArea textArea;
+	public CustomUndoManager undoManager;
 //	public FocusListener focusTxtAreaMonitor;
 	public boolean unsaved = false;
 	public Parser currentParser;
@@ -157,6 +158,11 @@ public class TabTextEditorObject {
 		textArea.setMinimumSize(new Dimension(300,100));
 		textArea.setParserDelay(TXT_AREA_PARSER_DELAY);
 		textArea.setEditable(true);
+		undoManager = textArea.getUndoManager();
+		if(undoManager == null)
+			textArea.createUndoManager();
+		undoManager.setCommonBeforeAction(()->{storeSelectionDto(true);});
+		undoManager.setCommonAfterAction(()->{restoreSelectionDto(true);});
 
 		Border dropBorder = new MatteBorder(12,12,12,12, new Color(61, 111, 191,80));
 		fileDrop = new FileDrop(textArea, dropBorder,
@@ -267,14 +273,19 @@ public class TabTextEditorObject {
 
 	public boolean restoreSelectionDto(boolean lineOnly) {
 		boolean done = true;
-		if(textAreaContentBackup == null)
-			done = storeSelectionDto(lineOnly);
 
-		if(lineOnly) {
-			textArea.setCaretPosition(linePositionBackup);
-			RXTextUtilities.centerLineInScrollPane(textArea);
-		} else {
-			textAreaContentBackup.applySelectionDTO(textArea);
+		try {
+			if(!lineOnly && textAreaContentBackup == null)
+				done = storeSelectionDto(lineOnly);
+
+			if(lineOnly) {
+				textArea.setCaretPosition(linePositionBackup);
+				RXTextUtilities.centerLineInScrollPane(textArea);
+			} else {
+				textAreaContentBackup.applySelectionDTO(textArea);
+			}
+		} catch (Throwable e) {
+			logger.error("Cannot restore selection dto to text area", e);
 		}
 
 		return done;

@@ -370,7 +370,6 @@ public class MainGuiGeneralAppStarter {
 			logger.debug("\n\n(ASYNC_MODULES_LOAD: " + GeneralConfig.ASYNC_MODULES_LOAD + ")\n\n############################\nSCREEPT_BENCHMARKER Analysys:\n\n" + SCREEPT_BENCHMARKER.getSortedReportString()
 			+ "\n\n############################\n\n");
 
-			Thread.sleep(200);
 			GuiUtils.giveFocusToComponent(MainGUI.mainFrameScreept);
 			// CATCH ALL ERRORS DURING INITIALIZATION, ADVICE USER AND ASK TO EXIT
 		} catch (Throwable e) {

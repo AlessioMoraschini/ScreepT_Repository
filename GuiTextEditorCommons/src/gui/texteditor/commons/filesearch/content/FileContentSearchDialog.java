@@ -67,6 +67,7 @@ import various.common.light.gui.GuiUtils;
 import various.common.light.gui.ScreepTGuiFactory;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.gui.dnd.FileDrop;
+import various.common.light.om.exception.ProgressBarInterruptedException;
 import various.common.light.utility.manipulation.ArrayHelper;
 import various.common.light.utility.reflection.ReflectionUtils;
 import various.common.light.utility.string.StringWorker;
@@ -378,15 +379,22 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 			setEnabled(false);
 			fileSearchObj = new FileContentSearch(dto, selectedSearchFiles, searchActions);
 
-			new Thread(()->{
+			GuiUtils.launchRunnable(()->{
 				try {
+					thisDialog.setCursor(GuiUtils.CURSOR_WAIT);
 					fileSearchObj.startSearch(true);
 				} catch (Throwable e1) {
-					String errMsg = "An error occurred: " + e1.getMessage();
-					dialogHelper.error(errMsg, e1.getClass().getName());
+					if(e1 instanceof ProgressBarInterruptedException)
+						dialogHelper.info("Search interrupted by user!");
+					else {
+						String errMsg = "An error occurred: " + e1.getMessage();
+						dialogHelper.error(errMsg, e1.getClass().getName());
+					}
+				} finally {
+					thisDialog.setCursor(GuiUtils.CURSOR_DEFAULT);
+					thisDialog.setEnabled(true);
 				}
-				setEnabled(true);
-			}).start();
+			}, true, false, false);
 		});
 
 		addComboListener();

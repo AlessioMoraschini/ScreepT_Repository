@@ -80,7 +80,7 @@ import various.common.light.gui.ComponentResizer;
 import various.common.light.gui.GuiUtils;
 import various.common.light.utility.manipulation.ConversionUtils;
 
-public class MainGUI extends MainGuiParent{
+public class MainGUI extends MainGuiParent {
 
 
 	//////////////////////////// GUI ELEMENTS //////////////////////////////
@@ -291,7 +291,7 @@ public class MainGUI extends MainGuiParent{
 				}
 			});
 
-			MainGuiGeneralAppStarter.loaderGraphics.update("Resetting last viewed panel: " + currentConfiguration.getGenOpt().getLastPanelOpened() + " ...", 80, 100);
+			MainGuiGeneralAppStarter.loaderGraphics.update("Resetting last viewed panel: " + currentConfiguration.getGenOpt().getLastPanelOpened() + " ...", 80, 0);
 
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -311,7 +311,7 @@ public class MainGUI extends MainGuiParent{
 						}
 					}
 
-					MainGuiGeneralAppStarter.loaderGraphics.update("Restoring Gui Elements From configuration...", 99, 10);
+					MainGuiGeneralAppStarter.loaderGraphics.update("Restoring Gui Elements From configuration...", 99, 0);
 					updateGuiFromCurrConfig();
 
 					SwingUtilities.invokeLater(new Runnable() {
@@ -326,7 +326,7 @@ public class MainGUI extends MainGuiParent{
 						@Override
 						public void run() {
 
-							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScreepT", 100, 10);
+							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScreepT", 100, 0);
 
 							window.startTitleUpdater();
 							GuiUtils.forceToFront(mainFrameScreept, mainFrameScreept);
@@ -403,7 +403,7 @@ public class MainGUI extends MainGuiParent{
 	@SuppressWarnings("serial")
 	private void initialize() {
 
-		MainGuiGeneralAppStarter.loaderGraphics.update("Initializing screen properties...", 30);
+		MainGuiGeneralAppStarter.loaderGraphics.update("Initializing screen properties...", 0);
 
 		// INITIALIZE SCREEN PROPOERTIES
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -424,7 +424,7 @@ public class MainGUI extends MainGuiParent{
 		mainFrameScreept.setJMenuBar(menuBar);
 
 		// This will be used to print out various types of dialogs in this class
-		dialogHelper = new JOptionHelperExtended(mainFrameScreept.getContentPane());
+		dialogHelper = new JOptionHelperExtended(mainFrameScreept);
 
 		// FULL SCREEN SETTING
 		mainFrameScreept.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -478,7 +478,7 @@ public class MainGUI extends MainGuiParent{
 				SwingUtilities.invokeLater(() -> {
 					try {
 						Boolean cleanResult = mainGuiUtils.deReferenceUnusedPanels();
-						Thread.sleep(800);
+						Thread.sleep(400);
 						String msg = "Cleaning skipped as requested.";
 						if(cleanResult != null) {
 							System.gc();

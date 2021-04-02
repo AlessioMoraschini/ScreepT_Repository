@@ -53,7 +53,7 @@ public class TextEditTooltips {
 	public static final String tooltipParsePdfTxt = "Read Pdf and parse text";
 	public static final String tooltipFontChooser = "Change font and text-properties";
 	public static final String tooltipDefaultOpt = "Reset default text-graphics values reading them from current configuration file.";
-	public static final String tooltipRemoveSpaces = "Remove spaces from selected/all text (press Ctrl to choose a character to remove)";
+	public static final String tooltipRemoveSpaces = "Remove spaces from selected/all text)";
 	public static final String tooltipRemoveContent = "Remove specific words from selected/all text";
 	public static final String tooltipUndo = "[Ctrl + Z] Undo Last";
 	public static final String tooltipRedo = "[Alt + Z] Redo Last";
@@ -62,7 +62,7 @@ public class TextEditTooltips {
 	public static final String tooltipQuickFileSearch = "[Ctrl + Altr + R] Search recursively files in workspace or custom folder by entering wildcard file name to search for";
 	public static final String tooltipStyledCopy = "[Alt + C] Copy all selected text to OS clipboards (keeping style)";
 	public static final String tooltipThemeEditor = "Import/Export/Modify themes, or define your own";
-	public static final String tooltipViewInSysExplorer = "[Ctrl + Shift + Enter]View in System Explorer (press Ctrl to open in Command Line)";
+	public static final String tooltipViewInSysExplorer = "[Ctrl + Shift + Enter]View in System Explorer";
 	public static final String tooltipViewInCommandLine = "[Ctrl + Alt + Enter]View in Command line";
 	public static final String tooltipViewPropertiesCurrFile = "[Alt + Enter] View the properties of current file.";
 
@@ -86,13 +86,13 @@ public class TextEditTooltips {
 	public static final String tooltipChckbxLockLanguage = "[Ctrl + shift + L] When checked, language selector will not be auto updated according to current file type";
 	public static final String tooltipFormatCode = "[Ctrl + Shift + F] Format Code according to current selected language (if supported)";
 	public static final String tooltipFormatCodeDisabled = GuiUtils.encapsulateInHtml(tooltipFormatCode + "<br> <b>Not yet supported for current type! supportedTypes are:</b>" + GuiUtils.getAsHtmlList(GuiUtilsExtended.supportedTypesList));
-	public static final String tooltipSpellChecker = "Toggle SpellChecker ON/OFF - (NB: this can be really slow with custom dictionaries, I suggest you to turn off this feature when you are not using it.";		
-	
+	public static final String tooltipSpellChecker = "Toggle SpellChecker ON/OFF - (NB: this can be really slow with custom dictionaries, I suggest you to turn off this feature when you are not using it.";
+
 	public static final String tooltipComboFileFormat = "Choose file extension";
 	public static final String tooltipComboStyleScheme = "Choose preferred style scheme";
 
 	public static final String tooltipHystoryNext = "[Alt + right arrow] go to next tab in history(if available)";
 	public static final String tooltipHystoryPrev = "[Alt + left arrow] go to previous tab in history(if available)";
-	
+
 	public static final String tooltipScrollTabsWithMouseWheel = " ## [Scroll tabs with mouse wheel]";
 }

@@ -41,7 +41,6 @@ import javax.swing.text.Utilities;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rtextarea.RUndoManager;
 
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import resources.GeneralConfig;
@@ -55,14 +54,14 @@ import various.common.light.utility.string.StringWorker.EOL;
 @SuppressWarnings("restriction")
 public class ColumnTextArea extends RSyntaxTextArea {
 	private static final long serialVersionUID = -2828990655552935752L;
-	
+
 	// ColumnTextArea logger creation
 	static Logger logger = Logger.getLogger(ColumnTextArea.class);
-	
+
 	public static int UNDO_LIMIT = 4000;
-	
+
 	public static int INTERLINE = 2;
-	
+
 	/**
      * Key used in app context to lookup Clipboard to use if access to
      * System clipboard is denied.
@@ -72,20 +71,20 @@ public class ColumnTextArea extends RSyntaxTextArea {
 	public AtomicBoolean isRectangularModeOn = new AtomicBoolean(true);
 	RSyntaxTextArea thisTextArea;
 	DefaultCaret customCaret;
-	
-	public RUndoManager undoManager;
-	
+
+	public CustomUndoManager undoManager;
+
 	public int lastStartPosition = 0;
-	
+
 	ICommonShortcuts shortctusInterface;
-	
+
 	public ColumnTextArea(boolean rectangularSelectionActive) {
 		super();
 		thisTextArea = this;
 		setRectangularSelectionMode(rectangularSelectionActive);
-		
+
 		addKeyListeners();
-		
+
         this.getCaret().setBlinkRate(GeneralConfig.DEF_CARET_BLINK_RATE);
 	}
 
@@ -93,10 +92,10 @@ public class ColumnTextArea extends RSyntaxTextArea {
 		this(rectangularSelectionActive);
 		this.shortctusInterface = shortctusInterface;
 	}
-	
+
 	private void addKeyListeners() {
         this.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ALT, 0, true), "ALTKEY");
-        
+
         //Disable ALT key presses when the textarea is focused
         this.getActionMap().put("ALTKEY", new javax.swing.AbstractAction() {
         	private static final long serialVersionUID = 1L;
@@ -107,7 +106,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new ColumnTextAreaShortcutsListener(this));
 	}
-	
+
 	public ColumnTextArea(int rows, int columns){
         super(rows, columns);
         thisTextArea = this;
@@ -123,21 +122,30 @@ public class ColumnTextArea extends RSyntaxTextArea {
 //                System.out.println("Performed");
             }
         });
-        
+
         this.getCaret().setBlinkRate(GeneralConfig.DEF_CARET_BLINK_RATE);
     }
-	
+
 	@Override
-	protected RUndoManager createUndoManager() {
-		RUndoManager undoManager = new RUndoManager(this);
+	protected CustomUndoManager createUndoManager() {
+		if(undoManager != null) {
+			Runnable beforeUndo = undoManager.getBeforeUndo();
+			Runnable beforeRedo = undoManager.getBeforeRedo();
+			undoManager = new CustomUndoManager(this, undoManager.getAfterRedo(), undoManager.getAfterUndo());
+			undoManager.setBeforeUndo(beforeUndo);
+			undoManager.setBeforeRedo(beforeRedo);
+		} else {
+			undoManager = new CustomUndoManager(this, null, null);
+		}
+
 		undoManager.setLimit(UNDO_LIMIT);
 		return undoManager;
 	}
-	
-	public RUndoManager getUndoManager() {
+
+	public CustomUndoManager getUndoManager() {
 		return undoManager;
 	}
-	
+
 	@Override
     public FontMetricsWrapper getFontMetrics(Font font) {
         return new FontMetricsWrapper(super.getFontMetrics(font)) {
@@ -149,7 +157,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
             }
         };
     }
-	
+
 	public void setRectangularSelectionMode(boolean rectangularSelection) {
 		if (rectangularSelection) {
 			customCaret = new ColumnTextArea.ColumnSelectionCaret(this);
@@ -186,18 +194,18 @@ public class ColumnTextArea extends RSyntaxTextArea {
 					}
 				}
 			}
-			
+
 			return (text);
 		}else {
 			return super.getSelectedText();
 		}
     }
-    
+
     @Override
     public void paste() {
-    	
+
 //    	int start = getSelectionStart();
-    	
+
     	if (isRectangularModeOn.get() && isCurrentSelectionRectangular()) {
     		Clipboard clipboard = getClipboard(null);
     		try {
@@ -210,9 +218,9 @@ public class ColumnTextArea extends RSyntaxTextArea {
 			requestFocus();
 //			setSelectionStart(start);
 		}
-    	
+
     }
-    
+
     @Override
     public void cut() {
     	if (isRectangularModeOn.get() && isCurrentSelectionRectangular()) {
@@ -232,13 +240,13 @@ public class ColumnTextArea extends RSyntaxTextArea {
 			super.copy();
 		}
     }
-    
+
     public boolean isCurrentSelectionRectangular() {
     	boolean isRectangular = true;
-    	
+
     	if(getSelectedText() == null || "".equals(getSelectedText())) {
     		isRectangular = false;
-    	
+
     	}else {
     		int startFirstL = 0;
     		int endFirstL = 0;
@@ -255,10 +263,10 @@ public class ColumnTextArea extends RSyntaxTextArea {
 				} catch (BadLocationException e) {
 					logger.error(e);
 				}
-    		} 
-    		
+    		}
+
     		// BUG: Tabs have different length, so they should be considered as nTabs * lengthOfATab
-    		
+
     		if (cnt > 1) {
     			int i = cnt -1;
 				// Search into next line for a selection with different Width or Heigth -> if found the this is not rectangular
@@ -279,16 +287,16 @@ public class ColumnTextArea extends RSyntaxTextArea {
 				isRectangular = false;
 			}
     	}
-    	
+
     	return isRectangular;
     }
-    
+
     public void moveSelectionRectangle(int xDiff) {
     	Highlighter.Highlight[] selections = this.getHighlighter().getHighlights();
     	int cnt = selections.length;
 		if (cnt > 1) {
 			for (int i = 0; i < cnt; i++) {
-				
+
 				int startTemp = selections[i].getStartOffset()+xDiff;
 				int start = startTemp < 0 ? selections[i].getStartOffset() : startTemp;
 				int endTemp = selections[i].getEndOffset()+xDiff;
@@ -297,7 +305,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 				try {
 					this.getHighlighter().removeHighlight(selections[i]);
 					this.getHighlighter().addHighlight(start, end, ((ColumnSelectionCaret)this.getCaret()).getCustomSelectionPainter());
-					
+
 				} catch (javax.swing.text.BadLocationException e) {
 					logger.error("Error moving selected text rectangle");
 				}
@@ -326,12 +334,12 @@ public class ColumnTextArea extends RSyntaxTextArea {
 		Highlighter.Highlight[] selections = this.getHighlighter().getHighlights();
 		removeAllLineHighlights();
 		String text = "";
-		
+
 		String[] sourceLines = replaceText.split(EOL.defaultEol.eol);
 		int sourceLinesIterator = 0;
 		int sourceLinesIteratorMax = sourceLines.length; // Excluded: effective max index is max-1
 		boolean useOneLinePerRow = sourceLines.length > 1;
-		
+
 		int cnt = selections.length;
 		if (cnt == 0 || cnt == 1) {
 			text = super.getSelectedText();
@@ -339,7 +347,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 			replaceRange("", getSelectionStart(), text.length());
 		} else {
 			for (int i = 0; i < cnt; i++) {
-				
+
 				int start = selections[i].getStartOffset();
 				int end = selections[i].getEndOffset();
 
@@ -351,7 +359,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 						replaceText = StringUtils.rightPad(" ", end - start);
 					}
 				}
-				
+
 				String selectedText = "";
 				try {
 					this.getHighlighter().removeHighlight(selections[i]);
@@ -359,7 +367,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 					replaceRange("", start, end);
 					insert(replaceText, start);
 					this.getHighlighter().addHighlight(start, start + replaceText.length()-1, ((ColumnSelectionCaret)this.getCaret()).getCustomSelectionPainter());
-					
+
 				} catch (javax.swing.text.BadLocationException e) {
 					logger.error("Error setting selected text into rectangular selection area");
 				}
@@ -370,11 +378,11 @@ public class ColumnTextArea extends RSyntaxTextArea {
 				}
 			}
 		}
-		
+
 		super.endAtomicEdit();
 		return text;
     }
-    
+
     private Clipboard getClipboard(JComponent c) {
         try {
 			if (sun.swing.SwingUtilities2.canAccessSystemClipboard()) {
@@ -385,7 +393,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 		}
 
         Clipboard clipboard = new Clipboard("DummyClipboard");
-        
+
 		try {
 			clipboard = (Clipboard)sun.awt.AppContext.getAppContext().get(SandboxClipboardKey);
 			if (clipboard == null) {
@@ -397,13 +405,13 @@ public class ColumnTextArea extends RSyntaxTextArea {
 		}
         return clipboard;
     }
-    
+
     @Override
     public void copyAsStyledText() {
     	SelectionDtoFull dto = new SelectionDtoFull(this);
 
     	super.copyAsStyledText();
-    	
+
     	dto.applySelectionDTO(false, this);
     }
 
@@ -416,11 +424,11 @@ class ColumnSelectionCaret extends DefaultCaret {
     boolean moving = false;
     public int caretWidth = 1;
     ColumnTextArea textArea;
-    
+
     public ColumnSelectionCaret(ColumnTextArea textArea) {
     	this.textArea = textArea;
 	}
-    
+
     @Override
     public void mouseMoved(MouseEvent e) {
         super.mouseMoved(e);
@@ -433,29 +441,29 @@ class ColumnSelectionCaret extends DefaultCaret {
         if(!rightClick && isRectangularModeOn.get() && e.getClickCount()==1 && !shiftDown){
             this.getComponent().getHighlighter().removeAllHighlights();
         }
-        
+
     }
-    
+
     @Override
     public void mouseReleased(MouseEvent e){
     	if(isRectangularModeOn.get()) {
     		this.moving = false;
     	}
-    	
+
     	this.altDown = e.isAltDown();
         this.ctrlDown = e.isControlDown();
         this.shiftDown = e.isShiftDown();
-    	
+
         super.mouseReleased(e);
-        
+
         if(thisTextArea != null && !shiftDown)
         	thisTextArea.removeAllLineHighlights();
-        
+
 		updateSelectionIfShiftPressed();
 		if(customCaret != null && customCaret instanceof ColumnSelectionCaret) {
 			((ColumnSelectionCaret)customCaret).paint(getGraphics());
 		}
-		
+
 		if(!shiftDown)
 			lastStartPosition = thisTextArea.getCaretPosition();
     }
@@ -466,11 +474,11 @@ class ColumnSelectionCaret extends DefaultCaret {
         this.altDown = e.isAltDown();
         this.ctrlDown = e.isControlDown();
         this.shiftDown = e.isShiftDown();
-        
+
         if (isRectangularModeOn.get()) {
 			this.lastPoint = new Point(e.getX(), e.getY());
 		}
-        
+
         if (e.getClickCount()==1) {
 			try {
                 if(thisTextArea != null){
@@ -478,18 +486,18 @@ class ColumnSelectionCaret extends DefaultCaret {
                 	robot.mouseMove(e.getXOnScreen(), e.getYOnScreen() - 1);
                 	robot.mouseMove(e.getXOnScreen(), e.getYOnScreen() + 1);
                 	boolean rightClick = SwingUtilities.isRightMouseButton(e);
-                	
+
                 	if (!shiftDown) {
                 		thisTextArea.removeAllLineHighlights();
                 		thisTextArea.repaint();
-                		
+
                 		if(!rightClick) {
                 			thisTextArea.getHighlighter().removeAllHighlights();
                 			thisTextArea.addLineHighlight(RXTextUtilities.getLineAtCaret(thisTextArea), thisTextArea.getCurrentLineHighlightColor());
                 		}
 					}
-		
-					int start = thisTextArea.getSelectionEnd() > thisTextArea.getCaretPosition() 
+
+					int start = thisTextArea.getSelectionEnd() > thisTextArea.getCaretPosition()
 							? lastStartPosition
 							: thisTextArea.getSelectionStart();
 
@@ -499,10 +507,10 @@ class ColumnSelectionCaret extends DefaultCaret {
 					} else {
 						lastStartPosition = thisTextArea.getCaretPosition();
 					}
-					
+
 //					updateSelectionIfShiftPressed();
 				}
-			
+
 			} catch (Exception e1) {
 				logger.error("Error tryin' to refresh highlight on mouse pressed", e1);
 			}
@@ -511,7 +519,7 @@ class ColumnSelectionCaret extends DefaultCaret {
         	thisTextArea.removeAllLineHighlights();
 		}
     }
-    
+
     private void updateSelectionIfShiftPressed() {
     	// SELECT with shift (only if position is different) -> select from currentCaret to viewToModel
         if(shiftDown) {
@@ -526,13 +534,13 @@ class ColumnSelectionCaret extends DefaultCaret {
 				}
 			} catch (Exception e) {
 			}
-        } 
+        }
     }
 
     @Override
     protected void moveCaret(MouseEvent e) {
         if(isRectangularModeOn.get()) {
-        	
+
         	if(!this.moving){
 	                this.getComponent().getHighlighter().removeAllHighlights();
         		this.moving = true;
@@ -553,9 +561,9 @@ class ColumnSelectionCaret extends DefaultCaret {
     	}
         super.moveCaret(e);
 	}
-    
+
     protected void rectangularHighlight(Point start, Point end) {
-        
+
     	if (isRectangularModeOn.get()) {
     		javax.swing.text.JTextComponent comp = this.getComponent();
 			comp.getHighlighter().removeAllHighlights();
@@ -588,14 +596,14 @@ class ColumnSelectionCaret extends DefaultCaret {
 			setCaretPosition(pos2new);
     	}
     }
-    
+
     public HighlightPainter getCustomSelectionPainter(){
     	return this.getSelectionPainter();
     }
 
 	protected void defaultHighlight(Point start, Point end) {
 		Dimension screenSize = GuiUtilsExtended.getScreenSize();
-		
+
 		if (isRectangularModeOn.get()) {
 			JTextComponent comp = this.getComponent();
 			comp.getHighlighter().removeAllHighlights();
@@ -604,7 +612,7 @@ class ColumnSelectionCaret extends DefaultCaret {
 			int lastX = end.x;
 			// skip last when only one line
 			boolean lastMissing = false;
-			
+
 			// FIRST LINE from start x to max X, for first Y only
 			int pos1 = comp.getUI().viewToModel(comp, new Point(firstX, y));
 			int pos2 = comp.getUI().viewToModel(comp, new Point((int)screenSize.getWidth(), y));
@@ -614,7 +622,7 @@ class ColumnSelectionCaret extends DefaultCaret {
 				ex.printStackTrace();
 			}
 			y++;
-			
+
 			// START MIDDLE LINES UNTIL LAST EXCLUDED
 			while (y < end.y-1) {
 				lastMissing = true;
@@ -630,8 +638,8 @@ class ColumnSelectionCaret extends DefaultCaret {
 					}
 				}
 				y++;
-			} 
-			
+			}
+
 			// LAST LINE
 			if (lastMissing) {
 				pos1 = comp.getUI().viewToModel(comp, new Point(0, y));

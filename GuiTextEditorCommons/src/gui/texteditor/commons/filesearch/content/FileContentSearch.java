@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,10 +27,11 @@ import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.files.om.FileContentSearchDTO;
 import various.common.light.files.om.SearchResult;
+import various.common.light.gui.GuiUtils;
 import various.common.light.gui.UpdateProgressPanel;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.om.exception.ProgressBarInterruptedException;
 import various.common.light.utility.log.SafeLogger;
-import various.common.light.utility.manipulation.ArrayHelper;
 import various.common.light.utility.string.StringWorker;
 
 public class FileContentSearch {
@@ -40,6 +42,7 @@ public class FileContentSearch {
 
 	private AtomicInteger totalSourcesScanned;
 	private List<File> sourceFiles;
+	private List<File> rawSources;
 	public List<SearchResult> results;
 	public FileContentSearchDTO searchDTO;
 
@@ -55,15 +58,15 @@ public class FileContentSearch {
 
 	String fileEncoding;
 
+	UpdateProgressPanel updateProgPanel;
+	AtomicBoolean stopSearch = new AtomicBoolean();
+
 	public FileContentSearch(FileContentSearchDTO searchDTO, List<File> sources, FileSearchActions searchActions) {
 
+		this.rawSources = sources;
 		this.totalSourcesScanned = new AtomicInteger(0);
 		this.searchDTO = searchDTO == null ? new FileContentSearchDTO(null) : searchDTO;
-		this.sourceFiles = retrieveSourceFilesToUse(sources);
 		results = new ArrayList<SearchResult>();
-		resultViewer = new FileSearchResultViewer(searchActions, null, searchDTO);
-		resultViewer.sourceFilesTotal = sourceFiles.size();
-
 		dialogHelper = new JOptionHelper(resultViewer);
 
 		if(searchDTO.regex || searchDTO.wholeWord) {
@@ -89,28 +92,67 @@ public class FileContentSearch {
 	/**
 	 * List all files to search into and start search for every one
 	 * @return
+	 * @throws ProgressBarInterruptedException
 	 */
-	public List<SearchResult> startSearch(boolean showProgressUpdater){
+	public List<SearchResult> startSearch(boolean showProgressUpdater) throws ProgressBarInterruptedException{
 
-		logger.info("Starting String search into files...");
-		results = new ArrayList<SearchResult>();
-		UpdateProgressPanel updateProgPanel = new UpdateProgressPanel(false);
-		updateProgPanel.progBarEnabled.set(showProgressUpdater);
-		int i = 1;
-		int totalFilesToScan = sourceTotalSize();
+		resultViewer = new FileSearchResultViewer(false, searchActions, null, searchDTO);
 
-		// Start source files iteration
+		this.sourceFiles = retrieveSourceFilesToUse(rawSources, showProgressUpdater);
+		resultViewer.sourceFilesTotal = sourceFiles.size();
+
+		GuiUtils.launchRunnable(()->{
+			updateProgPanel = new UpdateProgressPanel(false);
+			updateProgPanel.skipAskOnClose = true;
+			updateProgPanel.progBarEnabled.set(showProgressUpdater);
+			updateProgPanel.setClosable(true);
+		}, false, false, false);
+
+		boolean finished = false;
+
 		try {
-			for(File source : sourceFiles) {
-				totalSourcesScanned.incrementAndGet();
+			logger.info("Starting String search into files...");
+			results = new ArrayList<SearchResult>();
+			int nFiles = sourceFiles.size();
+			float nextUpdatePoint = (nFiles) / 60.0f; // Fixed progress update only each n/100 % to avoid performance issues
+			float nextUpdatePointStep = nextUpdatePoint;
+			nextUpdatePoint = 1;
+			String msg = "";
+			int progressPerc = 0;
+
+			// Start source files iteration
+			File source;
+			for(int k = 0; k < nFiles; k++) {
+				GuiUtils.launchRunnable(()->{}, true, false, false);
+				SwingUtilities.invokeLater(()->{
+					if(updateProgPanel.stopProcess.get()) {
+						logger.info("Search interrupted by user");
+						stopSearch.set(true);
+					}
+				});
+
+				if(stopSearch.get())
+					updateProgPanel.forceCloseNExceptionSignal();
+
+				source = sourceFiles.get(k);
+				finished = totalSourcesScanned.incrementAndGet() >= (nFiles -1);
 				try {
 
 					// Update progress values
-					String msg = source.getName() + " (" + i + "/" + sourceFiles.size() + ")";
-					int progressPerc = (int)(((float)i/totalFilesToScan) * 100);
-					progressPerc = progressPerc < 100 ? progressPerc : 99;
-					updateProgPanel.update(progressPerc, msg);
-					if(progressPerc == 99) {
+					if(finished || k > nextUpdatePoint) {
+						nextUpdatePoint += nextUpdatePointStep;
+						msg = (k+1) + "/" + nFiles + ": " + source.getName();
+						progressPerc = (int)(((float)(k+1)/nFiles) * 100);
+						progressPerc = finished ? 99 : progressPerc;
+						final int perc = progressPerc;
+						final String msgf = msg;
+						updateProgPanel.update(perc, msgf, false);
+						updateProgPanel.adaptWidthToCurrentText(true);
+						logger.debug("Progress: " + perc + " - " + msgf);
+
+					}
+
+					if(progressPerc > 95) {
 						updateProgPanel.setUndefinedDuration();
 					}
 
@@ -120,43 +162,49 @@ public class FileContentSearch {
 					if (!currentResult.resultLines.isEmpty()) {
 						searchActions.fileSearchUpdater(currentResult);
 						currentResult.fileScannedTilNow = scannedFilesTotal();
-						SwingUtilities.invokeLater(() -> {
-							resultViewer.addResult(currentResult);
-							results.add(currentResult);
-						});
+						results.add(currentResult);
 					}
+
 				} catch (IOException e) {
 					logger.error("An error occurred while searching into " + source, e);
 				}
-
-				if(updateProgPanel.stopProcess.get()) {
-					logger.info("Search interrupted by user");
-					searchActions.searchStoppedAction();
-					break;
-				}
-
-				i++;
 			}
 
 		} catch (Exception e) {
-			logger.error("An error occurred during search!", e);
+			if(e instanceof ProgressBarInterruptedException) {
+				logger.info("Interrupted by user");
+				dialogHelper.info("Search interrupted by user!");
+
+			} else {
+				logger.error("An error occurred during search!", e);
+			}
 
 		} finally {
-			updateProgPanel.forceClose();
+			resultViewer.setVisible(true);
+			UpdateProgressPanel.forceDisposeSafe(updateProgPanel);
+
 			searchActions.searchCompleted(results);
 			int occurrencesFound = getOccurrencesFound();
+			resultViewer.setCursor(GuiUtils.CURSOR_WAIT);
+			resultViewer.setEnabled(false);
+			int i = 0;
+			for(SearchResult result : results) {
+				resultViewer.addResult(result, i >= (results.size()-1));
+				i++;
+			}
+			resultViewer.setEnabled(true);
+			resultViewer.setCursor(GuiUtils.CURSOR_DEFAULT);
 			dialogHelper.info("<html>Search completed with <b>" + occurrencesFound + "</b> results!");
-			SwingUtilities.invokeLater(()->{
-				resultViewer.setTitle("Completed with " + occurrencesFound + " results in " + sourceTotalSize() + " files - ", false, true);
-				resultViewer.resultsTree.revalidate();
-				resultViewer.resultsTree.repaint();
-				DefaultMutableTreeNode root = (DefaultMutableTreeNode)resultViewer.resultsTree.getModel().getRoot();
-				resultViewer.resultsTree.expandPath(new TreePath(root.getPath()));
-			});
+
+			resultViewer.setTitle("Completed with " + occurrencesFound + " results in " + sourceFiles.size() + " files - ", false, true);
+//			resultViewer.resultsTree.revalidate();
+//			resultViewer.resultsTree.repaint();
+			DefaultMutableTreeNode root = (DefaultMutableTreeNode)resultViewer.resultsTree.getModel().getRoot();
+			resultViewer.resultsTree.expandPath(new TreePath(root.getPath()));
 		}
 
 		logger.info("Finished String search into files");
-		logger.debug("Search results: " + results);
+		logger.debug("Search results: " + results.size());
 		return results;
 	}
 
@@ -166,30 +214,49 @@ public class FileContentSearch {
 	 *
 	 * @param rawSources mix of files and directories to search into
 	 * @return all the source files to search in (no directories)
+	 * @throws ProgressBarInterruptedException
 	 */
-	private List<File> retrieveSourceFilesToUse(List<File> rawSources) {
+	private List<File> retrieveSourceFilesToUse(List<File> rawSources, boolean showProgressUpdater) throws ProgressBarInterruptedException {
 		List<File> elaboredSources = new ArrayList<>();
 		List<File> tempSources = rawSources == null || rawSources.isEmpty()
 				? new ArrayList<>()
 				: rawSources;
 
+		updateProgPanel = new UpdateProgressPanel(false);
+		updateProgPanel.setClosable(true);
+		updateProgPanel.skipAskOnClose = true;
+		updateProgPanel.progBarEnabled.set(showProgressUpdater);
+		int i = 1;
+		int tot = tempSources.size();
 		for(File tempSource : tempSources) {
-			if(tempSource.isDirectory()) {
-				List<File> subDirFiles = FileWorker.getAllContent(tempSource, CustomFileFilters.FILE_ONLY);
-				elaboredSources.addAll(ArrayHelper.removeNulls(subDirFiles));
+			if(!updateProgPanel.stopProcess.get() && tempSource.isDirectory()) {
+				updateProgPanel.update(i * 50 / (tot+10), "Scanning folder: " + tempSource);
+				updateProgPanel.setUndefinedDuration();
+				updateProgPanel.adaptWidthToCurrentText(true);
+				elaboredSources.addAll(FileWorker.getAllContent(tempSource, CustomFileFilters.FILE_ONLY));
 			} else {
 				elaboredSources.add(tempSource);
 			}
+
+			i++;
 		}
 
-		if(!searchDTO.binariesIncluded) {
+		if(!updateProgPanel.stopProcess.get() && !searchDTO.binariesIncluded) {
+			updateProgPanel.update(55, "Filtering binaries...");
 			elaboredSources = removeBinaries(elaboredSources);
 		}
 
-		if(hasFileFilters()) {
+		if(!updateProgPanel.stopProcess.get() && hasFileFilters()) {
+			updateProgPanel.update(70, "Applying file filters...");
 			elaboredSources = applyFilters(elaboredSources, searchDTO);
 		}
 
+		if(updateProgPanel.stopProcess.get()) {
+			logger.info("Search interrupted by user");
+			updateProgPanel.forceCloseNExceptionSignal();
+		}
+
+		updateProgPanel.forceClose();
 		return elaboredSources;
 	}
 
@@ -205,8 +272,9 @@ public class FileContentSearch {
 	 * @param source
 	 * @return
 	 * @throws IOException
+	 * @throws ProgressBarInterruptedException
 	 */
-	public SearchResult searchIntoFile(File source, FileContentSearchDTO searchDTO, UpdateProgressPanel progressPanel) throws IOException {
+	public SearchResult searchIntoFile(File source, FileContentSearchDTO searchDTO, UpdateProgressPanel progressPanel) throws IOException, ProgressBarInterruptedException {
 		SearchResult result = new SearchResult(source);
 		result.searchString = searchDTO.searchString;
 
@@ -217,8 +285,8 @@ public class FileContentSearch {
 		}
 
 
-		logger.info("searchIntoFile starting -> Search data: " + searchDTO);
-		long startTime = System.currentTimeMillis();
+//		logger.debug("searchIntoFile starting -> Search data: " + searchDTO);
+//		long startTime = System.currentTimeMillis();
 
 		FileInputStream readerStream = new FileInputStream(source);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, fileEncoding));
@@ -228,18 +296,18 @@ public class FileContentSearch {
 			String line;
 			while ((line = reader.readLine()) != null) {
 
-				if(progressPanel.stopProcess.get()) {
-					logger.info("Search interrupted by user");
-					searchActions.searchStoppedAction();
-					break;
-				}
+//				if(progressPanel.stopProcess.get()) {
+//					logger.info("Search interrupted by user");
+//					progressPanel.forceCloseNExceptionSignal();
+//					break;
+//				}
 				// For each line use ad hoc search and update results for current file
 				searchIntoLine(i, line, searchDTO, result);
 				i ++;
 			}
 
 		} catch (IOException e) {
-			logger.error("An error occurred!", e);
+			logger.error("An error occurred while reading: " + source, e);
 			throw e;
 
 		} finally {
@@ -247,7 +315,7 @@ public class FileContentSearch {
 			reader.close();
 		}
 
-		logger.info("searchIntoFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+//		logger.debug("searchIntoFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return result;
 	}
 
@@ -398,16 +466,6 @@ public class FileContentSearch {
 		return filteredFinal;
 	}
 
-	private int sourceTotalSize() {
-		int n = 0;
-		for(File source : sourceFiles) {
-			if(source != null)
-				n++;
-		}
-
-		return n;
-	}
-
 	public int scannedFilesTotal() {
 		return totalSourcesScanned.get();
 	}
@@ -427,7 +485,4 @@ public class FileContentSearch {
 		return occurrences;
 	}
 
-	public void threadSearch(File parent) {
-		// TODO
-	}
 }

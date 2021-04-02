@@ -36,7 +36,6 @@ import screept.gui.panels.TextEditor;
 import screept.gui.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import various.common.light.files.FileVarious;
 import various.common.light.gui.GuiUtils;
-import various.common.light.gui.RXTextUtilities;
 import various.common.light.om.ICommonShortcuts;
 import various.common.light.utility.KeyListenerUtils;
 import various.common.light.utility.string.StringWorker.EOL;
@@ -51,12 +50,21 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	public static AtomicBoolean flagAltDown = new AtomicBoolean(false);
 
 	public AtomicBoolean flagHoverBtnBase64 = new AtomicBoolean(false);
-	public AtomicBoolean flagHoverBtnViewExpCmd = new AtomicBoolean(false);
-	public AtomicBoolean flagHoverBtnRemoveSpaces = new AtomicBoolean(false);
 
 	private TextEditor currentTextEditor;
 	private CustomTabbedEditor currentTabEditor;
 	private TextEditorSubHeadButtonsPanel subHeaderPanel;
+
+	private ShortcutsEnabler enabler;
+
+	public void setShortcutsEnabler(ShortcutsEnabler enabler) {
+		this.enabler = enabler;
+	}
+
+	public TextEditorShortcutListener(TextEditor currentTextEditor, ShortcutsEnabler enabler) {
+		this(currentTextEditor);
+		this.enabler = enabler;
+	}
 
 	public TextEditorShortcutListener(TextEditor currentTextEdit) {
 		this.currentTextEditor = currentTextEdit;
@@ -73,7 +81,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 
-		if (e.getID() == KeyEvent.KEY_PRESSED && MainGUI.mainGuiUtils.isTextEditorActive(true)) {
+		if (e.getID() == KeyEvent.KEY_PRESSED && areShortcutsEnabled(enabler)) {
 
 			updateCtrlAltShiftPressed(e);
 
@@ -108,19 +116,16 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				if (e.getKeyCode()==90 && e.isControlDown() && !e.isShiftDown())
 				{
 					try {
-						int oldCaretPos = currentTabEditor.loadedTabObj.textArea.getCaretPosition();
+
 						if (e.isAltDown()) {
 							for (int i = 0; i < 5; i++) {
 								if (currentTabEditor.loadedTabObj.textArea.canUndo()) {
 									currentTabEditor.loadedTabObj.textArea.undoLastAction();
 								}
 							}
-							currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
 						} else {
-							currentTextEditor.getCurrentTabEditor().loadedTabObj.storeSelectionDto(true);
+							// Ctrl-Z already implemented in text area - only dto backup
 						}
-						currentTabEditor.loadedTabObj.textArea.setCaretPosition(oldCaretPos);
-						RXTextUtilities.centerLineFullInScrollPane(currentTabEditor.loadedTabObj.textArea);
 					} catch (Throwable e2) {
 						logger.warn(e2);
 					}
@@ -132,21 +137,17 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				else if (e.getKeyCode()==89 && e.isControlDown() && !e.isShiftDown())
 				{
 					try {
-						int oldCaretPos = currentTabEditor.loadedTabObj.textArea.getCaretPosition();
 						if (e.isAltDown()) {
 							for (int i = 0; i < 5; i++) {
 								if (currentTabEditor.loadedTabObj.textArea.canRedo()) {
 									currentTabEditor.loadedTabObj.textArea.redoLastAction();
 								}
 							}
-							currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
 						} else {
-							currentTextEditor.getCurrentTabEditor().loadedTabObj.storeSelectionDto(true);
+							// Ctrl-Y already implemented in text area - only dto backup
 						}
-						currentTabEditor.loadedTabObj.textArea.setCaretPosition(oldCaretPos);
-						RXTextUtilities.centerLineFullInScrollPane(currentTabEditor.loadedTabObj.textArea);
 					} catch (Throwable e2) {
-							logger.warn(e2);
+						logger.warn(e2);
 					}
 				}
 
@@ -171,7 +172,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 
 ////////////////LISTENER FOR KEY RELEASED EVENT - WHEN NEED TO TRIGGER ONLY ONE TIME EVEN WHILE KEEPING PRESSED  //////////////////////////
 
-		if (e.getID() == KeyEvent.KEY_RELEASED && MainGUI.mainGuiUtils.isTextEditorActive(true)) {
+		if (e.getID() == KeyEvent.KEY_RELEASED && areShortcutsEnabled(enabler)) {
 
 			updateCtrlAltShiftReleased(e);
 
@@ -180,29 +181,27 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				/*
 				 * UNDO -  Ctrl+Z : check and update unsaved variable only
 				 */
-				if (e.getKeyCode() == KeyEvent.VK_Z && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+				if (e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown() && !e.isShiftDown())
 				{
-					try {
-						currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
-					} catch (Throwable e2) {
-						logger.warn(e2);
-					}
-
-					currentTextEditor.getCurrentTabEditor().loadedTabObj.restoreSelectionDto(true);
+					SwingUtilities.invokeLater(()->{
+						try {
+							currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
+						} catch (Throwable e2) {
+							logger.warn(e2);
+						}
+					});
 				}
 				/*
 				 * REDO -  Ctrl+Y : check and update unsaved variable only
 				 */
-				else if (e.getKeyCode()== KeyEvent.VK_Y && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+				else if (e.getKeyCode()== KeyEvent.VK_Y && e.isControlDown() && !e.isShiftDown())
 				{
-					try {
-						currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
-					} catch (Throwable e2) {
-						logger.warn(e2);
-					}
-
 					SwingUtilities.invokeLater(()->{
-						currentTextEditor.getCurrentTabEditor().loadedTabObj.restoreSelectionDto(true);
+						try {
+							currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
+						} catch (Throwable e2) {
+							logger.warn(e2);
+						}
 					});
 				}
 
@@ -719,15 +718,6 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 			@Override
 			public void run() {
 				if (flagCtrlDown.get()) {
-					if (flagHoverBtnRemoveSpaces.get()) {
-						subHeaderPanel.btnRemoveSpaces.setToolTipText(TextEditTooltips.tooltipRemoveContent);
-						subHeaderPanel.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
-					}
-					if (flagHoverBtnViewExpCmd.get()) {
-						subHeaderPanel.btnViewInExplorer.setToolTipText(TextEditTooltips.tooltipViewInCommandLine);
-						subHeaderPanel.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
-					}
-
 					if(flagHoverBtnBase64.get()) {
 						subHeaderPanel.btnBase64Conversion.setToolTipText(TextEditTooltips.tooltipDecryptBase64);
 						subHeaderPanel.btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_RED));
@@ -739,14 +729,6 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					subHeaderPanel.btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_PURPLE));
 				}
 
-				if (!flagCtrlDown.get() || !flagHoverBtnRemoveSpaces.get()) {
-					subHeaderPanel.btnRemoveSpaces.setToolTipText(TextEditTooltips.tooltipRemoveSpaces);
-					subHeaderPanel.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
-				}
-				if (!flagCtrlDown.get() || !flagHoverBtnViewExpCmd.get()) {
-					subHeaderPanel.btnViewInExplorer.setToolTipText(TextEditTooltips.tooltipViewInSysExplorer);
-					subHeaderPanel.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
-				}
 			}
 		});
 
@@ -859,4 +841,5 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	    	SearchEngine.markAll(currentTextEditor.getCurrentTabEditor().getCurrentTextArea(), new SearchContext(searchFor));
 		}
 	}
+
 }
