@@ -748,7 +748,7 @@ public class MainGuiUtils {
 				GenericOption genOpt = currentConfiguration.getGenOpt();
 				if (genOpt.isFirstAccess()) {
 					try {
-						Thread.sleep(400);
+						Thread.sleep(1400);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -770,7 +770,7 @@ public class MainGuiUtils {
 		boolean end=false;
 		String input="";
 		do {
-			input = new JOptionHelperExtended(parent).askForStringNullable("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
+			input = new JOptionHelperExtended(parent).askForStringNullable("Please insert your name:", "Hi, what's your name? :)", "", new Object[]{"Confirm"});
 
 			if (input != null && (input.equals("") || input.length() > 26)) {
 				MainGUI.dialogHelper.warn("Username must be between 1-26 characters!", "UserName length Error");

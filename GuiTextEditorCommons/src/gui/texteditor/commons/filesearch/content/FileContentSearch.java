@@ -180,8 +180,10 @@ public class FileContentSearch {
 			}
 
 		} finally {
-			resultViewer.setVisible(true);
 			UpdateProgressPanel.forceDisposeSafe(updateProgPanel);
+			resultViewer.setVisible(true);
+			resultViewer.toFront();
+//			updateProgPanel.update(99, "Loading results...", false);
 
 			searchActions.searchCompleted(results);
 			int occurrencesFound = getOccurrencesFound();
