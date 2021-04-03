@@ -16,6 +16,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -106,6 +107,13 @@ public class FileNameSearchDialog extends ParentDialog {
 		keyTimer = new AmAsyncAction(action, 300);
 		if(startTimer)
 			keyTimer.executeDelayedAsync();
+	}
+
+	public void setItemJPopUpMenu(JPopupMenu menu) {
+		fileDropList.setPopUpMenu(menu);
+	}
+	public JPopupMenu getItemJPopUpMenu() {
+		return fileDropList.getPopUpMenu();
 	}
 
 	private void initGUI() {

@@ -288,6 +288,7 @@ public class MainGuiUtils {
 		PropertiesManager signalManager = new PropertiesManager(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_PATH);
 		boolean breakLoop = false;
 		int i = 0;
+		List<Integer> toDelete = new ArrayList<>();
 		while(!breakLoop) {
 			String target = signalManager.getProperty(GeneralConfig.SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX + i);
 			logger.info("Loading " + target + " into TextEditor...");
@@ -297,8 +298,19 @@ public class MainGuiUtils {
 			File targetFile = new File(target);
 			loadFile(targetFrameClass, targetFile);
 
+			toDelete.add(i);
+
 			i++;
 		}
+
+		// Disabled because of ping-pong with listener
+//		GuiUtils.launchRunnable(()->{
+//			signalManager.readFromFile();
+//			for(int k = 0; k < toDelete.size(); k++) {
+//				// Save on file only after having removed all
+//				signalManager.removeProperty(GeneralConfig.SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX + toDelete.get(k), k >= (toDelete.size() - 1));
+//			}
+//		}, true, false, false);
 
 		GuiUtilsExtended.extendFramesAndMoveToTop(MainGUI.mainFrameScreept, MainGUI.mainFrameScreept, JFrame.MAXIMIZED_BOTH);
 		MainGUI.mainFrameScreept.requestFocus();
@@ -483,6 +495,16 @@ public class MainGuiUtils {
 		});
 	}
 
+	public void waitTextEditorToBeLoaded() {
+		while (MainGUI.textEditorPanel == null) {
+			try {
+				Thread.sleep(150);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public void startTextEditor(final boolean forceRestart) {
 
 		mainAppReference.isOnHomePage.set(false);
@@ -525,18 +547,12 @@ public class MainGuiUtils {
 
 	public synchronized void openFilesInTextEditor(File[] filesToLoad, Runnable postOpenAction) {
 
-		if(!MainGUI.mainGuiUtils.isTextEditorActive(true)) {
+		if(!MainGUI.mainGuiUtils.isTextEditorActive(false)) {
 			MainGUI.mainGuiUtils.startTextEditor(MainGUI.textEditorPanel == null);
 		}
 
 		SwingUtilities.invokeLater(()->{
-			while (MainGUI.textEditorPanel == null) {
-				try {
-					Thread.sleep(250);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+			waitTextEditorToBeLoaded();
 
 			MainGUI.textEditorPanel.getCurrentTabEditor().loadFiles(filesToLoad);
 
@@ -555,10 +571,18 @@ public class MainGuiUtils {
 					MainGUI.mainAPP.getMainFrame(),
 					MainGUI.textEditorPanel.currentConfiguration);
 			dialog.setTitle("Search files by name - " + GeneralConfig.APPLICATION_NAME);
+			dialog.setEnabled(false);
 
+			if(MainGUI.textEditorPanel == null) {
+				startTextEditor(false);
+				waitTextEditorToBeLoaded();
+			}
+
+			dialog.setEnabled(true);
 			dialog.setDoubleClickItemAction((file) ->{
 				MainGUI.mainGuiUtils.openFilesInTextEditor(new File[] {file}, null);
 			});
+
 			dialog.setLocationRelativeTo(mainAppReference.getMainFrame());
 			dialog.setVisible(true);
 		});

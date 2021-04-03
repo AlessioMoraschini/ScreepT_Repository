@@ -1180,7 +1180,7 @@ public class TextEditor extends ModulePanel {
 			for (String pathToOpen : currentConfiguration.getTextEditorOpt().getOpenedFileList()) {
 				File toLoadFile = new File(pathToOpen);
 				if (toLoadFile.exists()) {
-					if(!currentTabbedEditor.validateFileToOpen(toLoadFile)) {
+					if(!currentTabbedEditor.validateFileToOpen(toLoadFile, true)) {
 						toRemove.add(pathToOpen);
 						continue;
 					}
@@ -1345,6 +1345,7 @@ public class TextEditor extends ModulePanel {
 							logger.error("Error refreshing current line in footer", e1);
 						}
 
+						footerPanel.dynLblEol.setText(EOL.defaultEol.name());
 						footerPanel.dynLblCurrPos.setText(String.valueOf(loadedTabObj.textArea.getCaretPosition()));
 						footerPanel.dynLblSelLength.setText(String.valueOf(selectionLength));
 						footerPanel.dynLblTotChars.setText(String.valueOf(charTotNum));

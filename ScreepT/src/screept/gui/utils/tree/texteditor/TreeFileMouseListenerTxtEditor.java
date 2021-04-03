@@ -101,6 +101,10 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 
 	// constructor
 	public TreeFileMouseListenerTxtEditor(JTree tree, TextEditor textEdit){
+		this(tree, textEdit, true);
+	}
+
+	public TreeFileMouseListenerTxtEditor(JTree tree, TextEditor textEdit, boolean autoAddListener){
 		super(tree);
 		parent = textEdit;
 		this.tree = tree;

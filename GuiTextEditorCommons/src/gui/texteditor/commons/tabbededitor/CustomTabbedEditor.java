@@ -282,7 +282,12 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 
 	public boolean validateFileToOpen(File fileToOpen) {
-		if (fileToOpen != null && fileToOpen.exists()) {
+		return validateFileToOpen(fileToOpen, false);
+	}
+
+	public boolean validateFileToOpen(File fileToOpen, boolean skipFileExtensionCheck) {
+
+		if (fileToOpen != null && fileToOpen.exists() && !isAlreadyLoaded(fileToOpen)) {
 			boolean exceedsLines = FileWorker.checkIfHasMoreThanNLines(fileToOpen, GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES);
 			boolean exceedsLength = fileToOpen.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB;
 
@@ -292,7 +297,7 @@ public class CustomTabbedEditor implements ITabsManager {
 						: "This file is bigger than max admitted size [" + ConversionUtils.coolFileSize((long) GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024) + "] and can slow down or crash ScreepT. Load anyway?";
 				boolean userAcceptance = dialogHelper.yesOrNo(msg);
 				if (userAcceptance) {
-					userAcceptance = standardSupportedFileLoad(fileToOpen, false);
+					userAcceptance = skipFileExtensionCheck || standardSupportedFileLoad(fileToOpen, false);
 				}
 
 				return userAcceptance;
@@ -302,7 +307,7 @@ public class CustomTabbedEditor implements ITabsManager {
 				return false;
 
 			} else {
-				return standardSupportedFileLoad(fileToOpen, false);
+				return skipFileExtensionCheck || standardSupportedFileLoad(fileToOpen, false);
 			}
 		} else {
 			return false;
@@ -1090,7 +1095,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 	public TabTextEditorObject getAlreadyLoaded(File match) {
 		for (TabTextEditorObject iterator : loadedList.getList()) {
-			if (iterator.loadedFile != null && iterator.loadedFile.equals(match)) {
+			if (FileVarious.checkIfSameFile(iterator.loadedFile, match)) {
 				return iterator;
 			}
 		}

@@ -347,15 +347,17 @@ public class WindowCreator {
 			public void resultView(SearchResult searchResult, int viewLine) {
 
 				MainGUI.mainGuiUtils.openFilesInTextEditor(new File[] {searchResult.ownerFile}, ()->{
-					try {
-						JTextArea textArea = MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.textArea;
-						textArea.requestFocus();
-						int lineCaretOffset = textArea.getLineStartOffset(viewLine-1);
-						textArea.setSelectionStart(lineCaretOffset + searchResult.resultLines.get(viewLine).get(0).start);
-						textArea.setSelectionEnd(lineCaretOffset + searchResult.resultLines.get(viewLine).get(0).end);
-					} catch (Exception e) {
-						logger.warn("Cannot select current result into loaded textArea", e);
-					}
+					SwingUtilities.invokeLater(()->{
+						try {
+							JTextArea textArea = MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.textArea;
+							GuiUtils.giveFocusToComponent(textArea);
+							int lineCaretOffset = textArea.getLineStartOffset(viewLine-1);
+							textArea.setSelectionStart(lineCaretOffset + searchResult.resultLines.get(viewLine).get(0).start);
+							textArea.setSelectionEnd(lineCaretOffset + searchResult.resultLines.get(viewLine).get(0).end);
+						} catch (Exception e) {
+							logger.warn("Cannot select current result into loaded textArea", e);
+						}
+					});
 				});
 			}
 
