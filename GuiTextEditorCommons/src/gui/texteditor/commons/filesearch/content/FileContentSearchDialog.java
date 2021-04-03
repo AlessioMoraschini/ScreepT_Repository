@@ -376,25 +376,31 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 			if(options != null)
 				options.enrichFromDTO(dto);
 
-			setEnabled(false);
+			thisDialog.setEnabled(false);
 			fileSearchObj = new FileContentSearch(dto, selectedSearchFiles, searchActions);
 
-			GuiUtils.launchRunnable(()->{
-				try {
-					thisDialog.setCursor(GuiUtils.CURSOR_WAIT);
-					fileSearchObj.startSearch(true);
-				} catch (Throwable e1) {
-					if(e1 instanceof ProgressBarInterruptedException)
-						dialogHelper.info("Search interrupted by user!");
-					else {
-						String errMsg = "An error occurred: " + e1.getMessage();
-						dialogHelper.error(errMsg, e1.getClass().getName());
+			SwingUtilities.invokeLater(()->{
+				GuiUtils.launchRunnable(()->{
+					try {
+						System.out.println("Starting search!");
+						thisDialog.setCursor(GuiUtils.CURSOR_WAIT);
+						fileSearchObj.startSearch(true);
+					} catch (Throwable e1) {
+						if(e1 instanceof ProgressBarInterruptedException)
+							dialogHelper.info("Search interrupted by user!");
+						else {
+							String errMsg = "An error occurred: " + e1.getMessage();
+							dialogHelper.error(errMsg, e1.getClass().getName());
+						}
 					}
-				} finally {
-					thisDialog.setCursor(GuiUtils.CURSOR_DEFAULT);
-					thisDialog.setEnabled(true);
-				}
-			}, true, false, false);
+					SwingUtilities.invokeLater(()->{
+						thisDialog.setVisible(true);
+						thisDialog.setCursor(GuiUtils.CURSOR_DEFAULT);
+						thisDialog.setEnabled(true);
+					});
+				}, true, false, false);
+			});
+
 		});
 
 		addComboListener();

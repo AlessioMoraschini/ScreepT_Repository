@@ -127,6 +127,7 @@ public class FileSearchResultViewer extends ParentFrame {
 
 	private void initTree() {
 		resultsTree = new JTree();
+		resultsTree.setRowHeight(22);
 		ResultViewDTO rootDto = new ResultViewDTO(true);
 		rootDto.result.searchString = searchDTO != null ? searchDTO.searchString : "";
 		rootDto.searchDTO = searchDTO;

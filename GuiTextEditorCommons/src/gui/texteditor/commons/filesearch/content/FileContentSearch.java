@@ -22,6 +22,7 @@ import org.apache.commons.io.FilenameUtils;
 import gui.texteditor.commons.filesearch.FileSearchActions;
 import gui.texteditor.commons.filesearch.resultview.FileSearchResultViewer;
 import gui.texteditor.commons.om.SupportedFileTextEditor;
+import resources.GeneralConfig;
 import various.common.light.files.CustomFileFilters;
 import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
@@ -96,17 +97,18 @@ public class FileContentSearch {
 	 */
 	public List<SearchResult> startSearch(boolean showProgressUpdater) throws ProgressBarInterruptedException{
 
-		resultViewer = new FileSearchResultViewer(false, searchActions, null, searchDTO);
+		logger.debug("Starting search ...");
+		resultViewer = new FileSearchResultViewer(!hasFileFilters(), searchActions, null, searchDTO);
 
+		logger.debug("Retrieving sources to use ...");
 		this.sourceFiles = retrieveSourceFilesToUse(rawSources, showProgressUpdater);
 		resultViewer.sourceFilesTotal = sourceFiles.size();
 
-		GuiUtils.launchRunnable(()->{
-			updateProgPanel = new UpdateProgressPanel(false);
-			updateProgPanel.skipAskOnClose = true;
-			updateProgPanel.progBarEnabled.set(showProgressUpdater);
-			updateProgPanel.setClosable(true);
-		}, false, false, false);
+		logger.debug("Initializing progress updater ...");
+		updateProgPanel = new UpdateProgressPanel(false);
+		updateProgPanel.skipAskOnClose = true;
+		updateProgPanel.progBarEnabled.set(showProgressUpdater);
+		updateProgPanel.setClosable(true);
 
 		boolean finished = false;
 
@@ -123,7 +125,6 @@ public class FileContentSearch {
 			// Start source files iteration
 			File source;
 			for(int k = 0; k < nFiles; k++) {
-				GuiUtils.launchRunnable(()->{}, true, false, false);
 				SwingUtilities.invokeLater(()->{
 					if(updateProgPanel.stopProcess.get()) {
 						logger.info("Search interrupted by user");
@@ -157,9 +158,11 @@ public class FileContentSearch {
 					}
 
 					// Search into current file
+					logger.debug("Starting search into: " + source);
 					SearchResult currentResult = searchIntoFile(source, searchDTO, updateProgPanel);
 					currentResult.reorderByLine();
 					if (!currentResult.resultLines.isEmpty()) {
+						logger.debug(currentResult.resultLines.size() + " matching lines found into: " + source);
 						searchActions.fileSearchUpdater(currentResult);
 						currentResult.fileScannedTilNow = scannedFilesTotal();
 						results.add(currentResult);
@@ -170,7 +173,9 @@ public class FileContentSearch {
 				}
 			}
 
-		} catch (Exception e) {
+			logger.debug("Search phase finished, loading results...");
+
+		} catch (Throwable e) {
 			if(e instanceof ProgressBarInterruptedException) {
 				logger.info("Interrupted by user");
 				dialogHelper.info("Search interrupted by user!");
@@ -179,31 +184,65 @@ public class FileContentSearch {
 				logger.error("An error occurred during search!", e);
 			}
 
-		} finally {
-			UpdateProgressPanel.forceDisposeSafe(updateProgPanel);
-			resultViewer.setVisible(true);
-			resultViewer.toFront();
-//			updateProgPanel.update(99, "Loading results...", false);
+		}
 
-			searchActions.searchCompleted(results);
-			int occurrencesFound = getOccurrencesFound();
-			resultViewer.setCursor(GuiUtils.CURSOR_WAIT);
-			resultViewer.setEnabled(false);
-			int i = 0;
+		updateProgPanel.update(99, "Loading results...", false);
+		try {
+			Thread.sleep(400);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		logger.debug("Closing progress bar...");
+		UpdateProgressPanel.forceDisposeSafe(updateProgPanel);
+		resultViewer.setVisible(true);
+		resultViewer.setEnabled(true);
+		resultViewer.toFront();
+
+		searchActions.searchCompleted(results);
+		int occurrencesFound = 0;
+		resultViewer.setCursor(GuiUtils.CURSOR_WAIT);
+		int i = 0;
+		String limitedAdvice = "";
+		logger.debug("Adding results to viewer...");
+		if(results != null && !results.isEmpty()) {
 			for(SearchResult result : results) {
-				resultViewer.addResult(result, i >= (results.size()-1));
+
+				Iterator<Integer> iteratorLine = result.resultLines.keySet().iterator();
+
+				while(iteratorLine.hasNext()) {
+					Integer line = iteratorLine.next();
+					int lineOccurrences = result.resultLines.get(line).size();
+					occurrencesFound += lineOccurrences;
+				}
+
+				final int j = i;
+				try {
+					SwingUtilities.invokeLater(()->{
+						resultViewer.addResult(result, j >= (results.size()-1));
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				if(occurrencesFound > GeneralConfig.MAX_RESULT_FILE_CONTENT_SEARCH) {
+					limitedAdvice = "There are more results than the max admitted displayable! Restrict the search to view everithing ;)";
+					break;
+				}
+
 				i++;
 			}
-			resultViewer.setEnabled(true);
-			resultViewer.setCursor(GuiUtils.CURSOR_DEFAULT);
-			dialogHelper.info("<html>Search completed with <b>" + occurrencesFound + "</b> results!");
+		}
 
-			resultViewer.setTitle("Completed with " + occurrencesFound + " results in " + sourceFiles.size() + " files - ", false, true);
+		resultViewer.setCursor(GuiUtils.CURSOR_DEFAULT);
+		logger.debug("Advising user!");
+		dialogHelper.info(GuiUtils.encapsulateInHtml("Search completed with <b>" + occurrencesFound + "</b> results! </br><u>" + limitedAdvice + "</u>"), occurrencesFound + " results found!");
+
+		resultViewer.setTitle("Completed with " + occurrencesFound + " results in " + sourceFiles.size() + " files - ", false, true);
 //			resultViewer.resultsTree.revalidate();
 //			resultViewer.resultsTree.repaint();
-			DefaultMutableTreeNode root = (DefaultMutableTreeNode)resultViewer.resultsTree.getModel().getRoot();
-			resultViewer.resultsTree.expandPath(new TreePath(root.getPath()));
-		}
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode)resultViewer.resultsTree.getModel().getRoot();
+		resultViewer.resultsTree.expandPath(new TreePath(root.getPath()));
 
 		logger.info("Finished String search into files");
 		logger.debug("Search results: " + results.size());
@@ -224,16 +263,16 @@ public class FileContentSearch {
 				? new ArrayList<>()
 				: rawSources;
 
-		updateProgPanel = new UpdateProgressPanel(false);
+		UpdateProgressPanel updateProgPanel = new UpdateProgressPanel(false);
 		updateProgPanel.setClosable(true);
 		updateProgPanel.skipAskOnClose = true;
-		updateProgPanel.progBarEnabled.set(showProgressUpdater);
+		updateProgPanel.setUndefinedDuration();
 		int i = 1;
 		int tot = tempSources.size();
 		for(File tempSource : tempSources) {
+			logger.debug("Analyzing " + tempSource);
 			if(!updateProgPanel.stopProcess.get() && tempSource.isDirectory()) {
 				updateProgPanel.update(i * 50 / (tot+10), "Scanning folder: " + tempSource);
-				updateProgPanel.setUndefinedDuration();
 				updateProgPanel.adaptWidthToCurrentText(true);
 				elaboredSources.addAll(FileWorker.getAllContent(tempSource, CustomFileFilters.FILE_ONLY));
 			} else {
@@ -244,21 +283,25 @@ public class FileContentSearch {
 		}
 
 		if(!updateProgPanel.stopProcess.get() && !searchDTO.binariesIncluded) {
-			updateProgPanel.update(55, "Filtering binaries...");
+			updateProgPanel.update(55, "Filtering binaries...", false);
+			logger.debug("Filtering binaries");
 			elaboredSources = removeBinaries(elaboredSources);
 		}
 
 		if(!updateProgPanel.stopProcess.get() && hasFileFilters()) {
-			updateProgPanel.update(70, "Applying file filters...");
+			updateProgPanel.update(70, "Applying file filters...", false);
+			logger.debug("Applying file filters...");
 			elaboredSources = applyFilters(elaboredSources, searchDTO);
 		}
+
+		logger.debug("Closing updater...");
+		updateProgPanel.update(100, "Closing updater...", false);
 
 		if(updateProgPanel.stopProcess.get()) {
 			logger.info("Search interrupted by user");
 			updateProgPanel.forceCloseNExceptionSignal();
 		}
 
-		updateProgPanel.forceClose();
 		return elaboredSources;
 	}
 
@@ -286,10 +329,6 @@ public class FileContentSearch {
 			return result;
 		}
 
-
-//		logger.debug("searchIntoFile starting -> Search data: " + searchDTO);
-//		long startTime = System.currentTimeMillis();
-
 		FileInputStream readerStream = new FileInputStream(source);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, fileEncoding));
 
@@ -298,11 +337,6 @@ public class FileContentSearch {
 			String line;
 			while ((line = reader.readLine()) != null) {
 
-//				if(progressPanel.stopProcess.get()) {
-//					logger.info("Search interrupted by user");
-//					progressPanel.forceCloseNExceptionSignal();
-//					break;
-//				}
 				// For each line use ad hoc search and update results for current file
 				searchIntoLine(i, line, searchDTO, result);
 				i ++;
@@ -317,7 +351,6 @@ public class FileContentSearch {
 			reader.close();
 		}
 
-//		logger.debug("searchIntoFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return result;
 	}
 
