@@ -20,6 +20,7 @@ import java.awt.event.WindowAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -42,11 +43,14 @@ import screept.launcher.utils.JvmHelper;
 import screept.launcher.utils.om.DependencyLocalPath;
 import screept.launcher.utils.om.DependencyModel;
 import screept.launcher.utils.om.JvmArgumentsDTO;
+import updater.module.plugins.PluginDTO;
+import updater.module.plugins.PluginManager;
 import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.LightLicenseViewer;
 import various.common.light.gui.LightLicenseViewer.UserLicenseChoice;
+import various.common.light.gui.UpdateProgressPanel;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.properties.PropertiesManager;
@@ -191,7 +195,7 @@ public class ScreepTLauncher {
 		appLogStart();
 
 		loaderGraphics.setVisible(true);
-		startPendingDeletesCleanerThread();
+		startPendingPluginsCleanerThread();
 
 		JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR + "lib;\"";
 
@@ -441,8 +445,8 @@ public class ScreepTLauncher {
 		logger.debug(LauncherLoggerUtils.getExitString("ScreepT - Launcher", true));
 	}
 
-	public static void startPendingDeletesCleanerThread() {
-		new Thread(new Runnable() {
+	public static void startPendingPluginsCleanerThread() {
+		Thread pendingPluginsRemover = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				logger.info("Starting removal of pending files to delete from last execution...");
@@ -507,7 +511,44 @@ public class ScreepTLauncher {
 					logger.error("Cannot clean PLUGINS folder", e);
 				}
 			}
-		}).start();
+		});
+
+		pendingPluginsRemover.start();
+
+		PluginManager manager = new PluginManager();
+		ArrayList<String> updatedList = new ArrayList<>();
+		try {
+			ArrayList<String> toUpdate = manager.getPendingPluginUpdates();
+			if(toUpdate.isEmpty()) {
+				logger.info("No plugins to update, prooceding with async pending deletes removal");
+				return;
+			} else {
+				logger.info("Waiting for plugins remover to finish...");
+				UpdateProgressPanel progPanel = new UpdateProgressPanel(false);
+				progPanel.setUndefinedDuration();
+				progPanel.update(50, "Waiting for pending plugins removal...", false);
+				pendingPluginsRemover.join();
+				progPanel.forceClose();
+			}
+
+			ArrayList<PluginDTO> pluginsListFromWeb = manager.discoverLatestPlugins();
+
+			for(PluginDTO dto : pluginsListFromWeb) {
+				if(toUpdate.contains(dto.getName())) {
+					logger.info("Installing " + dto.getName() + " - Version " + dto.lastVersion);
+					PluginDTO downloadedDto = manager.downloadPlugin(dto);
+					manager.installPlugin(downloadedDto, true);
+					manager.updateCache(downloadedDto);
+					updatedList.add(downloadedDto.getName());
+				}
+			}
+			new JOptionHelper(null).info("Pending plugin updates have been installed correctly!" + Arrays.deepToString(updatedList.toArray(new String[0])));
+		} catch (Throwable e) {
+			logger.error("Cannot update pending plugins installations! Try to launch Application and manually reinstall them", e);
+			new JOptionHelper(null).error("Cannot update pending plugins installations! Try to launch Application and manually reinstall them");
+		} finally {
+			manager.removeFromPendingPluginUpdate(updatedList);
+		}
 	}
 
 	// Do other operations such as modify registry or stuff like this

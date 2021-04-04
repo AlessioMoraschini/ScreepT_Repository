@@ -207,6 +207,27 @@
 			<artifactId>Resources</artifactId>
 			<version>${general.resources.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>UpdaterModule</groupId>
+			<artifactId>UpdaterModule</artifactId>
+			<version>${updater.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>VariousCommonsLight</groupId>
+					<artifactId>VariousCommonsLight</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.ini4j</groupId>
+					<artifactId>ini4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.miglayout</groupId>
+					<artifactId>miglayout</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
 
 		<dependency>
 			<groupId>VariousCommonsLight</groupId>

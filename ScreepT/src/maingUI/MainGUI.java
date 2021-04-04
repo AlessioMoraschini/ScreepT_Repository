@@ -1193,6 +1193,11 @@ public class MainGUI extends MainGuiParent {
 								Runnable libCheckNRefreshGUI = ()->{};
 
 								pluginManagerGUI = new PluginManagerGUI(getMainFrame(), MainGuiGeneralAppStarter.pluginManager, libCheckNRefreshGUI);
+								pluginManagerGUI.setAfterExitAction(()->{
+									if(MainGuiManager.hasPendingPluginsToDelete(true) && dialogHelper.yesOrNo("A restart is required to apply changes, restart now?")) {
+										MainGuiManager.restartApplication(false);
+									}
+								});
 								GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_PLUGINS, pluginManagerGUI);
 							} else {
 								pluginManagerGUI.toFront();

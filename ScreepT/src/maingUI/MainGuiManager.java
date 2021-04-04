@@ -219,7 +219,7 @@ public class MainGuiManager {
 		// Check and launch eventual pending updates
 		MainGuiManager.checkUpdatesWaitingForInstall();
 
-		boolean hasPendingPlugins = hasPendingPluginsToDelete() || !PluginManager.pluginsFreshlyInstalled.isEmpty();
+		boolean hasPendingPlugins = hasPendingPluginsToDelete(true) || !PluginManager.pluginsFreshlyInstalled.isEmpty();
 
 		MainGuiUtils.logger.info("Exit procedure completed succesfully, now software will shut down");
 
@@ -400,9 +400,14 @@ public class MainGuiManager {
 		MainGUI.alreadyAskingForClose = false;
 	}
 
-	public static boolean hasPendingPluginsToDelete() {
-		ArrayList<String> strPluginFilesList = PluginManager.installedPluginProperties.getStringList(PluginManager.installedPluginPropsListSeparator, ";");
-		return strPluginFilesList != null && !strPluginFilesList.isEmpty();
+	public static boolean hasPendingPluginsToDelete(boolean checkAlsoToUpdate) {
+		ArrayList<String> strPluginFilesList = PluginManager.installedPluginProperties.getStringList(PluginManager.installedPluginPendingDeleteListKey, ";");
+		boolean updatesOk = true;
+		if (checkAlsoToUpdate) {
+			ArrayList<String> strPluginUpdateList = PluginManager.installedPluginProperties.getStringList(PluginManager.installedPluginPendingUpdateListKey,";");
+			updatesOk = strPluginUpdateList != null && !strPluginUpdateList.isEmpty();
+		}
+		return updatesOk || (strPluginFilesList != null && !strPluginFilesList.isEmpty());
 	}
 
 	public static void restartFromLauncher() {
