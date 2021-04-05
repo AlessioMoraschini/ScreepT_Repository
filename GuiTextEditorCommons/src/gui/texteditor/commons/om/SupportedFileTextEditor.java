@@ -33,6 +33,7 @@ public enum SupportedFileTextEditor {
 									 CPLUSPLUS_H(".h","h", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS, GeneralResourcesPaths.WORDLIST_Cpp, null),
 									 CSHARP(".cs","cs", SyntaxConstants.SYNTAX_STYLE_CSHARP, GeneralResourcesPaths.WORDLIST_Csharp, null),
 									 CSS(".css","css", SyntaxConstants.SYNTAX_STYLE_CSS, GeneralResourcesPaths.WORDLIST_CSS, IconsPathConfigurator.F_ICON_CSS),
+									 CSV(".csv","csv", SyntaxConstants.SYNTAX_STYLE_CSV, null, null),
 									 D(".d","d", SyntaxConstants.SYNTAX_STYLE_D, null, null),
 									 DTD(".dtd","dtd", SyntaxConstants.SYNTAX_STYLE_DTD, null, IconsPathConfigurator.F_ICON_CODE),
 									 DELPHI(".dpr","dpr", SyntaxConstants.SYNTAX_STYLE_DELPHI, null, null),
@@ -51,6 +52,7 @@ public enum SupportedFileTextEditor {
 									 LATEX(".tex","tex", SyntaxConstants.SYNTAX_STYLE_LATEX, null, null),
 									 LISP(".lisp","lisp", SyntaxConstants.SYNTAX_STYLE_LISP, null, null),
 									 LUA(".lua","lua", SyntaxConstants.SYNTAX_STYLE_LUA, null, null),
+									 MARKDOWN(".md","md", SyntaxConstants.SYNTAX_STYLE_MARKDOWN, null, null),
 									 NONE(".txt",".txt", SyntaxConstants.SYNTAX_STYLE_NONE, null, IconsPathConfigurator.ICON_NEW_FILE),
 									 PERL(".pl", "pl", SyntaxConstants.SYNTAX_STYLE_PERL, null, null),
 									 PHP(".php", "php", SyntaxConstants.SYNTAX_STYLE_PHP, GeneralResourcesPaths.WORDLIST_PHP, IconsPathConfigurator.F_ICON_PHP),
@@ -65,14 +67,14 @@ public enum SupportedFileTextEditor {
 									 XSD(".xsd","xsd", SyntaxConstants.SYNTAX_STYLE_XML, null, IconsPathConfigurator.F_ICON_CODE),
 									 WSDL(".wsdl","wsdl", SyntaxConstants.SYNTAX_STYLE_XML, null, IconsPathConfigurator.F_ICON_CODE),
 									 YAML(".yml","yml", SyntaxConstants.SYNTAX_STYLE_YAML, null, null);
-					
+
 	public final String DEFAULT_ICON = IconsPathConfigurator.F_ICON_TXT;
 	public String extension;
 	public String senzapunto;
 	public String syntax;
 	public String languageWordsFile;
 	public String iconPath;
-	
+
 	SupportedFileTextEditor(String extension, String senzapunto, String syntax, String languageFile, String iconPath) {
 		this.extension = extension;
 		this.senzapunto = senzapunto;
@@ -80,37 +82,37 @@ public enum SupportedFileTextEditor {
 		this.languageWordsFile = languageFile;
 		this.iconPath =  (iconPath == null)? DEFAULT_ICON : iconPath;
 	}
-	
+
 	public static ArrayList<String> getSupportedExtensions(){
 		ArrayList<String> extensions = new ArrayList<String>();
-		
+
 		for(SupportedFileTextEditor current : SupportedFileTextEditor.values()) {
 			extensions.add(current.senzapunto);
 		}
-		
+
 		return extensions;
 	}
-	
+
 	public static ArrayList<String> getSupportedExtensionsWithDots(){
 		ArrayList<String> dotsExtensions = new ArrayList<String>();
-		
+
 		for(SupportedFileTextEditor current : SupportedFileTextEditor.values()) {
 			dotsExtensions.add(current.extension);
 		}
-		
+
 		return dotsExtensions;
 	}
-	
+
 	public static ArrayList<String> getSupportedSyntaxList(){
 		ArrayList<String> syntaxList = new ArrayList<String>();
-		
+
 		for(SupportedFileTextEditor current : SupportedFileTextEditor.values()) {
 			syntaxList.add(current.syntax);
 		}
-		
+
 		return syntaxList;
 	}
-	
+
 	public static boolean isSupported(File target) {
 		boolean supported = false;
 		if(target != null && target.exists()) {
@@ -119,13 +121,13 @@ public enum SupportedFileTextEditor {
 				if (supportedExt.equalsIgnoreCase(extension)) {
 					supported = true;
 					break;
-				} 
+				}
 			}
 		}
-		
+
 		return supported;
 	}
-	
+
 	public ExtensionFileFilter getRelatedFilter() {
 
 		for(SupportedFileTextEditor type : values()) {
@@ -136,7 +138,7 @@ public enum SupportedFileTextEditor {
 
 		return new ExtensionFileFilter(new String[] { TXT.senzapunto }, TXT.coolDescription());
 	}
-	
+
 	public static ExtensionFileFilter[] getMultipleFileFilter() {
 		SupportedFileTextEditor[] values = values();
 		ExtensionFileFilter[] extensionList = new ExtensionFileFilter[values.length];
@@ -149,9 +151,9 @@ public enum SupportedFileTextEditor {
 
 		return extensionList;
 	}
-	
+
 	public String coolDescription() {
 		return this.name() + " (" + this.extension + ")";
 	}
-	
+
 }
