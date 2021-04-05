@@ -75,6 +75,7 @@ import screept.gui.panels.TextEditor;
 import screept.gui.utils.filedialog.FilesAndDirectoriesManagerGUI;
 import screept.gui.utils.filedialog.INIfileChoosER;
 import updater.module.gui.PluginManagerGUI;
+import updater.module.plugins.PluginManager;
 import various.common.light.files.FileVarious;
 import various.common.light.gui.ComponentResizer;
 import various.common.light.gui.GuiUtils;
@@ -1194,7 +1195,8 @@ public class MainGUI extends MainGuiParent {
 
 								pluginManagerGUI = new PluginManagerGUI(getMainFrame(), MainGuiGeneralAppStarter.pluginManager, libCheckNRefreshGUI);
 								pluginManagerGUI.setAfterExitAction(()->{
-									if(MainGuiManager.hasPendingPluginsToDelete(true) && dialogHelper.yesOrNo("A restart is required to apply changes, restart now?")) {
+									boolean hasPendingPlugins = MainGuiManager.hasPendingPluginsToDelete(true) || !PluginManager.pluginsFreshlyInstalled.isEmpty();
+									if(hasPendingPlugins && dialogHelper.yesOrNo("A restart is required to apply changes, restart now?")) {
 										MainGuiManager.restartApplication(false);
 									}
 								});
