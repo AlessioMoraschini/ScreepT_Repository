@@ -167,6 +167,7 @@ public class WindowCreator {
 
 		shellFrame.setCloseAction(() -> {
 			addNWriteLastShellFrameFileToConfig(shellFrame.getLoadedFile());
+			return true;
 		});
 
 		((ShellReadWritePanel)shellFrame.payloadPanel).setAfterLoadAction(() -> {

@@ -991,7 +991,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
+ 		<dependency>
 			<groupId>MarkdownViewer</groupId>
 			<artifactId>MarkdownViewer</artifactId>
 			<version>${markdownviewer.version}</version>

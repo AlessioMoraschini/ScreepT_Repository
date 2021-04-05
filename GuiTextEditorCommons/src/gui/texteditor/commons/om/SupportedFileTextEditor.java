@@ -152,6 +152,18 @@ public enum SupportedFileTextEditor {
 		return extensionList;
 	}
 
+	public static ExtensionFileFilter[] getMultipleFileFilter(SupportedFileTextEditor... values) {
+		ExtensionFileFilter[] extensionList = new ExtensionFileFilter[values.length];
+
+		int i = 0;
+		for(SupportedFileTextEditor type : values) {
+			extensionList[i] = new ExtensionFileFilter(new String[] {type.senzapunto}, type.coolDescription());
+			i++;
+		}
+
+		return extensionList;
+	}
+
 	public String coolDescription() {
 		return this.name() + " (" + this.extension + ")";
 	}

@@ -67,15 +67,15 @@ public class RsyntaxUtils {
 
 	public static Theme readAndLoadThemeFromXmlFile(RSyntaxTextArea textArea, File themeFile) {
 		logger.info("changeStyleViaThemeXml -> Starting import from xml file style definition: " + themeFile);
-		
+
 		FileInputStream inputStream = null;
 		Theme theme = null;
-		
+
 		try {
 			inputStream = new FileInputStream(themeFile);
 			theme = Theme.load(inputStream);
 			logger.info("changeStyleViaThemeXml (File) -> Style loaded from: " + themeFile);
-			
+
 			if (textArea != null) {
 				theme.apply(textArea);
 				logger.info("changeStyleViaThemeXml (File) -> Style applied to textArea");
@@ -87,17 +87,17 @@ public class RsyntaxUtils {
 				inputStream.close();
 			} catch (Exception e) {}
 		}
-		
+
 		return theme;
 	}
-	
+
 	public static boolean saveThemeToFile(Theme theme, File outputFile) {
-		
+
 		logger.info("Saving xml style to file: " + outputFile);
-		
+
 		FileOutputStream outputStream = null;
 		boolean result = false;
-		
+
 		try {
 			outputStream = new FileOutputStream(outputFile);
 			theme.save(outputStream);
@@ -106,16 +106,16 @@ public class RsyntaxUtils {
 
 		} catch (Exception e) {
 			logger.error("Cannot save theme to file: " + outputFile, e);
-		
+
 		} finally {
 			try {
 				outputStream.close();
 			} catch (Exception e) {}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Changes the styles used by the editor via an XML file specification. This
 	 * method is preferred because of its ease and modularity.
@@ -129,10 +129,16 @@ public class RsyntaxUtils {
 		}
 		Font backup = textArea.getFont();
 		try {
+			Theme theme;
 			if (new File(themeFilePath).exists()) {
 				inputStream = new FileInputStream(themeFilePath);
-				Theme theme = Theme.load(inputStream);
+				theme = Theme.load(inputStream);
 				theme.apply(textArea);
+			} else {
+				theme = Theme.load(textArea.getClass().getResourceAsStream(themeFilePath));
+				if (theme != null) {
+					theme.apply(textArea);
+				}
 			}
 		} catch (Exception ioe) {
 			logger.error(ioe);
@@ -149,7 +155,7 @@ public class RsyntaxUtils {
 			try {
 				inputStream.close();
 			} catch (Exception e) {}
-			
+
 			textArea.setFont(backup);
 			textArea.revalidate();
 			logger.info("changeStyleViaThemeXml (File) -> Style applied in " + String.valueOf(System.currentTimeMillis() - startTime) + " ms");
@@ -158,7 +164,7 @@ public class RsyntaxUtils {
 	}
 
 	public static String askForStringComboNullable(Component parent, List<String> memorizedWords, String msg, String title) {
-		
+
 		JOptionHelper helper = new JOptionHelper(parent);
 
 		GridBagLayout layout = new GridBagLayout();
@@ -179,10 +185,10 @@ public class RsyntaxUtils {
 		panel.add(rCombo, gbc2);
 		if(!memorizedWords.isEmpty())
 			rCombo.setSelectedIndex(0);
-		
+
 		int choice = JOptionPane.showConfirmDialog(null, panel, "select or type a value", JOptionPane.OK_CANCEL_OPTION);
 		String text = UIUtil.getTextComponent(rCombo).getText();
-		
+
 		return choice == JOptionPane.OK_OPTION && !"".equals(text) ? text : null;
 	}
 
@@ -353,7 +359,7 @@ public class RsyntaxUtils {
 
 	/**
 	 * Set the font for all token types.
-	 * 
+	 *
 	 * @param textArea
 	 *            The text area to modify.
 	 * @param font
