@@ -149,6 +149,19 @@ public class MainGuiGeneralAppStarter {
 		});
 	}
 
+	public static Thread getJsCodeFormatterInitializerThread() {
+		return new Thread(()-> {
+			// INITIALIZE .INI CONFIGURATION (ScreepT + Launcher) FROM CONFIG DEFAULT FILES
+			try {
+				GuiUtilsExtended.init();
+
+			} catch (Exception e) {
+				logger.error("Exception happened during loading of file [ "+ GeneralConfig.RESOURCES_DIR  + "CONFIG.ini]!", e);
+				throw new RuntimeException(e);
+			}
+		});
+	}
+
 	public static void startAsyncDynaThreads(Thread... threads) {
 		String syncAsyncMode = GeneralConfig.ASYNC_MODULES_LOAD ? "asyncronous" : "syncronous";
 
@@ -183,6 +196,7 @@ public class MainGuiGeneralAppStarter {
 		try {
 			Thread libCheckerThread = getLibcheckerThread();
 			Thread configInitializerThread = getConfigInitializerThread();
+			Thread jsCodeFormatterInitializerThread = getJsCodeFormatterInitializerThread();
 
 			try {
 
@@ -196,7 +210,7 @@ public class MainGuiGeneralAppStarter {
 				SCREEPT_BENCHMARKER.registerEvent("General config initialization finished");
 				printElapsed("Main Properties initialized!", startTime);
 
-				startAsyncDynaThreads(libCheckerThread, configInitializerThread);
+				startAsyncDynaThreads(libCheckerThread, configInitializerThread, jsCodeFormatterInitializerThread);
 
 				SCREEPT_BENCHMARKER.registerEvent("Dialog helpers initialization started");
 				dialogHelper = new JOptionHelperExtended(null);
@@ -205,7 +219,6 @@ public class MainGuiGeneralAppStarter {
 				SCREEPT_BENCHMARKER.registerEvent("File chooser initialization completed");
 
 				SCREEPT_BENCHMARKER.registerEvent("Static helpers vars initialization started");
-				GuiUtilsExtended.init();
 				JOptionHelperExtended.init();
 				AWTExceptionHandler.init();
 				SCREEPT_BENCHMARKER.registerEvent("Static helpers vars initialization completed");
@@ -343,6 +356,11 @@ public class MainGuiGeneralAppStarter {
 			/** MainApp: LAUNCHED :)**/
 
 			externalPluginAppProvider = AbstractPluginApplicationApi.registerProvider(new ScreepTApplicationApi());
+
+			if(GeneralConfig.ASYNC_MODULES_LOAD) {
+				SCREEPT_BENCHMARKER.registerEvent("Waiting async jsCodeFormatterInitializerThread...");
+				jsCodeFormatterInitializerThread.join();
+			}
 
 			if(!mainAppRunning) {
 				throw new Exception("Something has gone wrong during application start-up, please check the logs");
