@@ -66,7 +66,6 @@ import gui.texteditor.commons.om.TabTextEditorObject;
 import gui.texteditor.commons.om.themes.Themes;
 import gui.texteditor.commons.om.themes.ThemesWrapper;
 import gui.texteditor.commons.utils.RsyntaxUtils;
-import gui.texteditor.commons.utils.dialog.ColorDialogUtils;
 import gui.texteditor.commons.utils.panels.arch.PanelType;
 import initializer.configs.impl.INItializer;
 import initializer.configs.impl.om.TextEditorOption;
@@ -88,6 +87,7 @@ import various.common.light.gui.GuiUtils;
 import various.common.light.gui.RXTextUtilities;
 import various.common.light.gui.ScreepTGuiFactory;
 import various.common.light.gui.dialogs.font.JFontChooserExtended;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.gui.selection.AbstractSelector;
 import various.common.light.om.SelectionDtoFull;
 import various.common.light.utility.manipulation.EncodingUtils;
@@ -151,7 +151,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JButton btnClear;
 	public JButton btnRedo;
 	public JButton btnQuickFileSearch;
-	public JButton btnForegroundCol;
+	public JButton btnImpExpCryptedWorkspace;
 	public JButton btnNewTab;
 	public JButton btnRemoveSpaces;
 	public JButton btnRemoveWord;
@@ -336,22 +336,27 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		add(btnRedo, "cell 14 0,alignx center,grow");
 		btnRedo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REDO));
 
-		btnTailMode = new JButton("");
-		btnTailMode.setToolTipText(TextEditTooltips.tooltipTailMode);
-		btnTailMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EYE));
-		add(btnTailMode, "cell 15 0,alignx center,grow");
+		btnSpeak = new JButton("");
+		btnSpeak.setToolTipText(TextEditTooltips.tooltipSpeak);
+		btnSpeak.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPEAKER));
+		add(btnSpeak, "cell 15 0,alignx center,grow");
 
 		btnParseImageText = new JButton("");
 		btnParseImageText.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnParseImageText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERT_OCR_IMAGE));
 		btnParseImageText.setToolTipText(TextEditTooltips.tooltipParseImage);
-		add(btnParseImageText, "cell 17 0,alignx center,grow");
+		add(btnParseImageText, "cell 16 0,alignx center,grow");
 
 		btnParsePdfText = new JButton("");
 		btnParsePdfText.setToolTipText(TextEditTooltips.tooltipParsePdfTxt);
 		btnParsePdfText.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnParsePdfText.setIcon(new ImageIcon(IconsPathConfigurator.F_ICON_PDF));
-		add(btnParsePdfText, "cell 18 0,alignx center,grow");
+		add(btnParsePdfText, "cell 17 0,alignx center,grow");
+
+		btnImpExpCryptedWorkspace = new JButton("");
+		btnImpExpCryptedWorkspace.setToolTipText(TextEditTooltips.tooltipImpExpCryptedWorkspace);
+		btnImpExpCryptedWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_IMP_EXP));
+		add(btnImpExpCryptedWorkspace, "cell 18 0,alignx center,grow");
 
 		btnOpenInScreepT = new JButton("");
 		btnOpenInScreepT.setToolTipText(TextEditTooltips.tooltipOpenInScreept);
@@ -454,20 +459,16 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnRemoveWord.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
 		add(btnRemoveWord, "cell 14 1,alignx center,grow");
 
-		btnForegroundCol = new JButton("");
-		btnForegroundCol.setToolTipText(TextEditTooltips.tooltipForegroundTxt);
-		btnForegroundCol.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_COLOR));
-		add(btnForegroundCol, "cell 15 1,alignx center,grow");
+		btnBase64Conversion = new JButton("");
+		btnBase64Conversion.setMinimumSize(new Dimension(25, 0));
+		btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_PURPLE));
+		btnBase64Conversion.setToolTipText("Encode selected/all text to base 64 (press ctrl to decode base 64)");
+		add(btnBase64Conversion, "cell 15 1,alignx center,grow");
 
 		btnFontChooser = new JButton("");
 		btnFontChooser.setToolTipText(TextEditTooltips.tooltipFontChooser);
 		btnFontChooser.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_FONT));
 		add(btnFontChooser, "cell 16 1,alignx center,grow");
-
-		btnSpeak = new JButton("");
-		btnSpeak.setToolTipText(TextEditTooltips.tooltipSpeak);
-		btnSpeak.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPEAKER));
-		add(btnSpeak, "cell 16 0,alignx center,grow");
 
 		btnReplaceEscapesSeq = new JButton("");
 		btnReplaceEscapesSeq.setToolTipText(TextEditTooltips.tooltipReplaceEscapes);
@@ -504,11 +505,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnGoToLine.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GOTO_LINE));
 		add(btnGoToLine, "cell 22 1,grow");
 
-		btnBase64Conversion = new JButton("");
-		btnBase64Conversion.setMinimumSize(new Dimension(25, 0));
-		btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_PURPLE));
-		btnBase64Conversion.setToolTipText("Encode selected/all text to base 64 (press ctrl to decode base 64)");
-		add(btnBase64Conversion, "cell 23 1,alignx center,grow");
+		btnTailMode = new JButton("");
+		btnTailMode.setToolTipText(TextEditTooltips.tooltipTailMode);
+		btnTailMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EYE));
+		add(btnTailMode, "cell 23 1,alignx center,grow");
 
 		chckbxShowTabGrid = new JCheckBox("Show Tabs");
 		chckbxShowTabGrid.setOpaque(false);
@@ -1136,14 +1136,22 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			boolean tailModeWasActive = obj.getTailMode().get();
 			obj.setTailMode(new AtomicBoolean(!tailModeWasActive), ()->{
 				if(!tailModeWasActive && (obj.unsaved || obj.loadedFile == null)) {
-					Boolean choiceY = dialogHelper.yesOrNo(
+					int choiceY = dialogHelper.yesNoOrCanc(
 							"File has unsaved changes, do you want to save it before to change tail mode?",
 							"There are some unsaved files in text Editor, do you want to save them?");
 
-					if(!choiceY)
+					if(choiceY == JOptionHelper.CANC)
 						return false;
 
-					saveCurrentTabText();
+					if(choiceY == JOptionHelper.NO) {
+						parent.getCurrentTabEditor().reloadCurrentTab(false);
+						textEditorUtils.refreshMessageAndTabTooltip("[File Reloaded]");
+						textEditorUtils.syncMiniTextAreaContent();
+					}
+
+					if(choiceY == JOptionHelper.OK) {
+						saveCurrentTabText();
+					}
 				}
 
 				return true;
@@ -1153,18 +1161,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		});
 
 		// FOREGROUND TEXT COLOR
-		btnForegroundCol.addActionListener(new ActionListener() {
+		btnImpExpCryptedWorkspace.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				btnForegroundCol.setEnabled(false);
-				Color esit = new ColorDialogUtils().askForColor(parent.getCurrentTabEditor().loadedTabObj.textArea, true);
-				if (esit != null) {
-					currentConfiguration.getTextEditorOpt().setForeCol(esit);
-					RsyntaxUtils.setForeground(parent.getCurrentTabEditor().loadedTabObj.textArea, esit);
-					parent.getCurrentTabEditor().loadedTabObj.textArea.setForeground(esit);
-				}
-				btnForegroundCol.setEnabled(true);
+				MainGUI.mainAPP.windowCreator.newImportExportCryptWorkspace();
 			}
 		});
 
@@ -1417,14 +1417,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			loadedTabObj.textArea.getUndoManager().beginInternalAtomicEdit();
 
 			String toRemove = dialogHelper.askForString("Specify the word you want to remove", "Remove all word occurrences", StringWorker.nullToEmpty(lastRemovedWord));
-			if(toRemove == null) {
+			if(StringWorker.isEmptyNoTrim(toRemove)) {
 				return;
 			}
 
-			if(StringWorker.isEmptyNoTrim(toRemove)) {
-				dialogHelper.warn("Please specify a non-empty word to remove!");
-				return;
-			}
 			lastRemovedWord = toRemove;
 
 			dto = StringWorker.removeCharacterFromTxtArea(toRemove, dto);

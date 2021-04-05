@@ -43,6 +43,7 @@ public class TextEditTooltips {
 	public static final String tooltipBackgroundColor = "Change background color (works only with TEXT syntax and deactivated theme)";
 	public static final String tooltipTailMode = "Turn tail -f modality ON/OFF for current tab. When active text will be automatically refreshed from file, but cannot be edited.";
 	public static final String tooltipForegroundTxt = "Change text color (works only with TEXT syntax and deactivated theme)";
+	public static final String tooltipImpExpCryptedWorkspace = "Import/export crypted workspace using Creept";
 	public static final String tooltipDarkSwitch = "[Ctrl + B] Switch upon dark and light text combination";
 	public static final String tooltipUpperPostDots = "Makes text uppercase after dots, or a significat line broker";
 	public static final String tooltipLowerPostDots = "Makes text lowerCase after dots, or a significat line broker";

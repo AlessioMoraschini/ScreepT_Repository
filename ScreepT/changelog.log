@@ -1,4 +1,8 @@
-2021-04-02  (HEAD -> refs/heads/BugFix, tag: refs/tags/0.9.49, refs/remotes/origin/BugFix) Version 0.9.49
+2021-04-04  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Plugins manager enriched with version control and plugins update function
+
+2021-04-03  Added tail -f mode to text editor tabs
+
+2021-04-02  (tag: refs/tags/0.9.49) Version 0.9.49
 
 2021-04-02  File search bugfix + various improvements
 

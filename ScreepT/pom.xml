@@ -133,6 +133,7 @@
 							<goal>java</goal>
 						</goals>
 						<configuration>
+							<skip>${report.licenses.update.skip}</skip>
 							<mainClass>screept.license.tools.extractor.LicenseExtractor</mainClass>
 							<arguments>
 								<argument>-raw</argument>
@@ -148,6 +149,7 @@
 							<goal>java</goal>
 						</goals>
 						<configuration>
+							<skip>${report.licenses.update.skip}</skip>
 							<mainClass>screept.license.tools.extractor.LicenseExtractor</mainClass>
 							<arguments>
 								<argument>-generateHtml</argument>
@@ -156,10 +158,21 @@
 							</arguments>
 						</configuration>
 					</execution>
+					<execution>
+						<id>ScreepT: update plugins vanilla manifest.properties from sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>screept.plugins.version.extractor.PluginVersionExtractor</mainClass>
+							<arguments>
+								<argument>${screept.local.repository.folder}/ScreepT/PLUGINS_VANILLA/manifest.properties</argument>
+								<argument>${export.plugins.folder}/manifest.properties</argument>
+							</arguments>
+						</configuration>
+					</execution>
 				</executions>
-				<configuration>
-					<skip>${report.licenses.update.skip}</skip>
-				</configuration>
 			</plugin>
 
 			<!-- Generate changelog -->
