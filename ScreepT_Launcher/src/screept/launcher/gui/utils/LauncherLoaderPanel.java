@@ -190,23 +190,17 @@ public class LauncherLoaderPanel extends JPanel{
 				final String safeText = StringWorker.trimToEmpty(text);
 
 				while(indeterminated.get()) {
-					try {
-						for (int i = 0; i < 20; i++) {
-							String dots = safeText + new String(new char[i + 1]).replace("\0", ".");
-							String msg = "Initializing " + GeneralConfig.APPLICATION_NAME + dots;
-							setText(msg);
-							try {
-								Thread.sleep(60);
-							} catch (InterruptedException e) {
-								logger.error("Error waiting before starting launcher", e);
-							}
+					for (int i = 0; i < 20; i++) {
+						String dots = safeText + new String(new char[i + 1]).replace("\0", ".");
+						String msg = "Initializing " + GeneralConfig.APPLICATION_NAME + dots;
+						setText(msg);
+						try {
+							Thread.sleep(60);
+						} catch (InterruptedException e) {
+							logger.error("Error waiting before starting launcher", e);
 						}
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
 					}
 				}
-
-				indeterminated.set(false);
 			}
 		});
 	}

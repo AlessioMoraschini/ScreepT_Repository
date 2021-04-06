@@ -195,6 +195,7 @@ public class ScreepTLauncher {
 		appLogStart();
 
 		loaderGraphics.setVisible(true);
+		loaderGraphics.indeterminate(false, "Deleting pending updates/plugins files to remove... ");
 		startPendingPluginsCleanerThread();
 
 		JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR + "lib;\"";
@@ -446,11 +447,11 @@ public class ScreepTLauncher {
 	}
 
 	public static void startPendingPluginsCleanerThread() {
+		final ArrayList<File> pendingDeletes = installedPluginProperties.getFileList(installedPluginPendingDeleteListKey, ";", true);
 		Thread pendingPluginsRemover = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				logger.info("Starting removal of pending files to delete from last execution...");
-				ArrayList<File> pendingDeletes = installedPluginProperties.getFileList(installedPluginPendingDeleteListKey, ";", true);
 				ArrayList<File> removedFiles = new ArrayList<>();
 				boolean allDeleted = true;
 				if (pendingDeletes.isEmpty()) {
@@ -473,15 +474,20 @@ public class ScreepTLauncher {
 					}
 				}
 
-				for (File pending : pendingDeletes) {
+				int deletedN = 0;
+				int totalN = pendingDeletes.size();
+				for (int i = 0; i < pendingDeletes.size(); i++) {
+					File pending = pendingDeletes.get(i);
 					logger.info("Deleting pending file to be deleted: " + pending);
-					if(FileVarious.containedInList(removedFiles, pending)) {
-						pendingDeletes.remove(pending);
+					if(FileVarious.containedInList(removedFiles, pending) && FileVarious.removeFileFromListByCanonicalEquals(pendingDeletes, pending)) {
 						logger.info(pending + " removed from installed list!");
+						deletedN++;
+					} else {
+						logger.info(pending + " cannot be removed from installed list because it seems not to be contained in it!");
 					}
 				}
 
-				if(allDeleted || pendingDeletes.isEmpty()) {
+				if(allDeleted || pendingDeletes.isEmpty() || deletedN == totalN) {
 					logger.info("All pending deletes for plugins have been succesfully removed :)");
 					installedPluginProperties.removeProperty(installedPluginPendingDeleteListKey);
 				} else {
@@ -515,21 +521,35 @@ public class ScreepTLauncher {
 
 		pendingPluginsRemover.start();
 
+		if (!pendingDeletes.isEmpty()) {
+			logger.info("Waiting for plugins remover to finish...");
+			UpdateProgressPanel progPanel = new UpdateProgressPanel(false);
+			logger.debug("Progress panel created");
+			progPanel.setUndefinedDuration();
+			logger.debug("Progress panel undefined duration");
+			progPanel.update(50, "Waiting for pending plugins removal...", false);
+			if (pendingPluginsRemover.isAlive()) {
+				logger.debug("Progress panel updated, joining remover thread...");
+				try {
+					pendingPluginsRemover.join();
+				} catch (InterruptedException e) {
+					logger.warn("Can't wait for pluginRemover thread", e);
+				}
+			}
+			logger.debug("Closing progress updater");
+			progPanel.update(100, "Completed", false);
+			logger.debug("Progress updater closed!");
+		}
+
 		PluginManager manager = new PluginManager();
 		ArrayList<String> updatedList = new ArrayList<>();
+		ArrayList<String> toUpdate = manager.getPendingPluginUpdates();
+		if(toUpdate.isEmpty()) {
+			logger.info("No plugins to update, prooceding with async pending deletes removal");
+			return;
+		}
+
 		try {
-			ArrayList<String> toUpdate = manager.getPendingPluginUpdates();
-			if(toUpdate.isEmpty()) {
-				logger.info("No plugins to update, prooceding with async pending deletes removal");
-				return;
-			} else {
-				logger.info("Waiting for plugins remover to finish...");
-				UpdateProgressPanel progPanel = new UpdateProgressPanel(false);
-				progPanel.setUndefinedDuration();
-				progPanel.update(50, "Waiting for pending plugins removal...", false);
-				pendingPluginsRemover.join();
-				progPanel.forceClose();
-			}
 
 			ArrayList<PluginDTO> pluginsListFromWeb = manager.discoverLatestPlugins();
 
@@ -547,7 +567,7 @@ public class ScreepTLauncher {
 			logger.error("Cannot update pending plugins installations! Try to launch Application and manually reinstall them", e);
 			new JOptionHelper(null).error("Cannot update pending plugins installations! Try to launch Application and manually reinstall them");
 		} finally {
-			manager.removeFromPendingPluginUpdate(updatedList);
+			manager.removeAllFromPendingPluginUpdate();
 		}
 	}
 
