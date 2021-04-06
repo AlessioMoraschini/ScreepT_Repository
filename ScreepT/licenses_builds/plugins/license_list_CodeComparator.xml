@@ -1,14 +1,163 @@
 <dependencies>
+    <dependency>
+      <groupId>com.jhlabs</groupId>
+      <artifactId>filters</artifactId>
+      <version>2.0.235</version>
+      <licenses>
+        <license>
+          <name>Apache License, Version 2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>com.jidesoft</groupId>
+      <artifactId>jide-oss</artifactId>
+      <version>3.6.9</version>
+      <licenses>
+        <license>
+          <name>GPL with classpath exception</name>
+          <url>http://www.gnu.org/licenses/gpl.txt</url>
+          <distribution>repo</distribution>
+        </license>
+        <license>
+          <name>Free commercial license</name>
+          <url>http://www.jidesoft.com/purchase/SLA.htm</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>com.l2fprod.common</groupId>
+      <artifactId>l2fprod-common-fontchooser</artifactId>
+      <version>6.9.1</version>
+      <licenses>
+        <license>
+          <name>Apache License Version 2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>com.l2fprod.common</groupId>
+      <artifactId>l2fprod-common-shared</artifactId>
+      <version>6.9.1</version>
+      <licenses>
+        <license>
+          <name>Apache License Version 2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>eu.medsea.mimeutil</groupId>
+      <artifactId>mime-util</artifactId>
+      <version>2.1.3</version>
+      <licenses>
+        <license>
+          <name>The Apache Software License, Version 2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>javax.help</groupId>
+      <artifactId>javahelp</artifactId>
+      <version>2.0.05</version>
+      <licenses>
+        <license>
+          <name>GNU General Public License - Version 2 with the class path exception</name>
+          <url>https://javahelp.dev.java.net/license.txt</url>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>jgoodies</groupId>
+      <artifactId>forms</artifactId>
+      <version>1.0.5</version>
+      <licenses>
+        <!-- No license information available. -->
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>org.devocative</groupId>
+      <artifactId>jmeld</artifactId>
+      <version>3.2</version>
+      <licenses>
+        <license>
+          <name>GNU General Lesser Public License (LGPL) version 3.0</name>
+          <url>https://www.gnu.org/licenses/lgpl-3.0.en.html</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>org.mod4j.com.ibm</groupId>
+      <artifactId>icu</artifactId>
+      <version>4.0.1</version>
+      <licenses>
+        <!-- No license information available. -->
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.30</version>
+      <licenses>
+        <license>
+          <name>MIT License</name>
+          <url>http://www.opensource.org/licenses/mit-license.php</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>org.swinglabs</groupId>
+      <artifactId>swing-layout</artifactId>
+      <version>1.0.3</version>
+      <licenses>
+        <license>
+          <name>Lesser General Public License (LGPL)</name>
+          <url>http://www.gnu.org/copyleft/lesser.html</url>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>org.swinglabs</groupId>
+      <artifactId>swing-worker</artifactId>
+      <version>1.1</version>
+      <licenses>
+        <license>
+          <name>Lesser General Public License (LGPL)</name>
+          <url>http://www.gnu.org/copyleft/lesser.html</url>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>org.swinglabs</groupId>
+      <artifactId>swingx</artifactId>
+      <version>1.6.1</version>
+      <licenses>
+        <license>
+          <name>Lesser General Public License (LGPL)</name>
+          <url>http://www.gnu.org/copyleft/lesser.html</url>
+        </license>
+      </licenses>
+    </dependency>
   <dependency>
-		<groupId>com.jmeld (Used in Code Comparator plugin)</groupId>
-		<artifactId>JMeld</artifactId>
-		<version>3.4</version>
-		<sources_url>https://github.com/albfan/jmeld/releases</sources_url>
+		<groupId>com.jgoodies</groupId>
+		<artifactId>looks</artifactId>
+		<version>2.2.2</version>
+		<sources_url>https://repo1.maven.org/maven2/com/jgoodies/looks/2.2.2/
+		</sources_url>
 		<licenses>
 			<license>
-				<name>LGPL</name>
-				<url>https://www.gnu.org/licenses/lgpl-3.0.en.html</url>
-				<file>JMeld license - LGPL.html</file>
+				<name>The BSD License</name>
+				<url>http://www.opensource.org/licenses/bsd-license.html</url>
+				<file>the bsd license - bsd-license.html</file>
 			</license>
 		</licenses>
 	</dependency>
@@ -70,6 +219,22 @@
 		</licenses>
 	</dependency>
   <dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<version>1.2.17</version>
+		<sources_url>https://logging.apache.org/log4j/2.x/source-repository.html
+		</sources_url>
+		<licenses>
+			<license>
+				<name>The Apache Software License, Version 2.0</name>
+				<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+				<file>the apache software license, version 2.0 - license-2.0.txt
+				</file>
+			</license>
+		</licenses>
+	</dependency>
+  <dependency>
 		<groupId>org.javassist</groupId>
 		<artifactId>javassist</artifactId>
 		<version>3.26.0-GA</version>
@@ -108,6 +273,20 @@
 				<name>The New BSD License</name>
 				<url>http://www.opensource.org/licenses/bsd-license.html</url>
 				<file>the bsd license - bsd-license.html</file>
+			</license>
+		</licenses>
+	</dependency>
+  <dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-api</artifactId>
+		<version>1.7.25</version>
+		<sources_url>https://github.com/qos-ch/slf4j</sources_url>
+		<licenses>
+			<license>
+				<name>MIT License</name>
+				<url>http://www.opensource.org/licenses/mit-license.php</url>
+				<distribution>repo</distribution>
+				<file>mit license - mit-license.html</file>
 			</license>
 		</licenses>
 	</dependency>
