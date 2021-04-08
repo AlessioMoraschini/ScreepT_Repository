@@ -664,10 +664,10 @@ public class CrypterPanel extends ModulePanel {
 
 	@Override
 	public void finalize() throws Throwable {
-		super.finalize();
-		isKilled = true;
 		if(fileMonitor != null)
 			fileMonitor.removeAllFromListener();
+		super.finalize();
+		isKilled = true;
 	}
 
 	public void resizeRightSplitter() {

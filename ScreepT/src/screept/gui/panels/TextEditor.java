@@ -1311,13 +1311,16 @@ public class TextEditor extends ModulePanel {
 			List<File> currentlyLoadedTempFiles = getCurrentTabEditor().getLoadedTempFiles(true);
 			File tempFilesDir = AbstractPluginApplicationApi.getAvailableProviders().get(0).getTempApplicationFolder(true, "COMMON_DATA/TXT/");
 			File[] tempFilesFound = tempFilesDir.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.FILE_ONLY));
-			logger.info("Found " + tempFilesFound.length);
-			for(File tempFile : tempFilesFound) {
-				if(!FileVarious.containedInList(currentlyLoadedTempFiles, tempFile)) {
-					logger.info(tempFile + " -> not used anymore, deleting it...");
-					// If not used by screept anymore, then delete it
-					boolean deleted = FileUtils.deleteQuietly(tempFile);
-					logger.info(tempFile + " deleted: " + deleted);
+
+			logger.info("Found " + (tempFilesFound != null ? tempFilesFound.length : 0) + " temp files to delete");
+			if(tempFilesFound != null) {
+				for(File tempFile : tempFilesFound) {
+					if(!FileVarious.containedInList(currentlyLoadedTempFiles, tempFile)) {
+						logger.info(tempFile + " -> not used anymore, deleting it...");
+						// If not used by screept anymore, then delete it
+						boolean deleted = FileUtils.deleteQuietly(tempFile);
+						logger.info(tempFile + " deleted: " + deleted);
+					}
 				}
 			}
 

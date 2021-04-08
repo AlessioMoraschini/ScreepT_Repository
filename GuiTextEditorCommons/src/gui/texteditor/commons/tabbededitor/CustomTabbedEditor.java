@@ -287,7 +287,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 	public boolean validateFileToOpen(File fileToOpen, boolean skipFileExtensionCheck) {
 
-		if (fileToOpen != null && fileToOpen.exists() && !isAlreadyLoaded(fileToOpen)) {
+		if (fileToOpen != null && fileToOpen.exists()) {
 			boolean exceedsLines = FileWorker.checkIfHasMoreThanNLines(fileToOpen, GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES);
 			boolean exceedsLength = fileToOpen.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB;
 
@@ -310,6 +310,7 @@ public class CustomTabbedEditor implements ITabsManager {
 				return skipFileExtensionCheck || standardSupportedFileLoad(fileToOpen, false);
 			}
 		} else {
+			logger.debug("User tried to load a file but it was invalid: " + fileToOpen);
 			return false;
 		}
 	}
@@ -367,6 +368,10 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 
 	public void loadFile(final File fileToLoad) {
+
+		if(goToTabByFile(fileToLoad)) {
+			return;
+		}
 
 		if(!validateFileToOpen(fileToLoad)) {
 			return;
@@ -1112,6 +1117,28 @@ public class CustomTabbedEditor implements ITabsManager {
 			navigationHistory.removeAllOccurrencesByEquals(newNode);
 			navigationHistory.addLast(newNode);
 		}
+	}
+
+	public boolean goToTabByFile(File loadedFile) {
+
+		TabTextEditorObject loaded = getAlreadyLoaded(loadedFile);
+		if(loaded == null)
+			return false;
+
+		try {
+			for(Component component : mainTabList.getComponents()) {
+				if(component.equals(loaded.currentScrollPane)) {
+					SwingUtilities.invokeLater(()->{
+						mainTabList.setSelectedComponent(component);
+					});
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			logger.debug(e);
+		}
+
+		return false;
 	}
 
 	public void goToNextInHistory() {

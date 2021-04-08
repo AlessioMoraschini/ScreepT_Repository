@@ -159,7 +159,7 @@ public class TabTextEditorObject {
 		lastLazyInitParserDict = currentConfig.getTextEditorOpt().prefDictspellChecker;
 
 		textArea = new ColumnTextArea(GeneralConfig.RECTANGULAR_TXT_SELECTION_ALLOWED, shortcutsManager);
-		textArea.setMinimumSize(new Dimension(300,100));
+		textArea.setMinimumSize(new Dimension(300,40));
 		textArea.setParserDelay(TXT_AREA_PARSER_DELAY);
 		textArea.setEditable(true);
 		undoManager = textArea.getUndoManager();
@@ -176,7 +176,7 @@ public class TabTextEditorObject {
 
 		currentScrollPane.setBorder(new LineBorder(Color.GRAY, 2));
 		currentScrollPane.setBackground(Color.DARK_GRAY);
-		currentScrollPane.setMinimumSize(new Dimension(300,100));
+		currentScrollPane.setMinimumSize(new Dimension(300,40));
 
 		currentScrollPane.getGutter().setBackground(new Color(30,30,30));
 		currentScrollPane.getGutter().setForeground(Color.LIGHT_GRAY);

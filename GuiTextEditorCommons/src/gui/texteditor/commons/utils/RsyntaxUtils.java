@@ -225,7 +225,7 @@ public class RsyntaxUtils {
 
 	public static boolean addAutoCompletion(RSyntaxTextArea textArea, String wordlistFilePath) {
 		if (wordlistFilePath == null || !new File(wordlistFilePath).exists()) {
-			logger.error("File: " + wordlistFilePath + " is null or not existing, cannot add to autocomplete");
+			logger.warn("File: " + wordlistFilePath + " is null or not existing, cannot add to autocomplete");
 			return false;
 		}
 
@@ -241,7 +241,7 @@ public class RsyntaxUtils {
 
 	public static boolean addAutoCompletionV2(RSyntaxTextArea textArea, String wordlistFilePath, String secondDictPath) {
 		if (wordlistFilePath == null || !new File(wordlistFilePath).exists()) {
-			logger.error("File: " + wordlistFilePath + " is null or not existing, cannot add to autocomplete");
+			logger.warn("File: " + wordlistFilePath + " is null or not existing, cannot add to autocomplete");
 			return false;
 		}
 
