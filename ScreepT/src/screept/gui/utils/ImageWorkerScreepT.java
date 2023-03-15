@@ -132,7 +132,7 @@ public class ImageWorkerScreepT {
 		// if directory does not exist create it
 		
 		if (!destFile.exists()) {
-			esit = destFile.mkdirs();
+			esit = destFile.getParentFile().mkdirs();
 			try {
 				esit = ImageIO.write(img, "png", destFile);
 				loGGer.debug("Image written: "+destFile.getAbsolutePath());

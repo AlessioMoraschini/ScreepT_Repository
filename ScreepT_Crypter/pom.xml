@@ -11,7 +11,7 @@
 		<groupId>CommonParentGlobal</groupId>
 		<artifactId>CommonParentGlobal</artifactId>
 		<version>${parent.common.version}</version>
-		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
+		<relativePath>../../ScreepT-public/CommonParentGlobal</relativePath>
 	</parent>
 
 	<name>ScreepT_Crypter</name>

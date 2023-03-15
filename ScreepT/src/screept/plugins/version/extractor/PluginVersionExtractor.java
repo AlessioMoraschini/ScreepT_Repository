@@ -50,7 +50,7 @@ public class PluginVersionExtractor {
 		properties.saveAllProperties();
 
 		if(outputFile != null) {
-			outputFile.mkdirs();
+			outputFile.getParentFile().mkdirs();
 			FileUtils.copyFile(properties.dynamicFileBindingsDefSource, outputFile, true);
 		}
 	}
