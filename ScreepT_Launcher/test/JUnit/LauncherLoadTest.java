@@ -1,7 +1,8 @@
 package JUnit;
 
 import org.junit.Test;
-import gui.utils.LauncherLoaderFrame;
+
+import screept.launcher.gui.utils.LauncherLoaderFrame;
 
 public class LauncherLoadTest {
 	

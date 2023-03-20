@@ -1,51 +1,54 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>ScreepT_Launcher</groupId>
-  <artifactId>ScreepT_Launcher</artifactId>
-  <version>1.0</version>
-  
-  <parent>
-  	<groupId>ScreepT_Parent</groupId>
-  	<artifactId>ScreepT_Parent</artifactId>
-  	<version>${parent.build.version.screept}</version>
-  	<relativePath>../ScreepT_Parent</relativePath>
-  </parent>
-  
-  <packaging>jar</packaging>
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ScreepT_Launcher</groupId>
+	<artifactId>ScreepT_Launcher</artifactId>
+	<version>1.1-SNAPSHOT</version>
+
+	<parent>
+		<groupId>ScreepT_Parent</groupId>
+		<artifactId>ScreepT_Parent</artifactId>
+		<version>${screept.parent.version}</version>
+		<relativePath>../../ScreepT-public/ScreepT_Parent</relativePath>
+	</parent>
+
+	<packaging>jar</packaging>
+
 	<properties>
 		<export.jar.name>ScreepT_Launcher</export.jar.name>
 	</properties>
-  
-  <name>ScreepT_Launcher</name>
-  <description>ScreepT_Launcher is the module that's used to configure and start the main application, creating a custom launcher that fits the current OS, but maintaining the portability of the whole software.</description>
-  <url>${project.main.url}</url>
-  <inceptionYear>${inception.year}</inceptionYear>
-  <licenses>
-    <license>
-      <name>${project.license.name}</name>
-      <url>${project.license.url}</url>
-    </license>
-  </licenses>
-  <developers>
-    <developer>
-      <name>${developer.name}</name>
-    </developer>
-  </developers>
-  
-  <scm>
-      <connection>scm:git:http://127.0.0.1/dummy</connection>
-      <developerConnection>scm:git:https://127.0.0.1/dummy</developerConnection>
-      <tag>HEAD</tag>
-      <url>http://127.0.0.1/dummy</url>
-  </scm>
-  
-	  <build>
+
+	<name>ScreepT_Launcher</name>
+	<description>ScreepT_Launcher is the module that's used to configure and start the main application, creating a custom launcher that fits the current OS, but maintaining the portability of the whole software.</description>
+	<url>${project.main.url}</url>
+
+	<!-- SCREEPT LICENSE -->
+	<inceptionYear>${screept.start.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${screept.license.name}</name>
+			<url>${screept.license.url}</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:http://127.0.0.1/dummy</connection>
+		<developerConnection>scm:git:https://127.0.0.1/dummy</developerConnection>
+		<tag>HEAD</tag>
+		<url>http://127.0.0.1/dummy</url>
+	</scm>
+
+	<build>
 		<finalName>${export.jar.name}</finalName>
 		<sourceDirectory>src</sourceDirectory>
-	    
+
 		<plugins>
-	
+
 			<!-- Properties inherited from parent -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -64,16 +67,16 @@
 					</execution>
 				</executions>
 			</plugin>
-	
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
 				</configuration>
 			</plugin>
-	
+
 			<!-- JAR ASSEMBLER : LAUNCHER -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -113,7 +116,7 @@
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
-	
+
 					<!-- MULTIJAR -->
 					<execution>
 						<id>make-assembly -> ${export.directory.multijar.main}</id>
@@ -142,7 +145,7 @@
 					</execution>
 				</executions>
 			</plugin>
-	
+
 			<!-- Add Build number into manifest -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -165,68 +168,89 @@
 					<doUpdate>false</doUpdate>
 				</configuration>
 			</plugin>
-	
+
 		</plugins>
 	</build>
-  
-  <dependencies>
-	<!-- Exclude test only dependencies -->
-	<dependency>
-		<groupId>junit</groupId>
-		<artifactId>junit</artifactId>
-		<version>4.12</version>
-		<scope>test</scope>
-	</dependency>
-	
-	<dependency>
-		<groupId>testUtils</groupId>
-		<artifactId>testUtils</artifactId>
-		<version>1.0</version>
-		<scope>test</scope>
-	</dependency>
-		
-	<dependency>
-		<groupId>org.ini4j</groupId>
-		<artifactId>ini4j</artifactId>
-		<version>0.5.4</version>
-	</dependency>
-	
-	<dependency>
-	    <groupId>com.miglayout</groupId>
-	    <artifactId>miglayout</artifactId>
-	    <version>3.7.4</version>
-	</dependency>
 
-	<!-- IMPORTS FROM OTHER PROJECTS -->
-	
-	<dependency>
-		<groupId>Resources</groupId>
-	  	<artifactId>Resources</artifactId>
-	  	<version>1.0</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>VariousCommonsLight</groupId>
-		<artifactId>VariousCommonsLight</artifactId>
-		<version>1.0</version>
-		<exclusions>
-			<exclusion>
-				<groupId>commons-io</groupId>
-			    <artifactId>commons-io</artifactId>
-			</exclusion>
-			<exclusion>
-				<groupId>commons-net</groupId>
-		    	<artifactId>commons-net</artifactId>
-			</exclusion>
-		</exclusions>
-	</dependency>
-	
-	<dependency>	
-		<groupId>OsCommons</groupId>
-	  	<artifactId>OsCommons</artifactId>
-	  	<version>1.0</version>
- 	</dependency>
-  </dependencies>
-  
-  
+	<dependencies>
+		<!-- Exclude test only dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>testUtils</groupId>
+			<artifactId>testUtils</artifactId>
+			<version>${test.utils.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ini4j</groupId>
+			<artifactId>ini4j</artifactId>
+			<version>${ini4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.miglayout</groupId>
+			<artifactId>miglayout</artifactId>
+			<version>${miglayout.version}</version>
+		</dependency>
+
+		<!-- IMPORTS FROM OTHER PROJECTS -->
+
+		<dependency>
+			<groupId>Resources</groupId>
+			<artifactId>Resources</artifactId>
+			<version>${general.resources.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>UpdaterModule</groupId>
+			<artifactId>UpdaterModule</artifactId>
+			<version>${updater.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>VariousCommonsLight</groupId>
+					<artifactId>VariousCommonsLight</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.ini4j</groupId>
+					<artifactId>ini4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.miglayout</groupId>
+					<artifactId>miglayout</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+
+		<dependency>
+			<groupId>VariousCommonsLight</groupId>
+			<artifactId>VariousCommonsLight</artifactId>
+			<version>${various.common.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-io</groupId>
+					<artifactId>commons-io</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-net</groupId>
+					<artifactId>commons-net</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>OsCommons</groupId>
+			<artifactId>OsCommons</artifactId>
+			<version>${os.commons.version}</version>
+		</dependency>
+	</dependencies>
+
+
 </project>

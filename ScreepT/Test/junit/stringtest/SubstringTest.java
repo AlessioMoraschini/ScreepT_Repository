@@ -9,8 +9,8 @@ import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 
-import configuration.RepeatTest;
-import configuration.RepeatedTestRule;
+import test.util.configuration.RepeatTest;
+import test.util.configuration.RepeatedTestRule;
 import testUtils.TestUtils;
 
 public class SubstringTest {

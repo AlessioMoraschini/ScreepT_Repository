@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 
 import org.junit.Test;
 
-import frameutils.frame.HashCheckerFrame;
+import gui.commons.frameutils.frame.HashCheckerFrame;
 
 public class FrameHasher {
 

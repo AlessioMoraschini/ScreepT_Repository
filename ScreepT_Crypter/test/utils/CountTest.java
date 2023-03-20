@@ -5,7 +5,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import util.ScreeptUtils;
+import screept.crypter.util.ScreeptUtils;
+import test.util.utils.TestUtils;
 
 public class CountTest {
 

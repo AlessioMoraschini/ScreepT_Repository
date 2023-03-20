@@ -3,8 +3,8 @@ package dialogs;
 import org.junit.Before;
 import org.junit.Test;
 
-import dialogutils.JOptionHelperExtended;
-import utils.TestUtils;
+import gui.commons.dialogutils.JOptionHelperExtended;
+import test.util.utils.TestUtils;
 
 public class TestDialogs {
 

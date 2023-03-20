@@ -15,7 +15,7 @@ import javax.swing.KeyStroke;
 
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
-import om.ColumnTextArea;
+import gui.texteditor.commons.om.ColumnTextArea;
 
 public class TestShorctutsFrame {
 	

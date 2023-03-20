@@ -14,9 +14,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
 
-import crypt.aes.AesCipher;
-import crypt.steg.STEGException;
-import crypt.steg.StegCipher;
+import screept.crypter.impl.aes.AesCipher;
+import screept.crypter.impl.steg.STEGException;
+import screept.crypter.impl.steg.StegCipher;
 
 public class AesStegTest {
 

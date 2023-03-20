@@ -7,7 +7,42 @@ ScreepT
 
 ![](./Images/icon.jpg)
 
-  
+
+** How to setup and use the workspace **
+
+NB: Designed to be used with eclipse (needs at least JDK 8 available. If you don't have jdk with embedded jfx then you'll need to add it or add the jfx jars to build path)
+NB: Don't let spaces in folder names for workspace, local git repositories
+NB: default maven local repository is used by maven builds (${user.home}/.m2/repository)
+
+IMPORTANT: Repo/Workspace structure to use
+	Root_DIR (name as you wish without spaces)
+	\_ ScreepT_Repository
+	\_ ScreepT-public
+	\_ Eclipse-Workspace
+	\_ ScreepT_Build  (created automatically during builds)
+
+1- create workspace and open with eclipse. 
+2- add svn repositories (may be needed to use ssh): 
+	- git@github.com:AlessioMoraschini/ScreepT_Repository.git   (bugfix branch)
+		* name this "ScreepT_Repository"
+	- git@github.com:AlessioMoraschini/ScreepT-public.git		(master) 
+		* name this "ScreepT-public"
+3- checkout and import projects
+4- Maven builds: use Maven > 3.6.3 and java 8 (with available jfx) to build
+	- ScreepT_Parent is the root to build all screept modules.
+	- To export plugins:  "clean install -U -o -f pomWithPlugins.xml"
+	- To export plugins with also embedded ones:  "clean install -U -o -f pomWithPlugins.xml -P defaultAndEmbeddedPlugins"
+	
+4.1 after the successful build, the exported files will be available under:
+	- \ScreepT_Build -> here you can find the built application. 
+	- \LATEST_PLUGINS_DATA -> here you will find plugins data if build was done with plugins enabled. 
+	- \LATEST_UPDATES_DATA -> here you will find the update data to upload on remote server. This will be used by the automated in-app upgrade function
+	
+5 how to deploy app/updates/plugin
+
+[WIP]
+
+######### Screept tutorial ########  
 
 A smart crypter... and much more!
 

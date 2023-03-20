@@ -7,9 +7,10 @@ import javax.swing.JScrollPane;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
-import om.SupportedFileTextEditor;
+import gui.texteditor.commons.om.SupportedFileTextEditor;
+import gui.texteditor.commons.utils.RsyntaxUtils;
 import resources.GeneralConfig;
-import utils.RsyntaxUtils;
+import various.common.light.gui.GuiUtils;
 
 public class AutocompleteTest {
 

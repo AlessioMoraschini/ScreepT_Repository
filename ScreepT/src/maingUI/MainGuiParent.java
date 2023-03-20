@@ -11,8 +11,8 @@
  */
 package maingUI;
 
-import static java.awt.Event.CTRL_MASK;
 import static java.awt.Event.ALT_MASK;
+import static java.awt.Event.CTRL_MASK;
 import static java.awt.Event.SHIFT_MASK;
 
 import java.awt.Component;
@@ -30,7 +30,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -45,94 +47,101 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 
-import files.om.FileNamed;
-import frameutils.utils.GuiUtilsExtended;
-import gUI.panels.ConfigurationManagerPanel;
-import gUI.panels.CrypterPanel;
-import gUI.panels.TextEditor;
-import gui.GuiUtils;
-import gui.MenuSetter;
-import impl.INItializer;
-import jmenu.BrowserOpenerMenu;
-import jmenu.CustomJmenuItem;
-import om.LimitedConcurrentList;
-import om.OSinfo;
-import om.TabTextEditorObject;
+import gui.commons.frameutils.utils.GuiUtilsExtended;
+import gui.commons.jmenu.BrowserOpenerMenu;
+import gui.commons.jmenu.CustomJmenuItem;
+import gui.texteditor.commons.om.TabTextEditorObject;
+import initializer.configs.impl.INItializer;
+import os.commons.om.OSinfo;
+import plugin.api.AbstractPluginApplicationApi.PluginType;
+import plugin.external.arch.IPlugin;
+import plugin.external.arch.IPluginParentExecutor.FunctionType;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import screept.general.utils.ToggleAction;
+import screept.gui.panels.ConfigurationManagerPanel;
+import screept.gui.panels.CrypterPanel;
+import screept.gui.panels.TextEditor;
+import screept.plugins.ScreepTApplicationApi;
+import various.common.light.files.om.FileNamed;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.MenuSetter;
+import various.common.light.om.LimitedConcurrentList;
 
 public class MainGuiParent {
-	
+
 	// mainGUI logger
 	static Logger logger = Logger.getLogger(MainGUI.class);
-	
+
 	// date used for log operations
 	public static Date now;
-	
+
 	// the main frame for placing the content
 	static public JFrame mainFrameScreept;
-	
+
 	// this file is the abstraction of the current settings used by various sub-programs and application of this main_GUI.
-	// if you need to get or set current configuration in volatile memory, then use pojo's mapped in this object, please.	
+	// if you need to get or set current configuration in volatile memory, then use pojo's mapped in this object, please.
 	public static INItializer currentConfiguration;
-	
+
 	public static List<ToggleAction> toggleTopRightActions = new ArrayList<>();
-	
+
 	//////////////////////GENERAL STATIC ELEMENTS /////////////////////////
 	////////////////////////////////////////////////////////////////////////
-	
+
 	static final long AUTOSAVE_MANAGER_PERIOD = 10000; // autosave manager constant check refresh period in millisecond
 	static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
-	
+
 	// INITIALIZE FONTS BY TYPE
 	Font menuBarFont;
 	Font subMenuFont;
 	Font menuItemFont;
-	
+
 	// AUTHOR AND GENERAL INFORMATIONS
 
 	// STATIC MAIN IMAGES REFERENCES
 	public static Image APPLICATION_MAIN_BCKG_IMAGE;
 	public static Image SCREEPT_BACKGROUND_DRAGNDROP_IMAGE;
 	public static Image SW_ICON;
-	
+
 	public static String BASE_TITLE;
-	
-	// JVM VERSION INIT 
+
+	// JVM VERSION INIT
 	public static String currentJvmVersion = "";
-	
+
 	// RUNNING FLAG
 	volatile public static boolean mainAppRunning = false;
-	
+
 	// MENU ITEMS
 	int menuSize;
 	int subMenuSize;
-	
+
 	public JMenuBar menuBar;
-	
+
 	JMenu mnFile;
 	JMenu mnPreferences;
-	JMenu mnCryptoSteg; 
+	JMenu mnCryptoSteg;
 	JMenu mnTextEditor;
 		JMenu mnLastOpenedFile;
 		JMenu mnLastWorkspaces;
 		public JMenu menuStringActions;
 		public BrowserOpenerMenu menuBrowserOpenerActions;
-		
+
 	JMenu mnVarious;
 		JMenu mnConversionsAndOther;
 	JMenu mnFilesAndDirectories;
+	JMenu mnPlugins;
+		CustomJmenuItem mntmLookForPlugins;
 	JMenu mnHelp;
 		JMenu mnrestartPanel;
 		JMenu mnWindowsRegistry;
-		
+
 			// Top-right elements
 			JMenuItem mntmpadding = new JMenuItem();
 			List<JMenuItem> mntmTopRightToggles = new ArrayList<JMenuItem>();
 			JMenuItem mntmpadding2 = new JMenuItem();
 			JMenuItem mntmOptimizeResourcesUsage;
 			JMenuItem mntmPinApplicationOnTop;
-	
+
 	static CustomJmenuItem mntmInspectCurrentConfiguration;
 	CustomJmenuItem mntmloadPrjSub;
 	CustomJmenuItem mntmImportFromOtherScreepTPrjSub;
@@ -178,32 +187,32 @@ public class MainGuiParent {
 	CustomJmenuItem mntmAboutScreept;
 	CustomJmenuItem mntmLicenseScreept;
 	CustomJmenuItem mntmChangeLog;
-	CustomJmenuItem mntmExportLog; 
+	CustomJmenuItem mntmExportLog;
+	CustomJmenuItem mntmViewTempFolder;
 	CustomJmenuItem mntmEraseLogs;
 	CustomJmenuItem mntmViewWebsite;
 	CustomJmenuItem mntmLookForUpdates;
-	CustomJmenuItem mntmLookForPlugins;
 	CustomJmenuItem mntmResetAllPanels;
 	CustomJmenuItem mntmResetTextEditor;
 	CustomJmenuItem mntmResetConfigManager;
 	CustomJmenuItem mntmResetCrypterPanel;
 	CustomJmenuItem mntmAddToWindowsContextmenu;
 	CustomJmenuItem mntmRemoveFromWindowsContextmenu;
-	
+
 	// PANELS THAT OPEN IN THE MAIN FRAME
 	public static TextEditor textEditorPanel;
 	public static CrypterPanel crypterPanel;
 	public static ConfigurationManagerPanel configManagerPanel;
-	
+
 	public static MainGuiUtils mainGuiUtils;
 	public static MainGuiManager mainGuiManager;
-	
+
 	// PARENT CONSTRUCTOR
 	public MainGuiParent() {
 		// INIT MENU and MAIN-BAR SUMBMENUS
         menuBar = new JMenuBar();
 		menuBar.setOpaque(true);
-		
+
 		mnFile = new JMenu("File");
 		mnPreferences = new JMenu("Preferences");
 		mnCryptoSteg = new JMenu("CreepT");
@@ -222,15 +231,16 @@ public class MainGuiParent {
 		mnVarious = new JMenu("Various");
 			mnConversionsAndOther = new JMenu("Conversions and Media");
 			mnFilesAndDirectories = new JMenu("Files And Directories");
+		mnPlugins = new JMenu("Plugins");
 		mnHelp = new JMenu("Help");
 			mnrestartPanel = new JMenu("Reset panels...");
 			mnWindowsRegistry = new JMenu("Windows contextual menu management");
-			
+
 		// JMenuItems are initialized inside MainGUI Constructor, where they are linked to actions - See MainGUIParent for further details on items
 	}
-	
+
 	/******************  BEGIN UTILITY METHODS  *****************************/
-	
+
 	/**
 	 *  Updates the title displayed on top of main app window
 	 */
@@ -239,29 +249,29 @@ public class MainGuiParent {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				
+
 				logger.info("## TITLE UPDATER started.");
-				
+
 				while (mainAppRunning) {
-					
+
 					BASE_TITLE = currentConfiguration.getGenOpt().getUserName() + " is using " + GeneralConfig.APPLICATION_NAME;
-					
-					if(mainGuiUtils.isTextEditorActive()) {
+
+					if(mainGuiUtils.isTextEditorActive(false)) {
 						mainFrameScreept.setTitle(BASE_TITLE + " - Text Editor");
-					
-					} else if(mainGuiUtils.isCrypterActive()) {
+
+					} else if(mainGuiUtils.isCrypterActive(false)) {
 						mainFrameScreept.setTitle(BASE_TITLE + " - Crypter");
-					
-					} else if(mainGuiUtils.isConfManagerActive()) {
+
+					} else if(mainGuiUtils.isConfManagerActive(false)) {
 						mainFrameScreept.setTitle(BASE_TITLE + " - Configuration Manager");
-						
+
 					} else {
 						mainFrameScreept.setTitle(BASE_TITLE);
 					}
 					try {
 						Thread.sleep(GeneralConfig.TITLE_REFRESH_TIME);
 					} catch (InterruptedException e) {
-						mainFrameScreept.setTitle(GeneralConfig.APPLICATION_NAME+" - A.M. development");	
+						mainFrameScreept.setTitle(GeneralConfig.APPLICATION_NAME+" - A.M. development");
 					}
 				}
 			}
@@ -276,12 +286,12 @@ public class MainGuiParent {
 		topRightItem.setMaximumSize(dimension);
 		topRightItem.setOpaque(false);
 	}
-	
+
 	public void setTopRightTogglesEnabled(boolean visible) {
 		for(JMenuItem toggle : mntmTopRightToggles)
 			toggle.setVisible(visible);
 	}
-	
+
 	public void setTopRightToggleVisible(boolean visible, int index) {
 		if (index < mntmTopRightToggles.size())
 			mntmTopRightToggles.get(index).setVisible(visible);
@@ -291,41 +301,41 @@ public class MainGuiParent {
 		if (index < mntmTopRightToggles.size())
 			mntmTopRightToggles.get(index).setToolTipText(tooltip);
 	}
-	
+
 	public void setTopRightToggleIcon(ImageIcon icon, int index) {
 		if (index < mntmTopRightToggles.size())
 			mntmTopRightToggles.get(index).setIcon(icon);
 	}
-	
+
 	private void stylePaddings() {
 		// prepare padding to right for pinApplication
 		mntmpadding.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		mntmpadding.setMaximumSize(new Dimension(5000, 20));
 		mntmpadding.setMinimumSize(new Dimension(20, 20));
 		mntmpadding.setEnabled(false);
-		
+
 		mntmpadding2.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); // ONLY TO PAD RIGHT Pin On Top
 		mntmpadding2.setMaximumSize(new Dimension(20, 20));
 		mntmpadding2.setPreferredSize(new Dimension(20, 20));
 		mntmpadding2.setMinimumSize(new Dimension(20, 20));
 		mntmpadding2.setEnabled(false);
 	}
-	
+
 	void structureMenuBar() {
-		
+
 		// CREATE MENU-BAR STRUCTURE
 		Insets mainMargin = new Insets(4, 1, 4, 1);
 		menuBar.setMargin(mainMargin);
-		
+
 		stylePaddings();
-		
+
 		for(JMenuItem toggle : mntmTopRightToggles)
 			sizeTopRightElement(toggle, new Dimension(40, 25));
-		
+
 		sizeTopRightElement(mntmOptimizeResourcesUsage, new Dimension(40, 25));
 		sizeTopRightElement(mntmPinApplicationOnTop, new Dimension(40, 25));
 
- 		
+
 		Insets menuEntryMargin = new Insets(0, 0, 0, 8);
 		menuBar.add(mnFile);
 		mnFile.setMargin(menuEntryMargin);
@@ -337,23 +347,25 @@ public class MainGuiParent {
 		mnTextEditor.setMargin(menuEntryMargin);
 		menuBar.add(mnVarious);
 		mnVarious.setMargin(menuEntryMargin);
+		menuBar.add(mnPlugins);
+		mnPlugins.setMargin(menuEntryMargin);
 		menuBar.add(mnHelp);
 		mnHelp.setMargin(menuEntryMargin);
-		
+
 		menuBar.add(mntmpadding);
-		
+
 		for(int i = mntmTopRightToggles.size() - 1; i >= 0; i--) {
 			menuBar.add(mntmTopRightToggles.get(i));
 			mntmTopRightToggles.get(i).setMargin(menuEntryMargin);
 		}
-		
+
 		menuBar.add(mntmpadding2);
-		
+
 		menuBar.add(mntmOptimizeResourcesUsage);
 		mntmOptimizeResourcesUsage.setMargin(menuEntryMargin);
 		menuBar.add(mntmPinApplicationOnTop);
 		mntmPinApplicationOnTop.setMargin(menuEntryMargin);
-		
+
 			// SUB-MENU
 			mnFile.add(mntmInspectCurrentConfiguration);
 			mnFile.add(new JSeparator());
@@ -366,18 +378,18 @@ public class MainGuiParent {
 			mnFile.add(mntmSaveCurrentAs);
 			mnFile.add(new JSeparator());
 			mnFile.add(mntmloadSrcrYptDefaultConf);
-			
+
 			mnPreferences.add(mntmCustomizeUIView);
 			mnPreferences.add(mntmGenOpt);
 			mnPreferences.add(mntmFullScreenMode);
 			mnPreferences.add(mntmImmersiveMode);
-			
+
 			mnCryptoSteg.add(mntmCreepter);
 			mnCryptoSteg.add(new JSeparator());
 			mnCryptoSteg.add(mntmgenerateKeyPswSub);
 			mnCryptoSteg.add(mntmgenerateKeyImageSub);
 			mnCryptoSteg.add(mntmViewKeyDictionary);
-			
+
 			mnTextEditor.add(mntmTextEditor);
 			mnTextEditor.add(new JSeparator());
 			mnTextEditor.add(mnLastWorkspaces);
@@ -389,7 +401,7 @@ public class MainGuiParent {
 			mnTextEditor.add(mntmFileQuickSearch);
 			mnTextEditor.add(mntmTxtEditorImpExpCryptedWkspc);
 			mnTextEditor.add(mntmThemeEditor);
-				
+
 			mnVarious.add(mntmnetInfo);
 			mnVarious.add(mntmhwInfo);
 			mnVarious.add(new JSeparator());
@@ -411,16 +423,19 @@ public class MainGuiParent {
 				mnFilesAndDirectories.add(mntmDeleteDirectoryContentByExtension);
 				mnFilesAndDirectories.add(mntmDeleteDirectoryAllContentRecursive);
 				mnFilesAndDirectories.add(mntmEmptyDirectoryRecursive);
-			
-			mnHelp.add(mntmAboutScreept);	
-			mnHelp.add(mntmChangeLog);	
+
+			mnPlugins.add(mntmLookForPlugins);
+			mnPlugins.add(new JSeparator());
+
+			mnHelp.add(mntmAboutScreept);
+			mnHelp.add(mntmChangeLog);
 			mnHelp.add(mntmViewWebsite);
-			mnHelp.add(mntmLicenseScreept);	
+			mnHelp.add(mntmLicenseScreept);
 			mnHelp.add(new JSeparator());
 			mnHelp.add(mntmLookForUpdates);
-			mnHelp.add(mntmLookForPlugins);
 			mnHelp.add(new JSeparator());
 			mnHelp.add(mntmExportLog);
+			mnHelp.add(mntmViewTempFolder);
 			mnHelp.add(mntmEraseLogs);
 			mnHelp.add(mntmUserDocumentation);
 			mnHelp.add(new JSeparator());
@@ -439,7 +454,7 @@ public class MainGuiParent {
 				mnrestartPanel.add(mntmResetTextEditor);
 				mnrestartPanel.add(mntmResetCrypterPanel);
 				mnrestartPanel.add(mntmResetConfigManager);
-			
+
 			if (GeneralConfig.FLAG_THROW_ERROR_TEST_ON) {
 				JMenuItem throwError = new JMenuItem("throw Error");
 				throwError.setFont(new Font("Gadugi", Font.BOLD, subMenuSize));
@@ -457,35 +472,35 @@ public class MainGuiParent {
 						"".substring(2);
 					}
 				});
-				
+
 				mnHelp.add(throwError);
 				mnHelp.add(throwException);
 			}
-			
+
 		updateMenuFonts();
-		
+
 		addMenuIcons();
-		
+
 		addMenuShorctutsTips();
-		
+
 		addExtraHandlers();
-		
+
 		updateLastOpenedFiles(currentConfiguration.getTextEditorOpt().getLastOpenedFiles());
 		updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
-		
+
 		menuBar.repaint();
 	}
-	
+
 	private void styleTopRightElement(JMenuItem topRightElement) {
 		topRightElement.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		topRightElement.setFont(menuBarFont);
 		topRightElement.setAlignmentX(1);
 		topRightElement.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 	}
-	
+
 	/**
 	 * Method to update the font of main menu
-	 *  
+	 *
 	 * @param menuBarFont Font for main menuBar
 	 * @param subMenuFont Font for sub menu containers
 	 * @param menuItemFont Font for clickable items
@@ -495,17 +510,18 @@ public class MainGuiParent {
 		this.menuBarFont = new Font("Segoe UI", Font.BOLD, menuSize);
 		this.subMenuFont = new Font("Gadugi", Font.BOLD, subMenuSize);
 		this.menuItemFont = new Font("Segoe UI", Font.PLAIN, subMenuSize);
-		
+
 		menuBar.setFont(menuBarFont);
-		
+
 		// MAIN MENU ENTRIES
 		mnFile.setFont(menuBarFont);
 		mnPreferences.setFont(menuBarFont);
 		mnCryptoSteg.setFont(menuBarFont);
 		mnTextEditor.setFont(menuBarFont);
 		mnVarious.setFont(menuBarFont);
+		mnPlugins.setFont(menuBarFont);
 		mnHelp.setFont(menuBarFont);
-		
+
 		// ICON ON RIGHT OF BAR
 		styleTopRightElement(mntmOptimizeResourcesUsage);
 		styleTopRightElement(mntmPinApplicationOnTop);
@@ -515,7 +531,7 @@ public class MainGuiParent {
 		// SUBDIRECTORIES
 		mnFilesAndDirectories.setFont(subMenuFont);
 		mnConversionsAndOther.setFont(subMenuFont);
-		
+
 		// FILE SECTION
 		mntmInspectCurrentConfiguration.setFont(menuItemFont);
 		mntmloadPrjSub.setFont(menuItemFont);
@@ -525,19 +541,19 @@ public class MainGuiParent {
 		mntmSaveCurrent.setFont(menuItemFont);
 		mntmSaveCurrentAs.setFont(menuItemFont);
 		mntmloadSrcrYptDefaultConf.setFont(menuItemFont);
-		
+
 		// PREFERENCES SECTION
 		mntmCustomizeUIView.setFont(menuItemFont);
 		mntmGenOpt.setFont(menuItemFont);
 		mntmFullScreenMode.setFont(menuItemFont);
 		mntmImmersiveMode.setFont(menuItemFont);
-		
+
 		// SCREEPT SECTION
 		mntmCreepter.setFont(menuItemFont);
 		mntmgenerateKeyPswSub.setFont(menuItemFont);
 		mntmgenerateKeyImageSub.setFont(menuItemFont);
 		mntmViewKeyDictionary.setFont(menuItemFont);
-		
+
 		// TEXT EDITOR SECTION
 		mntmTextEditor.setFont(menuItemFont);
 		mnLastWorkspaces.setFont(subMenuFont);
@@ -559,11 +575,11 @@ public class MainGuiParent {
 		mntmCalculator.setFont(menuItemFont);
 		mntmShellStandalone.setFont(menuItemFont);
 		mntmFileContentSearch.setFont(menuItemFont);
-		
+
 		// SUB -> CONVERSION UTILS SECTION
 		mntmImageViewer.setFont(menuItemFont);
 		mntmImageConverter.setFont(menuItemFont);
-		
+
 		// SUB-> FILES AND DIRECTORIES SECTION
 		mntmTouppercaseDirectory.setFont(menuItemFont);
 		mntmMakeDirsFromPath.setFont(menuItemFont);
@@ -571,7 +587,7 @@ public class MainGuiParent {
 		mntmDeleteDirectoryContentByExtension.setFont(menuItemFont);
 		mntmDeleteDirectoryAllContentRecursive.setFont(menuItemFont);
 		mntmEmptyDirectoryRecursive.setFont(menuItemFont);
-		
+
 		// HELP SECTION
 		mntmReturnToWelcome.setFont(menuItemFont);
 		mntmViewWebsite.setFont(menuItemFont);
@@ -581,6 +597,7 @@ public class MainGuiParent {
 		mntmLicenseScreept.setFont(menuItemFont);
 		mntmChangeLog.setFont(menuItemFont);
 		mntmExportLog.setFont(menuItemFont);
+		mntmViewTempFolder.setFont(menuItemFont);
 		mntmEraseLogs.setFont(menuItemFont);
 		mntmUserDocumentation.setFont(menuItemFont);
 		mnWindowsRegistry.setFont(subMenuFont);
@@ -595,11 +612,11 @@ public class MainGuiParent {
 		mntmRestartAsAdmin.setFont(menuItemFont);
 		mntmExit.setFont(menuItemFont);
 	}
-	
+
 	void addMenuIcons() {
-		
+
 		MenuSetter.setIconTextGap(menuBar, 15);
-		
+
 		mntmOptimizeResourcesUsage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLEANUP));
 		mntmOptimizeResourcesUsage.setToolTipText(
 				GuiUtils.encapsulateInHtml(
@@ -609,7 +626,7 @@ public class MainGuiParent {
 
 		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 		mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");
-		
+
 		// file submenu
 		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
 		mntmloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
@@ -619,7 +636,7 @@ public class MainGuiParent {
 		mntmSaveCurrent.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		mntmSaveCurrentAs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_AS_DEFAULT_CONF));
 		mntmloadSrcrYptDefaultConf.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESET_CONF));
-		
+
 		// preferences submenu
 		mntmCustomizeUIView.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GUI_OPT));
 		mntmGenOpt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_OPT));
@@ -631,7 +648,7 @@ public class MainGuiParent {
 		mntmgenerateKeyPswSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEYGEN_PSW));
 		mntmgenerateKeyImageSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEYGEN));
 		mntmViewKeyDictionary.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEY_DICT));
-		
+
 		// TextEditor subMenu
 		mntmTextEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_EDITOR));
 		mnLastWorkspaces.setIconTextGap(15);
@@ -644,7 +661,7 @@ public class MainGuiParent {
 		mntmFileQuickSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH_TEXT));
 		mntmTxtEditorImpExpCryptedWkspc.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_IMP_EXP));
 		mntmThemeEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE));
-		
+
 		// Various submenu
 		mntmnetInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NET_INFO));
 		mntmhwInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HW_INFO));
@@ -656,10 +673,10 @@ public class MainGuiParent {
 		mntmFileContentSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
 		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
 		mnFilesAndDirectories.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
-		
+
 		mntmImageViewer.setIcon(new ImageIcon(IconsPathConfigurator.F_ICON_IMAGE));
 		mntmImageConverter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER));
-		
+
 		mntmTouppercaseDirectory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPPERCASE_FIRST));
 		mntmMakeDirsFromPath.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CREATE_FOLDER));
 		mntmDeleteDirectoryContentByExtension.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_TARGETED));
@@ -672,13 +689,14 @@ public class MainGuiParent {
 		mntmLicenseScreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LICENSE));
 		mntmChangeLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DIFFERENCES));
 		mntmExportLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_LOG));
+		mntmViewTempFolder.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLOCK));
 		mntmEraseLogs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 		mntmUserDocumentation.setIcon(new ImageIcon(IconsPathConfigurator.ICON_USER_GUIDE));
 		mntmReturnToWelcome.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HOME_PAGE));
 		mntmViewWebsite.setIcon(new ImageIcon(IconsPathConfigurator.ICON_WEBSITE));
 		mntmLookForUpdates.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPDATES));
 		mntmLookForPlugins.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PLUGINS));
-		
+
 		MenuSetter.setIconTextGap(mnrestartPanel, 20);
 		mnWindowsRegistry.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 		mnrestartPanel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
@@ -686,19 +704,19 @@ public class MainGuiParent {
 		mntmResetTextEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_EDITOR));
 		mntmResetCrypterPanel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
 		mntmResetConfigManager.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
-		
+
 		mntmRestartAsAdmin.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESTART));
 		mntmRestart.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESTART));
 		mntmExit.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXIT));
 	}
-	
+
 	/**
 	 * This method adds fake keyListeners (see customJmenuItem class in the overridden method setAccelerator)
-	 * 
+	 *
 	 * The real ones resides in the class "MainGuiShortcutsListener": those are the shortcuts used in screept
 	 */
 	void addMenuShorctutsTips() {
-		
+
 		// file submenu
 		mntmInspectCurrentConfiguration.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_1, ALT_MASK | SHIFT_MASK));
 		mntmExportPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_E, CTRL_MASK | ALT_MASK | SHIFT_MASK));
@@ -707,25 +725,25 @@ public class MainGuiParent {
 		mntmSaveCurrent.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmSaveCurrentAs.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_W, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmloadSrcrYptDefaultConf.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_D, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-		
+
 		// preferences submenu
 		mntmGenOpt.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_2, ALT_MASK | SHIFT_MASK));
 		mntmCustomizeUIView.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_3, ALT_MASK | SHIFT_MASK));
 		mntmFullScreenMode.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, ALT_MASK | SHIFT_MASK));
 		mntmImmersiveMode.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_M, ALT_MASK | SHIFT_MASK));
-		
+
 		// ScreepT submenu
 		mntmCreepter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | SHIFT_MASK));
 		mntmgenerateKeyPswSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_K, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmgenerateKeyImageSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_K, ALT_MASK | SHIFT_MASK));
 		mntmViewKeyDictionary.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_D, ALT_MASK | SHIFT_MASK));
-		
+
 		// Text editor sub-menu
 		mntmTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_T, ALT_MASK | SHIFT_MASK));
 		mntmFileSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, CTRL_MASK | ALT_MASK));
 		mntmFileQuickSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_R, CTRL_MASK | ALT_MASK));
 		mntmTxtEditorImpExpCryptedWkspc.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-		
+
 		// Various submenu
 		mntmnetInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | SHIFT_MASK));
 		mntmhwInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y, ALT_MASK | SHIFT_MASK));
@@ -737,7 +755,7 @@ public class MainGuiParent {
 		mntmFileContentSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, ALT_MASK | CTRL_MASK));
 		mntmImageViewer.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_O, ALT_MASK | SHIFT_MASK));
 		mntmImageConverter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, ALT_MASK | SHIFT_MASK));
-		
+
 			// Folder and files functions
 			mntmTouppercaseDirectory.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_0, ALT_MASK | SHIFT_MASK));
 			mntmMakeDirsFromPath.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_9, ALT_MASK | SHIFT_MASK));
@@ -745,7 +763,7 @@ public class MainGuiParent {
 			mntmDeleteDirectoryContentByExtension.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_7, ALT_MASK | SHIFT_MASK));
 			mntmDeleteDirectoryAllContentRecursive.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_6, ALT_MASK | SHIFT_MASK));
 			mntmEmptyDirectoryRecursive.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_5, ALT_MASK | SHIFT_MASK));
-		
+
 		// Help submenu
 		mntmAboutScreept.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_PERIOD, ALT_MASK | SHIFT_MASK));
 		mntmExportLog.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_E, ALT_MASK | SHIFT_MASK));
@@ -755,7 +773,7 @@ public class MainGuiParent {
 		mntmLookForUpdates.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_5, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmLookForPlugins.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_6, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmUserDocumentation.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Q, ALT_MASK | SHIFT_MASK));
-			// Reset functions 
+			// Reset functions
 			mntmResetAllPanels.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_0, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 			mntmResetTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_9, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 			mntmResetCrypterPanel.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_8, CTRL_MASK | ALT_MASK | SHIFT_MASK));
@@ -764,20 +782,21 @@ public class MainGuiParent {
 		mntmRestartAsAdmin.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F6, ALT_MASK));
 		mntmExit.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F4, ALT_MASK ));
 	}
-	
+
 	public void addExtraHandlers() {
 		mnLastOpenedFile.addMouseListener(new MouseAdapter() {
-			
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						updateLastOpenedFiles(currentConfiguration.getTextEditorOpt().lastOpenedFiles);
 					}
 				});
 			}
 		});
-		
+
 		menuStringActions.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -785,29 +804,53 @@ public class MainGuiParent {
 				updateTxtEditorStringActions(menuStringActions);
 			}
 		});
-		
+
 		menuBrowserOpenerActions.addMouseListener(new MouseAdapter() {
-			
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				MenuSetter.setSubItemsEnabled(menuBrowserOpenerActions, mainGuiUtils.isTextEditorActive());
+				MenuSetter.setSubItemsEnabled(menuBrowserOpenerActions, mainGuiUtils.isTextEditorActive(false));
 			}
 		});
 
 		mnLastWorkspaces.addMouseListener(new MouseAdapter() {
-			
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 					}
 				});
 			}
 		});
-		
+
+		mnPlugins.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						updateAvailablePlugins(ScreepTApplicationApi.getAvailablePlugins(PluginType.ROOT, false, true));
+					}
+				});
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						updateAvailablePlugins(ScreepTApplicationApi.getAvailablePlugins(PluginType.ROOT, false, true));
+					}
+				});
+			}
+		});
+
 	}
-	
+
 	public void updateLastOpenedFiles(LimitedConcurrentList<FileNamed> lastOpenedLlist) {
 
 		try {
@@ -828,8 +871,8 @@ public class MainGuiParent {
 				}else {
 					currentConfiguration.getTextEditorOpt().lastOpenedFiles.removeAllOccurrencesByEquals(file);
 				}
-			} 
-			
+			}
+
 			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastOpenedFiles", lastOpenedLlist.toCharSeparatedString(","));
 
 		} catch (Exception e) {
@@ -838,7 +881,7 @@ public class MainGuiParent {
 	};
 
 	public void updateLastOpenedWorkspaces(LimitedConcurrentList<FileNamed> lastWorskspacesLlist) {
-		
+
 		try {
 			@SuppressWarnings("unchecked")
 			Vector<FileNamed> valueCopy = (Vector<FileNamed>) lastWorskspacesLlist.getList().clone();
@@ -857,29 +900,65 @@ public class MainGuiParent {
 				}else if(file.mFile != null){
 					currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces.removeAllOccurrencesByEquals(file);
 				}
-			} 
-			
+			}
+
 			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastSelectedWorkspaces", lastWorskspacesLlist.toCharSeparatedString(","));
-			
+
 		} catch (Exception e) {
 			logger.error("Error refreshing last opened files", e);
 		}
 	};
-	
+
+	public void updateAvailablePlugins(Set<IPlugin> plugins) {
+
+		try {
+
+			mnPlugins.removeAll();
+
+			mnPlugins.add(mntmLookForPlugins);
+			mnPlugins.add(new JSeparator());
+
+			if(!MainGuiGeneralAppStarter.tesseractAvailable) {
+				for(IPlugin plugin : plugins) {
+					if("PDFReaderPlugin".equals(plugin.getClass().getSimpleName()))
+						plugins.remove(plugin);
+				}
+			}
+
+			Iterator<IPlugin> iterator = plugins.iterator();
+			while (iterator.hasNext()) {
+				IPlugin plugin = iterator.next();
+				if (plugin != null) {
+
+					JMenu menu = ScreepTApplicationApi.getPluginsMenu(
+									FunctionType.STANDALONE_STR_ARGS,
+									()->{return MainGuiGeneralAppStarter.externalPluginAppProvider.getFilesToLoad(plugin);},
+									plugin);
+
+					if(menu != null && menu.getItemCount() > 0)
+						mnPlugins.add(menu);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Error refreshing last opened files", e);
+		}
+	};
+
 	public void addListenerToJMenuItemLastOpenedTxtEditor(final JMenuItem target) {
 		target.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(target != null && !target.getToolTipText().equals("")) {
-					
+
 					// IF text editor not opened open it
 					if(textEditorPanel == null || !textEditorPanel.isVisible()) {
 						mntmTextEditor.doClick();
 					}
-					
+
 					// now load file from history
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							File toLoad = new File(target.getToolTipText());
 							if (toLoad.exists()) {
@@ -897,18 +976,19 @@ public class MainGuiParent {
 
 	public void addListenerToJMenuItemLastWorkspaces(final JMenuItem target) {
 		target.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(target != null && !target.getToolTipText().equals("")) {
-					
+
 					// IF text editor not opened open it
 					if(textEditorPanel == null || !textEditorPanel.isVisible()) {
 						mntmTextEditor.doClick();
 					}
-					
+
 					// now load file from history
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							File toLoad = new File(target.getToolTipText());
 							if (toLoad.exists() && toLoad.isDirectory()) {
@@ -923,28 +1003,29 @@ public class MainGuiParent {
 			}
 		});
 	}
-	
+
 	public void setFolderAsWorkspace(File folder) {
-		
+
 		if(folder == null)
 			return;
-		
+
 		// now load file from history
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				if (!folder.exists()){
 					textEditorPanel.dialogHelper.error("Folder does not exist anymore!", "Folder does not exist");
-				
+
 				} else if (!folder.isDirectory()){
 					textEditorPanel.dialogHelper.error("Selection is not a folder!", "Selection is not a folder!");
-				
+
 				} else {
 					textEditorPanel.setWorkspace(folder);
 				}
 			}
 		});
 	}
-	
+
 	public void emptyLastOpenedSubMenuItems() {
 		mnLastOpenedFile.removeAll();
 	}
@@ -952,7 +1033,7 @@ public class MainGuiParent {
 	public void emptyLastWorkspacesSubMenuItems() {
 		mnLastWorkspaces.removeAll();
 	}
-	
+
 	public JMenuItem isFileContained(File searchElem) {
 		for(Component currentComponent : mnLastOpenedFile.getComponents()) {
 			if(currentComponent instanceof JMenuItem) {
@@ -964,7 +1045,7 @@ public class MainGuiParent {
 				}
 			}
 		}
-		
+
 		return new JMenuItem();
 	}
 
@@ -980,7 +1061,7 @@ public class MainGuiParent {
 				}
 			}
 		}
-		
+
 		return new JMenuItem();
 	}
 
@@ -996,7 +1077,7 @@ public class MainGuiParent {
 				}
 			}
 		}
-		
+
 		return new JMenuItem();
 	}
 
@@ -1011,10 +1092,10 @@ public class MainGuiParent {
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	void updateMenuAndLogFontSize(int fontSize){
 
 		// use the same font as main gui but change font size
@@ -1023,13 +1104,13 @@ public class MainGuiParent {
 		UIManager.put("JMenuItem.font", new Font("Segoe UI", Font.BOLD, fontSize-2 ));
 	    SwingUtilities.updateComponentTreeUI(mainFrameScreept);
 	}
-	
+
 	private void updateTxtEditorStringActions(JMenu stringActions) {
 		stringActions.removeAll();
-		
+
 		TabTextEditorObject loadedTabObj = getSafeTextEditorCurrentTabObject();
-		boolean enabled = loadedTabObj != null && mainGuiUtils.isTextEditorActive();
-		
+		boolean enabled = loadedTabObj != null && mainGuiUtils.isTextEditorActive(false);
+
 		if(!enabled) {
 			JMenuItem uppercaseItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>TT</b> - Uppercase all/selected text"));
 			JMenuItem uppercaseFirstItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>Tt Tt</b> - Uppercase all/selected first word's letters"));
@@ -1049,11 +1130,11 @@ public class MainGuiParent {
 		} else {
 			loadedTabObj.enrichPopUpMenuStringActions(stringActions);
 		}
-		
+
 		MenuSetter.setSubItemsEnabled(menuStringActions, enabled);
 		MenuSetter.setFont(menuStringActions, menuItemFont);
 	}
-	
+
 	private TabTextEditorObject getSafeTextEditorCurrentTabObject() {
 		if(textEditorPanel != null) {
 			return textEditorPanel.getCurrentTabEditor().loadedTabObj;
@@ -1061,15 +1142,15 @@ public class MainGuiParent {
 			return null;
 		}
 	}
-	
+
 	/******************  END MAIN MENU-BAR SETUP *****************************/
-	
+
 	// GETTERS //
-	
+
 	public JFrame getMainFrame() {
 		return mainFrameScreept;
 	}
-	
+
 	public JMenuItem getMntmInspectCurrentConfiguration() {
 		return mntmInspectCurrentConfiguration;
 	}
@@ -1077,7 +1158,7 @@ public class MainGuiParent {
 	public JMenuItem getMntmloadPrjSub() {
 		return mntmloadPrjSub;
 	}
-	
+
 	public CustomJmenuItem getMntmImportFromOtherScreepTPrjSub() {
 		return mntmImportFromOtherScreepTPrjSub;
 	}
@@ -1101,7 +1182,7 @@ public class MainGuiParent {
 	public void setMntmSaveCurrent(CustomJmenuItem mntmSaveCurrent) {
 		this.mntmSaveCurrent = mntmSaveCurrent;
 	}
-	
+
 	public JMenuItem getMntmloadSrcrYptDefaultConf() {
 		return mntmloadSrcrYptDefaultConf;
 	}
@@ -1129,7 +1210,7 @@ public class MainGuiParent {
 	public JMenuItem getMntmCrypter() {
 		return mntmCreepter;
 	}
-	
+
 	public CustomJmenuItem getMntmgenerateKeyPswSub() {
 		return mntmgenerateKeyPswSub;
 	}
@@ -1145,7 +1226,7 @@ public class MainGuiParent {
 	public JMenuItem getMntmTextEditor() {
 		return mntmTextEditor;
 	}
-	
+
 	public static CustomJmenuItem getMntmThemeEditor() {
 		return mntmThemeEditor;
 	}
@@ -1169,7 +1250,7 @@ public class MainGuiParent {
 	public JMenuItem getMntmhwInfo() {
 		return mntmhwInfo;
 	}
-	
+
 	public CustomJmenuItem getMntmColorPicker() {
 		return mntmColorPicker;
 	}
@@ -1201,7 +1282,7 @@ public class MainGuiParent {
 	public JMenuItem getMntmImageConverter() {
 		return mntmImageConverter;
 	}
-	
+
 	public CustomJmenuItem getMntmViewWebsite() {
 		return mntmViewWebsite;
 	}
@@ -1233,7 +1314,7 @@ public class MainGuiParent {
 	public JMenuItem getMntmExportLog() {
 		return mntmExportLog;
 	}
-	
+
 	public CustomJmenuItem getMntmChangeLog() {
 		return mntmChangeLog;
 	}
@@ -1293,7 +1374,7 @@ public class MainGuiParent {
 	public CustomJmenuItem getMntmCopyDirStructure() {
 		return mntmCopyDirStructure;
 	}
-	
+
 	public int getNumberOfToggles() {
 		return mntmTopRightToggles.size();
 	}

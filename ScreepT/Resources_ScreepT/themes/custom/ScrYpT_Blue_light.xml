@@ -1,11 +1,12 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE RSyntaxTheme SYSTEM "theme.dtd">
 <RSyntaxTheme version="1.0">
     <baseFont size="13"/>
     <background color="2e2e2e"/>
     <caret color="cccccc"/>
-    <selection bg="32373d" fg="ffffff" roundedEdges="true" useFG="false"/>
+    <selection bg="404a56" fg="ffffff" roundedEdges="true" useFG="false"/>
     <currentLineHighlight color="34383d" fade="false"/>
+    <tabLine color="2e2e2e"/>
     <marginLine fg="394448"/>
     <markAllHighlight color="495266"/>
     <markOccurrencesHighlight border="true" color="495266"/>

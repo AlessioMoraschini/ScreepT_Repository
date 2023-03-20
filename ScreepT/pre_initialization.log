@@ -1,0 +1,30 @@
+
+ [maingUI.MainGuiGeneralAppStarter] INFO: Starting MainGuiGeneralAppStarter.main([])
+ [maingUI.MainGuiGeneralAppStarter] INFO: 
+
+ [MAIN LOAD PROGRESS] => Main Properties initialization started... after 469 ms (Total time from first executed line)
+
+ [maingUI.MainGuiGeneralAppStarter] INFO: 
+
+ [MAIN LOAD PROGRESS] => Main Properties initialized! after 518 ms (Total time from first executed line)
+
+ [maingUI.MainGuiGeneralAppStarter] INFO: Network configuration applied
+ [maingUI.MainGuiGeneralAppStarter] INFO: 
+
+ [MAIN LOAD PROGRESS] => dialogHelper and GeneralConfig initialization finished after 1726 ms (Total time from first executed line)
+
+ [maingUI.MainGuiGeneralAppStarter] INFO: Chosen log level: ERROR
+ [maingUI.MainGuiGeneralAppStarter] INFO: 
+
+##################################################
+
+Build N°: ${buildNumber}
+
+Build HASH: ${git.commit.id}
+
+Wed Mar 31 21:49:57 CEST 2021
+
+ScreepT - V${project.version} Started now!
+
+##################################################
+

@@ -7,11 +7,11 @@ import java.io.File;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import crypt.manager.CryptoMode;
-import crypt.manager.ScreeptManagerFileOrFolder;
-import util.ScreeptUtils;
-import utility.log.SafeLogger;
-import utils.TestUtils;
+import screept.crypter.impl.manager.CryptoMode;
+import screept.crypter.impl.manager.ScreeptManagerFileOrFolder;
+import screept.crypter.util.ScreeptUtils;
+import test.util.utils.TestUtils;
+import various.common.light.utility.log.SafeLogger;
 
 public class ScreepT_Test_New_StandAlone {
 	

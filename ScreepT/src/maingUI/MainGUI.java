@@ -50,36 +50,38 @@ import org.ini4j.Wini;
 
 import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
-import arch.InitOwner;
-import dialogutils.JOptionHelperExtended;
-import files.FileVarious;
-import frameutils.frame.ImageViewerFrame;
-import frameutils.utils.GuiUtilsExtended;
-import gUI.frames.GeneralOptionsFrame;
-import gUI.frames.GraphicPreferencesFrame;
-import gUI.frames.ImageConverterFrame;
-import gUI.panels.ConfigurationManagerPanel;
-import gUI.panels.CrypterPanel;
-import gUI.panels.TextEditor;
-import gUI.utils.filedialog.FilesAndDirectoriesManagerGUI;
-import gUI.utils.filedialog.INIfileChoosER;
-import gui.ComponentResizer;
-import gui.GuiUtils;
-import gui.PluginManagerGUI;
-import guistyle.GUIStyelSettingsExtended;
-import impl.INItializer;
-import jmenu.CustomJmenuItem;
+import gui.commons.dialogutils.JOptionHelperExtended;
+import gui.commons.frameutils.frame.ImageViewerFrame;
+import gui.commons.frameutils.utils.GuiUtilsExtended;
+import gui.commons.guistyle.GUIStyelSettingsExtended;
+import gui.commons.jmenu.CustomJmenuItem;
+import initializer.configs.arch.InitOwner;
+import initializer.configs.impl.INItializer;
 import mainlauncher.ScreepTLauncher;
 import net.miginfocom.swing.MigLayout;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import utility.manipulation.ConversionUtils;
-import utils.SysUtils;
+import screept.general.utils.WindowCreator;
+import screept.gui.frames.GeneralOptionsFrame;
+import screept.gui.frames.GraphicPreferencesFrame;
+import screept.gui.frames.ImageConverterFrame;
+import screept.gui.panels.ConfigurationManagerPanel;
+import screept.gui.panels.CrypterPanel;
+import screept.gui.panels.TextEditor;
+import screept.gui.utils.filedialog.FilesAndDirectoriesManagerGUI;
+import screept.gui.utils.filedialog.INIfileChoosER;
+import updater.module.gui.PluginManagerGUI;
+import updater.module.plugins.PluginManager;
+import various.common.light.files.FileVarious;
+import various.common.light.gui.ComponentResizer;
+import various.common.light.gui.GuiUtils;
+import various.common.light.utility.manipulation.ConversionUtils;
 
-public class MainGUI extends MainGuiParent{
+public class MainGUI extends MainGuiParent {
 
 
 	//////////////////////////// GUI ELEMENTS //////////////////////////////
@@ -162,10 +164,7 @@ public class MainGUI extends MainGuiParent{
 
 		currentConfiguration = currentConf;
 		dialogHelper = new JOptionHelperExtended(MainGuiGeneralAppStarter.loaderGraphics);
-
-		MainGuiGeneralAppStarter.loaderGraphics.setVisible(false);
-		MainGuiUtils.askNameAtStartIfNotDefined();
-		MainGuiGeneralAppStarter.loaderGraphics.setVisible(true);
+		MainGuiUtils.askNameAtStartIfNotDefined(MainGuiGeneralAppStarter.loaderGraphics);
 		MainGuiGeneralAppStarter.loaderGraphics.toFront();
 
 		try {
@@ -274,7 +273,7 @@ public class MainGUI extends MainGuiParent{
 				@Override
 				public void run() {
 					// REFRESH GUI GENERAL
-					MainGuiGeneralAppStarter.loaderGraphics.update("Updating GUI style...", 75, 350);
+					MainGuiGeneralAppStarter.loaderGraphics.update("Updating GUI style...", 75, 0);
 					GUIStyelSettingsExtended.updateThemeByName(currentConfiguration.getGuiOpt().getPreferredThemeName());
 					if (GUIStyelSettingsExtended.isNimbus(currentConfiguration.getGuiOpt().getPreferredStyle())) {
 						if (GUIStyelSettingsExtended.isDarkNimbus(currentConfiguration.getGuiOpt())) {
@@ -293,7 +292,7 @@ public class MainGUI extends MainGuiParent{
 				}
 			});
 
-			MainGuiGeneralAppStarter.loaderGraphics.update("Resetting last viewed panel: " + currentConfiguration.getGenOpt().getLastPanelOpened() + " ...", 80, 350);
+			MainGuiGeneralAppStarter.loaderGraphics.update("Resetting last viewed panel: " + currentConfiguration.getGenOpt().getLastPanelOpened() + " ...", 80, 0);
 
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -313,7 +312,7 @@ public class MainGUI extends MainGuiParent{
 						}
 					}
 
-					MainGuiGeneralAppStarter.loaderGraphics.update("Restoring Gui Elements From configuration...", 99, 200);
+					MainGuiGeneralAppStarter.loaderGraphics.update("Restoring Gui Elements From configuration...", 99, 0);
 					updateGuiFromCurrConfig();
 
 					SwingUtilities.invokeLater(new Runnable() {
@@ -328,9 +327,10 @@ public class MainGUI extends MainGuiParent{
 						@Override
 						public void run() {
 
-							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScreepT", 100, 200);
+							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScreepT", 100, 0);
 
 							window.startTitleUpdater();
+							GuiUtils.forceToFront(mainFrameScreept, mainFrameScreept);
 
 							if(currentConfiguration.getGenOpt().isFirstAccess()) {
 								MainGuiUtils.welcomeMethodFirstTime();
@@ -346,7 +346,6 @@ public class MainGUI extends MainGuiParent{
 									logger.warn("Cannot wait " + GeneralConfig.UPDATES_AUTOCHECK_DELAY + " ms to check for updates", e);
 								}
 
-								mainFrameScreept.toFront();
 								GuiUtils.giveFocusToComponent(mainFrameScreept);
 							}
 
@@ -426,7 +425,7 @@ public class MainGUI extends MainGuiParent{
 		mainFrameScreept.setJMenuBar(menuBar);
 
 		// This will be used to print out various types of dialogs in this class
-		dialogHelper = new JOptionHelperExtended(mainFrameScreept.getContentPane());
+		dialogHelper = new JOptionHelperExtended(mainFrameScreept);
 
 		// FULL SCREEN SETTING
 		mainFrameScreept.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -480,7 +479,7 @@ public class MainGUI extends MainGuiParent{
 				SwingUtilities.invokeLater(() -> {
 					try {
 						Boolean cleanResult = mainGuiUtils.deReferenceUnusedPanels();
-						Thread.sleep(800);
+						Thread.sleep(400);
 						String msg = "Cleaning skipped as requested.";
 						if(cleanResult != null) {
 							System.gc();
@@ -779,6 +778,14 @@ public class MainGUI extends MainGuiParent{
 					FLAG_mntmExportLog = false;
 					logger.debug(" => Logs exporting procedure ended.");
 				}
+			}
+		});
+
+		mntmViewTempFolder = new CustomJmenuItem(new AbstractAction("Open ScreepT temp folder") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+					GuiUtilsExtended.openInFileSystem(GeneralConfig.F_USER_PERSONAL_DIR_SCREEPT_FOLDER_VERSION);
 			}
 		});
 
@@ -1183,14 +1190,16 @@ public class MainGUI extends MainGuiParent{
 						try {
 							MainGuiGeneralAppStarter.pluginManager.discoverLatestPlugins();
 
-							if (pluginManagerGUI != null || !PluginManagerGUI.active) {
-								Runnable libCheckNRefreshGUI = new Runnable() {
-									@Override
-									public void run() {
-									}
-								};
+							if (pluginManagerGUI == null || !PluginManagerGUI.active) {
+								Runnable libCheckNRefreshGUI = ()->{};
 
-								pluginManagerGUI = new PluginManagerGUI(null, MainGuiGeneralAppStarter.pluginManager, libCheckNRefreshGUI);
+								pluginManagerGUI = new PluginManagerGUI(getMainFrame(), MainGuiGeneralAppStarter.pluginManager, libCheckNRefreshGUI);
+								pluginManagerGUI.setAfterExitAction(()->{
+									boolean hasPendingPlugins = MainGuiManager.hasPendingPluginsToDelete(true) || !PluginManager.pluginsFreshlyInstalled.isEmpty();
+									if(hasPendingPlugins && dialogHelper.yesOrNo("A restart is required to apply changes, restart now?")) {
+										MainGuiManager.restartApplication(false);
+									}
+								});
 								GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_PLUGINS, pluginManagerGUI);
 							} else {
 								pluginManagerGUI.toFront();
@@ -1462,17 +1471,17 @@ public class MainGUI extends MainGuiParent{
 	 */
 	public static void updateGuiFromCurrConfig() {
 		// TEXT EDITOR REFRESH
-		if(textEditorPanel != null && mainGuiUtils.isTextEditorActive()) {
+		if(textEditorPanel != null && mainGuiUtils.isTextEditorActive(false)) {
 			textEditorPanel.initGuiFromConfig(true, true);
 		}
 
 		// CRYPTER REFRESH
-		if(crypterPanel != null && mainGuiUtils.isCrypterActive()) {
+		if(crypterPanel != null && mainGuiUtils.isCrypterActive(false)) {
 			crypterPanel.initGuiFromConfig();
 		}
 
 		// CONFIGURATOR REFRESH
-		if(configManagerPanel != null && mainGuiUtils.isConfManagerActive()) {
+		if(configManagerPanel != null && mainGuiUtils.isConfManagerActive(false)) {
 			configManagerPanel.initGuiFromConfig();
 		}
 

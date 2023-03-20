@@ -2,8 +2,8 @@ package logger;
 
 import org.junit.Test;
 
-import utility.log.SafeLogger;
-import utils.TestUtils;
+import test.util.utils.TestUtils;
+import various.common.light.utility.log.SafeLogger;
 
 public class SafeLoggerTest {
 	

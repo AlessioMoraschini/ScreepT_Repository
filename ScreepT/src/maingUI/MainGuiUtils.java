@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import javax.swing.JFrame;
@@ -30,59 +31,61 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
 
-import dialogutils.JOptionHelperExtended;
-import exception.UpdatesUnavailableException;
-import files.FileWorker;
-import files.watcher.ChangeDTO;
-import files.watcher.FileChangeMonitor;
-import frameutils.utils.GuiUtilsExtended;
-import gUI.panels.ConfigurationManagerPanel;
-import gUI.panels.CrypterPanel;
-import gUI.panels.TextEditor;
-import gui.GuiUtils;
-import gui.LightLicenseViewer;
-import gui.LightLicenseViewer.UserLicenseChoice;
-import gui.filesearch.name.FileNameSearchDialog;
-import guistyle.GUIStyelSettingsExtended;
-import impl.INItializer;
-import impl.om.GenericOption;
-import network.utils.DownloadUtils;
-import om.SupportedFileTextEditor;
-import om.TabTextEditorObject;
-import om.exception.ProgressBarInterruptedException;
+import gui.commons.dialogutils.JOptionHelperExtended;
+import gui.commons.frameutils.utils.GuiUtilsExtended;
+import gui.commons.guistyle.GUIStyelSettingsExtended;
+import gui.texteditor.commons.filesearch.name.FileNameSearchDialog;
+import gui.texteditor.commons.om.TabTextEditorObject;
+import gui.texteditor.commons.tabbededitor.CustomTabbedEditor;
+import initializer.configs.impl.INItializer;
+import initializer.configs.impl.om.GenericOption;
+import initializer.configs.impl.om.TextEditorOption;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import tabbededitor.CustomTabbedEditor;
-import utility.hash.ChecksumHasher;
-import utility.hash.HashingFunction;
-import utility.log.SafeLogger;
-import utility.properties.PropertiesManager;
-import utility.string.StringWorker;
+import screept.gui.panels.ConfigurationManagerPanel;
+import screept.gui.panels.CrypterPanel;
+import screept.gui.panels.TextEditor;
+import updater.module.exception.UpdatesUnavailableException;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.files.watcher.ChangeDTO;
+import various.common.light.files.watcher.FileChangeMonitor;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.LightLicenseViewer;
+import various.common.light.gui.LightLicenseViewer.UserLicenseChoice;
+import various.common.light.network.utils.DownloadUtils;
+import various.common.light.om.exception.ProgressBarInterruptedException;
+import various.common.light.utility.hash.ChecksumHasher;
+import various.common.light.utility.hash.HashingFunction;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.properties.PropertiesManager;
+import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker.EOL;
 
 public class MainGuiUtils {
-	
+
 	// MainGuiUtils logger
 	static SafeLogger logger = new SafeLogger(MainGuiUtils.class);
 
 	public MainGUI mainAppReference;
-	
+
 	private static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
 
 	public MainGuiUtils(MainGUI mainApp) {
 		mainAppReference = mainApp;
 		dialogHelper = new JOptionHelperExtended(mainApp != null ? mainApp.getMainFrame() : null);
 	}
-	
+
 	public static Thread lookForUpdates(final boolean silent) {
 		dialogHelper.setAdvicesEnabled(!silent);
-		
+
 		return new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				Frame activeWindowBeforeUpdates = GuiUtils.getTopFrame();
-				
+
 				if (!MainGUI.mainAPP.isUpdating.get()) {
 					MainGUI.mainAPP.isUpdating.set(true);
 					MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(false);
@@ -91,7 +94,7 @@ public class MainGuiUtils {
 						// Look for new versions...
 						String newVersion = MainGuiGeneralAppStarter.updatesManager.lookForUpdates(silent);
 						if (newVersion != null) {
-							
+
 							// If found ask to user what to do
 							SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 							boolean downloadUpdates = dialogHelper.yesOrNo(
@@ -103,29 +106,29 @@ public class MainGuiUtils {
 									MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(true);
 									boolean restartNow = dialogHelper.yesOrNo(
 											"ScreepT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
-									
+
 									if (restartNow) {
 										MainGuiManager.closeApplication(0);
 									} else {
 										dialogHelper.info("Updates will be installed when you'll close current session", "Update will start at close");
 									}
 
-								} catch (Exception e1) { 
+								} catch (Exception e1) {
 									// Error during download/extraction or user killed process
 									if (!(e1 instanceof ProgressBarInterruptedException)) {
 										String msg = "Cannot download updates, an error occurred";
 										logger.error(msg, e1);
 										dialogHelper.errorScroll(msg, "Error during download or unzipping", e1);
-									
+
 									} else if(e1 instanceof TimeoutException) {
 										String message = "Server is unreachable!";
 										dialogHelper.error(message, "An error occurred");
 										logger.error(message, e1);
-										
+
 									} else if(e1 instanceof UpdatesUnavailableException) {
 										dialogHelper.warn(e1.getMessage(), "Updates not found. It's possibile that they're being upgraded, retry again later.");
 										logger.error(e1.getMessage(), e1);
-										
+
 									} else {
 										dialogHelper.info("Process killed by user", "Process killed by user");
 										logger.info("User has killed process" + e1.toString());
@@ -154,16 +157,16 @@ public class MainGuiUtils {
 						if (e2 instanceof ProgressBarInterruptedException) {
 							dialogHelper.info("Process killed by user", "Process killed by user");
 							logger.info("User has killed process" + e2.toString());
-						
+
 						} else if(e2 instanceof TimeoutException) {
 							String message = "Server is unreachable!";
 							dialogHelper.error(message, "An error occurred");
 							logger.error(message, e2);
-						
+
 						} else if(e2 instanceof UpdatesUnavailableException) {
 							dialogHelper.warn(e2.getMessage(), "An error occurred");
 							logger.error(e2.getMessage(), e2);
-							
+
 						} else {
 							dialogHelper.error("Cannot read updates, an error occurred :(", "An error occurred!");
 							logger.error("Cannot read updates, an error occurred :(", e2);
@@ -171,31 +174,31 @@ public class MainGuiUtils {
 					} finally {
 						dialogHelper.setAdvicesEnabled(true);
 					}
-					
+
 					// Reset application graphics
 					MainGUI.mainFrameScreept.setEnabled(true);
 					MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(true);
 					MainGUI.mainAPP.isUpdating.set(false);
 				}
-				
+
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
 						activeWindowBeforeUpdates.setAutoRequestFocus(true);
-						activeWindowBeforeUpdates.toFront();
+						GuiUtils.giveFocusToComponent(activeWindowBeforeUpdates);
 					}
 				});
 			}
 		});
 	}
-	
+
 	public static boolean checkNewLicense() {
-		
+
 		try {
 			File newLicense = DownloadUtils.downloadFile(false, new URL(GeneralConfig.WEB_UPDATES_LICENSE_URL), GeneralConfig.TEMP_DIRECTORY+"tempNewLicense.html", null);
-			
+
 			if (!ChecksumHasher.equalsFilesChecksum(newLicense, GeneralConfig.LICENSE_FILE, HashingFunction.SHA512)) {
-				LightLicenseViewer licenseViewer = MainGUI.mainAPP.windowCreator.newLicenseFrame(newLicense, true, false);
+				LightLicenseViewer licenseViewer = MainGUI.mainAPP.windowCreator.newLicenseFrame(newLicense, true, false, new boolean[] {true, false, false});
 				return UserLicenseChoice.ACCEPTED.equals(licenseViewer.userChoice);
 			} else {
 				return true;
@@ -205,34 +208,34 @@ public class MainGuiUtils {
 			return true;
 		}
 	}
-	
+
 	public <T> void immersiveModeToggle() {
 
 		SwingUtilities.invokeLater(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				// start correct panel
-				if(isConfManagerActive()) {
+				if(isTextEditorActive(true)) {
 					mainAppReference.mntmFullScreenMode.doClick();
 					fullScreenToggleMenuBar();
-				
-				}else if(isTextEditorActive()) {
+
+				}else if(isTextEditorActive(true)) {
 					MainGUI.textEditorPanel.textEditorUtils.toggleImmersiveMode();
-				
-				}else if(isCrypterActive()) {
+
+				}else if(isCrypterActive(true)) {
 					mainAppReference.mntmFullScreenMode.doClick();
 					fullScreenToggleMenuBar();
-				
+
 				}else {
 					mainAppReference.mntmFullScreenMode.doClick();
 					fullScreenToggleMenuBar();
 				}
-				
+
 			}
 		});
 	}
-	
+
 	public void fullScreenToggleMenuBar() {
 		// Ensure menu bar visible when not full screen
 		if (mainAppReference.isFullScreen.get() || !mainAppReference.menuBar.isVisible()) {
@@ -243,7 +246,7 @@ public class MainGuiUtils {
 			mainAppReference.isImmersiveModeOn.set(true);
 		}
 	}
-	
+
 	/**
 	 * Start thread with iterative check for externally signaled files to be opened in current instance
 	 * (For now only textEditor is supported)
@@ -251,7 +254,7 @@ public class MainGuiUtils {
 	public static void startSignalListener() {
 		try {
 			GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					ArrayList<File> initialMonitoredList = new ArrayList<File>();
@@ -259,7 +262,7 @@ public class MainGuiUtils {
 					FileChangeMonitor signalFileChangeMonitor = new FileChangeMonitor(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE.getParentFile(), initialMonitoredList);
 
 					logger.info("startSignalListener Thread created and started!");
-					
+
 					// Only text editor managed for now - missing logic to distinguish file opener type
 					while(MainGUI.mainAppRunning) {
 						try {
@@ -280,46 +283,54 @@ public class MainGuiUtils {
 			logger.error("Cannot load files from signal, an error occurred :(", e);
 		}
 	}
-	
+
 	public static void loadFilesFromSignal(Class<?> targetFrameClass) {
 		PropertiesManager signalManager = new PropertiesManager(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_PATH);
 		boolean breakLoop = false;
 		int i = 0;
+		List<Integer> toDelete = new ArrayList<>();
 		while(!breakLoop) {
 			String target = signalManager.getProperty(GeneralConfig.SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX + i);
 			logger.info("Loading " + target + " into TextEditor...");
 
 			breakLoop = target == null || "".equals(target.trim());
-			
+
 			File targetFile = new File(target);
 			loadFile(targetFrameClass, targetFile);
-			
+
+			toDelete.add(i);
+
 			i++;
 		}
-		
+
+		// Disabled because of ping-pong with listener
+//		GuiUtils.launchRunnable(()->{
+//			signalManager.readFromFile();
+//			for(int k = 0; k < toDelete.size(); k++) {
+//				// Save on file only after having removed all
+//				signalManager.removeProperty(GeneralConfig.SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX + toDelete.get(k), k >= (toDelete.size() - 1));
+//			}
+//		}, true, false, false);
+
 		GuiUtilsExtended.extendFramesAndMoveToTop(MainGUI.mainFrameScreept, MainGUI.mainFrameScreept, JFrame.MAXIMIZED_BOTH);
 		MainGUI.mainFrameScreept.requestFocus();
 		MainGUI.mainFrameScreept.toFront();
 	}
-	
+
 	public static void loadFile(Class<?> targetFrameClass, File toLoad) {
-		
+
 		// TEXT EDITOR LOADING
 		if(targetFrameClass.equals(TextEditor.class)) {
 			logger.info("Loading " + toLoad + " into Text Editor...");
-			
+
 			MainGUI.mainGuiUtils.startTextEditor(false);
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					if (toLoad != null && toLoad.exists() && SupportedFileTextEditor.isSupported(toLoad)) {
-						try {
-							MainGUI.textEditorPanel.getCurrentTabEditor().loadFile(toLoad);
-						} catch (Exception e) {
-							logger.error("Cannot load file into text Editor: " + toLoad, e);
-						}
-					} else {
-						logger.error("FILE not existing or null: Cannot load into text Editor: " + toLoad);
+					try {
+						MainGUI.textEditorPanel.getCurrentTabEditor().loadFile(toLoad);
+					} catch (Exception e) {
+						logger.error("Cannot load file into text Editor: " + toLoad, e);
 					}
 				}
 			});
@@ -327,7 +338,7 @@ public class MainGuiUtils {
 			dialogHelper.info("The file file-type-opener target is not yet supported.", "File type opener not supported");
 		}
 	}
-	
+
 	/**
 	 * Use this function to reset panel to initial state
 	 * @param <T>
@@ -335,18 +346,19 @@ public class MainGuiUtils {
 	 */
 	public <T> void resetPanel(Class<T>target, JFrame instance) {
 		final boolean txtEditor, crypter, configuration, home;
-		
+
 		String targetStr = (target != null)? target.getName() : "All Panels";
 		logger.info(" Starting reset -> " +targetStr);
-		
+
 		txtEditor = (instance.getContentPane().getComponent(0).equals(MainGUI.textEditorPanel))? true : false;
 		crypter = (instance.getContentPane().getComponent(0).equals(MainGUI.crypterPanel))? true : false;
 		configuration = (instance.getContentPane().getComponent(0).equals(MainGUI.configManagerPanel))? true : false;
 		home = (!txtEditor && !crypter && !configuration)? true : false;
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
-				
+
 				// start correct panel
 				if(ConfigurationManagerPanel.class.equals(target)) {
 					startConfigManagerPanel(true);
@@ -359,7 +371,7 @@ public class MainGuiUtils {
 					startCrypterPanel(true);
 					startTextEditor(true);
 				}
-		
+
 				// Now select last selected before refresh
 				if (txtEditor) {
 					mainAppReference.getMntmTextEditor().doClick();
@@ -375,56 +387,61 @@ public class MainGuiUtils {
 				mainAppReference.menuBar.repaint();
 			}
 		});
-		
-		
+
+
 		logger.info("Reset finished [" +targetStr + "]");
 	}
-	
+
 	public void startConfigManagerPanel(boolean forceStart) {
-		
+
 		mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_WAIT);
-		
+
 		mainAppReference.isOnHomePage.set(false);
-		
+
 		// reset all listeners
 		if (forceStart) {
 			removeAllListeners(MainGUI.configManagerPanel);
 		}
-		
+
 		if (MainGUI.configManagerPanel == null || forceStart) {
 			SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 			MainGUI.configManagerPanel = new ConfigurationManagerPanel(MainGUI.currentConfiguration, mainAppReference);
 		}
-		
+
 		MainGUI.configManagerPanel.splitPane.setDividerLocation(300);
 		MainGUI.configManagerPanel.textArea.revalidate();
 		MainGUI.configManagerPanel.textArea.repaint();
-		
+
 		replaceMainPanel(MainGUI.configManagerPanel);
-    	
+
     	MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(ConfigurationManagerPanel.class);
     	MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", ConfigurationManagerPanel.class.getCanonicalName());
-    	
+
     	MainGUI.configManagerPanel.initGuiFromConfig();
-    	
+
     	resetMainAppCursor();
-    	
+
     	mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 	}
-	
-	public boolean isTextEditorActive() {
-		return getMainPanel().getComponent(0) instanceof TextEditor;
+
+	public boolean isOnHomePage(boolean withFocus) {
+		return mainAppReference.isOnHomePage.get() && (!withFocus || isMainFrameFocused());
 	}
-	public boolean isTextEditorPanelWithFocus() {
-		return getMainPanel().getComponent(0) instanceof TextEditor && mainAppReference.getMainFrame().isFocusableWindow();
+
+	public boolean isTextEditorActive(boolean withFocus) {
+		return getMainPanel().getComponent(0) instanceof TextEditor && (!withFocus || isMainFrameFocused());
 	}
-	public boolean isCrypterActive() {
-		return getMainPanel().getComponent(0) instanceof CrypterPanel;
+	public boolean isCrypterActive(boolean withFocus) {
+		return getMainPanel().getComponent(0) instanceof CrypterPanel && (!withFocus || isMainFrameFocused());
 	}
-	public boolean isConfManagerActive() {
-		return getMainPanel().getComponent(0) instanceof ConfigurationManagerPanel;
+	public boolean isConfManagerActive(boolean withFocus) {
+		return getMainPanel().getComponent(0) instanceof ConfigurationManagerPanel && (!withFocus || isMainFrameFocused());
 	}
-	
+
+	public boolean isMainFrameFocused() {
+		return GuiUtils.isFocusedOnTop(mainAppReference.getMainFrame());
+	}
+
 	public void updateTitleRightPart(String newSuffix) {
 		String[] titleComponents = mainAppReference.getMainFrame().getTitle().split("-");
 		String newTitle = "";
@@ -435,46 +452,65 @@ public class MainGuiUtils {
 		newTitle += newSuffix;
 		mainAppReference.getMainFrame().setTitle(newTitle);
 	}
-	
+
 	public void startCrypterPanel(final boolean forceStart) {
-		
+
 		mainAppReference.isOnHomePage.set(false);
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_WAIT);
-				
+
 				// reset all listeners
 				if (forceStart) {
 					removeAllListeners(MainGUI.crypterPanel);
 				}
-				
+
 				// reset shortcut listener
 				if (forceStart && MainGUI.crypterPanel != null && MainGUI.crypterPanel.shortcutsListener != null) {
 					KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.crypterPanel.shortcutsListener);
 					removeAllListeners(MainGUI.crypterPanel);
 				}
-				
+
 				if (MainGUI.crypterPanel == null || forceStart) {
+					if(MainGUI.crypterPanel != null) {
+						try {
+							MainGUI.crypterPanel.finalize();
+						} catch (Throwable e) {
+							logger.warn("Can't finalize before to start text editor");
+						}
+					}
 					SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 					MainGUI.crypterPanel = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
 				}
-				
+
 				replaceMainPanel(MainGUI.crypterPanel);
 				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
 				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
 				MainGUI.crypterPanel.initGuiFromConfig();
-				
+
 				resetMainAppCursor();
 			}
 		});
 	}
-	
+
+	public void waitTextEditorToBeLoaded() {
+		while (MainGUI.textEditorPanel == null) {
+			try {
+				Thread.sleep(150);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public void startTextEditor(final boolean forceRestart) {
-		
+
 		mainAppReference.isOnHomePage.set(false);
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_WAIT);
 
@@ -484,92 +520,102 @@ public class MainGuiUtils {
 					removeAllListeners(MainGUI.textEditorPanel);
 				}
 				if (MainGUI.textEditorPanel == null || forceRestart) {
+					if(MainGUI.textEditorPanel != null) {
+						try {
+							MainGUI.textEditorPanel.finalize();
+						} catch (Throwable e) {
+							logger.warn("Can't finalize before to start text editor");
+						}
+					}
 					SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-					MainGUI.textEditorPanel = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
+					MainGUI.textEditorPanel = new TextEditor(mainAppReference, MainGUI.currentConfiguration, ()-> {return isTextEditorActive(true);});
 				}
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						replaceMainPanel(MainGUI.textEditorPanel);
 						MainGUI.textEditorPanel.initGuiFromConfig(true, true);
 					}
 				});
-				
+
 				mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(TextEditor.class);
 				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
 			}
 		});
 	}
-	
+
 	public synchronized void openFilesInTextEditor(File[] filesToLoad, Runnable postOpenAction) {
-			
-		if(!MainGUI.mainGuiUtils.isTextEditorActive()) {
+
+		if(!MainGUI.mainGuiUtils.isTextEditorActive(false)) {
 			MainGUI.mainGuiUtils.startTextEditor(MainGUI.textEditorPanel == null);
 		}
-		
+
 		SwingUtilities.invokeLater(()->{
-			while (MainGUI.textEditorPanel == null) {
-				try {
-					Thread.sleep(250);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			
+			waitTextEditorToBeLoaded();
+
 			MainGUI.textEditorPanel.getCurrentTabEditor().loadFiles(filesToLoad);
-			
+
 			SwingUtilities.invokeLater(()->{
 				Runnable action = postOpenAction != null ? postOpenAction : () -> {};
 				action.run();
 			});
 		});
 	}
-	
+
 	public void openQuickSearchIntoWorkspace() {
-		
+
 		SwingUtilities.invokeLater(()->{
 //			File workspace = new File(MainGUI.textEditorPanel.currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
 			FileNameSearchDialog dialog = new FileNameSearchDialog(
-					MainGUI.mainAPP.getMainFrame(), 
+					MainGUI.mainAPP.getMainFrame(),
 					MainGUI.textEditorPanel.currentConfiguration);
 			dialog.setTitle("Search files by name - " + GeneralConfig.APPLICATION_NAME);
-			
+			dialog.setEnabled(false);
+
+			if(MainGUI.textEditorPanel == null) {
+				startTextEditor(false);
+				waitTextEditorToBeLoaded();
+			}
+
+			dialog.setEnabled(true);
 			dialog.setDoubleClickItemAction((file) ->{
 				MainGUI.mainGuiUtils.openFilesInTextEditor(new File[] {file}, null);
 			});
+
 			dialog.setLocationRelativeTo(mainAppReference.getMainFrame());
 			dialog.setVisible(true);
 		});
 	}
-	
+
 	public JPanel getMainPanel() {
 		return (JPanel) mainAppReference.getMainFrame().getContentPane();
 	}
-	
+
 	public void replaceMainPanel(JPanel newMainPanel) {
 		JPanel contentPane = getMainPanel();
 		contentPane.removeAll();
     	contentPane.add(newMainPanel);
-    	contentPane.revalidate(); 
+    	contentPane.revalidate();
     	contentPane.repaint();
-    	
+
     	// ENABLE/DISABLE TOP RIGH TOGGLES AND RESIZE CUSTOMIZED FOR PANEL
     	if(newMainPanel instanceof TextEditor) {
     		((TextEditor)newMainPanel).textEditorUtils.setupTogglesOnMainMenu(true);
     		mainAppReference.resizeMainFrameDefaults();
-    	
+
     	} else if(newMainPanel instanceof CrypterPanel) {
     		mainAppReference.setTopRightTogglesEnabled(false);
     		mainAppReference.resizeMainFrameDefaults();
-    	
+
     	} else {
     		mainAppReference.setTopRightTogglesEnabled(false);
     	}
 	}
-	
+
 	public static Runnable tempDecryptedEraser() {
 		return new Runnable() {
-			
+
 			@Override
 			public void run() {
 				File[] decryptedList = GeneralConfig.TEMP_DECRIPTED_ROOT.listFiles();
@@ -578,7 +624,7 @@ public class MainGuiUtils {
 					for (File temp : decryptedList) {
 						logger.info("Deleting current temp file: " + temp);
 						FileUtils.deleteQuietly(temp);
-					} 
+					}
 				} else {
 					logger.info("Nothing to delete!");
 				}
@@ -590,7 +636,7 @@ public class MainGuiUtils {
 
 	public static Runnable tempFilesEraser() {
 		return new Runnable() {
-			
+
 			@Override
 			public void run() {
 				File[] tempFilesList = GeneralConfig.TEMP_DIRECTORY_FILE.listFiles();
@@ -599,7 +645,7 @@ public class MainGuiUtils {
 					for (File temp : tempFilesList) {
 						logger.info("Deleting current temp file: " + temp);
 						FileUtils.deleteQuietly(temp);
-					} 
+					}
 				} else {
 					logger.info("Nothing to delete!");
 				}
@@ -608,7 +654,7 @@ public class MainGuiUtils {
 			}
 		};
 	}
-	
+
 	/**
 	 * Use this to retrieve all panels thare are restartable using the method
 	 * ResetPanel(String className) -> just use a class name from the given arrayList or ALL
@@ -623,7 +669,7 @@ public class MainGuiUtils {
 		resettablePanels.add(ConfigurationManagerPanel.class.getSimpleName());
 		return resettablePanels;
 	}
-	
+
 	public void removeAllListeners(Component target) {
 		if(target == null) {
 			return;
@@ -632,11 +678,12 @@ public class MainGuiUtils {
 		for(ComponentListener listener : listeners) {
 			target.removeComponentListener(listener);
 		}
-		
+
 	}
-	
+
 	public void resetMainAppCursor() {
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 			}
@@ -645,10 +692,11 @@ public class MainGuiUtils {
 
 	public void refreshGUIlaf() {
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				boolean isNimbus = GUIStyelSettingsExtended.isNimbus(MainGUI.currentConfiguration.getGuiOpt().getPreferredStyle());
 				boolean isDarkNimbus = MainGUI.currentConfiguration.getGuiOpt().isDarkGuiNimbus();
-				
+
 				if(isNimbus) {
 					if (isDarkNimbus) {
 						GUIStyelSettingsExtended.setDarkNimbus(MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
@@ -658,12 +706,12 @@ public class MainGuiUtils {
 				}else {
 					GUIStyelSettingsExtended.setStyle(MainGUI.currentConfiguration.getGuiOpt().getPreferredStyle(), MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
 				}
-				
+
 				GUIStyelSettingsExtended.updateAllWindowsLaf();
 			}
 		});
 	}
-	
+
 	public void removeKeyListeners(Component target) {
 		if(target == null) {
 			return;
@@ -693,26 +741,37 @@ public class MainGuiUtils {
 			target.removeMouseWheelListener(listener);
 		}
 	}
-	
-	public static void askNameAtStartIfNotDefined() {
+
+	public static void askNameAtStartIfNotDefined(JFrame parent) {
 		INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
 		GenericOption genOpt = currentConfiguration.getGenOpt();
 		if (genOpt.getUserName().equals("") || genOpt.getUserName().length() > 20) {
 			logger.info("Current user input initialization: void user or lenght>20 detected!");
-			genOpt.setUserName(askUsername());
+			genOpt.setUserName(askUsername(parent));
 			currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", genOpt.getUserName());
 			logger.info("Current userName: " + genOpt.getUserName());
 		}
 	}
 
 	public static void welcomeMethodFirstTime() {
-		
+
+		EOL.defaultEol = EOL.getOsBasedEOL();
+		MainGUI.currentConfiguration.getTextEditorOpt().setEol(EOL.defaultEol);
+
 		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
+			@Override
 			public void run() {
+
 				// ASK FOR USERNAME IF NULL OR FIRST TIME
 				INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
 				GenericOption genOpt = currentConfiguration.getGenOpt();
 				if (genOpt.isFirstAccess()) {
+					try {
+						Thread.sleep(1400);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
 					String msg = "<html>Hi " + genOpt.getUserName() + ", and welcome to " + GeneralConfig.APPLICATION_NAME
 							+ "!<br/>I suggest you to take a look to documentation before to start, do you want to open it now?</html>";
 					if (dialogHelper.showYNDialog(msg, "Welcome to " + GeneralConfig.APPLICATION_NAME, JOptionHelperExtended.QUESTION)) {
@@ -720,18 +779,18 @@ public class MainGuiUtils {
 					}
 				}
 				currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "firstAccess", false);
-				
+
 			}
 		});
 	}
-	
-	public static String askUsername() {
+
+	public static String askUsername(JFrame parent) {
 		INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
 		boolean end=false;
 		String input="";
 		do {
-			input = MainGUI.dialogHelper.askForStringNullable("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
-			
+			input = new JOptionHelperExtended(parent).askForStringNullable("Please insert your name:", "Hi, what's your name? :)", "", new Object[]{"Confirm"});
+
 			if (input != null && (input.equals("") || input.length() > 26)) {
 				MainGUI.dialogHelper.warn("Username must be between 1-26 characters!", "UserName length Error");
 				logger.error("Error in user input, redo.");
@@ -740,22 +799,22 @@ public class MainGuiUtils {
 				currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", input);
 				currentConfiguration.getGenOpt().setUserName(input);
 				end = true;
-			} 
+			}
 		} while (!end);
 		logger.info("Name selected and saved username: "+input);
 		return input;
 	}
-	
+
 	public boolean isAllSavedInTextEditor() {
 		if (MainGUI.textEditorPanel == null || MainGUI.textEditorPanel.getCurrentTabEditor() == null) {
 			return true;
 		}
-		
+
 		CustomTabbedEditor currentTabEditor = MainGUI.textEditorPanel.getCurrentTabEditor();
 
 		boolean thereAreUnsaved;
 		boolean atLeastOneTemp;
-		
+
 		thereAreUnsaved = false;
 		atLeastOneTemp = false;
 		for (TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
@@ -765,49 +824,59 @@ public class MainGuiUtils {
 			if (tabElement.loadedFile == null) {
 				atLeastOneTemp = true;
 			}
-		} 
-		
+		}
+
 		return !(thereAreUnsaved || atLeastOneTemp);
 	}
-	
+
 	/**
 	 * Check if panels that are currently loaded (!= null) can be de-referenced (if nothing to save is found, or no file to crypt currently loaded)
 	 */
 	public Boolean deReferenceUnusedPanels() {
-		
+
 		if(!MainGuiUtils.askUnsavedTextFiles())
 			// If user presses cancel button do nothing
 			return null;
-		
+
 		Boolean somethingCleaned = Boolean.FALSE;
-		
-		if(MainGUI.configManagerPanel != null && !isConfManagerActive()) {
+
+		if(MainGUI.configManagerPanel != null && !isConfManagerActive(false)) {
 			MainGUI.configManagerPanel = null;
 			somethingCleaned = Boolean.TRUE;
 		}
-		
-		if(MainGUI.crypterPanel != null && !isCrypterActive() && MainGUI.crypterPanel.panelVDragNDropPane.getAllNodes().length == 0) {
+
+		if(MainGUI.crypterPanel != null && !isCrypterActive(false) && MainGUI.crypterPanel.panelVDragNDropPane.getAllNodes().length == 0) {
+			try {
+				MainGUI.crypterPanel.finalize();
+			} catch (Throwable e) {
+				logger.warn("Cannot finalize crypter panel", e);
+			}
 			MainGUI.crypterPanel = null;
 			somethingCleaned = Boolean.TRUE;
 		}
 
-		if(MainGUI.textEditorPanel != null && !isTextEditorActive() && isAllSavedInTextEditor()) {
+		if(MainGUI.textEditorPanel != null && !isTextEditorActive(false) && isAllSavedInTextEditor()) {
+			try {
+				MainGUI.textEditorPanel.finalize();
+			} catch (Throwable e) {
+				logger.warn("Cannot finalize text editor panel", e);
+			}
 			MainGUI.textEditorPanel = null;
 			somethingCleaned = Boolean.TRUE;
 		}
-		
+
 		return somethingCleaned;
 	}
 
 	public static boolean checkJavaVersionMaxCompatibility() {
 		MainGUI.currentJvmVersion = System.getProperty("java.version");
-		
+
 		String tempCompareJvmCurrent = StringWorker.keepOnlyDotsAndDigits(MainGUI.currentJvmVersion);
 		int compareRes = StringWorker.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
-		
+
 		return compareRes != 1;
 	}
-	
+
 	/**
 	 * return false if not exit, true if has to exit;
 	 * @return
@@ -818,31 +887,46 @@ public class MainGuiUtils {
 		if (initTxtWriter == null || initTxtWriter.getCurrentTabEditor() == null) {
 			return true;
 		}
-		
+
+		TextEditorOption txtOpt = MainGUI.currentConfiguration.getTextEditorOpt();
+
 		CustomTabbedEditor currentTabEditor = initTxtWriter.getCurrentTabEditor();
 		boolean askCondition = false;
 		boolean atLeastOneTemp = false;
-	
+		List<File> tempFiles = new ArrayList<>();
+
 		for (TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
 			if (tabElement.unsaved) {
-				askCondition = true;
+				askCondition =
+						askCondition ||
+						tabElement.loadedFile != null ||
+						(tabElement.tempFile != null &&	!txtOpt.isAutosaveTempFiles());
 			}
 			if (tabElement.loadedFile == null) {
 				atLeastOneTemp = true;
+				try {
+					if(txtOpt.autosaveTempFiles && tabElement.unsaved) {
+						File temp = tabElement.saveTempFile();
+						tempFiles.add(temp);
+						logger.debug("Temp file saved: " + temp);
+					}
+				} catch (IOException e) {
+					logger.error("can't add to tempFiles : " + tabElement.tempFile, e);
+				}
 			}
-		} 
-		
+		}
+
 		Boolean choiceY = dialogHelper.askYorNPrecond(
-				"Files unsaved in textEditor", 
+				"Files unsaved in textEditor",
 				"There are some unsaved files in text Editor, do you want to save them?",
 				MainGUI.mainAPP.getMainFrame(),
 				askCondition
 		);
-		
+
 		if(choiceY == null) {
 			// cancel -> don't exit
 			return false;
-		
+
 		}else if(choiceY) {
 			try {
 				currentTabEditor.saveAllUnsavedExisting();
@@ -865,8 +949,12 @@ public class MainGuiUtils {
 				}
 			}
 			return true;
-		
+
 		}else {
+
+			MainGUI.currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "loadedTempFilesAtStart",
+					MainGUI.currentConfiguration.listToString(FileVarious.filesToPathList(tempFiles)));
+
 			return true;
 		}
 	}

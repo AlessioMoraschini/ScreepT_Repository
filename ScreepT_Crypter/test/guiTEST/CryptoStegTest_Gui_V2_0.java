@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.SystemColor;
 import javax.swing.UIManager;
 
-import crypt.aes.AesCipher;
+import screept.crypter.impl.aes.AesCipher;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;

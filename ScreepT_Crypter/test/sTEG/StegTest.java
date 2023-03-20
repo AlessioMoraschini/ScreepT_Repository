@@ -6,9 +6,9 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import crypt.steg.STEGException;
-import crypt.steg.StegCipher;
-import util.ImageEncodingUtils;
+import screept.crypter.impl.steg.STEGException;
+import screept.crypter.impl.steg.StegCipher;
+import screept.crypter.util.ImageEncodingUtils;
 
 public class StegTest {
 

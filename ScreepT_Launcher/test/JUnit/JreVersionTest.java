@@ -2,7 +2,7 @@ package JUnit;
 
 import org.junit.Test;
 
-import utils.TestUtils;
+import test.util.utils.TestUtils;
 
 public class JreVersionTest {
 

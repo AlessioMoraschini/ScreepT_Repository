@@ -9,13 +9,13 @@ import java.util.Random;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import configuration.RepeatTest;
-import configuration.RepeatedTestRule;
-import crypt.steg.StegCipher;
-import files.FileWorker;
-import om.BufferedImageType;
-import util.ImageEncodingUtils;
-import utility.bytes.ByteWorker;
+import screept.crypter.impl.steg.StegCipher;
+import screept.crypter.util.ImageEncodingUtils;
+import test.util.configuration.RepeatTest;
+import test.util.configuration.RepeatedTestRule;
+import various.common.light.files.FileWorker;
+import various.common.light.om.BufferedImageType;
+import various.common.light.utility.bytes.ByteWorker;
 
 import org.junit.Rule;
 

@@ -5,8 +5,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import network.NetworkUtils;
+import os.commons.utils.SysUtils;
 import testUtils.TestUtils;
-import utils.SysUtils;
 
 public class NetworkUtilsTest {
 	

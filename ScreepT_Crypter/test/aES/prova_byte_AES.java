@@ -7,7 +7,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import crypt.aes.AesCipher;
+import screept.crypter.impl.aes.AesCipher;
 
 public class prova_byte_AES {
 	

@@ -3,50 +3,51 @@ package maingUI;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 
-import easteregg.EasterEgg;
-import easteregg.EasterEggsManager;
-import easteregg.PhraseEasterEgg;
-import easteregg.PhrasesCollection;
-import easteregg.games.snake.Snake;
-import gui.StartFrame;
+import puppynoid.gui.StartFrame;
+import puppynoid.utils.config.GameConfigs;
 import resources.GeneralConfig;
-import utils.config.GameConfigs;
+import various.common.light.easteregg.EasterEgg;
+import various.common.light.easteregg.EasterEggsManager;
+import various.common.light.easteregg.PhraseEasterEgg;
+import various.common.light.easteregg.PhrasesCollection;
+import various.common.light.easteregg.games.snake.Snake;
 
 public class EasterEggsInitializer {
 
 	public EasterEggsManager manager;
 	public MainGuiUtils mainGuiUtils;
-	
+
 	public EasterEggsInitializer(MainGuiUtils mainGuiUtils) {
 		manager = new EasterEggsManager();
 		init();
 		manager.applyKeyListener();
 		this.mainGuiUtils = mainGuiUtils;
 	}
-	
+
 	public void init() {
-		
+
 		// Initialize easterEggs
 		PhraseEasterEgg poetryRandomEgg = new PhraseEasterEgg(
 				"poetryEasterEgg01",
 				PhrasesCollection.getSingleton(),
 				(e) -> {
 					return KeyEvent.VK_U == e.getKeyCode() &&
-							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, true, true, false, 600) && 
-						   (mainGuiUtils.isCrypterActive() || mainGuiUtils.isTextEditorActive());
-					} 
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, true, true, false, 600) &&
+						   (mainGuiUtils.isCrypterActive(true) || mainGuiUtils.isTextEditorActive(true));
+					}
 		);
-		
+
 		EasterEgg snakeGame = new EasterEgg(
 				"snakeGameEgg01",
-				() -> {Snake.getInstance("Snake - Easter Egg found!");}, 
+				() -> {Snake.getInstance("Snake - Easter Egg found!");},
 				(e) -> {
 					return KeyEvent.VK_S == e.getKeyCode() &&
-							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 600) && 
-							mainGuiUtils.mainAppReference.isOnHomePage.get();
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 600) &&
+							mainGuiUtils.isOnHomePage(true) &&
+							StartFrame.instance == null;
 					}
-		); 
-		
+		);
+
 		EasterEgg arkanoidGame = new EasterEgg(
 				"arkanoidGameEgg01",
 				() -> {
@@ -55,14 +56,15 @@ public class EasterEggsInitializer {
 					GameConfigs.SOUNDS_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/sounds/";
 					StartFrame.size = new Dimension(450,150);
 					StartFrame.getInstance("Puppynoid - Easter Egg found!");
-				}, 
+				},
 				(e) -> {
 					return KeyEvent.VK_A == e.getKeyCode() &&
-							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 500) && 
-						   mainGuiUtils.mainAppReference.isOnHomePage.get();
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 500) &&
+						   mainGuiUtils.mainAppReference.isOnHomePage.get() &&
+						   Snake.instance == null;
 					}
-		); 
-		
+		);
+
 		// Add easter eggs to manager
 		manager.addEasterEgg(poetryRandomEgg);
 		manager.addEasterEgg(snakeGame);
