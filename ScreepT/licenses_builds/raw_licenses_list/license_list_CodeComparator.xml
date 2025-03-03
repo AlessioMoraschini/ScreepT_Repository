@@ -56,7 +56,6 @@
           <name>GPL with classpath exception</name>
           <url>http://www.gnu.org/licenses/gpl.txt</url>
           <distribution>repo</distribution>
-          <file>gpl with classpath exception - gpl.txt</file>
         </license>
         <license>
           <name>Free commercial license</name>
@@ -198,7 +197,6 @@
           <name>GNU General Lesser Public License (LGPL) version 3.0</name>
           <url>https://www.gnu.org/licenses/lgpl-3.0.en.html</url>
           <distribution>repo</distribution>
-          <file>gnu general lesser public license (lgpl) version 3.0 - lgpl-3.0.en.html</file>
         </license>
       </licenses>
     </dependency>
@@ -215,7 +213,6 @@
         <license>
           <name>LGPL 2.1</name>
           <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
-          <file>lgpl 2.1 - lgpl-2.1.html</file>
         </license>
         <license>
           <name>Apache License 2.0</name>
@@ -283,7 +280,6 @@
         <license>
           <name>Lesser General Public License (LGPL)</name>
           <url>http://www.gnu.org/copyleft/lesser.html</url>
-          <file>lesser general public license (lgpl) - lesser.html</file>
         </license>
       </licenses>
     </dependency>
@@ -295,7 +291,6 @@
         <license>
           <name>Lesser General Public License (LGPL)</name>
           <url>http://www.gnu.org/copyleft/lesser.html</url>
-          <file>lesser general public license (lgpl) - lesser.html</file>
         </license>
       </licenses>
     </dependency>
@@ -307,7 +302,6 @@
         <license>
           <name>Lesser General Public License (LGPL)</name>
           <url>http://www.gnu.org/copyleft/lesser.html</url>
-          <file>lesser general public license (lgpl) - lesser.html</file>
         </license>
       </licenses>
     </dependency>
