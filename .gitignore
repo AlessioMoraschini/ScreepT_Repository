@@ -1,5 +1,7 @@
 **/target
 .classpath
+.metadata
+.idea
 **/target
 **/*.project
 **/*.prefs
