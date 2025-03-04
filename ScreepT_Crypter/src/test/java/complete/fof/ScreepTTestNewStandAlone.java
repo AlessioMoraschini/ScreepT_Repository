@@ -1,0 +1,249 @@
+package complete.fof;
+
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import screept.crypter.impl.manager.CryptoMode;
+import screept.crypter.impl.manager.ScreeptManagerFileOrFolder;
+import screept.crypter.util.ScreeptUtils;
+import test.util.utils.TestUtils;
+import various.common.light.utility.log.SafeLogger;
+
+public class ScreepTTestNewStandAlone {
+	
+///////////////////////////////////////////////////////////////////
+////////////////// INITIALIZE VARIABLES FOR TEST //////////////////
+///////////////////////////////////////////////////////////////////
+	
+	// DIRECTORIES 
+	private final String TEMP_DIR = "temp/";
+	
+	private final static boolean enableAdvices = true;
+	private final static boolean SHUFFLE_MODE = false;
+	private final static boolean hashed = false;
+	
+	// KEY INITIALIZATION
+	private final char[] AES_KEY = "ciaosonoalessio".toCharArray();
+	private File keyIMG = new File("TEST_FILES/PROVA_1.png");
+	
+	// SOURCE FILE - COMMON FOR ALL ENCRIPTION TESTS
+//	private File srcFile = new File("TEST_FILES/TestFolder");
+	private File srcFile = new File("TEST_FILES/Source_medium.txt");
+	
+	// ONLY AES CODED SOURCE (decript test)
+	private File codedFileAES = new File("TEST_FILES/AesCrypted_Source_medium.txt");
+	
+	// ONLY STEG CODED SOURCE (decript test)
+	private File codedFolderSTEG = new File("TEST_FILES/STEGcod_Source_medium.txt");
+	
+	// COMPLETE CODED SOURCE (decript test)
+	@SuppressWarnings("unused")
+	private File codedFolderCOMPLETE = new File("TEST_FILES/COMPLETEcod_Source_medium.txt");
+	
+	// CODERS USED IN initMethod private functions (only for test purpose)
+	private ScreeptManagerFileOrFolder screepTManagerFof;
+	
+	
+////////////////////////////////////////////////////////////////private ScreeptManagerFileOrFolder screepTManagerNew;
+////////////////////// START TEST METHODS //////////////////////
+////////////////////////////////////////////////////////////////
+	
+	@Test
+//	@Ignore
+	public void testOnlyAEScrypt() throws Exception{
+		
+		try {
+			File resultDir = new File(TEMP_DIR);
+
+			ScreeptUtils.deleteDirContentRecursive(resultDir, new SafeLogger(this.getClass()));
+			
+			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
+			screepTManagerFof.setAdvicesEnabled(enableAdvices);
+			screepTManagerFof.setHashed(hashed);
+			
+			assertTrue(screepTManagerFof.crYpt(CryptoMode.ONLY_AES, srcFile, resultDir, AES_KEY, null, SHUFFLE_MODE).resultOK);
+			
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
+			
+			ScreeptUtils.deleteDirContentInclRoot(codedFileAES, new SafeLogger(this.getClass()));
+			for(File result : resultDir.listFiles()) {
+				File out = codedFileAES;
+
+				if (out.exists()) {
+					out.delete();
+				}
+				out = ScreeptUtils.renameJavaObjFile(out);
+
+				assertTrue(result.renameTo(out));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	@Ignore
+	public void testOnlyAESdecrypt() throws Exception{
+		
+		try {
+			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
+			screepTManagerFof.setAdvicesEnabled(enableAdvices);
+			screepTManagerFof.setHashed(hashed);
+			
+			File resultDir =new File(TEMP_DIR);
+			
+			assertTrue(screepTManagerFof.decrYpt(CryptoMode.ONLY_AES, codedFileAES, resultDir, AES_KEY, null, false).resultOK);
+			
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
+			
+			for(File result : resultDir.listFiles()) {
+				
+				File out = new File("TEST_FILES/aesDecrypted.txt");
+				out = ScreeptUtils.renameJavaObjFile(out);
+				
+				assertTrue(result.renameTo(out));
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	@Ignore
+	public void testOnlySTEGcrypt() throws Exception{
+		
+		try {
+			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
+			screepTManagerFof.setAdvicesEnabled(enableAdvices);
+			
+			File resultDir =new File(TEMP_DIR);
+			
+			TestUtils.printl(srcFile.getName()+" has "+srcFile.length()+"bytes");
+			
+			assertTrue(screepTManagerFof.crYpt(CryptoMode.ONLY_STEG, srcFile, resultDir, AES_KEY, keyIMG, SHUFFLE_MODE).resultOK);
+			
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
+			
+			for(File result : resultDir.listFiles()) {
+				// destination path - avoid duplicates
+				File out = new File("TEST_FILES/" + result.getName());
+				if (out.exists() && out.isDirectory()) {
+					out.delete();
+				}
+
+				out = ScreeptUtils.renameJavaObjFile(out);
+				assertTrue(result.renameTo(out));
+				//assertTrue(result.isDirectory());
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	@Ignore
+	public void testOnlySTEGDecrypt() throws Exception{
+		
+		try {
+			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
+			screepTManagerFof.setAdvicesEnabled(enableAdvices);
+			
+			TestUtils.printl(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
+			
+			assertTrue(screepTManagerFof.decrYpt(CryptoMode.ONLY_STEG, srcFile, codedFolderSTEG, AES_KEY, keyIMG, false).resultOK);
+
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
+			
+			File resultDir =new File(TEMP_DIR);
+			
+			for(File result : resultDir.listFiles()) {
+				// destination path - avoid duplicates
+				File out = new File("TEST_FILES/" + result.getName());
+				if (out.exists() && out.isDirectory()) {
+					out.delete();
+				}
+
+				out = ScreeptUtils.renameJavaObjFile(out);
+				assertTrue(result.renameTo(out));
+				//assertTrue(result.isDirectory());
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	@Ignore
+	public void testCompleteCrypt() throws Exception{
+		
+		try {
+			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
+			screepTManagerFof.setAdvicesEnabled(enableAdvices);
+			screepTManagerFof.setHashed(hashed);
+			
+			File resultDir =new File(TEMP_DIR);
+			
+			System.out.println(srcFile.getName()+" has "+srcFile.length()+"bytes");
+			
+			assertTrue(screepTManagerFof.crYpt(CryptoMode.COMPLETE, srcFile, resultDir, AES_KEY, keyIMG, SHUFFLE_MODE).resultOK);
+
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
+			
+			for(File result : resultDir.listFiles()) {
+				// destination path - avoid duplicates
+				File out = new File("TEST_FILES/" + result.getName());
+				if (out.exists() && out.isDirectory()) {
+					out.delete();
+				}
+
+				out = ScreeptUtils.renameJavaObjFile(out);
+				assertTrue(result.renameTo(out));
+				//assertTrue(result.isDirectory());
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	@Ignore
+	public void testCompleteDeCrypt() throws Exception {
+		
+		try {
+			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
+			screepTManagerFof.setAdvicesEnabled(enableAdvices);
+			screepTManagerFof.setHashed(hashed);
+			
+			File resultDir =new File(TEMP_DIR);
+			
+			System.out.println(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
+			
+			assertTrue(screepTManagerFof.decrYpt(CryptoMode.COMPLETE, srcFile, resultDir, AES_KEY, keyIMG, false).resultOK);
+
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
+			
+			for(File result : resultDir.listFiles()) {
+				// destination path - avoid duplicates
+				File out = new File("TEST_FILES/" + result.getName());
+				if (out.exists() && out.isDirectory()) {
+					out.delete();
+				}
+
+				out = ScreeptUtils.renameJavaObjFile(out);
+				assertTrue(result.renameTo(out));
+				//assertTrue(result.isDirectory());
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

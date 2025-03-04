@@ -45,7 +45,6 @@
 
 	<build>
 		<finalName>${export.jar.name}</finalName>
-		<sourceDirectory>src</sourceDirectory>
 
 		<plugins>
 
