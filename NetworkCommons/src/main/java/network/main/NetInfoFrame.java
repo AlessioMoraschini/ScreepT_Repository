@@ -33,6 +33,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
@@ -383,14 +384,13 @@ public class NetInfoFrame extends ParentFrame{
 		panel.add(dynLblMTU, "cell 1 7 2 1,growx");
 		
 		// call now cause before some gui elements can not be initialized yet
-		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
+		GuiUtilsExtended.launchThreadSafeSwingV2(new Runnable() {
 			
 			@Override
 			public void run() {
 				
 				updateNetDisplayedINFO();
-				updateAdapterGUIinfos();
-				validateConnectivity();
+				//validateConnectivity();
 			}
 		});
 		
@@ -423,9 +423,9 @@ public class NetInfoFrame extends ParentFrame{
 					public void run() {
 						
 						updateCalculatingDispLbl();
-						resetSpeedTestValues();
+						resetSpeedTestValues(true, true, true);
 						updateNetDisplayedINFO();
-						validateConnectivity();
+						//validateConnectivity();
 					}
 				}).start();
 			}
@@ -443,7 +443,7 @@ public class NetInfoFrame extends ParentFrame{
 					public void run() {
 						btnCalculateConnSpeed.setEnabled(false);
 						btnCalculateConnSpeed.setToolTipText("I'm already working, wait for results to test again");
-						resetSpeedTestValues();
+						resetSpeedTestValues(true, true, true);
 
 						dynLblUPspeed.setText("Calculating...");
 						dynLblDOWNspeed.setText("Calculating...");
@@ -472,18 +472,19 @@ public class NetInfoFrame extends ParentFrame{
 				progressBarLatency.setValue(0);
 				progressBarLatency.setForeground(Color.blue);
 				try {
-					int latency = NetworkUtils.retrieveLatency(currentSelAdapter.getNetworkInterface());
+					int latency = NetworkUtils.retrieveLatencyV2(currentSelAdapter.getInetAddr());
 					dynLblLatency.setText(String.valueOf(latency)+" ms");
 					progressBarLatency.setValue(100);
 					progressBarLatency.setForeground(Color.blue);
+				
 				} catch (UnknownHostException e) {
 					String msg = "Host "+GeneralConfig.testAddress+" not recognized";
 					dynLblLatency.setText(msg);
 					logger.error(msg, e);
 					progressBarLatency.setValue(0);
 					progressBarLatency.setForeground(Color.red);
-				} catch (IOException e) {
-					String msg = "IO error occcurred";
+				} catch (Exception e) {
+					String msg = "Error occurred";
 					dynLblLatency.setText(msg);
 					logger.error(msg, e);
 					progressBarLatency.setValue(0);
@@ -497,10 +498,11 @@ public class NetInfoFrame extends ParentFrame{
 		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
 		try {
 			dynLblUPspeed.setText(NetworkUtils.retrieveUpSpeed(currentSelAdapter.getInetAddr(), options, progressBarUp));
-		} catch (IOException | InterruptedException e) {
-			String msg = "IO error occcurred";
+		} catch (Exception e) {
+			String msg = "An error occcurred";
 			dynLblUPspeed.setText(msg);
-			resetSpeedTestValues();
+			progressBarUp.setIndeterminate(false);
+			progressBarUp.setValue(0);
 			logger.error(msg, e);
 		}
 	}
@@ -508,11 +510,12 @@ public class NetInfoFrame extends ParentFrame{
 	private void calculateDOWNspeed(FtpSpeedTestOptions options) {
 		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
 		try {
-			dynLblDOWNspeed.setText(NetworkUtils.retrieveDownSpeed(currentSelAdapter.getInetAddr(), options, progressBarDown));
-		} catch (IOException e) {
-			String msg = "IO error occcurred";
+			dynLblDOWNspeed.setText(NetworkUtils.retrieveDownSpeedV2(()->!this.isActive.get(), currentSelAdapter.getInetAddr(), options, progressBarDown));
+		} catch (Exception e) {
+			String msg = "An error occcurred";
 			dynLblDOWNspeed.setText(msg);
-			resetSpeedTestValues();
+			progressBarDown.setIndeterminate(false);
+			progressBarDown.setValue(0);
 			logger.error(msg, e);
 		}
 	}
@@ -556,6 +559,8 @@ public class NetInfoFrame extends ParentFrame{
 			dynLblPublicIP.setText(msg);
 			handleException(msg, e1);
 		}
+		
+		updateAdapterGUIinfos(currentSelAdapter.getInetAddr());
 	}
 	
 	private void updateCalculatingDispLbl() {
@@ -571,9 +576,9 @@ public class NetInfoFrame extends ParentFrame{
 	}
 	
 	// interface unrelated info
-	private void updateAdapterGUIinfos() {
+	private void updateAdapterGUIinfos(InetAddress inetAddress) {
 		
-		List<String> nameServers = NetworkUtils.getDnsServers();
+		List<String> nameServers = NetworkUtils.getDnsServersUsingOSCommands(inetAddress);
 		if (nameServers.isEmpty()) {
 			dynLblDNS1.setText(UNSELECTED);
 			dynLblDNS2.setText(UNSELECTED);
@@ -614,17 +619,23 @@ public class NetInfoFrame extends ParentFrame{
 		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
 	}
 	
-	private void resetSpeedTestValues() {
-		progressBarDown.setValue(0);
-		progressBarLatency.setValue(0);
-		progressBarUp.setValue(0);
-		dynLblDOWNspeed.setText(UNSELECTED);
-		dynLblUPspeed.setText(UNSELECTED);
-		dynLblLatency.setText(UNSELECTED);
+	private void resetSpeedTestValues(boolean latency, boolean upload, boolean download) {
+		if (download) {
+			progressBarDown.setValue(0);
+			dynLblDOWNspeed.setText(UNSELECTED);
+			progressBarDown.setIndeterminate(false);
+		}
+		if (upload) {
+			progressBarUp.setValue(0);
+			dynLblUPspeed.setText(UNSELECTED);
+			progressBarUp.setIndeterminate(false);
+		}
+		if (latency) {
+			progressBarLatency.setValue(0);
+			dynLblLatency.setText(UNSELECTED);
+			progressBarLatency.setIndeterminate(false);
+		}
 		
-		progressBarDown.setIndeterminate(false);
-		progressBarLatency.setIndeterminate(false);
-		progressBarUp.setIndeterminate(false);
 	}
 	
 	@Override

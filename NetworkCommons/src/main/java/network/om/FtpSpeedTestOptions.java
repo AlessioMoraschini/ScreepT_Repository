@@ -14,7 +14,6 @@ package network.om;
 import resources.GeneralConfig;
 
 public enum FtpSpeedTestOptions {	SHORT_TEST(GeneralConfig.DOWN_SHORT_FILE, GeneralConfig.UP_SHORT_FILE, GeneralConfig.DOWN_SHORT_FILE_SIZE_MB, GeneralConfig.UP_SHORT_FILE_SIZE_KB),
-									MED_TEST(GeneralConfig.DOWN_MED_FILE, GeneralConfig.UP_MED_FILE, GeneralConfig.DOWN_MED_FILE_SIZE_MB, GeneralConfig.UP_MED_FILE_SIZE_KB),
 								  	LONG_TEST(GeneralConfig.DOWN_BIG_FILE, GeneralConfig.UP_BIG_FILE, GeneralConfig.DOWN_BIG_FILE_SIZE_MB, GeneralConfig.UP_BIG_FILE_SIZE_KB);
 
 	public static final int MB_multiplier = 1024*1024; // 1 MB

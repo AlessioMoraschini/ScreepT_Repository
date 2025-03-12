@@ -316,7 +316,7 @@ public class WindowCreator {
 
 	public void newNetInfoFrame() {
 
-		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
+		GuiUtilsExtended.launchThreadSafeSwingV2(new Runnable() {
 			@Override
 			public void run() {
 				UpdateProgressPanel prog = new UpdateProgressPanel(false);
@@ -328,7 +328,6 @@ public class WindowCreator {
 				NetInfoFrame panelNetInfo = NetInfoFrame.getInstance();
 				panelNetInfo.setResizable(false);
 				commonGraphicInitAlwaysOnTop(panelNetInfo, "Network info - ", true);
-
 				prog.forceClose();
 			}
 		});

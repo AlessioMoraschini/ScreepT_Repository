@@ -56,7 +56,6 @@
           <name>GPL with classpath exception</name>
           <url>http://www.gnu.org/licenses/gpl.txt</url>
           <distribution>repo</distribution>
-          <file>gpl with classpath exception - gpl.txt</file>
         </license>
         <license>
           <name>Free commercial license</name>
@@ -198,7 +197,6 @@
           <name>GNU General Lesser Public License (LGPL) version 3.0</name>
           <url>https://www.gnu.org/licenses/lgpl-3.0.en.html</url>
           <distribution>repo</distribution>
-          <file>gnu general lesser public license (lgpl) version 3.0 - lgpl-3.0.en.html</file>
         </license>
       </licenses>
     </dependency>
