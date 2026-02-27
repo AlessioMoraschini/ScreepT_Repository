@@ -1,4 +1,10 @@
+2026-02-28  (HEAD -> refs/heads/master, refs/remotes/origin/master, refs/remotes/origin/HEAD) V 0.9.56 - multimonitor fixes
+
+2025-03-12  (tag: refs/tags/0.9.55) New libraries and fixes on network informations window
+
 2025-03-03  (tag: refs/tags/0.9.54) Fixed changelog generator
+
+2023-03-21  Merge branch 'master' of git@github.com:AlessioMoraschini/ScreepT_Repository.git
 
 2023-03-16  updated readme for github
 
@@ -31,6 +37,8 @@
 2021-03-22  Delete Hacks_Project directory
 
 2021-03-22  Added new plugin Antilocker + Bugfix
+
+2021-03-21  Merge branch 'BugFix' of git@github.com:AlessioMoraschini/ScreepT_Repository.git into BugFix
 
 2021-03-21  PdfSelector frame bugfix
 
@@ -103,6 +111,8 @@
 2021-01-25  TEXT EDITOR: Fixed bug on text replacement for templates injection and escape replacement functions.
 
 2020-12-12  Text-editor: Themes editor - bugs fixed
+
+2020-11-20  Merge branch 'BugFix'
 
 2020-10-29  Added autostart Option (See General Options panel)
 
