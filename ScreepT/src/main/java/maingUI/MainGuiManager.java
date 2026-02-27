@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Level;
 
@@ -386,12 +387,9 @@ public class MainGuiManager {
 		MainGUI.mainAPP.getMainFrame().setVisible(true);
 		MainGUI.dialogHelper.setParentComponent(MainGUI.mainAPP.getMainFrame());
 		if (MainGUI.dialogHelper.showYNDialog("Really want to exit?", "Exit Program", JOptionHelperExtended.YES_OR_NO)) {
-
 			MainGUI.mainAPP.getMainFrame().setAlwaysOnTop(true);
 			closeApplication(0);
-
 		}else {
-
 			MainGUI.mainAPP.getMainFrame().setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			activeWindow.toFront();
 			activeWindow.requestFocus();

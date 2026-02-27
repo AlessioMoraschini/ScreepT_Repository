@@ -18,8 +18,11 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.Point;
 import java.awt.SystemColor;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -83,7 +86,6 @@ import various.common.light.utility.manipulation.ConversionUtils;
 
 public class MainGUI extends MainGuiParent {
 
-
 	//////////////////////////// GUI ELEMENTS //////////////////////////////
 	////////////////////////////////////////////////////////////////////////
 
@@ -98,15 +100,18 @@ public class MainGUI extends MainGuiParent {
 
 	// Filed for uppercaseFirstLetter "various' function"
 	private String last_dir_used;
+	
+	public static Point lastKnownLocation;
 
-	//	private MovePanelMouseListener movePanelMouseListener;
+	// private MovePanelMouseListener movePanelMouseListener;
 
 	// global values representing the screen size
 	public static int screenWidth;
 	public static int screenHeight;
 
 	// some used lookAndFeel
-	public static String preferredStyle = GUIStyelSettingsExtended.NimbusLookAndFeel; // preferredStyle (initialized to fully avoid null values)
+	public static String preferredStyle = GUIStyelSettingsExtended.NimbusLookAndFeel; // preferredStyle (initialized to
+																						// fully avoid null values)
 	public static boolean DARK_THEME; // true if dark theme is selected
 
 	// flags for no-window operations
@@ -148,17 +153,19 @@ public class MainGUI extends MainGuiParent {
 
 	public static boolean alreadyAskingForClose = false;
 
-	/************* BEGIN MAIN APPLICATION GENERAL METHOD  ***************
+	/*************
+	 * BEGIN MAIN APPLICATION GENERAL METHOD ***************
 	 *
-	 * 		Calls contructor, initialize & Launch the application.
+	 * Calls contructor, initialize & Launch the application.
 	 *
-	 * 			 (Called from MainGuiGeneralAppStarter())
+	 * (Called from MainGuiGeneralAppStarter())
 	 *
-	 ************* BEGIN MAIN APPLICATION GENERAL METHOD  ****************/
+	 ************* BEGIN MAIN APPLICATION GENERAL METHOD
+	 ****************/
 
 	public static boolean mainApplicationGeneral(INItializer currentConf) {
 
-		if(mainAppRunning) {
+		if (mainAppRunning) {
 			return true;
 		}
 
@@ -188,7 +195,8 @@ public class MainGUI extends MainGuiParent {
 			autosaveModule = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					logger.info("## AUTOSAVE module started, interval: "+currentConfiguration.getFileOpt().getAutosaveInterval() + " milliseconds");
+					logger.info("## AUTOSAVE module started, interval: "
+							+ currentConfiguration.getFileOpt().getAutosaveInterval() + " milliseconds");
 					while (mainAppRunning) {
 
 						try {
@@ -197,7 +205,7 @@ public class MainGUI extends MainGuiParent {
 						} catch (InterruptedException e) {
 							logger.warn("## AUTOSAVE MODULE interrupted.");
 						}
-						if(currentConfiguration.getFileOpt().isFlagAutosave()) {
+						if (currentConfiguration.getFileOpt().isFlagAutosave()) {
 							try {
 								currentConfiguration.writeCurrentConfigIniFile();
 								logger.info("AUTOSAVE ON: file saved ["
@@ -216,23 +224,32 @@ public class MainGUI extends MainGuiParent {
 
 				@Override
 				public void run() {
-					logger.info("## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: "+currentConfiguration.getFileOpt().isFlagAutosave());
-					while(mainAppRunning) {
+					logger.info("## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: "
+							+ currentConfiguration.getFileOpt().isFlagAutosave());
+					while (mainAppRunning) {
 						try {
 							// every period specified within the fields
 							Thread.sleep(AUTOSAVE_MANAGER_PERIOD);
 
-							if(currentConfiguration.getFileOpt().isFlagAutosave() && !autosaveModule.isAlive()) {
-								// if thread autosave is not started and autosave is releved as ON -> start autosave thread
-								logger.warn("## AUTOSAVE-MANAGER: detected flagAutosave=true & Autosave is not running yet -> Starting autosave module...");
+							if (currentConfiguration.getFileOpt().isFlagAutosave() && !autosaveModule.isAlive()) {
+								// if thread autosave is not started and autosave is releved as ON -> start
+								// autosave thread
+								logger.warn(
+										"## AUTOSAVE-MANAGER: detected flagAutosave=true & Autosave is not running yet -> Starting autosave module...");
 								autosaveModule.start();
-							}else if(!currentConfiguration.getFileOpt().isFlagAutosave() && autosaveModule.isAlive()) {
-								// if thread autosave is started and autosave is releved as OFF -> kill autosave thread
-								logger.warn("## AUTOSAVE-MANAGER: detected flagAutosave=false & Autosave is alive -> interrupting");
+							} else if (!currentConfiguration.getFileOpt().isFlagAutosave()
+									&& autosaveModule.isAlive()) {
+								// if thread autosave is started and autosave is releved as OFF -> kill autosave
+								// thread
+								logger.warn(
+										"## AUTOSAVE-MANAGER: detected flagAutosave=false & Autosave is alive -> interrupting");
 								autosaveModule.interrupt();
 								logger.warn("## AUTOSAVE-MANAGER: [AUTOSAVE OFF] autosave module interrupted.");
-							}else {
-								logger.debug("## AUTOSAVE-MANAGER: running -> [AUTOSAVE "+currentConfiguration.getFileOpt().isFlagAutosave()+"] -> autosave Module running["+autosaveModule.isAlive()+"] - Interval: "+currentConfiguration.getFileOpt().getAutosaveInterval()/1000+"s");
+							} else {
+								logger.debug("## AUTOSAVE-MANAGER: running -> [AUTOSAVE "
+										+ currentConfiguration.getFileOpt().isFlagAutosave()
+										+ "] -> autosave Module running[" + autosaveModule.isAlive() + "] - Interval: "
+										+ currentConfiguration.getFileOpt().getAutosaveInterval() / 1000 + "s");
 							}
 
 						} catch (InterruptedException e) {
@@ -247,22 +264,48 @@ public class MainGUI extends MainGuiParent {
 			autosaveManager.start();
 
 			// MAIN WINDOW RESIZE LISTENER
-			//			mainFrameScreept.addComponentListener(new ComponentAdapter() {
-			//				@Override
-			//				public void componentResized(ComponentEvent componentEvent) {
-			//					SwingUtilities.invokeLater(new Runnable() {
-			//						public void run() {
-			//							MainGUI.mainAPP.resizeMainFrameDefaults();
-			//						}
-			//					});
-			//			    }
-			//			});
+			// mainFrameScreept.addComponentListener(new ComponentAdapter() {
+			// @Override
+			// public void componentResized(ComponentEvent componentEvent) {
+			// SwingUtilities.invokeLater(new Runnable() {
+			// public void run() {
+			// MainGUI.mainAPP.resizeMainFrameDefaults();
+			// }
+			// });
+			// }
+			// });
 
 			// MAIN WINDOW CLOSE LISTENER
 			mainFrameScreept.addWindowListener(new java.awt.event.WindowAdapter() {
 				@Override
 				public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 					MainGuiManager.askForExit();
+				}
+			});
+
+			mainFrameScreept.addComponentListener(new ComponentAdapter() {
+				@Override
+				public void componentMoved(ComponentEvent e) {
+					SwingUtilities.invokeLater(() -> {
+						MainGUI.dialogHelper.setLastKnownLocation(mainFrameScreept.getLocation());
+						lastKnownLocation = mainFrameScreept.getLocation();
+					});
+				}
+
+				@Override
+				public void componentResized(ComponentEvent e) {
+					SwingUtilities.invokeLater(() -> {
+						MainGUI.dialogHelper.setLastKnownLocation(mainFrameScreept.getLocation());
+						lastKnownLocation = mainFrameScreept.getLocation();
+					});
+				}
+
+				@Override
+				public void componentShown(ComponentEvent e) {
+					SwingUtilities.invokeLater(() -> {
+						MainGUI.dialogHelper.setLastKnownLocation(mainFrameScreept.getLocation());
+						lastKnownLocation = mainFrameScreept.getLocation();
+					});
 				}
 			});
 
@@ -274,7 +317,8 @@ public class MainGUI extends MainGuiParent {
 				public void run() {
 					// REFRESH GUI GENERAL
 					MainGuiGeneralAppStarter.loaderGraphics.update("Updating GUI style...", 75, 0);
-					GUIStyelSettingsExtended.updateThemeByName(currentConfiguration.getGuiOpt().getPreferredThemeName());
+					GUIStyelSettingsExtended
+							.updateThemeByName(currentConfiguration.getGuiOpt().getPreferredThemeName());
 					if (GUIStyelSettingsExtended.isNimbus(currentConfiguration.getGuiOpt().getPreferredStyle())) {
 						if (GUIStyelSettingsExtended.isDarkNimbus(currentConfiguration.getGuiOpt())) {
 
@@ -283,8 +327,9 @@ public class MainGUI extends MainGuiParent {
 
 							GUIStyelSettingsExtended.setLightNimbus(currentConfiguration.getGuiOpt().nimbusSize);
 						}
-					}else {
-						GUIStyelSettingsExtended.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
+					} else {
+						GUIStyelSettingsExtended.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(),
+								currentConfiguration.getGuiOpt().nimbusSize);
 					}
 
 					mainFrameScreept.toFront();
@@ -292,14 +337,17 @@ public class MainGUI extends MainGuiParent {
 				}
 			});
 
-			MainGuiGeneralAppStarter.loaderGraphics.update("Resetting last viewed panel: " + currentConfiguration.getGenOpt().getLastPanelOpened() + " ...", 80, 0);
+			MainGuiGeneralAppStarter.loaderGraphics.update(
+					"Resetting last viewed panel: " + currentConfiguration.getGenOpt().getLastPanelOpened() + " ...",
+					80, 0);
 
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
 
 					// RUN ARGUMENTS IF THERE ARE
-					if (MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
+					if (MainGuiGeneralAppStarter.argumentsFiles != null
+							&& MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
 						mainGuiUtils.startTextEditor(true);
 					} else {
 						Class<?> lastOpened = currentConfiguration.getGenOpt().getLastPanelOpened();
@@ -312,7 +360,8 @@ public class MainGUI extends MainGuiParent {
 						}
 					}
 
-					MainGuiGeneralAppStarter.loaderGraphics.update("Restoring Gui Elements From configuration...", 99, 0);
+					MainGuiGeneralAppStarter.loaderGraphics.update("Restoring Gui Elements From configuration...", 99,
+							0);
 					updateGuiFromCurrConfig();
 
 					SwingUtilities.invokeLater(new Runnable() {
@@ -332,7 +381,7 @@ public class MainGUI extends MainGuiParent {
 							window.startTitleUpdater();
 							GuiUtils.forceToFront(mainFrameScreept, mainFrameScreept);
 
-							if(currentConfiguration.getGenOpt().isFirstAccess()) {
+							if (currentConfiguration.getGenOpt().isFirstAccess()) {
 								MainGuiUtils.welcomeMethodFirstTime();
 							}
 
@@ -343,7 +392,8 @@ public class MainGUI extends MainGuiParent {
 									updater.start();
 									updater.join();
 								} catch (Exception e) {
-									logger.warn("Cannot wait " + GeneralConfig.UPDATES_AUTOCHECK_DELAY + " ms to check for updates", e);
+									logger.warn("Cannot wait " + GeneralConfig.UPDATES_AUTOCHECK_DELAY
+											+ " ms to check for updates", e);
 								}
 
 								GuiUtils.giveFocusToComponent(mainFrameScreept);
@@ -362,14 +412,17 @@ public class MainGUI extends MainGuiParent {
 
 		return mainAppRunning;
 
-	} /************  END MAIN APPLICATION GENERAL STATIC METHOD  ****************************/
+	}
 
+	/************
+	 * END MAIN APPLICATION GENERAL STATIC METHOD
+	 ****************************/
 
 	/****************************************************************************************************
-	 * 										=> CONSTRUCTOR
+	 * => CONSTRUCTOR
 	 *
-	 * it creates the application, initializing components of main window using the function initialize().
-	 * Called from MainGUI.mainApplicationGeneral()
+	 * it creates the application, initializing components of main window using the
+	 * function initialize(). Called from MainGUI.mainApplicationGeneral()
 	 *****************************************************************************************************/
 	public MainGUI() {
 		super();
@@ -407,19 +460,19 @@ public class MainGUI extends MainGuiParent {
 		MainGuiGeneralAppStarter.loaderGraphics.update("Initializing screen properties...", 30);
 
 		// INITIALIZE SCREEN PROPOERTIES
-		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		screenWidth = gd.getDisplayMode().getWidth();
-		screenHeight = gd.getDisplayMode().getHeight();
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		screenWidth = screen.width;
+		screenHeight = screen.height;
 
 		menuSize = currentConfiguration.getGuiOpt().getMenuFontSize();
-		subMenuSize = menuSize-2;
+		subMenuSize = menuSize - 2;
 
 		// INITIALIZE MAIN FRAME AND MAIN MENU
 		mainFrameScreept = new JFrame();
 		mainFrameScreept.setEnabled(false);
 		mainFrameScreept.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		mainFrameScreept.getContentPane().setBackground(SystemColor.windowText);
-		mainFrameScreept.setBounds(0, 0, 1500, 850 );
+		mainFrameScreept.setBounds(0, 0, 1500, 850);
 		mainFrameScreept.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
 		mainFrameScreept.addMouseListener(new ComponentResizer());
 		mainFrameScreept.setJMenuBar(menuBar);
@@ -435,33 +488,36 @@ public class MainGUI extends MainGuiParent {
 
 		MainGuiGeneralAppStarter.loaderGraphics.update("Defining handlers...", 40);
 
-		//////////////////////////// DEFINE HANDLERS  //////////////////////////////////
+		//////////////////////////// DEFINE HANDLERS //////////////////////////////////
 
 		mntmPinApplicationOnTop = new CustomJmenuItem(new AbstractAction("") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!mainAPP.getMainFrame().isAlwaysOnTop()) {
 
-					if(!mainAPP.getMainFrame().isAlwaysOnTopSupported()) {
+					if (!mainAPP.getMainFrame().isAlwaysOnTopSupported()) {
 						logger.warn("User tried to set Always on top, but it seems it's not supported in this device!");
-						dialogHelper.warn("It seems that \"Always on top\" is not supported on this system :(", "\"Always on top\" not supported");
+						dialogHelper.warn("It seems that \"Always on top\" is not supported on this system :(",
+								"\"Always on top\" not supported");
 					}
 
 					getMainFrame().setAlwaysOnTop(true);
 					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_GREEN));
 					mntmPinApplicationOnTop.setToolTipText("Disable \"always on top\" over other windows");
 
-				}else{
+				} else {
 					getMainFrame().setAlwaysOnTop(false);
 					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
-					mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");
+					mntmPinApplicationOnTop
+							.setToolTipText("Enable \"always on top\" over other windows (if supported)");
 				}
 			}
 		});
 
 		// TOP-RIGHT TOGGLES : from right to left
 		for (int i = 0; i < 3; i++) {
-			toggleTopRightActions.add(() -> {});
+			toggleTopRightActions.add(() -> {
+			});
 			final int fi = i;
 			mntmTopRightToggles.add(new CustomJmenuItem(new AbstractAction("") {
 				@Override
@@ -481,17 +537,17 @@ public class MainGUI extends MainGuiParent {
 						Boolean cleanResult = mainGuiUtils.deReferenceUnusedPanels();
 						Thread.sleep(400);
 						String msg = "Cleaning skipped as requested.";
-						if(cleanResult != null) {
+						if (cleanResult != null) {
 							System.gc();
 							System.runFinalization();
-							if(cleanResult)
+							if (cleanResult)
 								msg = "ScreepT's Resources usage optimized.";
 							else
 								msg = "Resources usage was already optimized, but I've done my best to improve it ;)";
 						}
 
 						dialogHelper.info(msg);
-					} catch(Exception e1) {
+					} catch (Exception e1) {
 						String errorMessage = "Cannot optimize ScreepT's resources usage, something has gone wrong!";
 						logger.error(errorMessage, e1);
 						dialogHelper.warn(errorMessage, "Cannot clean resources");
@@ -530,37 +586,41 @@ public class MainGUI extends MainGuiParent {
 			}
 		});
 
-		mntmAddToWindowsContextmenu = new CustomJmenuItem(new AbstractAction("Add to Windows context menu after right click on file") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		mntmAddToWindowsContextmenu = new CustomJmenuItem(
+				new AbstractAction("Add to Windows context menu after right click on file") {
+					@Override
+					public void actionPerformed(ActionEvent e) {
 
-				String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-				try {
-					Process proc = SysUtils.launchExeAsAdmin(path, path, ScreepTLauncher.CMD_REGISTRY_ADD_OPEN_WITH);
-					proc.waitFor();
-					dialogHelper.info("Done!");
-				} catch (Exception e1) {
-					logger.error("Cannot launch registry adder", e1);
-					dialogHelper.error("An error occurred!");
-				}
-			}
-		});
+						String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
+						try {
+							Process proc = SysUtils.launchExeAsAdmin(path, path,
+									ScreepTLauncher.CMD_REGISTRY_ADD_OPEN_WITH);
+							proc.waitFor();
+							dialogHelper.info("Done!");
+						} catch (Exception e1) {
+							logger.error("Cannot launch registry adder", e1);
+							dialogHelper.error("An error occurred!");
+						}
+					}
+				});
 
-		mntmRemoveFromWindowsContextmenu = new CustomJmenuItem(new AbstractAction("Remove from Windows file right click context menu") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		mntmRemoveFromWindowsContextmenu = new CustomJmenuItem(
+				new AbstractAction("Remove from Windows file right click context menu") {
+					@Override
+					public void actionPerformed(ActionEvent e) {
 
-				String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-				try {
-					Process proc = SysUtils.launchExeAsAdmin(path, path, ScreepTLauncher.CMD_REGISTRY_REMOVE_OPEN_WITH);
-					proc.waitFor();
-					dialogHelper.info("Done!");
-				} catch (Exception e1) {
-					logger.error("Cannot launch registry adder", e1);
-					dialogHelper.error("An error occurred!");
-				}
-			}
-		});
+						String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
+						try {
+							Process proc = SysUtils.launchExeAsAdmin(path, path,
+									ScreepTLauncher.CMD_REGISTRY_REMOVE_OPEN_WITH);
+							proc.waitFor();
+							dialogHelper.info("Done!");
+						} catch (Exception e1) {
+							logger.error("Cannot launch registry adder", e1);
+							dialogHelper.error("An error occurred!");
+						}
+					}
+				});
 
 		// NOT OPENING VIEW - EXIT AND CLOSE SCREEPT
 		mntmExit = new CustomJmenuItem(new AbstractAction("Exit") {
@@ -592,18 +652,19 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - IMPORT CONFIGURATION FROM OTHER SCREEPT
-		mntmImportFromOtherScreepTPrjSub = new CustomJmenuItem(new AbstractAction("Load configuration from other installation") {
-			@Override
-			public void actionPerformed(ActionEvent ae) {
+		mntmImportFromOtherScreepTPrjSub = new CustomJmenuItem(
+				new AbstractAction("Load configuration from other installation") {
+					@Override
+					public void actionPerformed(ActionEvent ae) {
 
-				if (!FLAG_importFromOtherPrjSub) {
-					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
-					FLAG_importFromOtherPrjSub = true;
-					INIfileChoosER.loadDefaultsFromOtherInstallation(false);
-					FLAG_importFromOtherPrjSub = false;
-				}
-			}
-		});
+						if (!FLAG_importFromOtherPrjSub) {
+							SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+							FLAG_importFromOtherPrjSub = true;
+							INIfileChoosER.loadDefaultsFromOtherInstallation(false);
+							FLAG_importFromOtherPrjSub = false;
+						}
+					}
+				});
 
 		String msg1 = "Are you sure to reset ";
 		String msg2 = "? All unsaved work will be lost.";
@@ -612,7 +673,7 @@ public class MainGUI extends MainGuiParent {
 		mntmResetAllPanels = new CustomJmenuItem(new AbstractAction("Reset all Panels") {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-				if(dialogHelper.yesOrNo(msg1 + "all panels" + msg2, "Reset all panels?")) {
+				if (dialogHelper.yesOrNo(msg1 + "all panels" + msg2, "Reset all panels?")) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					mainGuiUtils.resetPanel(null, MainGUI.mainFrameScreept);
 				}
@@ -623,7 +684,7 @@ public class MainGUI extends MainGuiParent {
 		mntmResetTextEditor = new CustomJmenuItem(new AbstractAction("Reset Text Editor") {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-				if(dialogHelper.yesOrNo(msg1 + "Text Editor" + msg2, "Reset TextEditor?")) {
+				if (dialogHelper.yesOrNo(msg1 + "Text Editor" + msg2, "Reset TextEditor?")) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					mainGuiUtils.resetPanel(TextEditor.class, MainGUI.mainFrameScreept);
 				}
@@ -634,7 +695,7 @@ public class MainGUI extends MainGuiParent {
 		mntmResetCrypterPanel = new CustomJmenuItem(new AbstractAction("Reset CreepT") {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-				if(dialogHelper.yesOrNo(msg1 + "Crypter" + msg2, "Reset Crypter?")) {
+				if (dialogHelper.yesOrNo(msg1 + "Crypter" + msg2, "Reset Crypter?")) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					mainGuiUtils.resetPanel(CrypterPanel.class, MainGUI.mainFrameScreept);
 				}
@@ -645,7 +706,7 @@ public class MainGUI extends MainGuiParent {
 		mntmResetConfigManager = new CustomJmenuItem(new AbstractAction("Reset Configuration manager") {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-				if(dialogHelper.yesOrNo(msg1 + "Configuration Manager" + msg2, "Reset Conf. Manager?")) {
+				if (dialogHelper.yesOrNo(msg1 + "Configuration Manager" + msg2, "Reset Conf. Manager?")) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					mainGuiUtils.resetPanel(ConfigurationManagerPanel.class, MainGUI.mainFrameScreept);
 				}
@@ -672,7 +733,7 @@ public class MainGUI extends MainGuiParent {
 				if (!FLAG_savePrjSubAs) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_savePrjSubAs = true;
-					INIfileChoosER.exportIniFile(currentConfiguration, (JLabel)null);
+					INIfileChoosER.exportIniFile(currentConfiguration, (JLabel) null);
 					FLAG_savePrjSubAs = false;
 				}
 			}
@@ -686,20 +747,23 @@ public class MainGUI extends MainGuiParent {
 				if (!FLAG_loadDefaultPrjSub) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_loadDefaultPrjSub = true;
-					if (dialogHelper.yesOrNo(
-							"Really want to load default config(unsaved changes will be lost)? ",
+					if (dialogHelper.yesOrNo("Really want to load default config(unsaved changes will be lost)? ",
 							"Warning - Reload INI default config?")) {
 						try {
 							currentConfiguration.setIniReadFile(new Ini(new File(GeneralConfig.DEFAULT_INI)));
 							currentConfiguration.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 							dialogHelper.info("Configuration reloaded!", "Configuration reloaded!");
 						} catch (IOException e) {
-							dialogHelper.error("Error opening: " + GeneralConfig.DEFAULT_INI + " -> maybe it does not exist?", "An error occurred");
+							dialogHelper.error(
+									"Error opening: " + GeneralConfig.DEFAULT_INI + " -> maybe it does not exist?",
+									"An error occurred");
 							logger.error("Exception happened!", e);
 						}
 						currentConfiguration.readConfigIniFile();
 						updateGuiFromCurrConfig();
-						dialogHelper.info("File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!", "File loaded");
+						dialogHelper.info(
+								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!",
+								"File loaded");
 					} else {
 						dialogHelper.warn("Configuration not loaded, current CONFIG mantained!", "Loading skipped");
 					}
@@ -722,9 +786,12 @@ public class MainGUI extends MainGuiParent {
 					} catch (IOException e1) {
 						logger.error("Exception happened!", e1);
 					}
-					if (dialogHelper.yesOrNo("Really want to overwrite default configuration?", "Warning - Overwrite default configuration?")) {
+					if (dialogHelper.yesOrNo("Really want to overwrite default configuration?",
+							"Warning - Overwrite default configuration?")) {
 						currentConfiguration.writeCurrentConfigIniFile();
-						dialogHelper.info("File " + currentConfiguration.getIniFile().getFile().getAbsolutePath() + " saved!", "File saved");
+						dialogHelper.info(
+								"File " + currentConfiguration.getIniFile().getFile().getAbsolutePath() + " saved!",
+								"File saved");
 					} else {
 						dialogHelper.warn("Configuration not saved!", "Skipped!");
 					}
@@ -750,11 +817,14 @@ public class MainGUI extends MainGuiParent {
 							currentConfiguration.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						} catch (IOException e) {
 							dialogHelper.error(
-									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!", (String)null);
+									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!",
+									(String) null);
 							logger.error("Exception happened!", e);
 						}
 						MainGuiUtils.welcomeMethodFirstTime();
-						dialogHelper.info("File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!", "File loaded");
+						dialogHelper.info(
+								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!",
+								"File loaded");
 						currentConfiguration.readConfigIniFile();
 						updateGuiFromCurrConfig();
 					} else {
@@ -784,8 +854,8 @@ public class MainGUI extends MainGuiParent {
 		mntmViewTempFolder = new CustomJmenuItem(new AbstractAction("Open ScreepT temp folder") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
-					GuiUtilsExtended.openInFileSystem(GeneralConfig.F_USER_PERSONAL_DIR_SCREEPT_FOLDER_VERSION);
+				SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+				GuiUtilsExtended.openInFileSystem(GeneralConfig.F_USER_PERSONAL_DIR_SCREEPT_FOLDER_VERSION);
 			}
 		});
 
@@ -800,14 +870,17 @@ public class MainGUI extends MainGuiParent {
 					FLAG_mntmEraseLogs = true;
 					File LOG_MAIN_FILE = new File(GeneralConfig.LOG_PATH);
 					String coolFileSize = ConversionUtils.coolFileSize(LOG_MAIN_FILE.length());
-					String msg =  "<html>Are you sure you to want to erase your logs? <br/> If you want you can click 'no' option and backup them, go under 'help submenu' [ Total size: " + coolFileSize + "]</html>";
-					if(dialogHelper.yesOrNo(msg, "Erase Logs content?")) {
-						if (FileVarious.clearFileContent(GeneralConfig.LOG_PATH) && FileVarious.clearFileContent(GeneralConfig.LOG_LAUNCHER_PATH)) {
+					String msg = "<html>Are you sure you to want to erase your logs? <br/> If you want you can click 'no' option and backup them, go under 'help submenu' [ Total size: "
+							+ coolFileSize + "]</html>";
+					if (dialogHelper.yesOrNo(msg, "Erase Logs content?")) {
+						if (FileVarious.clearFileContent(GeneralConfig.LOG_PATH)
+								&& FileVarious.clearFileContent(GeneralConfig.LOG_LAUNCHER_PATH)) {
 							logger.debug("Files deleted");
 							dialogHelper.info("Logs deleted - as you asked ;)", "Logs deleted");
-						}else {
+						} else {
 							logger.error("Files not deleted :: An error occurred :(");
-							dialogHelper.error("Something went wrong :( Some files may still contain stuff.", (String)null);
+							dialogHelper.error("Something went wrong :( Some files may still contain stuff.",
+									(String) null);
 						}
 					} else {
 						logger.debug("Logs not deleted :: skipped by user.");
@@ -822,56 +895,63 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - UPPERCASE DIRECTORY'S NAMES FIRST LETTER
-		mntmTouppercaseDirectory = new CustomJmenuItem(new AbstractAction("Uppercase First letter - Files&Directories") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!FLAG_mntmTouppercaseDirectory) {
-					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
-					FLAG_mntmTouppercaseDirectory = true;
-					last_dir_used = FilesAndDirectoriesManagerGUI.renameFirstLetterDirNames(mainFrameScreept, last_dir_used);
-					FLAG_mntmTouppercaseDirectory = false;
-				}
-			}
-		});
+		mntmTouppercaseDirectory = new CustomJmenuItem(
+				new AbstractAction("Uppercase First letter - Files&Directories") {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (!FLAG_mntmTouppercaseDirectory) {
+							SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+							FLAG_mntmTouppercaseDirectory = true;
+							last_dir_used = FilesAndDirectoriesManagerGUI.renameFirstLetterDirNames(mainFrameScreept,
+									last_dir_used);
+							FLAG_mntmTouppercaseDirectory = false;
+						}
+					}
+				});
 
 		// NOT OPENING VIEW - DELETE RECURSIVELY DIRECTORY'S CONTENT BY EXTENSION
-		mntmDeleteDirectoryContentByExtension = new CustomJmenuItem(new AbstractAction("Delete Directory's content by extension") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!FLAG_mntmDeleteDirectoryContentByExtension) {
-					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
-					FLAG_mntmDeleteDirectoryContentByExtension = true;
-					FilesAndDirectoriesManagerGUI.deleteContentByExtension(mainFrameScreept, currentConfiguration);
-					FLAG_mntmDeleteDirectoryContentByExtension = false;
-				}
-			}
-		});
+		mntmDeleteDirectoryContentByExtension = new CustomJmenuItem(
+				new AbstractAction("Delete Directory's content by extension") {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (!FLAG_mntmDeleteDirectoryContentByExtension) {
+							SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+							FLAG_mntmDeleteDirectoryContentByExtension = true;
+							FilesAndDirectoriesManagerGUI.deleteContentByExtension(mainFrameScreept,
+									currentConfiguration);
+							FLAG_mntmDeleteDirectoryContentByExtension = false;
+						}
+					}
+				});
 
 		// NOT OPENING VIEW - DELETE RECURSIVELY DIRECTORY'S CONTENT
-		mntmDeleteDirectoryAllContentRecursive = new CustomJmenuItem(new AbstractAction("Delete Directory's content (All except selected)") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!FLAG_mntmDeleteDirectoryContentRecursive) {
-					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
-					FLAG_mntmDeleteDirectoryContentRecursive = true;
-					FilesAndDirectoriesManagerGUI.deleteAllContent(mainFrameScreept, currentConfiguration);
-					FLAG_mntmDeleteDirectoryContentRecursive = false;
-				}
-			}
-		});
+		mntmDeleteDirectoryAllContentRecursive = new CustomJmenuItem(
+				new AbstractAction("Delete Directory's content (All except selected)") {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (!FLAG_mntmDeleteDirectoryContentRecursive) {
+							SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+							FLAG_mntmDeleteDirectoryContentRecursive = true;
+							FilesAndDirectoriesManagerGUI.deleteAllContent(mainFrameScreept, currentConfiguration);
+							FLAG_mntmDeleteDirectoryContentRecursive = false;
+						}
+					}
+				});
 
 		// NOT OPENING VIEW - DELETE DIRECTORY'S CONTENT
-		mntmEmptyDirectoryRecursive = new CustomJmenuItem(new AbstractAction("Empty all content (doesn't delete folders)") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(!FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive) {
-					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
-					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = true;
-					FilesAndDirectoriesManagerGUI.deleteOnlyFilesInFolder(mainFrameScreept, currentConfiguration);
-					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = false;
-				}
-			}
-		});
+		mntmEmptyDirectoryRecursive = new CustomJmenuItem(
+				new AbstractAction("Empty all content (doesn't delete folders)") {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (!FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive) {
+							SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+							FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = true;
+							FilesAndDirectoriesManagerGUI.deleteOnlyFilesInFolder(mainFrameScreept,
+									currentConfiguration);
+							FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = false;
+						}
+					}
+				});
 
 		// NOT OPENING VIEW - MAKE DIRS FROM STRING PATH
 		mntmMakeDirsFromPath = new CustomJmenuItem(new AbstractAction("Create directory from String path") {
@@ -887,19 +967,20 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - COPY DIRECTORY STRUCTURE
-		mntmCopyDirStructure = new CustomJmenuItem(new AbstractAction("Copy directory structure (Copy folders, not files)") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(!FLAG_mntmCopyDirStructure) {
-					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
-					FLAG_mntmCopyDirStructure = true;
-					FilesAndDirectoriesManagerGUI.copyDirStructure(mainFrameScreept, currentConfiguration);
-					FLAG_mntmCopyDirStructure = false;
-				}
-			}
-		});
+		mntmCopyDirStructure = new CustomJmenuItem(
+				new AbstractAction("Copy directory structure (Copy folders, not files)") {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (!FLAG_mntmCopyDirStructure) {
+							SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+							FLAG_mntmCopyDirStructure = true;
+							FilesAndDirectoriesManagerGUI.copyDirStructure(mainFrameScreept, currentConfiguration);
+							FLAG_mntmCopyDirStructure = false;
+						}
+					}
+				});
 
-		///////////////// HANDLERS THAT OPEN A NEW WINDOW  ////////////////////////
+		///////////////// HANDLERS THAT OPEN A NEW WINDOW ////////////////////////
 
 		// open in a new window - CUSTOMIZE GRAPHICS
 		mntmCustomizeUIView = new CustomJmenuItem(new AbstractAction("Customize Graphics") {
@@ -924,7 +1005,7 @@ public class MainGUI extends MainGuiParent {
 						setFullScreenEnabled(!mainFrameScreept.isUndecorated());
 
 						// Update txtArea to adapt new size
-						if(textEditorPanel != null && textEditorPanel.textEditorUtils != null) {
+						if (textEditorPanel != null && textEditorPanel.textEditorUtils != null) {
 							textEditorPanel.initGuiFromConfig(false, true);
 						}
 
@@ -946,7 +1027,6 @@ public class MainGUI extends MainGuiParent {
 				mainGuiUtils.immersiveModeToggle();
 			}
 		});
-
 
 		// open in a new window - GENERAL OPTIONS
 		mntmGenOpt = new CustomJmenuItem(new AbstractAction("General Options") {
@@ -1008,7 +1088,6 @@ public class MainGUI extends MainGuiParent {
 				windowCreator.newSchemeManager();
 			}
 		});
-
 
 		// open in a new window - NET INFO
 		mntmnetInfo = new CustomJmenuItem(new AbstractAction("Network Info") {
@@ -1165,7 +1244,7 @@ public class MainGUI extends MainGuiParent {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				SysUtils.openUrlInBrowser("https://"+GeneralConfig.WEBSITE);
+				SysUtils.openUrlInBrowser("https://" + GeneralConfig.WEBSITE);
 				SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 			}
 		});
@@ -1191,12 +1270,16 @@ public class MainGUI extends MainGuiParent {
 							MainGuiGeneralAppStarter.pluginManager.discoverLatestPlugins();
 
 							if (pluginManagerGUI == null || !PluginManagerGUI.active) {
-								Runnable libCheckNRefreshGUI = ()->{};
+								Runnable libCheckNRefreshGUI = () -> {
+								};
 
-								pluginManagerGUI = new PluginManagerGUI(getMainFrame(), MainGuiGeneralAppStarter.pluginManager, libCheckNRefreshGUI);
-								pluginManagerGUI.setAfterExitAction(()->{
-									boolean hasPendingPlugins = MainGuiManager.hasPendingPluginsToDelete(true) || !PluginManager.pluginsFreshlyInstalled.isEmpty();
-									if(hasPendingPlugins && dialogHelper.yesOrNo("A restart is required to apply changes, restart now?")) {
+								pluginManagerGUI = new PluginManagerGUI(getMainFrame(),
+										MainGuiGeneralAppStarter.pluginManager, libCheckNRefreshGUI);
+								pluginManagerGUI.setAfterExitAction(() -> {
+									boolean hasPendingPlugins = MainGuiManager.hasPendingPluginsToDelete(true)
+											|| !PluginManager.pluginsFreshlyInstalled.isEmpty();
+									if (hasPendingPlugins && dialogHelper
+											.yesOrNo("A restart is required to apply changes, restart now?")) {
 										MainGuiManager.restartApplication(false);
 									}
 								});
@@ -1207,7 +1290,7 @@ public class MainGUI extends MainGuiParent {
 							pluginManagerGUI.setVisible(true);
 						} catch (Throwable e1) {
 							String errorMsg = "Cannot load Plugin Manager: ";
-							if(e1 instanceof TimeoutException) {
+							if (e1 instanceof TimeoutException) {
 								errorMsg += "server is unreachable!";
 							} else {
 								errorMsg += "an error occurred :(";
@@ -1220,7 +1303,8 @@ public class MainGUI extends MainGuiParent {
 			}
 		});
 
-		////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
+		//////////////// NOW HANDLERS THAT OPEN IN THE MAIN FRAME
+		//////////////// ////////////////////////
 
 		// open in main frame - FILE CRYPTER
 		mntmCreepter = new CustomJmenuItem(new AbstractAction("Creepter Module - Crypt and Decrypt files") {
@@ -1257,7 +1341,8 @@ public class MainGUI extends MainGuiParent {
 				setTopRightTogglesEnabled(false);
 
 				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(MainGUI.class);
-				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", MainGUI.class.getCanonicalName());
+				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened",
+						MainGUI.class.getCanonicalName());
 			}
 		});
 
@@ -1265,23 +1350,34 @@ public class MainGUI extends MainGuiParent {
 		mainFrameScreept.addComponentListener(new ComponentListener() {
 			@Override
 			public void componentShown(ComponentEvent e) {
-				SwingUtilities.invokeLater(() -> {resizeMainFrameDefaults();});
+				SwingUtilities.invokeLater(() -> {
+					resizeMainFrameDefaults();
+				});
 			}
+
 			@Override
 			public void componentResized(ComponentEvent e) {
-				SwingUtilities.invokeLater(() -> {resizeMainFrameDefaults();});
+				SwingUtilities.invokeLater(() -> {
+					resizeMainFrameDefaults();
+				});
 			}
+
 			@Override
 			public void componentMoved(ComponentEvent e) {
-				SwingUtilities.invokeLater(() -> {resizeMainFrameDefaults();});
+				SwingUtilities.invokeLater(() -> {
+					resizeMainFrameDefaults();
+				});
 			}
+
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				SwingUtilities.invokeLater(() -> {resizeMainFrameDefaults();});
+				SwingUtilities.invokeLater(() -> {
+					resizeMainFrameDefaults();
+				});
 			}
 		});
 
-		////////// END OF MENU MOUSE CLICK - HANDLERS DECLARATION  ////////////////
+		////////// END OF MENU MOUSE CLICK - HANDLERS DECLARATION ////////////////
 
 		MainGuiGeneralAppStarter.loaderGraphics.update("Adding ActionHandlers...", 50);
 		logger.debug("Adding ActionHandlers...");
@@ -1302,12 +1398,11 @@ public class MainGUI extends MainGuiParent {
 		logger.debug("MainGui instance initialized");
 	}
 
-
-	//////////	NOW SOME USEFUL METHOD  ////////////////
+	////////// NOW SOME USEFUL METHOD ////////////////
 
 	public void setFullScreenEnabled(boolean enable) {
 
-		if(enable) {
+		if (enable) {
 			mainFrameScreept.dispose();
 			preFullScreenSize = GuiUtilsExtended.makeFullScreen(mainFrameScreept);
 			mainFrameScreept.setSize(preFullScreenSize);
@@ -1316,11 +1411,14 @@ public class MainGUI extends MainGuiParent {
 			mainFrameScreept.setVisible(true);
 			isFullScreen.set(true);
 			mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
-			//			movePanelMouseListener = MovePanelMouseListener.applyMoveListenerR(frmScryptV); // USE TO ADD LISTENER DRAG PANEL
+			// movePanelMouseListener =
+			// MovePanelMouseListener.applyMoveListenerR(frmScryptV); // USE TO ADD LISTENER
+			// DRAG PANEL
 
 		} else {
-			//			MovePanelMouseListener.removeMoveListener(frmScryptV, movePanelMouseListener); // USE TO REMOVE LISTENER DRAG PANEL
-			if(preFullScreenSize == null) {
+			// MovePanelMouseListener.removeMoveListener(frmScryptV,
+			// movePanelMouseListener); // USE TO REMOVE LISTENER DRAG PANEL
+			if (preFullScreenSize == null) {
 				preFullScreenSize = GuiUtilsExtended.getScreenSize(mainFrameScreept);
 			}
 			mainFrameScreept.dispose();
@@ -1371,10 +1469,12 @@ public class MainGUI extends MainGuiParent {
 
 	public void readBackgroundImage() throws IOException {
 		BufferedImage image = ImageIO.read(new File(ImagesPathConfigurator.IMAGE_LOGO_AM_MAIN));
-		APPLICATION_MAIN_BCKG_IMAGE = image.getScaledInstance(screenWidth-100, screenHeight-100,Image.SCALE_SMOOTH);
+		APPLICATION_MAIN_BCKG_IMAGE = image.getScaledInstance(screenWidth - 100, screenHeight - 100,
+				Image.SCALE_SMOOTH);
 
 		BufferedImage screeptImageDnD = ImageIO.read(new File(ImagesPathConfigurator.IMAGE_BCKG_DRAGNDROP));
-		SCREEPT_BACKGROUND_DRAGNDROP_IMAGE = screeptImageDnD.getScaledInstance(screeptImageDnD.getWidth(), screeptImageDnD.getHeight(), Image.SCALE_SMOOTH);
+		SCREEPT_BACKGROUND_DRAGNDROP_IMAGE = screeptImageDnD.getScaledInstance(screeptImageDnD.getWidth(),
+				screeptImageDnD.getHeight(), Image.SCALE_SMOOTH);
 	}
 
 	public void setBackgroundImage() {
@@ -1383,9 +1483,9 @@ public class MainGUI extends MainGuiParent {
 			JPanel MAIN_PANEL = new JPanel();
 			MAIN_PANEL.setBackground(SystemColor.infoText);
 			mainFrameScreept.getContentPane().add(MAIN_PANEL);
-			MAIN_PANEL.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[90%]", "[1.00][100.52%,baseline]"));
+			MAIN_PANEL.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS + "", "[90%]", "[1.00][100.52%,baseline]"));
 
-			if(APPLICATION_MAIN_BCKG_IMAGE == null) {
+			if (APPLICATION_MAIN_BCKG_IMAGE == null) {
 				readBackgroundImage();
 			}
 
@@ -1395,7 +1495,8 @@ public class MainGUI extends MainGuiParent {
 			contentPane.add(labelBACKground);
 			contentPane.revalidate();
 			contentPane.repaint();
-			logger.info("Background of mainGUI setted: "+GeneralConfig.RESOURCES_DIR + ImagesPathConfigurator.IMAGE_LOGO_AM_MAIN);
+			logger.info("Background of mainGUI setted: " + GeneralConfig.RESOURCES_DIR
+					+ ImagesPathConfigurator.IMAGE_LOGO_AM_MAIN);
 
 		} catch (IOException e2) {
 			logger.error("Exception happened!", e2);
@@ -1425,14 +1526,14 @@ public class MainGUI extends MainGuiParent {
 			selectedFile = FileVarious.uniqueJavaObjFile(selectedFile);
 			String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
 
-			if(selectedFile==null||!givenExtension.equalsIgnoreCase("zip")) {
+			if (selectedFile == null || !givenExtension.equalsIgnoreCase("zip")) {
 				dialogHelper.error("Please specify a valid 'zip' file!", "Wrong File format");
-			}else {
+			} else {
 				correctFile = selectedFile;
 				currentConfiguration.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
 
 			}
-		}else {
+		} else {
 			dialogHelper.info("Skipped after user request.");
 		}
 		return correctFile;
@@ -1440,7 +1541,7 @@ public class MainGUI extends MainGuiParent {
 
 	private void checkVersionAndDisableUnsupportedOpt() {
 
-		if(!MainGuiUtils.checkJavaVersionMaxCompatibility()) {
+		if (!MainGuiUtils.checkJavaVersionMaxCompatibility()) {
 			String tooltipMSG = "This option is unsupported with current JVM version (" + currentJvmVersion
 					+ "). Run with version under Max JVM version supported to use this functionality (Max allowed: "
 					+ GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY + ")";
@@ -1451,16 +1552,17 @@ public class MainGUI extends MainGuiParent {
 			mntmhwInfo.setToolTipText(tooltipMSG);
 
 		} else {
-			if(!MainGuiGeneralAppStarter.hwInfoAvailable) {
+			if (!MainGuiGeneralAppStarter.hwInfoAvailable) {
 				mntmhwInfo.setEnabled(false);
-				mntmhwInfo.setToolTipText("Hardware info tool not found in this installation, download plugin and restart in order to use it");
+				mntmhwInfo.setToolTipText(
+						"Hardware info tool not found in this installation, download plugin and restart in order to use it");
 			}
 
 		}
 	}
 
 	/**
-	 *  KEYBOARD SHORTCUTS - use custom listener
+	 * KEYBOARD SHORTCUTS - use custom listener
 	 */
 	private KeyEventDispatcher getKeyEventHandler() {
 		return new MainGuiShortcutsListener(mainAPP);
@@ -1471,43 +1573,45 @@ public class MainGUI extends MainGuiParent {
 	 */
 	public static void updateGuiFromCurrConfig() {
 		// TEXT EDITOR REFRESH
-		if(textEditorPanel != null && mainGuiUtils.isTextEditorActive(false)) {
+		if (textEditorPanel != null && mainGuiUtils.isTextEditorActive(false)) {
 			textEditorPanel.initGuiFromConfig(true, true);
 		}
 
 		// CRYPTER REFRESH
-		if(crypterPanel != null && mainGuiUtils.isCrypterActive(false)) {
+		if (crypterPanel != null && mainGuiUtils.isCrypterActive(false)) {
 			crypterPanel.initGuiFromConfig();
 		}
 
 		// CONFIGURATOR REFRESH
-		if(configManagerPanel != null && mainGuiUtils.isConfManagerActive(false)) {
+		if (configManagerPanel != null && mainGuiUtils.isConfManagerActive(false)) {
 			configManagerPanel.initGuiFromConfig();
 		}
 
 		// PANEL GRAPHICS PREFERENCES
-		if(GraphicPreferencesFrame.singletonInstance!= null && GraphicPreferencesFrame.singletonInstance.isVisible()) {
+		if (GraphicPreferencesFrame.singletonInstance != null
+				&& GraphicPreferencesFrame.singletonInstance.isVisible()) {
 			GraphicPreferencesFrame.singletonInstance.initGuiFromConfig();
 		}
 
 		// PANEL GENERAL PREFERENCES
-		if(GeneralOptionsFrame.singletonInstance != null && GeneralOptionsFrame.singletonInstance.isVisible()) {
+		if (GeneralOptionsFrame.singletonInstance != null && GeneralOptionsFrame.singletonInstance.isVisible()) {
 			GeneralOptionsFrame.singletonInstance.initGuiFromConfig();
 		}
 
-		if(textEditorPanel != null) {
+		if (textEditorPanel != null) {
 			textEditorPanel.getCurrentTabEditor().applyStyleToTabs();
 		}
 
-		if(GUIStyelSettingsExtended.isNimbus(currentConfiguration.getGuiOpt().getPreferredStyle())) {
+		if (GUIStyelSettingsExtended.isNimbus(currentConfiguration.getGuiOpt().getPreferredStyle())) {
 			if (GUIStyelSettingsExtended.isDarkNimbus(currentConfiguration.getGuiOpt())) {
 
 				GUIStyelSettingsExtended.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
 			} else {
 				GUIStyelSettingsExtended.setLightNimbus(currentConfiguration.getGuiOpt().nimbusSize);
 			}
-		}else {
-			GUIStyelSettingsExtended.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
+		} else {
+			GUIStyelSettingsExtended.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(),
+					currentConfiguration.getGuiOpt().nimbusSize);
 		}
 		GUIStyelSettingsExtended.applyNimbusSize(null, currentConfiguration.getGuiOpt().nimbusSize);
 	}
@@ -1528,7 +1632,8 @@ public class MainGUI extends MainGuiParent {
 			@Override
 			public INItializer getInitializer() {
 				try {
-					return (currentConfiguration != null)? currentConfiguration : new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
+					return (currentConfiguration != null) ? currentConfiguration
+							: new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 				} catch (IOException e) {
 					return new INItializer();
 				}

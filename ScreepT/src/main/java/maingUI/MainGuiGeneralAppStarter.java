@@ -179,6 +179,7 @@ public class MainGuiGeneralAppStarter {
 
 
 	public static void main(String[] args) {
+		System.setProperty("sun.java2d.dpiaware", "true");
 		long startTime = System.currentTimeMillis();
 		logger.setLoggerAvailable(false);
 

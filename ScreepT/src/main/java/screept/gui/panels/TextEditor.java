@@ -1268,7 +1268,7 @@ public class TextEditor extends ModulePanel {
 			public void run() {
 				// RE-Enable refreshing
 				isPreloading = false;
-				textEditorUtils.refreshTree(currentTabbedEditor.loadedTabObj.loadedFile, true);
+				//textEditorUtils.refreshTree(currentTabbedEditor.loadedTabObj.loadedFile, true);
 			}
 		});
 
