@@ -290,6 +290,8 @@ public class MainGUI extends MainGuiParent {
 						currentConfiguration.getGenOpt().setLastKnownPositionX(location.x);
 						currentConfiguration.getGenOpt().setLastKnownPositionY(location.y);
 						lastKnownLocation = mainFrameScreept.getLocation();
+						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
+						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerBottomPosRatio", String.valueOf(currentConfiguration.getTextEditorOpt().getDividerBottomPosRatio()));
 					});
 				}
 
