@@ -6,4 +6,3 @@ git log 0.9.20.. --invert-grep --grep="EXCL_CHLOG" --tags --decorate=full --onel
 set currentFile="%CD%\ScreepT\changelog.log"
 
 @echo changeLog updated and exported to %currentFile%
-pause
