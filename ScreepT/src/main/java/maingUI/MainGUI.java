@@ -13,8 +13,6 @@ package maingUI;
 
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Dimension;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
@@ -287,7 +285,10 @@ public class MainGUI extends MainGuiParent {
 				@Override
 				public void componentMoved(ComponentEvent e) {
 					SwingUtilities.invokeLater(() -> {
-						MainGUI.dialogHelper.setLastKnownLocation(mainFrameScreept.getLocation());
+						Point location = mainFrameScreept.getLocation();
+						MainGUI.dialogHelper.setLastKnownLocation(location);
+						currentConfiguration.getGenOpt().setLastKnownPositionX(location.x);
+						currentConfiguration.getGenOpt().setLastKnownPositionY(location.y);
 						lastKnownLocation = mainFrameScreept.getLocation();
 					});
 				}
@@ -334,6 +335,12 @@ public class MainGUI extends MainGuiParent {
 
 					mainFrameScreept.toFront();
 					mainFrameScreept.requestFocus();
+					Point locationToRestore = new Point (
+							currentConfiguration.getGenOpt().getLastKnownPositionX(),
+							currentConfiguration.getGenOpt().getLastKnownPositionY()
+					);
+					GuiUtils.maximizeOnScreen(locationToRestore, mainFrameScreept);
+					MainGUI.dialogHelper.setLastKnownLocation(locationToRestore);
 				}
 			});
 

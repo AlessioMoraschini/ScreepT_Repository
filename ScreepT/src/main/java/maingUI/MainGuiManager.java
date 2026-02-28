@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Level;
 
@@ -164,11 +163,16 @@ public class MainGuiManager {
 		INItializer currentConfiguration = MainGUI.currentConfiguration;
 		JFrame mainFrameScreept = MainGUI.mainAPP.getMainFrame();
 
+		// Remember general options
+		// Window position
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastKnownPositionX", String.valueOf(currentConfiguration.getGenOpt().getLastKnownPositionX()));
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastKnownPositionY", String.valueOf(currentConfiguration.getGenOpt().getLastKnownPositionY()));
+
 		// Remember splitPanel dividers position - TEXT Editor
 		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosX", currentConfiguration.getTextEditorOpt().getDividerRightPanePosX());
 		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
 		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerBottomPosRatio", String.valueOf(currentConfiguration.getTextEditorOpt().getDividerBottomPosRatio()));
-
+		
 //		DEFAULT_FILE_TREE_ANCESTOR_LEVEL
 		GeneralConfig.resourcesFilePathsMappings.saveCommentedProperty("DEFAULT_FILE_TREE_ANCESTOR_LEVEL", String.valueOf(GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL));
 
