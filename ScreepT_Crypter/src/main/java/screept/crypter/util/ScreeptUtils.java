@@ -28,6 +28,8 @@ import various.common.light.utility.log.SafeLogger;
 
 public class ScreeptUtils {
 	
+	public static JOptionHelper dialogHelper = new JOptionHelper(null);
+	
 	public static boolean checkPasswordStrengthDynamic(SecurityLevel level, JPasswordField passwordField, int minLengthIncluded) {
 		if(level.equals(SecurityLevel.MAX)) {
 			return checkPasswordStrengthHighSecurity(passwordField, minLengthIncluded);
@@ -49,7 +51,7 @@ public class ScreeptUtils {
 		if("".equals(advice)) {
 			useAnyway = true;
 		} else {
-			useAnyway = new JOptionHelper(parent).yesOrNo(advice, "Unsafe Password");
+			useAnyway = dialogHelper.yesOrNo(advice, "Unsafe Password");
 		}
 		
 		return useAnyway;
@@ -64,7 +66,7 @@ public class ScreeptUtils {
 		if("".equals(advice)) {
 			problemFound = false;
 		} else {
-			problemFound = new JOptionHelper(parent).yesOrNo(advice, "Unsafe Password");
+			problemFound = dialogHelper.yesOrNo(advice, "Unsafe Password");
 		}
 		
 		return problemFound;

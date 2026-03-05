@@ -66,6 +66,7 @@ import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
+import screept.crypter.util.ScreeptUtils;
 import screept.general.utils.WindowCreator;
 import screept.gui.frames.GeneralOptionsFrame;
 import screept.gui.frames.GraphicPreferencesFrame;
@@ -294,6 +295,9 @@ public class MainGUI extends MainGuiParent {
 						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerBottomPosRatio", String.valueOf(currentConfiguration.getTextEditorOpt().getDividerBottomPosRatio()));
 						if(textEditorPanel.dialogHelper != null) {
 							textEditorPanel.dialogHelper.setLastKnownLocation(location);
+						}
+						if(ScreeptUtils.dialogHelper != null) {
+							ScreeptUtils.dialogHelper.setLastKnownLocation(location);
 						}
 					});
 				}
