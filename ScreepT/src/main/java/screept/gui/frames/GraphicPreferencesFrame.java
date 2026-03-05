@@ -174,7 +174,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private JSeparator separator_4;
 	private JSeparator separator_5;
 
-	JOptionHelperExtended dialogHelper;
 	private JSpinner spinnerInterline;
 	private JLabel lblInterline;
 	private JCheckBox checkBoxAutosaveTempFiles;
@@ -194,8 +193,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		logger.info(this.getClass().getName() + " Starting...");
 
 		currentConfiguration = currentConf;
-
-		dialogHelper = new JOptionHelperExtended(this);
 
 		this.setAlwaysOnTop(true);
 		this.setResizable(false);

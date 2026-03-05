@@ -281,7 +281,6 @@ public class TextEditorHeaderPanel extends JPanel{
 						}
 					} else {
 						parent.dialogHelper.warn("Please enter a password, empty key text!","Empty password");
-						
 						txtAesKey.requestFocusInWindow();
 					}
 					isCrypterOn = false;

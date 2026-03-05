@@ -103,8 +103,6 @@ public class KeyGenFrame extends ParentFrame {
 
 	private KeyGenImageType CURRENT_IMG_TYPE;
 
-	private JOptionHelperExtended dialogHelper;
-
 	/**
 	 * Create the application.
 	 */
@@ -118,8 +116,6 @@ public class KeyGenFrame extends ParentFrame {
 
 		thisFrame = this;
 		singletonInstance = this;
-
-		dialogHelper = new JOptionHelperExtended(thisFrame);
 
 		// SW window icon
 		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_KEYGEN, this);

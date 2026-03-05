@@ -1,4 +1,6 @@
-2026-02-28  (HEAD -> refs/heads/master, tag: refs/tags/0.9.57, refs/remotes/origin/master, refs/remotes/origin/HEAD) 0.9.57: fixes for multimonitor and added monitor position memory in .ini file
+2026-02-28  (HEAD -> refs/heads/master, refs/remotes/origin/master, refs/remotes/origin/HEAD) Hotfix
+
+2026-02-28  (tag: refs/tags/0.9.57) 0.9.57: fixes for multimonitor and added monitor position memory in .ini file
 
 2026-02-28  Fixed changelog generation
 

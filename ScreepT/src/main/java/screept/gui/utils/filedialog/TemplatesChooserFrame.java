@@ -24,7 +24,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
-import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.frame.arch.ParentFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.texteditor.commons.om.SupportedFileTextEditor;
@@ -77,18 +76,15 @@ public class TemplatesChooserFrame extends ParentFrame {
 	private JButton btnOpenInFilesystem;
 	private JButton btnReloadTemplates;
 	public JTextArea outputTextArea;
-	private JOptionHelperExtended dialogHelper;
 	private AbstractSelector<String> iSelector;
 	
 	// MAIN CONSTRUCTOR //
 	public TemplatesChooserFrame(JFrame parent, JTextArea outputText, JButton buttonInvoke) {
-		
+		super(parent, null);
 		active = true;
 		
 		// Default null safe impl - the custom one can be setted from caller
 		iSelector = AbstractSelector.getDefaultSelector(comboTemplateSelector);
-		
-		dialogHelper = new JOptionHelperExtended(this);
 		
 		outputTextArea = outputText;
 		buttonInvoker = buttonInvoke;
@@ -206,7 +202,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File selected = MainGuiGeneralAppStarter.fileDialogHelper.fileRead(null);
+				File selected = MainGuiGeneralAppStarter.fileDialogHelper.fileRead(parentFrame);
 				if(selected != null) {
 					String selName = selected.getName();
 					String ext = FilenameUtils.getExtension(selName);

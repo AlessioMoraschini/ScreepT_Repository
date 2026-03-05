@@ -90,8 +90,6 @@ public class KeyDictionaryFrame extends ParentFrame{
 	
 	JFrame thisPanel;
 	
-	private JOptionHelperExtended dialogHelper;
-	
 	// constructor
 	public KeyDictionaryFrame(INItializer currentConfiguration) {
 		setBackground(new Color(255, 228, 225));
@@ -99,8 +97,6 @@ public class KeyDictionaryFrame extends ParentFrame{
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		isActive.set(true);
-		
-		dialogHelper = new JOptionHelperExtended(this);
 		
 		// SW window icon
 		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_KEY_DICT, this);

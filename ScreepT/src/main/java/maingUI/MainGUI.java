@@ -286,19 +286,22 @@ public class MainGUI extends MainGuiParent {
 				public void componentMoved(ComponentEvent e) {
 					SwingUtilities.invokeLater(() -> {
 						Point location = mainFrameScreept.getLocation();
-						MainGUI.dialogHelper.setLastKnownLocation(location);
+						dialogHelper.setLastKnownLocation(location);
 						currentConfiguration.getGenOpt().setLastKnownPositionX(location.x);
 						currentConfiguration.getGenOpt().setLastKnownPositionY(location.y);
-						lastKnownLocation = mainFrameScreept.getLocation();
+						lastKnownLocation = location;
 						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
 						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerBottomPosRatio", String.valueOf(currentConfiguration.getTextEditorOpt().getDividerBottomPosRatio()));
+						if(textEditorPanel.dialogHelper != null) {
+							textEditorPanel.dialogHelper.setLastKnownLocation(location);
+						}
 					});
 				}
 
 				@Override
 				public void componentResized(ComponentEvent e) {
 					SwingUtilities.invokeLater(() -> {
-						MainGUI.dialogHelper.setLastKnownLocation(mainFrameScreept.getLocation());
+						dialogHelper.setLastKnownLocation(mainFrameScreept.getLocation());
 						lastKnownLocation = mainFrameScreept.getLocation();
 					});
 				}
@@ -306,7 +309,7 @@ public class MainGUI extends MainGuiParent {
 				@Override
 				public void componentShown(ComponentEvent e) {
 					SwingUtilities.invokeLater(() -> {
-						MainGUI.dialogHelper.setLastKnownLocation(mainFrameScreept.getLocation());
+						dialogHelper.setLastKnownLocation(mainFrameScreept.getLocation());
 						lastKnownLocation = mainFrameScreept.getLocation();
 					});
 				}

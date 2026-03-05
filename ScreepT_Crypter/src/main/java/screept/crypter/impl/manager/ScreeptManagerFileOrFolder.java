@@ -348,10 +348,10 @@ public class ScreeptManagerFileOrFolder {
 	private ScreeptManager initCOMPLETE(char[] AES_KEY, File imageFile)
 			throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, AESException, STEGException {
 		if (imageFile == null) {
-			throw new STEGException();
+			throw new STEGException("Missing STEG key");
 		}
 		if (AES_KEY.length == 0) {
-			throw new AESException();
+			throw new AESException("Missing AES key");
 		}
 		AEScoder = new AesCipher(AES_KEY);
 		STEGcoder = new StegCipher(imageFile);

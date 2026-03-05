@@ -18,6 +18,10 @@ public class AESException extends Exception{
 		super();
 	}
 	
+	public AESException(String msg) {
+		super(msg);
+	}
+	
 	@Override
 	public String getMessage() {
 		return "Error in the AES coder object, please be sure password is not null!";

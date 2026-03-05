@@ -402,7 +402,7 @@ public class CustomTabbedEditor implements ITabsManager {
 					} catch (Throwable e1) {
 						String msg = "Error occurred loading file into new tab: "+fileToLoad.getAbsolutePath()+"\n\n";
 						logger.error(msg, e1);
-						new JOptionHelperExtended(null).error(msg, (String)null);
+						new JOptionHelperExtended(parent).error(msg, (String)null);
 					}
 
 					loadedTabObj.loadedFile = fileToLoad;

@@ -117,8 +117,6 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private EOL BACKUP_DEFAULT_EOL;
 	private float BACKUP_GENVOLUME;
 
-	JOptionHelperExtended dialogHelper;
-
 	// reference to configuration
 	private INItializer currentConfiguration;
 	private Wini launcherConfiguration;
@@ -135,8 +133,6 @@ public class GeneralOptionsFrame extends ParentFrame{
 		isActive.set(true);
 
 		logger.info(this.getClass().getName() + " Starting...");
-
-		dialogHelper = new JOptionHelperExtended(this);
 
 		// assign this frame to variable
 		thisFrame = this;

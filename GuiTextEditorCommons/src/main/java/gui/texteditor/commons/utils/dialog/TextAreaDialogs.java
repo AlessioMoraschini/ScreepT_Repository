@@ -298,7 +298,7 @@ public class TextAreaDialogs {
 					case REPLACE_ALL:
 						result = SearchEngine.replaceAll(dialogManager.getTargetTextArea(), context);
 						replaceList.addUniqueToTop(context.getReplaceWith());
-						new JOptionHelperExtended(null).info(result.getCount() + " occurrences replaced.", "Occurrences replaced");
+						new JOptionHelperExtended(targetResultPrinter).info(result.getCount() + " occurrences replaced.", "Occurrences replaced");
 						break;
 				}
 
