@@ -169,7 +169,7 @@ public class INIfileChoosER {
 				}
 			} 
 		} else if(sourceFolder != null) {
-			MainGuiGeneralAppStarter.dialogHelper.warn("Nothing selected, Import skipped.");
+			// cancelled by user: no message needed
 			ok = true;
 		} 
 		
@@ -264,7 +264,7 @@ public class INIfileChoosER {
             			selectedFile.delete();	
                        	done = selectedFile.createNewFile();
             		}else {
-            			dialogHelper.info("Operation cancelled");
+            			// cancelled by user: no message needed
             		}
             	}else {
                    	done = selectedFile.createNewFile();
@@ -284,7 +284,7 @@ public class INIfileChoosER {
 			}  			
             
         }else{
-        	dialogHelper.warn("Operation cancelled");
+        	// cancelled by user: no message needed
         }
 		
 	}

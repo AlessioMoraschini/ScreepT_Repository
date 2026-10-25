@@ -1009,7 +1009,7 @@ public class CrypterPanel extends ModulePanel {
 
 						askUserIfWantsToDelete(destinationDir);
 					} else {
-						dialogHelper.warn("No directory selected, export aborted!", "No directory selected");
+						// cancelled by user: no message needed
 					}
 
 				}
@@ -1135,7 +1135,7 @@ public class CrypterPanel extends ModulePanel {
 						askUserIfWantsToDelete(destinationDir);
 					}
 					else{
-						dialogHelper.warn("No directory selected, export aborted!", "No directory selected");
+						// cancelled by user: no message needed
 					}
 				}
 
@@ -1472,7 +1472,7 @@ public class CrypterPanel extends ModulePanel {
 			@Override
 			public void run() {
 				btnCreept.setToolTipText(btnCreept.isEnabled()? "Ready to encrypt files!" : labelFlagCodeReady.getText());				btnDeCreept.setToolTipText(btnDeCreept.isEnabled()? "Ready to decrypt files!" : labelFlagCodeReady.getText());			}
-		});
+		});
 		return ready;
 	}
 

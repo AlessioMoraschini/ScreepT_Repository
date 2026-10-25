@@ -136,8 +136,6 @@ public class MainGuiUtils {
 								}
 							} else {
 								// User skipped updates pressing no or cancel
-								dialogHelper.info("As you want, update will be skipped, return here when you'll want to update software ;)",
-										"Update skipped");
 								logger.info("Update skipped, as requested from user.");
 								MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(false);
 								MainGUI.mainFrameScreept.toFront();

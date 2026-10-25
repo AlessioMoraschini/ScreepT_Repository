@@ -627,7 +627,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 					dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
 
 				}else {
-					dialogHelper.warn("Ok, I wont save theese settings ;)", "Not saved!");
+					// cancelled by user: no message needed
 				}
 			}
 		});
