@@ -142,6 +142,18 @@
       </licenses>
     </dependency>
     <dependency>
+      <groupId>com.formdev</groupId>
+      <artifactId>flatlaf</artifactId>
+      <version>3.7.2</version>
+      <licenses>
+        <license>
+          <name>The Apache License, Version 2.0</name>
+          <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <file>the apache license, version 2.0 - license-2.0.txt</file>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
       <groupId>com.github.depsypher</groupId>
       <artifactId>pngtastic</artifactId>
       <version>1.5</version>
@@ -200,7 +212,7 @@
           <name>Apache License, Version 2.0</name>
           <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
           <distribution>repo</distribution>
-          <file>apache license, version 2.0 - license-2.0.txt</file>
+          <file>the apache license, version 2.0 - license-2.0.txt</file>
         </license>
       </licenses>
     </dependency>
@@ -213,7 +225,7 @@
           <name>Apache License, Version 2.0</name>
           <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
           <distribution>repo</distribution>
-          <file>apache license, version 2.0 - license-2.0.txt</file>
+          <file>the apache license, version 2.0 - license-2.0.txt</file>
         </license>
       </licenses>
     </dependency>
@@ -231,6 +243,24 @@
       </licenses>
     </dependency>
     <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.2.0</version>
+      <licenses>
+        <license>
+          <name>LGPL, version 2.1</name>
+          <url>http://www.gnu.org/licenses/licenses.html</url>
+          <distribution>repo</distribution>
+        </license>
+        <license>
+          <name>Apache License v2.0</name>
+          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <distribution>repo</distribution>
+          <file>the apache software license, version 2.0 - license-2.0.txt</file>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.9</version>
@@ -239,7 +269,7 @@
           <name>Apache License, Version 2.0</name>
           <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
           <distribution>repo</distribution>
-          <file>apache license, version 2.0 - license-2.0.txt</file>
+          <file>the apache license, version 2.0 - license-2.0.txt</file>
         </license>
       </licenses>
     </dependency>

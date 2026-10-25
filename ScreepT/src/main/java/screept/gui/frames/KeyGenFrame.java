@@ -47,6 +47,7 @@ import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 
+import gui.commons.dialogutils.NativeFileChooser;
 import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.frame.arch.ParentFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
@@ -333,7 +334,7 @@ public class KeyGenFrame extends ParentFrame {
 							updateBTNenabled(false);
 							Date now = new Date();
 
-							JFileChooser fileChooser = new JFileChooser();
+							JFileChooser fileChooser = new NativeFileChooser();
 							// default home dir is the last file saved's parent dir
 							fileChooser.setCurrentDirectory(new File(configuration.getSteganOpt().getImgRecentPath().get(0)).getParentFile());
 							fileChooser.setDialogTitle("Export Key-Image (only .png format)");
@@ -372,7 +373,7 @@ public class KeyGenFrame extends ParentFrame {
 							    				logger.debug(selectedFile.getCanonicalPath()+" deleted & re-saved.");
 
 							        		}else {
-							        			dialogHelper.info("Operation cancelled", (String)null);
+							        			// cancelled by user: no message needed
 							    				logger.debug("Canceled by user.");
 							        		}
 							        	}else {

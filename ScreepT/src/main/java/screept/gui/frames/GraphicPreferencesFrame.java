@@ -54,12 +54,15 @@ import gui.commons.frameutils.frame.arch.ParentFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.guistyle.GUIStyelSettingsExtended;
 import gui.commons.guistyle.LookAndFeelInfoCustom;
+import gui.commons.guistyle.scale.UiScaleCustomDialog;
+import gui.commons.guistyle.scale.UiScaleManager;
 import gui.texteditor.commons.utils.RsyntaxUtils;
 import gui.texteditor.commons.utils.panels.ClipboardPanel;
 import gui.texteditor.commons.utils.panels.arch.TogglePanelTextArea;
 import initializer.configs.impl.INItializer;
 import initializer.configs.impl.om.GuiOption;
 import initializer.configs.impl.om.TextEditorOption;
+import initializer.configs.impl.om.UiSizePreset;
 import maingUI.MainGUI;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
@@ -86,6 +89,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private int BACKUP_LOG_PANEL_FONT_SIZE;
 	private boolean BACKUP_DARK_THEME;
 	private int BACKUP_NIMBUS_SIZE;
+	private final GuiOption BACKUP_UI_SIZE = new GuiOption();
 
 	// DETAIL
 	private boolean BACKUP_TXTAREA_ANTIALIASED;
@@ -140,6 +144,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private JSpinner spinnerMenuSize;
 	private JSpinner spinnerLogSize;
 	private JSpinner spinnerNimbusSize;
+	private JComboBox<UiSizePreset> comboUiSize;
+	private JButton btnUiSizeCustomize;
+	private boolean updatingUiSizeCombo;
 
 	private JCheckBox chckbxDarklight;
 
@@ -325,6 +332,21 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		comboSpellcheckerDictionary.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		comboSpellcheckerDictionary.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 		mainPanel.add(comboSpellcheckerDictionary, "cell 2 13 4 1,growx");
+
+		JLabel lblUiSize = new JLabel("Interface size");
+		lblUiSize.setFont(new Font("Tahoma", Font.BOLD, 13));
+		mainPanel.add(lblUiSize, "cell 6 13,alignx right");
+
+		comboUiSize = new JComboBox<UiSizePreset>(UiSizePreset.values());
+		comboUiSize.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		comboUiSize.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
+		comboUiSize.setToolTipText("Fonts and graphic elements size; Custom keeps your own values");
+		mainPanel.add(comboUiSize, "cell 7 13 3 1,growx");
+
+		btnUiSizeCustomize = new JButton("Customize...");
+		btnUiSizeCustomize.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		btnUiSizeCustomize.setToolTipText("Show or set font family and sizes of general text, menus, toolbars and graphic elements");
+		mainPanel.add(btnUiSizeCustomize, "cell 10 13 3 1,growx");
 
 		JLabel lblMenuFontSize = new JLabel("Menu font size");
 		lblMenuFontSize.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -649,6 +671,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 							if (currentEditor != null) {
 								currentEditor.initGuiFromConfig(true, true);
 							}
+							UiScaleManager.apply(currentConfiguration.getGuiOpt());
 
 							singletonInstance = null;
 						}
@@ -974,7 +997,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 
 
 				} else {
-					dialogHelper.warn( "Ok, I wont save theese settings ;)", "Not saved!");
+					// cancelled by user: no message needed
 					if (currentEditor != null) {
 						currentEditor.textEditorUtils.resetDividerColor();
 						currentEditor.getCurrentTabEditor().applyStyleToTabs();
@@ -1016,6 +1039,30 @@ public class GraphicPreferencesFrame extends ParentFrame {
 
 				// close and apply new values without saving
 				dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
+			}
+		});
+
+		// INTERFACE SIZE HANDLERS: preset sets its default values, Custom keeps current ones (preview applied live)
+		comboUiSize.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (updatingUiSizeCombo) {
+					return;
+				}
+				UiSizePreset preset = (UiSizePreset) comboUiSize.getSelectedItem();
+				if (preset == UiSizePreset.CUSTOM) {
+					openUiSizeCustomDialog();
+				} else {
+					currentConfiguration.getGuiOpt().applyUiSizePreset(preset);
+					UiScaleManager.apply(currentConfiguration.getGuiOpt());
+				}
+			}
+		});
+
+		btnUiSizeCustomize.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				openUiSizeCustomDialog();
 			}
 		});
 
@@ -1072,6 +1119,21 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		});
 	}
 
+	private void openUiSizeCustomDialog() {
+		GuiOption guiOpt = currentConfiguration.getGuiOpt();
+		new UiScaleCustomDialog(thisFrame, guiOpt, () -> {
+			selectUiSizePreset(guiOpt.getUiSizePreset());
+			UiScaleManager.apply(guiOpt);
+		}).setVisible(true);
+		selectUiSizePreset(guiOpt.getUiSizePreset());
+	}
+
+	private void selectUiSizePreset(UiSizePreset preset) {
+		updatingUiSizeCombo = true;
+		comboUiSize.setSelectedItem(preset);
+		updatingUiSizeCombo = false;
+	}
+
 	private boolean writeValuesToConfFile(INItializer currentConf) {
 
 		currentConf.writeGuiOptions();
@@ -1097,6 +1159,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		updateComboLaFGUI(guiOpt.getPreferredStyle());
 		updateComboLaFGUITheme(guiOpt.getPreferredThemeName());
 		chckbxDarklight.setSelected(guiOpt.isDarkGuiNimbus());
+		selectUiSizePreset(guiOpt.getUiSizePreset());
+		UiScaleManager.apply(guiOpt);
 
 		// TEXT AREA
 		chckBoxAntiAliasingON.setSelected(txtOpt.antialiasedTxtArea);
@@ -1174,6 +1238,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		BACKUP_PREFERRED_THEME_NAME = guiOpt.getPreferredThemeName();
 		BACKUP_DARK_THEME = guiOpt.isDarkGuiNimbus();
 		BACKUP_NIMBUS_SIZE = guiOpt.getNimbusSize();
+		BACKUP_UI_SIZE.copyUiSizeFrom(guiOpt);
 
 		// detail backup
 		BACKUP_TXTAREA_ANTIALIASED = txtOpt.isAntialiasedTxtArea();
@@ -1218,6 +1283,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		guiOpt.setLogFontSize(BACKUP_LOG_PANEL_FONT_SIZE);
 		guiOpt.setDarkGuiNimbus(BACKUP_DARK_THEME);
 		guiOpt.setNimbusSize(BACKUP_NIMBUS_SIZE);
+		guiOpt.copyUiSizeFrom(BACKUP_UI_SIZE);
 
 		txtOpt.setAntialiasedTxtArea(BACKUP_TXTAREA_ANTIALIASED);
 		txtOpt.setAnimateBracketMatching(BACKUP_TXTAREA_ANIMATE_BRACKETS);

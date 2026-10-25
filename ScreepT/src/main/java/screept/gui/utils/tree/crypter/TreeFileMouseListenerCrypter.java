@@ -38,6 +38,7 @@ import javax.swing.tree.TreePath;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import gui.commons.dialogutils.NativeFileChooser;
 import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.utils.ImageWorkerExtended;
@@ -223,7 +224,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 
 					} else {
 						String msg = "Skipped after user request!";
-						dialogHelper.warn(msg, "Skipped");
+						// cancelled by user: no message needed
 						logger.debug(msg);
 					} 
 				}
@@ -327,7 +328,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 								} else {
 									progUpdater.getPb().setValue(100);
 									String msg = "Skipped after user request!";
-									dialogHelper.warn(msg, "Skipped");
+									// cancelled by user: no message needed
 									logger.debug(msg);
 								}
 							}
@@ -453,7 +454,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 	private File fileRead(JComponent parent) {
 
 		
-		JFileChooser fileChooser = new JFileChooser();		
+		JFileChooser fileChooser = new NativeFileChooser();		
 		fileChooser.setDialogTitle("Load .png File");
 		File correctFile = null;
 
@@ -468,7 +469,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
         		correctFile = selectedFile;
         	}
         }else {
-        	dialogHelper.info("Skipped after user request.");
+        	// cancelled by user: no message needed
         }
         return correctFile;
 	}
@@ -479,7 +480,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 	 */
 	private File directoWrite(JComponent parent) {
 		
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new NativeFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConfig.getFileOpt().getLastDstFolderPath()));		
 		File correctFile = null;
@@ -495,7 +496,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
         		currentConfig.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
         	}
         }else {
-        	dialogHelper.info("Skipped after user request.");
+        	// cancelled by user: no message needed
         }
         return correctFile;
 	}

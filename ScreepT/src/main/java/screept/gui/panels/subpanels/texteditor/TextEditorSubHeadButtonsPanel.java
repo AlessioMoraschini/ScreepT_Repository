@@ -57,6 +57,7 @@ import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.frame.EscapeReplacerFrame;
 import gui.commons.frameutils.frame.FilePropertiesFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
+import gui.commons.guistyle.scale.UiScaleManager;
 import gui.commons.textarea.om.TextLineNumber;
 import gui.texteditor.commons.TextEditTooltips;
 import gui.texteditor.commons.dialogs.FindDialogFork;
@@ -206,6 +207,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public TextEditorSubHeadButtonsPanel(TextEditor parent) {
 		logger.info(this.getClass().getName() + " Starting...");
 
+		putClientProperty(UiScaleManager.CATEGORY_PROPERTY, UiScaleManager.Category.TOOLBAR);
 		setBackground(Color.DARK_GRAY);
 
 		thisHeaderRef = this;

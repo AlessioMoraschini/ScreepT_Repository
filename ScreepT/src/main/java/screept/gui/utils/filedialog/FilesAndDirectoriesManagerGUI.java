@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import gui.commons.dialogutils.NativeFileChooser;
 import gui.commons.dialogutils.JOptionHelperExtended;
 import initializer.configs.impl.INItializer;
 import maingUI.MainGUI;
@@ -38,7 +39,7 @@ public class FilesAndDirectoriesManagerGUI {
 
 		int errors=0;
 		File selectedFile;
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new NativeFileChooser();
 		fileChooser.setDialogTitle("Select source dir/file to make uppercase");
 		fileChooser.setCurrentDirectory(new File(defaultVisualizedDir));
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -217,7 +218,7 @@ public class FilesAndDirectoriesManagerGUI {
 	}
 	
 	private static void skippedAdvice() {
-		MainGUI.dialogHelper.info("Operation canceled!", "Skipped by user");
+		// cancelled by user: no message needed
 	}
 
 	private static void noSelectionAdvice(String title) {

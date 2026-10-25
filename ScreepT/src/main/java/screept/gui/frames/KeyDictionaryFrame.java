@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import gui.commons.dialogutils.NativeFileChooser;
 import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.frame.arch.ParentFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
@@ -379,7 +380,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 	 */
 	private File fileRead(JFrame parent) {
 
-		JFileChooser fileChooser = new JFileChooser();		
+		JFileChooser fileChooser = new NativeFileChooser();		
 		fileChooser.setDialogTitle("Load .png File");
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
 		File correctFile = null;		
@@ -397,7 +398,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 
         	}
         }else {
-        	dialogHelper.warn("Skipped after user request.", null);
+        	// cancelled by user: no message needed
         }
         return correctFile;
 	}
@@ -407,7 +408,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 	 */
 	private File directoRead(JFrame parent) {
 
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new NativeFileChooser();
 		fileChooser.setDialogTitle("Choose Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
@@ -424,7 +425,7 @@ public class KeyDictionaryFrame extends ParentFrame{
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
         	}
         }else {
-        	dialogHelper.warn("Skipped after user request.", null);
+        	// cancelled by user: no message needed
         }
         return correctFile;
 	}
@@ -436,7 +437,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 	@Deprecated
 	protected File directoWrite(JFrame parent) {
 
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new NativeFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));		
 		File correctFile = null;		
@@ -452,7 +453,7 @@ public class KeyDictionaryFrame extends ParentFrame{
         		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
         	}
         }else {
-        	dialogHelper.warn("Skipped after user request.", null);
+        	// cancelled by user: no message needed
         }
         return correctFile;
 	}

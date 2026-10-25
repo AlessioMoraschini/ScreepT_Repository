@@ -51,10 +51,13 @@ import org.ini4j.Wini;
 
 import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
+import gui.commons.dialogutils.NativeFileChooser;
 import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.frame.ImageViewerFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.guistyle.GUIStyelSettingsExtended;
+import gui.commons.guistyle.scale.UiScaleManager;
+import gui.commons.handlers.EscapeToCloseHandler;
 import gui.commons.jmenu.CustomJmenuItem;
 import initializer.configs.arch.InitOwner;
 import initializer.configs.impl.INItializer;
@@ -293,7 +296,8 @@ public class MainGUI extends MainGuiParent {
 						lastKnownLocation = location;
 						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
 						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerBottomPosRatio", String.valueOf(currentConfiguration.getTextEditorOpt().getDividerBottomPosRatio()));
-						if(textEditorPanel.dialogHelper != null) {
+						// the frame can be moved while starting up, before the text editor panel exists
+						if(textEditorPanel != null && textEditorPanel.dialogHelper != null) {
 							textEditorPanel.dialogHelper.setLastKnownLocation(location);
 						}
 						if(ScreeptUtils.dialogHelper != null) {
@@ -341,6 +345,8 @@ public class MainGUI extends MainGuiParent {
 						GUIStyelSettingsExtended.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(),
 								currentConfiguration.getGuiOpt().nimbusSize);
 					}
+					UiScaleManager.apply(currentConfiguration.getGuiOpt());
+					EscapeToCloseHandler.install(mainFrameScreept);
 
 					mainFrameScreept.toFront();
 					mainFrameScreept.requestFocus();
@@ -781,7 +787,7 @@ public class MainGUI extends MainGuiParent {
 								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!",
 								"File loaded");
 					} else {
-						dialogHelper.warn("Configuration not loaded, current CONFIG mantained!", "Loading skipped");
+						// cancelled by user: no message needed
 					}
 					FLAG_loadDefaultPrjSub = false;
 				}
@@ -809,7 +815,7 @@ public class MainGUI extends MainGuiParent {
 								"File " + currentConfiguration.getIniFile().getFile().getAbsolutePath() + " saved!",
 								"File saved");
 					} else {
-						dialogHelper.warn("Configuration not saved!", "Skipped!");
+						// cancelled by user: no message needed
 					}
 					FLAG_mntmSaveCurrentAs = false;
 				}
@@ -844,7 +850,7 @@ public class MainGUI extends MainGuiParent {
 						currentConfiguration.readConfigIniFile();
 						updateGuiFromCurrConfig();
 					} else {
-						dialogHelper.info("Configuration not loaded, current CONFIG mantained!", "Loading skipped");
+						// cancelled by user: no message needed
 					}
 					FLAG_loadSrcrYptDefaultConf = false;
 				}
@@ -1528,7 +1534,7 @@ public class MainGUI extends MainGuiParent {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_@_HH-mm-ss");
 		String defName = "ScreepT_Execution_Log_" + df.format(now) + ".zip";
 
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new NativeFileChooser();
 		fileChooser.setDialogTitle("Export Log File");
 		fileChooser.setSelectedFile(new File(defName));
 		fileChooser.setCurrentDirectory(new File(currentConfiguration.getFileOpt().getLastDstFolderPath()));
@@ -1550,7 +1556,7 @@ public class MainGUI extends MainGuiParent {
 
 			}
 		} else {
-			dialogHelper.info("Skipped after user request.");
+			// cancelled by user: no message needed
 		}
 		return correctFile;
 	}
@@ -1630,6 +1636,7 @@ public class MainGUI extends MainGuiParent {
 					currentConfiguration.getGuiOpt().nimbusSize);
 		}
 		GUIStyelSettingsExtended.applyNimbusSize(null, currentConfiguration.getGuiOpt().nimbusSize);
+		UiScaleManager.apply(currentConfiguration.getGuiOpt());
 	}
 
 	// GETTERS //

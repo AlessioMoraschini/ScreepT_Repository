@@ -35,6 +35,7 @@ import javax.swing.tree.TreePath;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import gui.commons.dialogutils.NativeFileChooser;
 import gui.commons.dialogutils.JOptionHelperExtended;
 import initializer.configs.impl.INItializer;
 import resources.GeneralConfig;
@@ -172,7 +173,7 @@ public class TreeFileMouseListenerDictionary {
 
 	            }else {
 	            	String msg = "Skipped after user request!";
-	            	dialogHelper.info(msg, "Skipped");
+	            	// cancelled by user: no message needed
 			    	logger.debug(msg);
 	            }
 
@@ -251,7 +252,7 @@ public class TreeFileMouseListenerDictionary {
 
 							} else {
 								String msg = "Skipped after user request!";
-								dialogHelper.info(msg, "Skipped");
+								// cancelled by user: no message needed
 								logger.debug(msg);
 							}
 						}
@@ -267,7 +268,7 @@ public class TreeFileMouseListenerDictionary {
 	private File fileRead(JComponent parent) {
 
 		
-		JFileChooser fileChooser = new JFileChooser();		
+		JFileChooser fileChooser = new NativeFileChooser();		
 		fileChooser.setDialogTitle("Load .png File");
 		File correctFile = null;
 		
@@ -284,7 +285,7 @@ public class TreeFileMouseListenerDictionary {
 
         	}
         }else {
-        	dialogHelper.info("Skipped after user request.");
+        	// cancelled by user: no message needed
         }
         
         return correctFile;
@@ -297,7 +298,7 @@ public class TreeFileMouseListenerDictionary {
 	private File directoWrite(JComponent parent) {
 
 		
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new NativeFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConfig.getFileOpt().getLastDstFolderPath()));		
 		File correctFile = null;
@@ -313,7 +314,7 @@ public class TreeFileMouseListenerDictionary {
         		currentConfig.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
         	}
         }else {
-        	dialogHelper.info("Skipped after user request.");
+        	// cancelled by user: no message needed
         }
         return correctFile;
 	}
