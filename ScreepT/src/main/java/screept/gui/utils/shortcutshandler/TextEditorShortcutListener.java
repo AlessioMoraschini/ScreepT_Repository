@@ -33,6 +33,7 @@ import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import screept.gui.panels.TextEditor;
+import screept.gui.panels.quicknotes.QuickNotesDrawer;
 import screept.gui.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import various.common.light.files.FileVarious;
 import various.common.light.gui.GuiUtils;
@@ -76,6 +77,11 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	  public boolean dispatchKeyEvent(final KeyEvent e) {
 
 		if(GenericFileChooserDialog.blockEventsModal.get()) {
+			return false;
+		}
+
+		// typing in the quick notes drawer must not trigger editor shortcuts (undo, find...)
+		if (QuickNotesDrawer.ownsFocus()) {
 			return false;
 		}
 

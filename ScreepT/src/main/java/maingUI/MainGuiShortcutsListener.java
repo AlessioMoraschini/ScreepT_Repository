@@ -251,6 +251,13 @@ public class MainGuiShortcutsListener extends KeyListenerParent implements KeyEv
 					});
 				}
 
+				/*
+				 *  TOGGLE QUICK NOTES -> Ctrl+Alt+N
+				 */
+				else if (e.getKeyCode() == KeyEvent.VK_N && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					SwingUtilities.invokeLater(() -> currentGui.mntmQuickNotes.doClick());
+				}
+
 				/**
 				 *  OPEN IMPORT/EXPORT crypted workspace: TEXT-EDITOR : CTRL+ALT+SHIFT+I
 				 */

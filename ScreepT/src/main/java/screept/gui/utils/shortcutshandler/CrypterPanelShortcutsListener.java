@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import maingUI.MainGUI;
 import screept.gui.panels.CrypterPanel;
+import screept.gui.panels.quicknotes.QuickNotesDrawer;
 
 public class CrypterPanelShortcutsListener implements KeyEventDispatcher{
 
@@ -32,6 +33,11 @@ public class CrypterPanelShortcutsListener implements KeyEventDispatcher{
 
 	@Override
 	  public boolean dispatchKeyEvent(final KeyEvent e) {
+
+		// typing in the quick notes drawer must not trigger crypter shortcuts
+		if (QuickNotesDrawer.ownsFocus()) {
+			return false;
+		}
 
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 

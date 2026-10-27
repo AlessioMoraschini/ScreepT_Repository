@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 
 import org.apache.commons.io.FileUtils;
@@ -47,6 +48,7 @@ import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import screept.general.utils.SafetyScreepTShortcutsListener;
 import screept.general.utils.ScreepTLoggerUtils;
+import screept.gui.frames.releasenotes.WhatsNewDialog;
 import screept.gui.utils.dependencycheck.LibChecker;
 import screept.launcher.gui.utils.LauncherLoaderFrame;
 import screept.launcher.utils.IniFileManager;
@@ -390,6 +392,12 @@ public class MainGuiGeneralAppStarter {
 			+ "\n\n############################\n\n");
 
 			GuiUtils.giveFocusToComponent(MainGUI.mainFrameScreept);
+
+			// once per version: show the notes of the running release, after the home animation started
+			Timer whatsNewTimer = new Timer(1500, e -> WhatsNewDialog.showIfNewVersion(MainGUI.mainFrameScreept,
+					GeneralConfig.RELEASE_NOTES_FILE, GeneralConfig.APP_VERSION, () -> MainGUI.mainAPP.windowCreator.newChangeLogFrame()));
+			whatsNewTimer.setRepeats(false);
+			whatsNewTimer.start();
 			// CATCH ALL ERRORS DURING INITIALIZATION, ADVICE USER AND ASK TO EXIT
 		} catch (Throwable e) {
 			SCREEPT_BENCHMARKER.registerEvent("Error launching application");

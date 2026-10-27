@@ -78,6 +78,7 @@ import screept.gui.panels.ConfigurationManagerPanel;
 import screept.gui.panels.CrypterPanel;
 import screept.gui.panels.MatrixHomePanel;
 import screept.gui.panels.TextEditor;
+import screept.gui.panels.quicknotes.QuickNotesDrawer;
 import screept.gui.utils.filedialog.FilesAndDirectoriesManagerGUI;
 import screept.gui.utils.filedialog.INIfileChoosER;
 import updater.module.gui.PluginManagerGUI;
@@ -1170,6 +1171,15 @@ public class MainGUI extends MainGuiParent {
 			}
 		});
 
+		// right-side drawer - Quick notes (to-do list with autosave)
+		mntmQuickNotes = new CustomJmenuItem(new AbstractAction("Quick notes") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				QuickNotesDrawer.getInstance(getMainFrame()).toggle();
+			}
+		});
+
 		// open in a new window - Built-in Shell
 		mntmShellStandalone = new CustomJmenuItem(new AbstractAction("System Console") {
 			@Override
@@ -1252,7 +1262,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - ChangeLog view
-		mntmChangeLog = new CustomJmenuItem(new AbstractAction("View changeLog") {
+		mntmChangeLog = new CustomJmenuItem(new AbstractAction("What's new (changelog)") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 

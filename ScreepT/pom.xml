@@ -539,6 +539,7 @@
 										<include>Dependencies_Installers/**/*</include>
 										<include>IMG/**/*</include>
 										<include>changelog.log</include>
+										<include>CHANGELOG.md</include>
 									</includes>
 									<excludes>
 										<exclude>IMG/**/*.png</exclude>
@@ -687,6 +688,7 @@
 										<include>Resources_ScreepT/**</include>
 										<include>Resources_ScreepT/Backup/**/*.ini</include>
 										<include>changelog.log</include>
+										<include>CHANGELOG.md</include>
 									</includes>
 									<excludes>
 										<exclude>Resources_ScreepT/license.properties</exclude>

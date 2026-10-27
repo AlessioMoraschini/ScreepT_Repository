@@ -175,6 +175,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmColorPicker;
 	CustomJmenuItem mntmClipboardStandalone;
 	CustomJmenuItem mntmCalculator;
+	CustomJmenuItem mntmQuickNotes;
 	CustomJmenuItem mntmShellStandalone;
 	CustomJmenuItem mntmFileContentSearch;
 	CustomJmenuItem mntmImageViewer;
@@ -413,6 +414,7 @@ public class MainGuiParent {
 			mnVarious.add(mntmColorPicker);
 			mnVarious.add(mntmClipboardStandalone);
 			mnVarious.add(mntmCalculator);
+			mnVarious.add(mntmQuickNotes);
 			mnVarious.add(mntmShellStandalone);
 			mnVarious.add(mntmFileContentSearch);
 			mnVarious.add(mnConversionsAndOther);
@@ -577,6 +579,7 @@ public class MainGuiParent {
 		mntmColorPicker.setFont(menuItemFont);
 		mntmClipboardStandalone.setFont(menuItemFont);
 		mntmCalculator.setFont(menuItemFont);
+		mntmQuickNotes.setFont(menuItemFont);
 		mntmShellStandalone.setFont(menuItemFont);
 		mntmFileContentSearch.setFont(menuItemFont);
 
@@ -673,6 +676,7 @@ public class MainGuiParent {
 		mntmColorPicker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
 		mntmClipboardStandalone.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD));
 		mntmCalculator.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CALCULATOR));
+		mntmQuickNotes.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CHECKMARK));
 		mntmShellStandalone.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 		mntmFileContentSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
 		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
@@ -755,6 +759,7 @@ public class MainGuiParent {
 		mntmColorPicker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P,CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmClipboardStandalone.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P, ALT_MASK | SHIFT_MASK));
 		mntmCalculator.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, ALT_MASK | CTRL_MASK));
+		mntmQuickNotes.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | CTRL_MASK));
 		mntmShellStandalone.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | CTRL_MASK));
 		mntmFileContentSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, ALT_MASK | CTRL_MASK));
 		mntmImageViewer.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_O, ALT_MASK | SHIFT_MASK));
