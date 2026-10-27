@@ -201,13 +201,8 @@ public class TextEditor extends ModulePanel {
 
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(Color.BLACK);
-		double maxMainWidth = MainGuiGeneralAppStarter.screenSize.getWidth();
-		double maxMainHeight = MainGuiGeneralAppStarter.screenSize.getHeight();
-		setLayout(new MigLayout(
-				"fill, insets 0, hidemode 2",
-				"[300px:"+maxMainWidth+"px:"+maxMainWidth+"px,grow]",
-				"[300px:"+maxMainHeight+"px:"+maxMainHeight+"px,grow]")
-			);
+		// no max size: the editor must follow the frame on any monitor (it was capped to the startup screen)
+		setLayout(new MigLayout("fill, insets 0, hidemode 2", "[grow]", "[grow]"));
 
 		// initialize OBJECTS used in GUI //
 		currentConfiguration = currentConf;
@@ -225,7 +220,6 @@ public class TextEditor extends ModulePanel {
 		mainPanel = new ViewportFillingPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
 		mainPanel.setMinimumSize(new Dimension(400, 300));
-		mainPanel.setMaximumSize(GuiUtilsExtended.getScreenSizePerc(100, parentFrame));
 		mainPanel.setLayout(new MigLayout("fill, insets 2, hidemode 3",
 				"[25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][55px:n:55px,left][25px:n][50px:65px:80px][40px:40px:50px][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][:5px:5px][][][][][][][]",
 				"[:0px:35px][:0px:60px][:0px:2px][300px,grow][:0px:60px]"));

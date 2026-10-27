@@ -85,6 +85,7 @@ import updater.module.plugins.PluginManager;
 import various.common.light.files.FileVarious;
 import various.common.light.gui.ComponentResizer;
 import various.common.light.gui.GuiUtils;
+import various.common.light.gui.ScreenMemory;
 import various.common.light.utility.manipulation.ConversionUtils;
 
 public class MainGUI extends MainGuiParent {
@@ -105,6 +106,13 @@ public class MainGUI extends MainGuiParent {
 	private String last_dir_used;
 	
 	public static Point lastKnownLocation;
+
+	// re-fits the current panel after the frame size changes (e.g. moved to a monitor of different size)
+	private static final javax.swing.Timer resizeDefaultsTimer = new javax.swing.Timer(200, e -> {
+		if (MainGUI.mainAPP != null) {
+			MainGUI.mainAPP.resizeMainFrameDefaults();
+		}
+	});
 
 	// private MovePanelMouseListener movePanelMouseListener;
 
@@ -295,6 +303,7 @@ public class MainGUI extends MainGuiParent {
 						currentConfiguration.getGenOpt().setLastKnownPositionX(location.x);
 						currentConfiguration.getGenOpt().setLastKnownPositionY(location.y);
 						lastKnownLocation = location;
+						ScreenMemory.remember(mainFrameScreept);
 						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
 						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerBottomPosRatio", String.valueOf(currentConfiguration.getTextEditorOpt().getDividerBottomPosRatio()));
 						// the frame can be moved while starting up, before the text editor panel exists
@@ -312,7 +321,11 @@ public class MainGUI extends MainGuiParent {
 					SwingUtilities.invokeLater(() -> {
 						dialogHelper.setLastKnownLocation(mainFrameScreept.getLocation());
 						lastKnownLocation = mainFrameScreept.getLocation();
+						ScreenMemory.remember(mainFrameScreept);
 					});
+					// panel sizes are computed from the frame bounds: refresh them once the resize settles
+					resizeDefaultsTimer.setRepeats(false);
+					resizeDefaultsTimer.restart();
 				}
 
 				@Override
@@ -352,12 +365,8 @@ public class MainGUI extends MainGuiParent {
 
 					mainFrameScreept.toFront();
 					mainFrameScreept.requestFocus();
-					Point locationToRestore = new Point (
-							currentConfiguration.getGenOpt().getLastKnownPositionX(),
-							currentConfiguration.getGenOpt().getLastKnownPositionY()
-					);
-					GuiUtils.maximizeOnScreen(locationToRestore, mainFrameScreept);
-					MainGUI.dialogHelper.setLastKnownLocation(locationToRestore);
+					ScreenMemory.maximizeOnLastScreen(mainFrameScreept);
+					MainGUI.dialogHelper.setLastKnownLocation(mainFrameScreept.getLocation());
 				}
 			});
 
@@ -496,7 +505,8 @@ public class MainGUI extends MainGuiParent {
 		mainFrameScreept.setEnabled(false);
 		mainFrameScreept.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		mainFrameScreept.getContentPane().setBackground(SystemColor.windowText);
-		mainFrameScreept.setBounds(0, 0, 1500, 850);
+		// open directly on the last used monitor, so the frame does not flash on the primary one
+		ScreenMemory.centerOnLastScreen(mainFrameScreept, 1500, 850);
 		mainFrameScreept.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
 		mainFrameScreept.addMouseListener(new ComponentResizer());
 		mainFrameScreept.setJMenuBar(menuBar);

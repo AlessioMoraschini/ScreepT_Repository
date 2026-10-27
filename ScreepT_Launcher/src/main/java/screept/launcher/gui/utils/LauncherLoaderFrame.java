@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import resources.GeneralConfig;
 import various.common.light.gui.GUIStyelSettings;
 import various.common.light.gui.GuiUtils;
+import various.common.light.gui.ScreenMemory;
 
 public class LauncherLoaderFrame extends JFrame{
 	private static final long serialVersionUID = 483795297212663954L;
@@ -57,7 +58,7 @@ public class LauncherLoaderFrame extends JFrame{
 		} catch (IOException e) {
 			logger.error("Error loading Background launcher image", e);
 		}
-		GuiUtils.centerFrame(this, W, H);
+		ScreenMemory.centerOnLastScreen(this, W, H);
 		
 		this.setVisible(true);
 		this.setTitle(title);
