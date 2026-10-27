@@ -25,6 +25,7 @@
 ### Fixed
 - Progress windows (and other frames) switched the whole application to Nimbus.
 - Shortcuts and easter eggs stopped working on the home page after switching section with a shortcut.
+- Updater: the update question no longer fails with an error when the updater runs without any open window.
 
 ## 0.9.60 - 2026-10-27
 > Quick notes at your fingertips and a brand new "What's new"
