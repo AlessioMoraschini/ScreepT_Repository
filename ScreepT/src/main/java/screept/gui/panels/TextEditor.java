@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
+import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,6 +44,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
@@ -219,7 +221,8 @@ public class TextEditor extends ModulePanel {
 		textEditorUtils = new TextEditorUtils(this);
 
 		// MAIN PANEL
-		mainPanel = new JPanel();
+		// follows the viewport size: header, editor and footer always fit the frame, no outer scrolling
+		mainPanel = new ViewportFillingPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
 		mainPanel.setMinimumSize(new Dimension(400, 300));
 		mainPanel.setMaximumSize(GuiUtilsExtended.getScreenSizePerc(100, parentFrame));
@@ -229,6 +232,8 @@ public class TextEditor extends ModulePanel {
 
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMinimumSize(new Dimension(400, 300));
+		mainScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		mainScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		mainScrollPane.setBackground(Color.DARK_GRAY);
 		mainScrollPane.setViewportView(mainPanel);
@@ -1403,5 +1408,36 @@ public class TextEditor extends ModulePanel {
 
 	public CustomTabbedEditor getCurrentTabEditor() {
 		return currentTextEditor.tabbedEditorsList.get(currentTabbedEditorSelected);
+	}
+
+	/** Main panel that always takes the viewport size, so the outer scroll pane never scrolls */
+	private static class ViewportFillingPanel extends JPanel implements Scrollable {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public Dimension getPreferredScrollableViewportSize() {
+			return getPreferredSize();
+		}
+
+		@Override
+		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+			return 16;
+		}
+
+		@Override
+		public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+			return 64;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportWidth() {
+			return true;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportHeight() {
+			return true;
+		}
 	}
 }
