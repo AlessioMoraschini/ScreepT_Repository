@@ -57,12 +57,12 @@ import gui.commons.frameutils.frame.ImageViewerFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.guistyle.GUIStyelSettingsExtended;
 import gui.commons.guistyle.scale.UiScaleManager;
+import gui.commons.handlers.AlwaysOnTopManager;
 import gui.commons.handlers.EscapeToCloseHandler;
 import gui.commons.jmenu.CustomJmenuItem;
 import initializer.configs.arch.InitOwner;
 import initializer.configs.impl.INItializer;
 import mainlauncher.ScreepTLauncher;
-import net.miginfocom.swing.MigLayout;
 import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -76,6 +76,7 @@ import screept.gui.frames.GraphicPreferencesFrame;
 import screept.gui.frames.ImageConverterFrame;
 import screept.gui.panels.ConfigurationManagerPanel;
 import screept.gui.panels.CrypterPanel;
+import screept.gui.panels.MatrixHomePanel;
 import screept.gui.panels.TextEditor;
 import screept.gui.utils.filedialog.FilesAndDirectoriesManagerGUI;
 import screept.gui.utils.filedialog.INIfileChoosER;
@@ -92,7 +93,7 @@ public class MainGUI extends MainGuiParent {
 	////////////////////////////////////////////////////////////////////////
 
 	// background image
-	private JLabel labelBACKground;
+	private MatrixHomePanel homePanel;
 
 	// FRAMES THAT OPEN IN A NEW DIALOG
 	private static PluginManagerGUI pluginManagerGUI;
@@ -347,6 +348,7 @@ public class MainGUI extends MainGuiParent {
 					}
 					UiScaleManager.apply(currentConfiguration.getGuiOpt());
 					EscapeToCloseHandler.install(mainFrameScreept);
+					AlwaysOnTopManager.install(mainFrameScreept);
 
 					mainFrameScreept.toFront();
 					mainFrameScreept.requestFocus();
@@ -524,11 +526,13 @@ public class MainGUI extends MainGuiParent {
 					}
 
 					getMainFrame().setAlwaysOnTop(true);
+					AlwaysOnTopManager.setPinned(true);
 					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_GREEN));
 					mntmPinApplicationOnTop.setToolTipText("Disable \"always on top\" over other windows");
 
 				} else {
 					getMainFrame().setAlwaysOnTop(false);
+					AlwaysOnTopManager.setPinned(false);
 					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 					mntmPinApplicationOnTop
 							.setToolTipText("Enable \"always on top\" over other windows (if supported)");
@@ -1460,11 +1464,6 @@ public class MainGUI extends MainGuiParent {
 
 		mainFrameScreept.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
 
-		// resize background - Only on home page to improve performance
-		if (isOnHomePage.get()) {
-			labelBACKground.setSize(mainFrameScreept.getContentPane().getSize());
-		}
-
 		// resize textEditor if present
 		if (mainFrameScreept.getContentPane().getComponent(0) instanceof TextEditor) {
 			mainFrameScreept.setMinimumSize(MainGuiGeneralAppStarter.minimumSizeTextEditor);
@@ -1490,9 +1489,8 @@ public class MainGUI extends MainGuiParent {
 	}
 
 	public void readBackgroundImage() throws IOException {
-		BufferedImage image = ImageIO.read(new File(ImagesPathConfigurator.IMAGE_LOGO_AM_MAIN));
-		APPLICATION_MAIN_BCKG_IMAGE = image.getScaledInstance(screenWidth - 100, screenHeight - 100,
-				Image.SCALE_SMOOTH);
+		// kept at full size: MatrixHomePanel fits it to the window
+		APPLICATION_MAIN_BCKG_IMAGE = ImageIO.read(new File(ImagesPathConfigurator.IMAGE_LOGO_AM_MAIN));
 
 		BufferedImage screeptImageDnD = ImageIO.read(new File(ImagesPathConfigurator.IMAGE_BCKG_DRAGNDROP));
 		SCREEPT_BACKGROUND_DRAGNDROP_IMAGE = screeptImageDnD.getScaledInstance(screeptImageDnD.getWidth(),
@@ -1502,19 +1500,15 @@ public class MainGUI extends MainGuiParent {
 	public void setBackgroundImage() {
 		// setto lo sfondo iniziale dell'app
 		try {
-			JPanel MAIN_PANEL = new JPanel();
-			MAIN_PANEL.setBackground(SystemColor.infoText);
-			mainFrameScreept.getContentPane().add(MAIN_PANEL);
-			MAIN_PANEL.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS + "", "[90%]", "[1.00][100.52%,baseline]"));
-
 			if (APPLICATION_MAIN_BCKG_IMAGE == null) {
 				readBackgroundImage();
 			}
 
-			labelBACKground = new JLabel(new ImageIcon(APPLICATION_MAIN_BCKG_IMAGE));
+			// animated "terminal" background: a code rain that draws the home image
+			homePanel = new MatrixHomePanel(APPLICATION_MAIN_BCKG_IMAGE);
 			JPanel contentPane = (JPanel) mainFrameScreept.getContentPane();
 			contentPane.removeAll();
-			contentPane.add(labelBACKground);
+			contentPane.add(homePanel);
 			contentPane.revalidate();
 			contentPane.repaint();
 			logger.info("Background of mainGUI setted: " + GeneralConfig.RESOURCES_DIR

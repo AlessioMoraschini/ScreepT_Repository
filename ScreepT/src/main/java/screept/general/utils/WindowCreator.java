@@ -297,7 +297,6 @@ public class WindowCreator {
 
 		commonGraphicInitAlwaysOnTop(panelGeneralOptions, "Generic Options - ", true);
 
-		panelGeneralOptions.setMinimumSize(panelGeneralOptions.getDefaultDimension());
 		GuiUtilsExtended.centerComponent(panelGeneralOptions);
 
 		return panelGeneralOptions;
@@ -463,12 +462,10 @@ public class WindowCreator {
 			return null;
 
 		} finally {
+			// no JavaFX (e.g. OpenJDK, Java 11+) or Linux: the default browser renders the guide with full HTML and search
 			if ((SysUtils.getOsInfoLazy().isLinux() || unsupported) && visible) {
 				File htmlTutorialFile = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
-				boolean openWithBrowser = MainGUI.dialogHelper.yesOrNo("Internal html reader not supported, open with default browser?", "Unsupported internal html reader");
-				if (openWithBrowser) {
-					SysUtils.openUrlInBrowserOrdered(htmlTutorialFile.toURI().toString());
-				}
+				SysUtils.openUrlInBrowserOrdered(htmlTutorialFile.toURI().toString());
 			}
 		}
 	}

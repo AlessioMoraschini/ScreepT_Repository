@@ -49,6 +49,7 @@ import org.apache.log4j.Logger;
 
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.jmenu.BrowserOpenerMenu;
+import gui.commons.label.ResourceUsageLabel;
 import gui.commons.jmenu.CustomJmenuItem;
 import gui.texteditor.commons.om.TabTextEditorObject;
 import initializer.configs.impl.INItializer;
@@ -137,6 +138,7 @@ public class MainGuiParent {
 
 			// Top-right elements
 			JMenuItem mntmpadding = new JMenuItem();
+			ResourceUsageLabel resourceUsageLabel = new ResourceUsageLabel();
 			List<JMenuItem> mntmTopRightToggles = new ArrayList<JMenuItem>();
 			JMenuItem mntmpadding2 = new JMenuItem();
 			JMenuItem mntmOptimizeResourcesUsage;
@@ -353,6 +355,8 @@ public class MainGuiParent {
 		mnHelp.setMargin(menuEntryMargin);
 
 		menuBar.add(mntmpadding);
+		// live CPU/RAM usage, next to the global toggles
+		menuBar.add(resourceUsageLabel);
 
 		for(int i = mntmTopRightToggles.size() - 1; i >= 0; i--) {
 			menuBar.add(mntmTopRightToggles.get(i));

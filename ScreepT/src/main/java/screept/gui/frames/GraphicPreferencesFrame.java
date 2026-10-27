@@ -13,35 +13,33 @@ package screept.gui.frames;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.SystemColor;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -52,10 +50,15 @@ import com.jgoodies.looks.plastic.PlasticTheme;
 import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.frame.arch.ParentFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
+import gui.commons.handlers.AlwaysOnTopManager;
 import gui.commons.guistyle.GUIStyelSettingsExtended;
 import gui.commons.guistyle.LookAndFeelInfoCustom;
 import gui.commons.guistyle.scale.UiScaleCustomDialog;
 import gui.commons.guistyle.scale.UiScaleManager;
+import gui.commons.panel.options.OptionSection;
+import gui.commons.panel.options.OptionsHeader;
+import gui.commons.panel.options.OptionsPanel;
+import gui.texteditor.commons.om.TabTextEditorObject;
 import gui.texteditor.commons.utils.RsyntaxUtils;
 import gui.texteditor.commons.utils.panels.ClipboardPanel;
 import gui.texteditor.commons.utils.panels.arch.TogglePanelTextArea;
@@ -81,6 +84,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	static Logger logger = Logger.getLogger(GraphicPreferencesFrame.class);
 
 	public static Font CHECKBOX_FONT = new Font("SansSerif", Font.PLAIN, 15);
+
+	private static final int MAX_SCREEN_PERCENT = 90;
 
 	// default values
 	private String BACKUP_PREFERRED_STYLE;
@@ -124,13 +129,11 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private TextEditor currentEditor;
 
 	// GUI elements
-	private JPanel mainPanel;
-	private JScrollPane mainPanelContainer;
 	private final JFrame thisFrame;
+	private OptionsPanel optionsPanel;
 
 	private JSlider sliderMenuSize;
 	private JSlider sliderLogSize;
-	private JLabel lblTheme;
 	private ArrayList<PlasticTheme> themes;
 	private JComboBox<PlasticTheme> comboTheme;
 	private JComboBox<LookAndFeelInfoCustom> comboStyleLaF;
@@ -140,7 +143,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private JButton btnUseSettings;
 	private JButton btnSaveConf;
 	private JButton btnResetValues;
-	private JLabel lblNimbusSize;
 	private JSpinner spinnerMenuSize;
 	private JSpinner spinnerLogSize;
 	private JSpinner spinnerNimbusSize;
@@ -173,21 +175,17 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private JCheckBox chckbxShowBracket;
 	private JCheckBox chckbxAutoCheckFiles;
 	private JCheckBox chckbxSyncClipboardStyle;
-	private JLabel lblTextAreaOptions;
-	private JLabel lblGenericGraphicalOptions;
-	private JLabel lblSpellcheckerDictionarySelected;
-	private JSeparator separator_2;
-	private JSeparator separator_3;
-	private JSeparator separator_4;
-	private JSeparator separator_5;
+
+	private JComboBox<String> comboEditorFontFamily;
+	private JSpinner spinnerEditorFontSize;
+	private boolean updatingEditorFont;
+	private Font BACKUP_EDITOR_FONT;
 
 	private JSpinner spinnerInterline;
-	private JLabel lblInterline;
 	private JCheckBox checkBoxAutosaveTempFiles;
 	private JPanel footerPanel;
 
 	public GraphicPreferencesFrame(INItializer currentConf) {
-		getContentPane().setBackground(Color.DARK_GRAY);
 
 		isActive.set(true);
 
@@ -201,8 +199,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 
 		currentConfiguration = currentConf;
 
-		this.setAlwaysOnTop(true);
-		this.setResizable(false);
+		AlwaysOnTopManager.keepAboveApplication(this);
+		this.setResizable(true);
+		this.setMinimumSize(new Dimension(680, 460));
 
 		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_GUI_OPT, this);
 		setLocationRelativeTo(MainGUI.mainFrameScreept);
@@ -212,400 +211,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		logger.debug("Backup Initialized.");
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		getContentPane().setLayout(new MigLayout("", "[997px,grow]", "[560px][50px:50px:50px,grow]"));
-
-		mainPanel = new JPanel();
-		mainPanel.setBackground(new Color(0, 0, 0));
-		mainPanel.setBackground(Color.LIGHT_GRAY);
-		mainPanel.setLayout(new MigLayout("", "[:30px:140px][:60px:140px][:30px:90px,grow][:10px:30px,grow][25px,grow][70px:70px][10][:100px:10px,grow][10px,grow][35px,grow][:60px:70px][:30px:40px][:50px:50px]", "[:50:70px][25][10][30][20][30][30][30][30][30][30][30][][][:5px:10px,grow][:15px:50px,grow,baseline]"));
-		mainPanelContainer = new JScrollPane(mainPanel);
-		getContentPane().add(mainPanelContainer, "cell 0 0,grow");
-
-		JPanel panel = new JPanel();
-		panel.setForeground(SystemColor.controlText);
-		panel.setBorder(new LineBorder(null, 4));
-		panel.setBackground(Color.DARK_GRAY);
-		mainPanel.add(panel, "cell 0 0 13 1,grow");
-		panel.setLayout(new MigLayout("", "[100px][][70px][grow][][][][]", "[100]"));
-
-		chckbxDarklight = new JCheckBox("Nimbus Dark theme");
-		chckbxDarklight.setOpaque(false);
-		chckbxDarklight.setForeground(Color.WHITE);
-		panel.add(chckbxDarklight, "cell 0 0 2 1");
-		chckbxDarklight.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxDarklight.setFont(new Font("SansSerif", Font.BOLD, 11));
-
-		JLabel lblGraphicInterfaceSettings = new JLabel("GUI   Preferences");
-		panel.add(lblGraphicInterfaceSettings, "cell 3 0,alignx center");
-		lblGraphicInterfaceSettings.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblGraphicInterfaceSettings.setForeground(Color.WHITE);
-		lblGraphicInterfaceSettings.setFont(new Font("Lithos Pro Regular", Font.BOLD, 22));
-		lblGraphicInterfaceSettings.setBackground(Color.LIGHT_GRAY);
-
-		lblNimbusSize = new JLabel("Nimbus size variant");
-		lblNimbusSize.setForeground(Color.WHITE);
-		panel.add(lblNimbusSize, "cell 6 0");
-		lblNimbusSize.setFont(new Font("SansSerif", Font.BOLD, 11));
-
-		spinnerNimbusSize = new JSpinner();
-		spinnerNimbusSize.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		spinnerNimbusSize.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		spinnerNimbusSize.setModel(new SpinnerNumberModel(0, 0, 2, 1));
-		spinnerNimbusSize.setValue(currentConf.getGuiOpt().nimbusSize);
-		spinnerNimbusSize.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		panel.add(spinnerNimbusSize, "cell 7 0,alignx right");
-
-		separator_4 = new JSeparator();
-		separator_4.setPreferredSize(new Dimension(0, 1));
-		separator_4.setMinimumSize(new Dimension(1, 1));
-		separator_4.setOpaque(true);
-		separator_4.setForeground(Color.DARK_GRAY);
-		separator_4.setBackground(Color.GRAY);
-		mainPanel.add(separator_4, "cell 0 1,growx");
-
-		lblGenericGraphicalOptions = new JLabel("Generic Graphical Options");
-		lblGenericGraphicalOptions.setForeground(Color.GRAY);
-		lblGenericGraphicalOptions.setFont(new Font("Tahoma", Font.BOLD, 13));
-		mainPanel.add(lblGenericGraphicalOptions, "cell 1 1 3 1,alignx left");
-
-		separator_2 = new JSeparator();
-		separator_2.setPreferredSize(new Dimension(0, 1));
-		separator_2.setMinimumSize(new Dimension(1, 1));
-		separator_2.setOpaque(true);
-		separator_2.setForeground(Color.DARK_GRAY);
-		separator_2.setBackground(Color.GRAY);
-		mainPanel.add(separator_2, "cell 4 1 9 1,growx");
-
-		JLabel lblGuiType = new JLabel("GUI Style");
-		lblGuiType.setFont(new Font("Tahoma", Font.BOLD, 13));
-		mainPanel.add(lblGuiType, "cell 0 2,alignx center");
-
-		lblTheme = new JLabel("Theme");
-		lblTheme.setFont(new Font("Tahoma", Font.BOLD, 13));
-		mainPanel.add(lblTheme, "cell 5 2,alignx center");
-
-		checkBoxAutosaveTempFiles = new JCheckBox("Autosave temp files");
-		checkBoxAutosaveTempFiles.setOpaque(false);
-		checkBoxAutosaveTempFiles.setCursor(GuiUtils.CURSOR_HAND);
-		checkBoxAutosaveTempFiles.setFont(new Font("SansSerif", Font.BOLD, 13));
-		mainPanel.add(checkBoxAutosaveTempFiles, "cell 9 10 4 1");
-
-		spinnerInterline = new JSpinner();
-		spinnerInterline.setModel(new SpinnerNumberModel(0, 0, 20, 1));
-		spinnerInterline.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		spinnerInterline.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		mainPanel.add(spinnerInterline, "cell 0 11,growx");
-
-		lblInterline = new JLabel("Interline");
-		lblInterline.setFont(new Font("Tahoma", Font.BOLD, 13));
-		mainPanel.add(lblInterline, "cell 1 11 2 1");
-
-		lblSpellcheckerDictionarySelected = new JLabel("Spellchecker dictionary:");
-		lblSpellcheckerDictionarySelected.setFont(new Font("Tahoma", Font.BOLD, 13));
-		mainPanel.add(lblSpellcheckerDictionarySelected, "cell 0 13 2 1,alignx center");
-
-//		comboStyleLaF = new JComboBox<LookAndFeelInfoCustom>();
-		comboStyleLaF = new JComboBox<LookAndFeelInfoCustom>(GUIStyelSettingsExtended.getLookAndFeelList());
-		comboStyleLaF.setPreferredSize(new Dimension(200, 26));
-		comboStyleLaF.setMinimumSize(new Dimension(200, 26));
-		comboStyleLaF.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		comboStyleLaF.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		comboStyleLaF.setMaximumRowCount(10);
-		comboStyleLaF.setMaximumSize(new Dimension(2000, 50));
-		mainPanel.add(comboStyleLaF, "cell 1 2 4 1,grow");
-
-//		comboTheme = new JComboBox();
-		themes = GUIStyelSettingsExtended.getPlasticThemes();
-		comboTheme = new JComboBox<PlasticTheme>(themes.toArray(new PlasticTheme[themes.size()]));
-		comboTheme.setRenderer(new ThemeCellRenderer());
-		comboTheme.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		comboTheme.setPreferredSize(new Dimension(200, 26));
-		comboTheme.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		comboTheme.setMinimumSize(new Dimension(200, 26));
-		comboTheme.setMaximumSize(new Dimension(2000, 50));
-		comboTheme.setMaximumRowCount(10);
-		comboTheme.setFont(null);
-		mainPanel.add(comboTheme, "cell 6 2 7 1,growx");
-
-//		comboSpellcheckerDictionary = new JComboBox<FileNamed>();
-		comboSpellcheckerDictionary = new JComboBox<FileNamed>(RsyntaxUtils.getSpellCheckerDIctionaries());
-		comboSpellcheckerDictionary.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		comboSpellcheckerDictionary.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		mainPanel.add(comboSpellcheckerDictionary, "cell 2 13 4 1,growx");
-
-		JLabel lblUiSize = new JLabel("Interface size");
-		lblUiSize.setFont(new Font("Tahoma", Font.BOLD, 13));
-		mainPanel.add(lblUiSize, "cell 6 13,alignx right");
-
-		comboUiSize = new JComboBox<UiSizePreset>(UiSizePreset.values());
-		comboUiSize.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		comboUiSize.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		comboUiSize.setToolTipText("Fonts and graphic elements size; Custom keeps your own values");
-		mainPanel.add(comboUiSize, "cell 7 13 3 1,growx");
-
-		btnUiSizeCustomize = new JButton("Customize...");
-		btnUiSizeCustomize.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		btnUiSizeCustomize.setToolTipText("Show or set font family and sizes of general text, menus, toolbars and graphic elements");
-		mainPanel.add(btnUiSizeCustomize, "cell 10 13 3 1,growx");
-
-		JLabel lblMenuFontSize = new JLabel("Menu font size");
-		lblMenuFontSize.setFont(new Font("Tahoma", Font.BOLD, 13));
-		mainPanel.add(lblMenuFontSize, "cell 0 3,alignx right");
-
-		spinnerMenuSize = new JSpinner();
-		spinnerMenuSize.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		spinnerMenuSize.setModel(new SpinnerNumberModel(12, 5, 24, 1));
-		spinnerMenuSize.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		mainPanel.add(spinnerMenuSize, "cell 1 3,growx");
-
-		sliderMenuSize = new JSlider();
-		sliderMenuSize.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		sliderMenuSize.setMaximum(24);
-		sliderMenuSize.setMinimum(5);
-		mainPanel.add(sliderMenuSize, "cell 2 3 4 1,growx");
-
-		JLabel lblFontSize = new JLabel("  Log Font size");
-		lblFontSize.setFont(new Font("Tahoma", Font.BOLD, 13));
-		mainPanel.add(lblFontSize, "cell 6 3,alignx center");
-
-		spinnerLogSize = new JSpinner();
-		spinnerLogSize.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		spinnerLogSize.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		spinnerLogSize.setModel(new SpinnerNumberModel(12, 5, 30, 1));
-		mainPanel.add(spinnerLogSize, "cell 7 3 2 1,growx");
-
-		sliderLogSize = new JSlider();
-		sliderLogSize.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		sliderLogSize.setMaximum(30);
-		sliderLogSize.setMinimum(5);
-		mainPanel.add(sliderLogSize, "cell 9 3 4 1,growx");
-
-		separator_3 = new JSeparator();
-		separator_3.setPreferredSize(new Dimension(0, 1));
-		separator_3.setMinimumSize(new Dimension(1, 1));
-		separator_3.setOpaque(true);
-		separator_3.setForeground(Color.DARK_GRAY);
-		separator_3.setBackground(Color.GRAY);
-		mainPanel.add(separator_3, "cell 0 4,growx");
-
-		lblTextAreaOptions = new JLabel("Text Editor Options");
-		lblTextAreaOptions.setForeground(Color.GRAY);
-		lblTextAreaOptions.setFont(new Font("Tahoma", Font.BOLD, 13));
-		mainPanel.add(lblTextAreaOptions, "cell 1 4 2 1,alignx left");
-
-		JSeparator separator = new JSeparator();
-		separator.setPreferredSize(new Dimension(0, 1));
-		separator.setMinimumSize(new Dimension(1, 1));
-		separator.setOpaque(true);
-		separator.setForeground(Color.DARK_GRAY);
-		separator.setBackground(Color.GRAY);
-		mainPanel.add(separator, "cell 3 4 10 1,growx");
-
-		chckBoxAntiAliasingON = new JCheckBox("Antialiasing enabled");
-		chckBoxAntiAliasingON.setOpaque(false);
-		chckBoxAntiAliasingON.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckBoxAntiAliasingON.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckBoxAntiAliasingON, "cell 0 5 4 1,alignx left");
-
-		chckbxAutoindentation = new JCheckBox("Auto-Indentation");
-		chckbxAutoindentation.setOpaque(false);
-		chckbxAutoindentation.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxAutoindentation.setSelected(false);
-		chckbxAutoindentation.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxAutoindentation, "cell 4 5 2 1,alignx left");
-
-		chckbxAnimateBrackets = new JCheckBox("Animate Brackets");
-		chckbxAnimateBrackets.setOpaque(false);
-		chckbxAnimateBrackets.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxAnimateBrackets.setSelected(false);
-		chckbxAnimateBrackets.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxAnimateBrackets, "cell 6 5,alignx left");
-
-		chckbxBracketsMatching = new JCheckBox("Brackets Matching");
-		chckbxBracketsMatching.setOpaque(false);
-		chckbxBracketsMatching.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxBracketsMatching.setSelected(false);
-		chckbxBracketsMatching.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxBracketsMatching, "cell 9 5 4 1,alignx left");
-
-		chckbxHightlightBracketPairs = new JCheckBox("Print matched bracket pairs");
-		chckbxHightlightBracketPairs.setOpaque(false);
-		chckbxHightlightBracketPairs.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxHightlightBracketPairs.setSelected(false);
-		chckbxHightlightBracketPairs.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxHightlightBracketPairs, "cell 0 6 4 1");
-
-		chckbxCloseCurlybraces = new JCheckBox("Close Curly-Braces");
-		chckbxCloseCurlybraces.setOpaque(false);
-		chckbxCloseCurlybraces.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxCloseCurlybraces.setSelected(false);
-		chckbxCloseCurlybraces.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxCloseCurlybraces, "cell 4 6 2 1,alignx left");
-
-		chckbxCloseMarkuptags = new JCheckBox("Close Markup-Tags");
-		chckbxCloseMarkuptags.setOpaque(false);
-		chckbxCloseMarkuptags.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxCloseMarkuptags.setSelected(false);
-		chckbxCloseMarkuptags.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxCloseMarkuptags, "cell 6 6,alignx left");
-
-		chckbxFocusableTips = new JCheckBox("Focusable Tips:");
-		chckbxFocusableTips.setOpaque(false);
-		chckbxFocusableTips.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxFocusableTips.setSelected(false);
-		chckbxFocusableTips.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxFocusableTips, "cell 9 6 4 1,alignx left");
-
-		chckbxCodeFolding = new JCheckBox("Code Folding");
-		chckbxCodeFolding.setOpaque(false);
-		chckbxCodeFolding.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxCodeFolding.setSelected(false);
-		chckbxCodeFolding.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxCodeFolding, "cell 0 7 4 1,alignx left");
-
-		chckbxAllowFractionalFonts = new JCheckBox("Allow Fractional Fonts");
-		chckbxAllowFractionalFonts.setOpaque(false);
-		chckbxAllowFractionalFonts.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxAllowFractionalFonts.setSelected(false);
-		chckbxAllowFractionalFonts.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxAllowFractionalFonts, "cell 4 7 2 1,alignx left");
-
-		chckbxFadeHighlight = new JCheckBox("Fade Highlight");
-		chckbxFadeHighlight.setOpaque(false);
-		chckbxFadeHighlight.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxFadeHighlight.setSelected(false);
-		chckbxFadeHighlight.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxFadeHighlight, "cell 6 7,alignx left");
-
-		chckbxHighlightndLanguages = new JCheckBox("Highlight 2nd Languages");
-		chckbxHighlightndLanguages.setOpaque(false);
-		chckbxHighlightndLanguages.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxHighlightndLanguages.setSelected(false);
-		chckbxHighlightndLanguages.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxHighlightndLanguages, "cell 9 7 4 1,alignx left");
-
-		chckbxEmulatedTabsWith = new JCheckBox("Emulated tabs with spaces");
-		chckbxEmulatedTabsWith.setOpaque(false);
-		chckbxEmulatedTabsWith.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxEmulatedTabsWith.setSelected(false);
-		chckbxEmulatedTabsWith.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxEmulatedTabsWith, "cell 0 8 4 1");
-
-		chckbxMarkOccurrencesPaintBorder = new JCheckBox("Paint Occurrences Border");
-		chckbxMarkOccurrencesPaintBorder.setOpaque(false);
-		chckbxMarkOccurrencesPaintBorder.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxMarkOccurrencesPaintBorder.setSelected(false);
-		chckbxMarkOccurrencesPaintBorder.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxMarkOccurrencesPaintBorder, "cell 4 8 2 1");
-
-		checkBoxMarkOccurrences = new JCheckBox("Mark Occurrences");
-		checkBoxMarkOccurrences.setOpaque(false);
-		checkBoxMarkOccurrences.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		checkBoxMarkOccurrences.setSelected(false);
-		checkBoxMarkOccurrences.setFont(CHECKBOX_FONT);
-		mainPanel.add(checkBoxMarkOccurrences, "cell 6 8");
-
-		chckbxRoundSelectionEdges = new JCheckBox("Round Selection Edges");
-		chckbxRoundSelectionEdges.setOpaque(false);
-		chckbxRoundSelectionEdges.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxRoundSelectionEdges.setSelected(false);
-		chckbxRoundSelectionEdges.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxRoundSelectionEdges, "cell 9 8 4 1");
-
-		chckbxMarkEOL = new JCheckBox("Mark end of line");
-		chckbxMarkEOL.setOpaque(false);
-		chckbxMarkEOL.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxMarkEOL.setSelected(false);
-		chckbxMarkEOL.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxMarkEOL, "cell 0 9 4 1");
-
-		chckbxHyperlinksEnabled = new JCheckBox("Hyperlinks Enabled");
-		chckbxHyperlinksEnabled.setOpaque(false);
-		chckbxHyperlinksEnabled.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxHyperlinksEnabled.setSelected(false);
-		chckbxHyperlinksEnabled.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxHyperlinksEnabled, "cell 4 9 2 1");
-
-		chckbxShowBracket = new JCheckBox("Show bracket popup");
-		chckbxShowBracket.setOpaque(false);
-		chckbxShowBracket.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxShowBracket.setSelected(false);
-		chckbxShowBracket.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxShowBracket, "cell 6 9");
-
-		chckbxSyncClipboardStyle = new JCheckBox("Sync clipboard style");
-		chckbxSyncClipboardStyle.setOpaque(false);
-		chckbxSyncClipboardStyle.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxSyncClipboardStyle.setSelected(false);
-		chckbxSyncClipboardStyle.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxSyncClipboardStyle, "cell 9 9 4 1");
-
-		chckbxShowWhitespaces = new JCheckBox("Show whitespaces and empty lines");
-		chckbxShowWhitespaces.setOpaque(false);
-		chckbxShowWhitespaces.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxShowWhitespaces.setSelected(false);
-		chckbxShowWhitespaces.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxShowWhitespaces, "cell 0 10 4 1");
-
-		chckbxClearWhitespaceLines = new JCheckBox("Clear whitespace lines");
-		chckbxClearWhitespaceLines.setOpaque(false);
-		chckbxClearWhitespaceLines.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxClearWhitespaceLines.setSelected(false);
-		chckbxClearWhitespaceLines.setFont(CHECKBOX_FONT);
-		mainPanel.add(chckbxClearWhitespaceLines, "cell 4 10 2 1,alignx left");
-
-		chckbxAutoCheckFiles = new JCheckBox("Auto check for file changes");
-		chckbxAutoCheckFiles.setOpaque(false);
-		chckbxAutoCheckFiles.setSelected(false);
-		chckbxAutoCheckFiles.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chckbxAutoCheckFiles.setFont(new Font("SansSerif", Font.BOLD, 13));
-		mainPanel.add(chckbxAutoCheckFiles, "cell 6 10 3 1");
-
-		separator_5 = new JSeparator();
-		separator_5.setOpaque(true);
-		separator_5.setBackground(Color.GRAY);
-		mainPanel.add(separator_5, "cell 0 12 13 1,growx");
-
-		JSeparator separator_1 = new JSeparator();
-		separator_1.setBackground(Color.GRAY);
-		separator_1.setOpaque(true);
-		mainPanel.add(separator_1, "cell 0 14 13 1,growx,aligny center");
-
-		footerPanel = new JPanel();
-		footerPanel.setBackground(Color.DARK_GRAY);
-		getContentPane().add(footerPanel, "cell 0 1,grow");
-		footerPanel.setLayout(new MigLayout("", "[][grow][][][]", "[]"));
-
-						btnResetValues = new JButton("Reset initial values");
-						footerPanel.add(btnResetValues, "cell 0 0,growy");
-						btnResetValues.setMinimumSize(new Dimension(30, 35));
-						btnResetValues.setCursor(GuiUtilsExtended.CURSOR_HAND);
-						btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
-						btnResetValues.setBackground(new Color(240, 230, 140));
-
-								btnSaveConf = new JButton("Save Values");
-								footerPanel.add(btnSaveConf, "cell 2 0,growy");
-								btnSaveConf.setMinimumSize(new Dimension(30, 35));
-								btnSaveConf.setCursor(GuiUtilsExtended.CURSOR_HAND);
-								btnSaveConf.setForeground(new Color(0, 0, 0));
-								btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
-								btnSaveConf.setBackground(new Color(169, 169, 169));
-
-										btnUseSettings = new JButton("Use");
-										footerPanel.add(btnUseSettings, "cell 3 0,growy");
-										btnUseSettings.setMinimumSize(new Dimension(30, 35));
-										btnUseSettings.setCursor(GuiUtilsExtended.CURSOR_HAND);
-										btnUseSettings.setForeground(Color.BLACK);
-										btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
-										btnUseSettings.setBackground(new Color(169, 169, 169));
-
-												btnDiscard = new JButton("Discard");
-												footerPanel.add(btnDiscard, "cell 4 0,growy");
-												btnDiscard.setMinimumSize(new Dimension(30, 35));
-												btnDiscard.setCursor(GuiUtilsExtended.CURSOR_HAND);
-												btnDiscard.setForeground(new Color(0, 0, 0));
-												btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
-												btnDiscard.setBackground(new Color(205, 92, 92));
+		createControls();
+		createFooter();
+		buildLayout();
 
 		addHandlers();
 
@@ -624,6 +232,170 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				}, true, true, true);
 			}
 		});
+	}
+
+	/*
+	 * VIEW CONSTRUCTION: option controls (models and listeners are bound in addHandlers/updateGUI),
+	 * footer buttons, then the presentation (sections, search). The data model is never touched here.
+	 */
+
+	private void createControls() {
+
+		comboStyleLaF = new JComboBox<LookAndFeelInfoCustom>(GUIStyelSettingsExtended.getLookAndFeelList());
+		comboStyleLaF.setMaximumRowCount(10);
+
+		themes = GUIStyelSettingsExtended.getPlasticThemes();
+		comboTheme = new JComboBox<PlasticTheme>(themes.toArray(new PlasticTheme[themes.size()]));
+		comboTheme.setRenderer(new ThemeCellRenderer());
+		comboTheme.setMaximumRowCount(10);
+
+		comboUiSize = new JComboBox<UiSizePreset>(UiSizePreset.values());
+		comboUiSize.setToolTipText("Fonts and graphic elements size; Custom keeps your own values");
+		btnUiSizeCustomize = new JButton("Customize...");
+		btnUiSizeCustomize.setToolTipText("Show or set font family and sizes of general text, menus, toolbars and graphic elements");
+
+		spinnerMenuSize = new JSpinner(new SpinnerNumberModel(12, 5, 24, 1));
+		sliderMenuSize = new JSlider(5, 24);
+		spinnerLogSize = new JSpinner(new SpinnerNumberModel(12, 5, 30, 1));
+		sliderLogSize = new JSlider(5, 30);
+
+		spinnerNimbusSize = new JSpinner(new SpinnerNumberModel(0, 0, 2, 1));
+		spinnerNimbusSize.setValue(currentConfiguration.getGuiOpt().nimbusSize);
+		chckbxDarklight = newCheckBox("Nimbus dark theme");
+
+		comboEditorFontFamily = new JComboBox<String>(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
+		comboEditorFontFamily.setMaximumRowCount(20);
+		comboEditorFontFamily.setToolTipText("Text editor font: a monospaced one (e.g. Consolas) keeps rectangular selections aligned");
+		spinnerEditorFontSize = new JSpinner(new SpinnerNumberModel(16, 4, 100, 1));
+
+		spinnerInterline = new JSpinner(new SpinnerNumberModel(0, 0, 20, 1));
+		comboSpellcheckerDictionary = new JComboBox<FileNamed>(RsyntaxUtils.getSpellCheckerDIctionaries());
+
+		chckbxAutoindentation = newCheckBox("Auto-indentation");
+		chckbxCloseCurlybraces = newCheckBox("Close curly braces");
+		chckbxCloseMarkuptags = newCheckBox("Close markup tags");
+		chckbxEmulatedTabsWith = newCheckBox("Emulated tabs with spaces");
+		chckbxClearWhitespaceLines = newCheckBox("Clear whitespace lines");
+		checkBoxAutosaveTempFiles = newCheckBox("Autosave temp files");
+		chckbxAutoCheckFiles = newCheckBox("Auto check for file changes");
+		chckbxSyncClipboardStyle = newCheckBox("Sync clipboard style");
+
+		chckBoxAntiAliasingON = newCheckBox("Antialiasing enabled");
+		chckbxAllowFractionalFonts = newCheckBox("Allow fractional fonts");
+		chckbxCodeFolding = newCheckBox("Code folding");
+		chckbxFadeHighlight = newCheckBox("Fade highlight");
+		chckbxHighlightndLanguages = newCheckBox("Highlight 2nd languages");
+		chckbxShowWhitespaces = newCheckBox("Show whitespaces and empty lines");
+		chckbxMarkEOL = newCheckBox("Mark end of line");
+		chckbxRoundSelectionEdges = newCheckBox("Round selection edges");
+		chckbxHyperlinksEnabled = newCheckBox("Hyperlinks enabled");
+		chckbxFocusableTips = newCheckBox("Focusable tips");
+
+		chckbxBracketsMatching = newCheckBox("Brackets matching");
+		chckbxAnimateBrackets = newCheckBox("Animate brackets");
+		chckbxHightlightBracketPairs = newCheckBox("Paint matched bracket pairs");
+		chckbxShowBracket = newCheckBox("Show bracket popup");
+		checkBoxMarkOccurrences = newCheckBox("Mark occurrences");
+		chckbxMarkOccurrencesPaintBorder = newCheckBox("Paint occurrences border");
+
+		for (JComponent control : new JComponent[] { comboStyleLaF, comboTheme, comboUiSize, btnUiSizeCustomize,
+				comboEditorFontFamily, comboSpellcheckerDictionary, sliderMenuSize, sliderLogSize }) {
+			control.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		}
+	}
+
+	private JCheckBox newCheckBox(String text) {
+		JCheckBox checkBox = new JCheckBox(text);
+		checkBox.setOpaque(false);
+		checkBox.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		return checkBox;
+	}
+
+	private void createFooter() {
+		btnResetValues = newFooterButton("Reset initial values", new Color(240, 230, 140));
+		btnSaveConf = newFooterButton("Save Values", new Color(169, 169, 169));
+		btnUseSettings = newFooterButton("Use", new Color(169, 169, 169));
+		btnDiscard = newFooterButton("Discard", new Color(205, 92, 92));
+
+		footerPanel = new JPanel(new MigLayout("insets 10 18 12 18", "[][grow][][][]"));
+		footerPanel.add(btnResetValues, "cell 0 0");
+		footerPanel.add(btnSaveConf, "cell 2 0");
+		footerPanel.add(btnUseSettings, "cell 3 0");
+		footerPanel.add(btnDiscard, "cell 4 0");
+	}
+
+	private JButton newFooterButton(String text, Color background) {
+		JButton button = new JButton(text);
+		button.setMinimumSize(new Dimension(30, 35));
+		button.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		button.setFont(button.getFont().deriveFont(Font.BOLD, button.getFont().getSize2D() + 2f));
+		button.setForeground(Color.BLACK);
+		button.setBackground(background);
+		return button;
+	}
+
+	/** Presentation only: searchable sections around the option controls */
+	private void buildLayout() {
+
+		optionsPanel = new OptionsPanel();
+		optionsPanel.addSection("Appearance", "Look and feel, theme and interface size")
+				.addRow("GUI style", comboStyleLaF)
+				.addRow("Theme", comboTheme)
+				.addRow("Interface size", comboUiSize, btnUiSizeCustomize)
+				.addRow("Menu font size", spinnerMenuSize, sliderMenuSize)
+				.addRow("Log font size", spinnerLogSize, sliderLogSize)
+				.addRow("Nimbus size variant", spinnerNimbusSize)
+				.addCheckBoxes(chckbxDarklight);
+		OptionSection textEditor = optionsPanel.addSection("Text editor", "Font, line spacing and spellchecker")
+				.addRow("Font", comboEditorFontFamily, spinnerEditorFontSize)
+				.addRow("Interline", spinnerInterline)
+				.addRow("Spellchecker dictionary", comboSpellcheckerDictionary);
+		textEditor.addSubsection("Editing", "Typing helpers, tabs and files")
+				.addCheckBoxes(chckbxAutoindentation, chckbxCloseCurlybraces, chckbxCloseMarkuptags, chckbxEmulatedTabsWith,
+						chckbxClearWhitespaceLines, checkBoxAutosaveTempFiles, chckbxAutoCheckFiles, chckbxSyncClipboardStyle);
+		textEditor.addSubsection("Display", "How text is rendered and highlighted")
+				.addCheckBoxes(chckBoxAntiAliasingON, chckbxAllowFractionalFonts, chckbxCodeFolding, chckbxFadeHighlight,
+						chckbxHighlightndLanguages, chckbxShowWhitespaces, chckbxMarkEOL, chckbxRoundSelectionEdges,
+						chckbxHyperlinksEnabled, chckbxFocusableTips);
+		textEditor.addSubsection("Brackets and occurrences", null)
+				.addCheckBoxes(chckbxBracketsMatching, chckbxAnimateBrackets, chckbxHightlightBracketPairs, chckbxShowBracket,
+						checkBoxMarkOccurrences, chckbxMarkOccurrencesPaintBorder);
+
+		JScrollPane scroller = new JScrollPane(optionsPanel);
+		scroller.setBorder(BorderFactory.createEmptyBorder());
+		scroller.getVerticalScrollBar().setUnitIncrement(16);
+
+		getContentPane().setLayout(new MigLayout("fill, insets 0, gap 0", "[grow,fill]", "[][grow,fill][]"));
+		getContentPane().add(createHeader(), "growx, wrap");
+		getContentPane().add(scroller, "grow, wrap");
+		getContentPane().add(footerPanel, "growx");
+	}
+
+	private JPanel createHeader() {
+		return new OptionsHeader("Graphic preferences", optionsPanel, this);
+	}
+
+	/** Builds the editor font from the controls and applies it live (backup/restore handle discard) */
+	private void applyEditorFont() {
+		Font current = currentConfiguration.getTextEditorOpt().getFont();
+		Font font = new Font((String) comboEditorFontFamily.getSelectedItem(), current.getStyle(), (Integer) spinnerEditorFontSize.getValue());
+		currentConfiguration.getTextEditorOpt().setFont(font);
+		refreshEditorFont(font);
+	}
+
+	/** Applies the font to every open tab and to the editor toolbar size slider */
+	private void refreshEditorFont(Font font) {
+		if (currentEditor == null) {
+			return;
+		}
+		try {
+			for (TabTextEditorObject tab : currentEditor.getCurrentTabEditor().loadedList.getList()) {
+				tab.textArea.setFont(font);
+			}
+			currentEditor.subHeaderPanel.sliderFontSize.setValue(font.getSize());
+		} catch (Exception e) {
+			logger.warn("Cannot refresh text editor font", e);
+		}
 	}
 
 	private void addHandlers() {
@@ -672,6 +444,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 								currentEditor.initGuiFromConfig(true, true);
 							}
 							UiScaleManager.apply(currentConfiguration.getGuiOpt());
+						refreshEditorFont(currentConfiguration.getTextEditorOpt().getFont());
 
 							singletonInstance = null;
 						}
@@ -1042,6 +815,18 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			}
 		});
 
+		// TEXT EDITOR FONT HANDLERS (applied live, like the other options)
+		comboEditorFontFamily.addActionListener(e -> {
+			if (!updatingEditorFont) {
+				applyEditorFont();
+			}
+		});
+		spinnerEditorFontSize.addChangeListener(e -> {
+			if (!updatingEditorFont) {
+				applyEditorFont();
+			}
+		});
+
 		// INTERFACE SIZE HANDLERS: preset sets its default values, Custom keeps current ones (preview applied live)
 		comboUiSize.addActionListener(new ActionListener() {
 			@Override
@@ -1162,6 +947,11 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		selectUiSizePreset(guiOpt.getUiSizePreset());
 		UiScaleManager.apply(guiOpt);
 
+		updatingEditorFont = true;
+		comboEditorFontFamily.setSelectedItem(txtOpt.getFont().getFamily());
+		spinnerEditorFontSize.setValue(txtOpt.getFont().getSize());
+		updatingEditorFont = false;
+
 		// TEXT AREA
 		chckBoxAntiAliasingON.setSelected(txtOpt.antialiasedTxtArea);
 		chckbxAllowFractionalFonts.setSelected(txtOpt.fractionalFontMetricsEnabled);
@@ -1239,6 +1029,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		BACKUP_DARK_THEME = guiOpt.isDarkGuiNimbus();
 		BACKUP_NIMBUS_SIZE = guiOpt.getNimbusSize();
 		BACKUP_UI_SIZE.copyUiSizeFrom(guiOpt);
+		BACKUP_EDITOR_FONT = txtOpt.getFont();
 
 		// detail backup
 		BACKUP_TXTAREA_ANTIALIASED = txtOpt.isAntialiasedTxtArea();
@@ -1284,6 +1075,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		guiOpt.setDarkGuiNimbus(BACKUP_DARK_THEME);
 		guiOpt.setNimbusSize(BACKUP_NIMBUS_SIZE);
 		guiOpt.copyUiSizeFrom(BACKUP_UI_SIZE);
+		txtOpt.setFont(BACKUP_EDITOR_FONT);
 
 		txtOpt.setAntialiasedTxtArea(BACKUP_TXTAREA_ANTIALIASED);
 		txtOpt.setAnimateBracketMatching(BACKUP_TXTAREA_ANIMATE_BRACKETS);
@@ -1397,7 +1189,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 					if (currentEditor != null) {
 						currentEditor.initGuiFromConfig(true, true);
 					}
-					comboTheme.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
+					// the LAF switch can push this window behind the main one
+					SwingUtilities.invokeLater(thisFrame::toFront);
 				}
 			}
 		};
@@ -1428,8 +1221,16 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	}
 
 	@Override
+	/** Fits all the options without scrolling, up to 90% of the main window monitor (maximize stays available) */
 	public Dimension getDefaultDimension() {
-		return new Dimension(1000, 620);
+
+		return OptionsPanel.fitWindowSize(this, getMinimumDimension(), MAX_SCREEN_PERCENT,
+				MainGUI.mainFrameScreept != null ? MainGUI.mainFrameScreept : this);
+	}
+
+	@Override
+	public Dimension getMinimumDimension() {
+		return new Dimension(680, 460);
 	}
 
 	public static GraphicPreferencesFrame getInstance(INItializer currentConf) {

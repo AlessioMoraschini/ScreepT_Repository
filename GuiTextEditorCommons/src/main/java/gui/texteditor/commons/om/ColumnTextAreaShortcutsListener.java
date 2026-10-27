@@ -62,60 +62,67 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 			}
 		}
 	    
-//////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
-		
-		if (!isShortcutKey(e) && e.getID() == KeyEvent.KEY_PRESSED ) {
-			
-			// CANC
-			if (e.getKeyCode() == 127) {
-				try {
-					if (currentColumnTextArea.isRectangularModeOn.get() && currentColumnTextArea.isCurrentSelectionRectangular()) {
-						currentColumnTextArea.rectangularReplaceSelection("");
-					}
-				} catch (Exception e2) {
-				}
-			}
-			// DELETE
-			if (e.getKeyCode() == 8) {
-				if (currentColumnTextArea.isRectangularModeOn.get() && currentColumnTextArea.isCurrentSelectionRectangular()) {
-					currentColumnTextArea.rectangularReplaceSelection("");
-				}
-			}
+		// RECTANGULAR SELECTION EDITING (Notepad++ like): only on the focused text area, only while a rectangle exists
+		ColumnTextArea area = currentColumnTextArea;
+		if (area == null || !area.isFocusOwner() || !area.isRectangularModeOn.get() || !area.hasRectangle()) {
+			return false;
+		}
 
-			String value = String.valueOf(e.getKeyChar());
-			if (StringUtils.isAsciiPrintable(value) && currentColumnTextArea.isCurrentSelectionRectangular()) {
-
-				currentColumnTextArea.rectangularReplaceSelection(value);
-				SwingUtilities.invokeLater(new Runnable() {
-
-					@Override
-					public void run() {
-
-						try {
-							currentColumnTextArea.replaceRange("", currentColumnTextArea.getCaretPosition() - 1, currentColumnTextArea.getCaretPosition());
-							currentColumnTextArea.moveSelectionRectangle(1);
-						} catch (Exception e1) {
-						}
-					}
-				});
+		if (e.getID() == KeyEvent.KEY_TYPED) {
+			char typed = e.getKeyChar();
+			// ctrl alone is a shortcut, ctrl + alt is AltGr (types chars like @ # [ ])
+			boolean shortcut = e.isControlDown() && !e.isAltDown();
+			if (!shortcut && typed != KeyEvent.CHAR_UNDEFINED && !Character.isISOControl(typed)) {
+				area.rectangularType(String.valueOf(typed));
+				e.consume();
 				return true;
 			}
-			
-			if (!StringUtils.isAsciiPrintable(value)) {
-				currentColumnTextArea.getHighlighter().removeAllHighlights();
-			}
-		
-		} else if (!isShortcutKey(e) && e.getID() == KeyEvent.KEY_RELEASED) {
-			
-			if (!e.isAltDown()) {
-				
-				String value = String.valueOf(e.getKeyChar());
-				if(StringUtils.isAsciiPrintable(value) && currentColumnTextArea.isCurrentSelectionRectangular()) {
+			return false;
+		}
+
+		// clipboard keys: Swing TransferHandler works on the linear selection only, so they are routed here
+		if (e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && !e.isAltDown() && !e.isShiftDown()) {
+			switch (e.getKeyCode()) {
+				case KeyEvent.VK_X:
+					area.rectangularCut();
+					e.consume();
 					return true;
-				}
+				case KeyEvent.VK_C:
+					area.copy();
+					e.consume();
+					return true;
+				case KeyEvent.VK_V:
+					area.paste();
+					e.consume();
+					return true;
+				default:
+					return false;
 			}
 		}
-	    
+
+		if (e.getID() == KeyEvent.KEY_PRESSED && !isShortcutKey(e)) {
+			switch (e.getKeyCode()) {
+				case KeyEvent.VK_BACK_SPACE:
+					area.rectangularDelete(true);
+					e.consume();
+					return true;
+				case KeyEvent.VK_DELETE:
+					area.rectangularDelete(false);
+					e.consume();
+					return true;
+				case KeyEvent.VK_ESCAPE:
+					area.clearRectangle();
+					e.consume();
+					return true;
+				default:
+					// navigation and control keys (arrows, enter, tab...) end the rectangular selection
+					if (e.getKeyChar() == KeyEvent.CHAR_UNDEFINED || Character.isISOControl(e.getKeyChar())) {
+						area.clearRectangle();
+					}
+					return false;
+			}
+		}
+
 		// Pass the KeyEvent to the next KeyEventDispatcher in the chain
 	    return false;
 	}

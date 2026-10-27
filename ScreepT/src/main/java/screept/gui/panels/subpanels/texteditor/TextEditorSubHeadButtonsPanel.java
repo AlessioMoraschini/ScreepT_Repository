@@ -272,7 +272,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		toggleButtonSpellCheck.setToolTipText(TextEditTooltips.tooltipSpellChecker);
 		toggleButtonSpellCheck.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		toggleButtonSpellCheck.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPELLCHECKER));
-		add(toggleButtonSpellCheck, "cell 24 1,alignx center,grow");
+		add(toggleButtonSpellCheck, "cell 23 1,alignx center,grow");
 
 		btnThemeEditor = new JButton("");
 		btnThemeEditor.setToolTipText(TextEditTooltips.tooltipThemeEditor);
@@ -470,17 +470,17 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnFontChooser = new JButton("");
 		btnFontChooser.setToolTipText(TextEditTooltips.tooltipFontChooser);
 		btnFontChooser.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_FONT));
-		add(btnFontChooser, "cell 16 1,alignx center,grow");
+		// font is chosen in Graphic preferences (Text editor section)
 
 		btnReplaceEscapesSeq = new JButton("");
 		btnReplaceEscapesSeq.setToolTipText(TextEditTooltips.tooltipReplaceEscapes);
 		btnReplaceEscapesSeq.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERT_ESCAPES));
-		add(btnReplaceEscapesSeq, "cell 17 1,alignx center,grow");
+		add(btnReplaceEscapesSeq, "cell 16 1,alignx center,grow");
 
 		btnQuickFileSearch = new JButton("");
 		btnQuickFileSearch.setToolTipText(TextEditTooltips.tooltipQuickFileSearch);
 		btnQuickFileSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH_TEXT));
-		add(btnQuickFileSearch, "cell 18 1,alignx center,grow");
+		add(btnQuickFileSearch, "cell 17 1,alignx center,grow");
 
 		btnColorSampler = new JButton("");
 		btnColorSampler.setToolTipText(TextEditTooltips.tooltipBtnColorSampler);
@@ -490,27 +490,27 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnFileContentSearch = new JButton("");
 		btnFileContentSearch.setToolTipText(TextEditTooltips.tooltipFileContentSearch);
 		btnFileContentSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
-		add(btnFileContentSearch, "cell 19 1,grow");
+		add(btnFileContentSearch, "cell 18 1,grow");
 
 		btnFindText = new JButton("");
 		btnFindText.setToolTipText(TextEditTooltips.tooltipFindText);
 		btnFindText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH));
-		add(btnFindText, "cell 20 1,alignx center,grow");
+		add(btnFindText, "cell 19 1,alignx center,grow");
 
 		btnReplaceText = new JButton("");
 		btnReplaceText.setToolTipText(TextEditTooltips.tooltipReplaceText);
 		btnReplaceText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REPLACE_TXT));
-		add(btnReplaceText, "cell 21 1,grow");
+		add(btnReplaceText, "cell 20 1,grow");
 
 		btnGoToLine = new JButton("");
 		btnGoToLine.setToolTipText(TextEditTooltips.tooltipGoToLine);
 		btnGoToLine.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GOTO_LINE));
-		add(btnGoToLine, "cell 22 1,grow");
+		add(btnGoToLine, "cell 21 1,grow");
 
 		btnTailMode = new JButton("");
 		btnTailMode.setToolTipText(TextEditTooltips.tooltipTailMode);
 		btnTailMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EYE));
-		add(btnTailMode, "cell 23 1,alignx center,grow");
+		add(btnTailMode, "cell 22 1,alignx center,grow");
 
 		chckbxShowTabGrid = new JCheckBox("Show Tabs");
 		chckbxShowTabGrid.setOpaque(false);

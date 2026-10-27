@@ -10,6 +10,7 @@ import various.common.light.easteregg.EasterEgg;
 import various.common.light.easteregg.EasterEggsManager;
 import various.common.light.easteregg.PhraseEasterEgg;
 import various.common.light.easteregg.PhrasesCollection;
+import various.common.light.easteregg.cats.CatsParade;
 import various.common.light.easteregg.games.snake.Snake;
 
 public class EasterEggsInitializer {
@@ -65,9 +66,21 @@ public class EasterEggsInitializer {
 					}
 		);
 
+		// Feo and Nano cross the main window: M (meow) x3 in home
+		EasterEgg catsParade = new EasterEgg(
+				"catsParadeEgg01",
+				() -> {CatsParade.start(mainGuiUtils.mainAppReference.getMainFrame());},
+				(e) -> {
+					return KeyEvent.VK_M == e.getKeyCode() &&
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 600) &&
+							mainGuiUtils.isOnHomePage(true);
+					}
+		);
+
 		// Add easter eggs to manager
 		manager.addEasterEgg(poetryRandomEgg);
 		manager.addEasterEgg(snakeGame);
 		manager.addEasterEgg(arkanoidGame);
+		manager.addEasterEgg(catsParade);
 	}
 }

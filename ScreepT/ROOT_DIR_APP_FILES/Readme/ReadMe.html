@@ -305,16 +305,21 @@
 				
 					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/graphics.png"/> <span id="subSectTitleGraphOpt" class="subMenuthirdLevel">GRAPHICS OPTIONS</span></li>
 						<p>
-						In this section you can choose between some graphic settings that will be mapped into configuration file currently loaded, such as:
+						In this section you can choose the graphic settings that will be mapped into the configuration file currently loaded.
+						Options are grouped in sections (<b>Appearance</b> and <b>Text editor</b>, with its subsections <b>Editing</b>, <b>Display</b> and <b>Brackets and occurrences</b>): click on a section title to collapse or expand it.
+						Use the <b>search field</b> on top (or [Ctrl + F]) to show only the options matching what you type: filtering only changes what you see, saving always saves all the options.
+						Every change is previewed immediately: <b>Save Values</b> writes it to the configuration file, <b>Use</b> keeps it for this session only, while <b>Discard</b> or closing the window restore the previous values.
+						The window opens sized to show all the options (up to 90% of the screen), and it can be resized or maximized.
 						</p>
 						<ul class="subList2">
-						
-							<li><b>Graphic User Interface style:</b> choose between different available look and feel options. If supported, you can choose between different themes for a single style;</li>
-							<li><b>Menu And log text size:</b> these will modify the size of menu bar text, and some of the log text used in crypter and other modules(you have to restart ScreepT before to see changes);</li>
-							<li><b>Text editor settings:</b> here there are different configurations you can set to customize text editor behaviour;</li>
-							<li><b>Locale:</b> select the preferred language(this function is not yet implemented);</li>
+
+							<li><b>GUI style:</b> choose between the available look and feel options. <b>ScreepT Dark</b> (default on new installations) is a modern dark theme in IntelliJ IDEA style, with dark title bar; with dark styles also the custom colors of the application are adapted to stay readable. If supported, you can choose between different themes for a single style;</li>
+							<li><b>Interface size:</b> choose the general size of the interface between Mini, Small, Medium, Big and XXL: fonts, menus, toolbars and (with ScreepT Dark) all graphic elements are resized, and open windows are resized and kept centered. Click on <b>Customize...</b> to see or set the single values (font family, general text, menus, toolbars, graphic elements): changing a value switches to <b>Custom</b> mode;</li>
+							<li><b>Menu and log text size:</b> these will modify the size of menu bar text, and some of the log text used in crypter and other modules;</li>
+							<li><b>Text editor font:</b> font family and size used by the text editor, applied immediately to all open tabs. Use a monospaced font (e.g. Consolas) to have perfectly aligned rectangular selections;</li>
+							<li><b>Text editor settings:</b> different configurations you can set to customize text editor behaviour (editing helpers, display, brackets and occurrences);</li>
 							<li><b>Spellchecker dictionary:</b> choose between different languages available. This will be used in text editor when spell checker is active (remember that spell checker can cause software to slow down, so it's better to turn it off unless you're using it);</li>
-						
+
 						</ul><br>
 				
 					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/options.png"/> <span id="subSectTitleGenOpt" class="subMenuthirdLevel">GENERAL OPTIONS</span></li>
@@ -469,9 +474,13 @@
 						
 						<li class="highLineHeigthList"><span class="highlightBolded">TEXT CRYPT/DECRYPT </span>- with a non-empty password specified in the password-field on top, you can encrypt/decrypt with AES (128bit) the text loaded in text-area, just by clicking on crypt <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/Crypt.png"/> or decrypt <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/Decrypt.png"/> (or using the shortcut [Ctrl+shift+C / Ctrl+shift+D]).</li>
 						
-						<li class="highLineHeigthList"><span class="highlightBolded">TEXT MANIPULATION </span>- You can find this functions under the menu "Text-Editor -> text transformation" or with right click on text area -> "text transformation".
+						<li class="highLineHeigthList"><span id="subSectTextTransformation" class="highlightBolded">TEXT MANIPULATION </span>- You can find this functions under the menu "Text-Editor -> text transformation" or with right click on text area -> "text transformation".
 By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Menu_Icons/uppercase.png"/> you can make all selected text uppercase, clicking <strong>[.Tt]</strong> can make all text after dots or separators be uppercase, while a click on <strong>[Tt Tt]</strong> make text separed by a space starting words with uppercase.</li>
 						
+						<li class="highLineHeigthList"><span id="subSectTxtEditorRightClick" class="highlightBolded">RIGHT CLICK MENU </span>- right click on the text area to open its menu: undo/redo, cut/copy/paste, select all, <b>copy with syntax highlighting</b> (to paste colored code in other programs), text transformations, view line feeds and normalize end of line.</li>
+
+						<li class="highLineHeigthList"><span class="highlightBolded">RECTANGULAR (COLUMN) SELECTION </span>- keep [Alt] pressed while dragging the mouse to select a rectangle, also beyond the end of shorter lines (like Notepad++). Typing writes on every selected line (shorter lines are padded with spaces), then a column of carets stays active to keep typing; [Backspace]/[Canc] work on every line, [Ctrl + X / C / V] cut, copy and paste the column (a multi-line text is pasted one line per row, a single line is repeated on every row). Every operation is undone with a single [Ctrl + Z]; [Esc], arrows or a click end the column mode.</li>
+
 						<li class="highLineHeigthList"><span class="highlightBolded">TEMPLATES INJECTION </span>- clicking on <strong>[Templates]</strong> button, a new dialog will open staying on top till close, and in which you can select an existing template, create one from your currently selected text, or even define your own template using current file.
 						<span class="highlightBoldedGrey">To use a template</span> just select it from the list and click on "Inject Template".</li>
 
@@ -482,10 +491,10 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE THEME </span>- you can choose between different built-in color themes just chosing the wanted one from the given style combo box. It's possible to define your own theme using xml configuration: in order to have this in the combo box options, you have to add an xml with a valid scheme (take inspiration from the existing ones, you can copy one of them modifying the color hexadecimal values) into folder <b>Application\Resources_ScreepT\themes\custom</b>. To load your scheme you'll have to restart ScreepT. A built-in style scheme editor is scheduled for the next versions of ScreepT. Keep following the <u><a href="https://www.am-design-development.it">ScreepT website</a></u> or update your software regularly to have it when available ;)</li>
 						
 						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE COLORS/FONT </span>- (<u>works only when no theme is selected</u>) you can customize color of background <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/BackgroundColor.png"/> and text <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/TextColor_2.png"/> just by clicking on the relative button: a chooser dialog will appear and you'll be able to choose and preview the selected colors on the loaded text.<br>
-						With the same process is possible to select your preferred font, just by clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/Font_2.png"/>.<br>
+						The text editor font (family and size) is chosen in <u><a href="#subSectTitleGraphOpt">Graphics options</a></u>, section "Text editor".<br>
 						If you'll press OK the selected colors/font will be added to current volatile configuration (theese will not be written to configuration file until you explicitly save them, or until autosave will occur, if selected).
 						
-						</li><li class="highLineHeigthList"><span class="highlightBolded">IMPORT/EXPORT Crypter workspace </span>- with this function you can choose between import or export a workspace in Crypted form. When clicking this button, a po-up panel will appear, allowing to choose between import a previously crypted workspace folder from your file system, or either export one of the previously loaded workspace.
+						</li><li class="highLineHeigthList"><span id="subSectTitleImpExpCrypted" class="highlightBolded">IMPORT/EXPORT Crypter workspace </span>- with this function you can choose between import or export a workspace in Crypted form. When clicking this button, a po-up panel will appear, allowing to choose between import a previously crypted workspace folder from your file system, or either export one of the previously loaded workspace.
 						<br>After you've selected the wanted options, you will be lead to CreepT view, with the wanted workspace loaded and ready to crypt/decrypt: you have just to choose the crypter mode, and the right keys according to the selected mode. See the <u><a href="#funcScreeptSubMenu">CreepT</a></u> chapter for further details on how to use this function.
 						<hr>After the encryption/decryption process is completed, you'll be automatically brought back to text editor. (in case of import, decrypted workspace will be setted as current workspace)</li>
 						
@@ -562,8 +571,27 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 							<li class="highLineHeigthList"><image class="iconImg" src="../Application/Resources_ScreepT/Icons/Menu_Icons/emptyDirectory.png"/> <span class="highlightBolded">Delete all directory's content </span>- this function will delete all files contained in a root directory you have to specify, without deleting folders contained.
 							<strong>You can select only folders in this function.</strong>
 							</li>
-							
+
 						</ul></p>
+						</p>
+
+					<li><span id="subSectFileHasher" class="subMenuthirdLevel">FILE HASHER</span></li>
+						<p>
+						The <b>File Hash Checker</b> calculates the hash (checksum) of a file: click <b>Select File</b>, choose the <b>hashing algorithm</b> and click <b>Calculate Hash</b>.
+						To check a downloaded file, paste the expected checksum and click <b>Verify Checksum</b>. Options let you show the hash in uppercase and use the algorithm name as prefix.
+						</p>
+
+					<li><span id="subSectColorPicker" class="subMenuthirdLevel">COLOR PICKER</span></li>
+						<p>
+						With the picker active, click any element to retrieve its color, or keep [Shift + Ctrl] pressed while moving the mouse over it.
+						The picked color is shown in RGB, HEX, HSB and HSL formats: all fields are editable, so you can also convert a color you type.
+						The picker window always stays above the ScreepT window it was opened from, and [Alt + Tab] switches application as usual.
+						</p>
+
+					<li><span id="subSectClipboardPanel" class="subMenuthirdLevel">CLIPBOARD PANEL</span></li>
+						<p>
+						A set of named clipboards saved on disk, available as side panel of the text editor or as standalone <b>Clipboard tool</b> (Various menu).
+						You can add a new clipboard, choose between the loaded ones, save or reload the current one (unsaved changes are lost on reload), reload the list and open the current clipboard in the file system.
 						</p>
 					
 				</p></ul>
@@ -602,6 +630,14 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 					<h4> 0 - Emergency shortcuts (active everywhere):</h4>
 					<li> <span class="SHCT_TEXT">FORCE CLOSE APPLICATION</span> - [Esc x 4 times] or [Alt + F4 x 4 times]</li>
 					<li> <span class="SHCT_TEXT">RESTART APPLICATION</span> - [Alt + F5]</li>
+
+					<h4> Windows and top-right bar:</h4>
+					<li> <span class="SHCT_TEXT">CLOSE WINDOW</span> - [Esc] closes the active window like its title bar X (not the main window)</li>
+					<li> <span class="SHCT_TEXT">SEARCH OPTIONS (Graphics options)</span> - [Ctrl + F]; [Esc] clears the search, a second [Esc] closes the window</li>
+					<li> <span class="SHCT_TEXT">PIN APPLICATION ON TOP</span> - click the pin on the top-right: ScreepT and all its windows stay on top of other applications; when not pinned, ScreepT windows behave as normal windows (the color picker always stays above the ScreepT window it was opened from)</li>
+					<li> <span class="SHCT_TEXT">RESOURCES USAGE</span> - next to the top-right toggles ScreepT shows its own CPU usage and memory (used / available), and the whole PC CPU usage and memory (used / total), refreshed every second: hover it to see more details</li>
+					<li> <span class="SHCT_TEXT">COLOR PICKER</span> - with picker active, click an element or press [Shift + Ctrl] while moving the mouse to pick its color; [Alt + Tab] switches application as usual</li>
+					<li> <span class="SHCT_TEXT">FILE DIALOGS</span> - open/save dialogs are the native Windows ones (editable address bar, search, copy/paste); when files and folders can be chosen, use "Select current folder" to pick the folder you are in</li>
 					
 					<h4> 1 - File submenu:</h4>
 					<li> <span class="SHCT_TEXT">OPEN CONFIGURATION MANAGER</span> - [Alt + Shift + 1]</li>
@@ -739,7 +775,7 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 					<li> <span class="SHCT_TEXT">REMOVE SPACES IN SELECTION</span> - [Ctrl + (-)]</li>
 					<li> <span class="SHCT_TEXT">DELETE CURRENT LINE</span> - [Ctrl + D]</li>
 					<li> <span class="SHCT_TEXT">MOVE CURRENT LINE UP/DOWN</span> - [Alt + Up/Down]</li>
-					<li> <span class="SHCT_TEXT">RECTANGULAR SELECTION</span> - Keep pressed "Alt" while selecting text to select in rectangular mode</li>
+					<li> <span class="SHCT_TEXT">RECTANGULAR SELECTION</span> - Keep pressed "Alt" while selecting text to select in rectangular mode; then type, [Backspace], [Canc], [Ctrl + X / C / V] work on all the selected lines, [Esc] ends it</li>
 					<li> <span class="SHCT_TEXT">COPY TEXT TO SYSTEM CLIPBOARD (Keeping Style with copy/paste)</span> - [Alt + C]</li>
 					<li> <span class="SHCT_TEXT">FORMAT CURRENT SELECTED TEXT (if void selection all will be selected) </span> - [Ctrl+Shift+F]</li>
 					

@@ -13,9 +13,12 @@ package gui.texteditor.commons.om;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -26,6 +29,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.IntFunction;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -169,6 +173,188 @@ public class ColumnTextArea extends RSyntaxTextArea {
 		isRectangularModeOn.set(rectangularSelection);
 	}
 
+	/*
+	 * RECTANGULAR SELECTION (Notepad++ like): lines + pixel columns. The rectangle is painted full width also
+	 * beyond line ends (virtual space); typing pads short lines with spaces. x1 == x2 is a multi caret column.
+	 * One highlight per line (rectPainter) keeps getSelectedText/copy/cut/paste working on the text parts.
+	 */
+	private int rectFirstLine = -1;
+	private int rectLastLine = -1;
+	private int rectX1;
+	private int rectX2;
+	private final HighlightPainter rectPainter = new RectangularSelectionPainter();
+
+	private class RectangularSelectionPainter implements HighlightPainter {
+		@Override
+		public void paint(Graphics g, int p0, int p1, Shape bounds, JTextComponent c) {
+			try {
+				Rectangle line = modelToView(p0);
+				if (line != null && rectX2 > rectX1) {
+					g.setColor(getSelectionColor());
+					g.fillRect(rectX1, line.y, rectX2 - rectX1, getLineHeight());
+				} else if (line != null) {
+					// caret column: one caret per line
+					g.setColor(getCaretColor());
+					g.fillRect(rectX1, line.y, 2, getLineHeight());
+				}
+			} catch (BadLocationException e) {
+				logger.debug("Cannot paint rectangular selection line", e);
+			}
+		}
+	}
+
+	/** Rectangular selection (or multi caret column) currently active on this text area */
+	public boolean hasRectangle() {
+		if (rectFirstLine < 0) {
+			return false;
+		}
+		for (Highlighter.Highlight highlight : getHighlighter().getHighlights()) {
+			if (highlight.getPainter() == rectPainter) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void clearRectangle() {
+		rectFirstLine = -1;
+		rectLastLine = -1;
+		for (Highlighter.Highlight highlight : getHighlighter().getHighlights()) {
+			if (highlight.getPainter() == rectPainter) {
+				getHighlighter().removeHighlight(highlight);
+			}
+		}
+		repaint();
+	}
+
+	private void applyRectangle(int firstLine, int lastLine, int x1, int x2) {
+		rectFirstLine = firstLine;
+		rectLastLine = lastLine;
+		rectX1 = Math.min(x1, x2);
+		rectX2 = Math.max(x1, x2);
+
+		getHighlighter().removeAllHighlights();
+		try {
+			for (int line = firstLine; line <= lastLine; line++) {
+				int[] range = rectangleRange(line);
+				getHighlighter().addHighlight(range[0], range[1], rectPainter);
+			}
+		} catch (BadLocationException e) {
+			logger.error("Cannot build rectangular selection", e);
+		}
+		// virtual space is outside the text bounds repainted by the highlighter
+		repaint();
+	}
+
+	/**
+	 * @return {start, end, missingSpaces}: text offsets covered by the rectangle on the given line, and spaces
+	 * needed to reach the rectangle left side when the line is shorter
+	 */
+	private int[] rectangleRange(int line) throws BadLocationException {
+		int lineStart = getLineStartOffset(line);
+		int textEnd = line < getLineCount() - 1 ? getLineEndOffset(line) - 1 : getLineEndOffset(line);
+		int y = modelToView(lineStart).y + 1;
+		int textEndX = modelToView(textEnd).x;
+
+		int start = rectX1 >= textEndX ? textEnd : Math.max(lineStart, Math.min(textEnd, viewToModel(new Point(rectX1, y))));
+		int end = rectX2 >= textEndX ? textEnd : Math.max(start, Math.min(textEnd, viewToModel(new Point(rectX2, y))));
+		int spaceWidth = Math.max(1, getFontMetrics(getFont()).charWidth(' '));
+		int missingSpaces = rectX1 > textEndX ? Math.round((rectX1 - textEndX) / (float) spaceWidth) : 0;
+
+		return new int[] { start, end, missingSpaces };
+	}
+
+	/** Replaces the rectangle content with the given text on every line, then leaves a caret column after it */
+	public void rectangularType(String typed) {
+		rectangularReplace(lineIndex -> typed);
+	}
+
+	/**
+	 * Pastes in place of the rectangle: a multi line text goes one line per rectangle line (block paste),
+	 * a single line text is repeated on every line. Leaves a caret column after the pasted text.
+	 */
+	public void rectangularPaste(String clipboardText) {
+		if (clipboardText == null) {
+			return;
+		}
+		// a trailing line break (copied whole lines) is not an extra empty block line
+		String[] block = clipboardText.replaceFirst("\r?\n$", "").split("\r?\n", -1);
+		rectangularReplace(lineIndex -> block.length == 1 ? block[0] : lineIndex < block.length ? block[lineIndex] : "");
+	}
+
+	/** Copies the rectangle content and removes it from every line, keeping the caret column */
+	public void rectangularCut() {
+		if (hasRectangle() && rectX2 > rectX1) {
+			copy();
+			rectangularDelete(true);
+		}
+	}
+
+	/**
+	 * @param textForLine text replacing the rectangle content, by line index inside the rectangle (0 = first)
+	 */
+	private void rectangularReplace(IntFunction<String> textForLine) {
+		if (!hasRectangle()) {
+			return;
+		}
+		beginAtomicEdit();
+		try {
+			int newX = rectX1;
+			// bottom-up: edits never move the offsets of the lines still to process
+			for (int line = rectLastLine; line >= rectFirstLine; line--) {
+				int[] range = rectangleRange(line);
+				String text = textForLine.apply(line - rectFirstLine);
+				// short lines are padded only when something is really written on them
+				int padding = text.isEmpty() ? 0 : range[2];
+				replaceRange(StringUtils.repeat(' ', padding) + text, range[0], range[1]);
+				newX = modelToView(range[0] + padding + text.length()).x;
+			}
+			applyRectangle(rectFirstLine, rectLastLine, newX, newX);
+		} catch (BadLocationException e) {
+			logger.error("Rectangular edit failed", e);
+		} finally {
+			endAtomicEdit();
+		}
+	}
+
+	/**
+	 * Deletes the rectangle content on every line; on a caret column deletes one char per line
+	 * (backward = backspace, else delete key)
+	 */
+	public void rectangularDelete(boolean backward) {
+		if (!hasRectangle()) {
+			return;
+		}
+		beginAtomicEdit();
+		try {
+			int newX = rectX1;
+			for (int line = rectLastLine; line >= rectFirstLine; line--) {
+				int[] range = rectangleRange(line);
+				int from = range[0];
+				int to = range[1];
+				if (from == to) {
+					int lineStart = getLineStartOffset(line);
+					int textEnd = line < getLineCount() - 1 ? getLineEndOffset(line) - 1 : getLineEndOffset(line);
+					if (range[2] > 0 || (backward && from <= lineStart) || (!backward && to >= textEnd)) {
+						continue; // nothing to delete on this line (virtual space or line boundary)
+					}
+					if (backward) {
+						from--;
+					} else {
+						to++;
+					}
+				}
+				replaceRange("", from, to);
+				newX = modelToView(from).x;
+			}
+			applyRectangle(rectFirstLine, rectLastLine, newX, newX);
+		} catch (BadLocationException e) {
+			logger.error("Rectangular delete failed", e);
+		} finally {
+			endAtomicEdit();
+		}
+	}
+
     @Override
     public String getSelectedText(){
         if (isRectangularModeOn.get()) {
@@ -206,10 +392,10 @@ public class ColumnTextArea extends RSyntaxTextArea {
 
 //    	int start = getSelectionStart();
 
-    	if (isRectangularModeOn.get() && isCurrentSelectionRectangular()) {
+    	if (isRectangularModeOn.get() && hasRectangle()) {
     		Clipboard clipboard = getClipboard(null);
     		try {
-    			rectangularReplaceSelection((String)clipboard.getContents(null).getTransferData(DataFlavor.stringFlavor));
+    			rectangularPaste((String)clipboard.getContents(null).getTransferData(DataFlavor.stringFlavor));
 			} catch (UnsupportedFlavorException | IOException e) {
 				logger.error(e);
 			}
@@ -223,9 +409,8 @@ public class ColumnTextArea extends RSyntaxTextArea {
 
     @Override
     public void cut() {
-    	if (isRectangularModeOn.get() && isCurrentSelectionRectangular()) {
-    		copy();
-    		rectangularReplaceSelection("");
+    	if (isRectangularModeOn.get() && hasRectangle()) {
+    		rectangularCut();
 		}else {
 			super.cut();
 		}
@@ -233,7 +418,10 @@ public class ColumnTextArea extends RSyntaxTextArea {
 
     @Override
     public void copy(){
-        if (isRectangularModeOn.get() && isCurrentSelectionRectangular()) {
+        if (isRectangularModeOn.get() && hasRectangle()) {
+        	if (rectX2 <= rectX1) {
+        		return; // caret column: nothing selected
+        	}
 			StringSelection ss = new StringSelection(this.getSelectedText());
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, ss);
 		}else {
@@ -241,54 +429,9 @@ public class ColumnTextArea extends RSyntaxTextArea {
 		}
     }
 
+    /** Multi line rectangular selection: copy/cut/paste work by lines */
     public boolean isCurrentSelectionRectangular() {
-    	boolean isRectangular = true;
-
-    	if(getSelectedText() == null || "".equals(getSelectedText())) {
-    		isRectangular = false;
-
-    	}else {
-    		int startFirstL = 0;
-    		int endFirstL = 0;
-    		int rowStart = 0;
-    		Highlighter.Highlight[] selections = this.getHighlighter().getHighlights();
-    		int cnt = selections.length;
-    		if (cnt > 0) {
-    			try {
-					rowStart = Utilities.getRowStart(this, selections[0].getStartOffset());
-					startFirstL = selections[0].getStartOffset() - rowStart;
-					endFirstL = selections[0].getEndOffset() - rowStart;
-					String currentSelLine = getText(startFirstL, endFirstL);
-					endFirstL = GuiUtils.getHighlightWidthWithTabs(currentSelLine, thisTextArea.getTabSize());
-				} catch (BadLocationException e) {
-					logger.error(e);
-				}
-    		}
-
-    		// BUG: Tabs have different length, so they should be considered as nTabs * lengthOfATab
-
-    		if (cnt > 1) {
-    			int i = cnt -1;
-				// Search into next line for a selection with different Width or Heigth -> if found the this is not rectangular
-				try {
-					rowStart = Utilities.getRowStart(this, selections[i].getStartOffset());
-					int start = selections[i].getStartOffset() - rowStart;
-					int end = selections[i].getEndOffset() - rowStart;
-					String currentSelLine = getText(start, end);
-					int lineWidth = GuiUtils.getHighlightWidthWithTabs(currentSelLine, thisTextArea.getTabSize());
-					int rowEnd = Utilities.getRowEnd(this, end);
-					if (rowEnd != end && (Math.abs(startFirstL - start) > 1 || Math.abs(endFirstL - lineWidth) > 1)) {
-						isRectangular = false;
-					}
-				} catch (BadLocationException e) {
-					logger.error(e);
-				}
-			}else {
-				isRectangular = false;
-			}
-    	}
-
-    	return isRectangular;
+    	return hasRectangle() && rectLastLine > rectFirstLine;
     }
 
     public void moveSelectionRectangle(int xDiff) {
@@ -366,7 +509,6 @@ public class ColumnTextArea extends RSyntaxTextArea {
 					selectedText = this.getDocument().getText(start, end - start);
 					replaceRange("", start, end);
 					insert(replaceText, start);
-					this.getHighlighter().addHighlight(start, start + replaceText.length()-1, ((ColumnSelectionCaret)this.getCaret()).getCustomSelectionPainter());
 
 				} catch (javax.swing.text.BadLocationException e) {
 					logger.error("Error setting selected text into rectangular selection area");
@@ -378,6 +520,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 				}
 			}
 		}
+		clearRectangle();
 
 		super.endAtomicEdit();
 		return text;
@@ -546,17 +689,16 @@ class ColumnSelectionCaret extends DefaultCaret {
         		this.moving = true;
         	}
             if(this.altDown){
-            Point pt = new Point(e.getX(), e.getY());
-            javax.swing.text.Position.Bias[] biasRet = new javax.swing.text.Position.Bias[1];
-            int pos = getComponent().getUI().viewToModel(getComponent(), pt, biasRet);
-            if(biasRet[0] == null)
-                biasRet[0] = javax.swing.text.Position.Bias.Forward;
+                Point pt = new Point(e.getX(), e.getY());
+                int pos = getComponent().getUI().viewToModel(getComponent(), pt);
                 if (pos >= 0) {
                     this.setDot(pos);
                     Point start = new Point(Math.min(this.lastPoint.x,pt.x), Math.min(this.lastPoint.y,pt.y));
                     Point end = new Point(Math.max(this.lastPoint.x,pt.x), Math.max(this.lastPoint.y,pt.y));
                     this.rectangularHighlight(start,end);
                 }
+                // the rectangle is the selection: no linear selection on top of it
+                return;
             }
     	}
         super.moveCaret(e);
@@ -565,35 +707,14 @@ class ColumnSelectionCaret extends DefaultCaret {
     protected void rectangularHighlight(Point start, Point end) {
 
     	if (isRectangularModeOn.get()) {
-    		javax.swing.text.JTextComponent comp = this.getComponent();
-			comp.getHighlighter().removeAllHighlights();
-			int y = start.y;
-			int firstX = start.x;
-			int lastX = end.x;
-			int pos1 = comp.getUI().viewToModel(comp, new Point(firstX, y));
-			int pos2 = comp.getUI().viewToModel(comp, new Point(lastX, y));
-			try {
-				comp.getHighlighter().addHighlight(pos1, pos2, this.getSelectionPainter());
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			y++;
-			int pos2new = getCaretPosition();
-			while (y < end.y) {
-				int pos1new = comp.getUI().viewToModel(comp, new Point(firstX, y));
-				pos2new = comp.getUI().viewToModel(comp, new Point(lastX, y));
-				if (pos1 != pos1new) {
-					pos1 = pos1new;
-					pos2 = pos2new;
-					try {
-						comp.getHighlighter().addHighlight(pos1, pos2, this.getSelectionPainter());
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-				}
-				y++;
-			}
-			setCaretPosition(pos2new);
+    		JTextComponent comp = this.getComponent();
+    		try {
+    			int firstLine = getLineOfOffset(comp.getUI().viewToModel(comp, new Point(0, start.y)));
+    			int lastLine = getLineOfOffset(comp.getUI().viewToModel(comp, new Point(0, end.y)));
+    			applyRectangle(firstLine, lastLine, start.x, end.x);
+    		} catch (BadLocationException ex) {
+    			logger.error("Cannot compute rectangular selection lines", ex);
+    		}
     	}
     }
 
