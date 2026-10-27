@@ -117,6 +117,13 @@ public class NetInfoFrame extends ParentFrame{
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
 	public NetInfoFrame() {
+		this(null);
+	}
+
+	/**
+	 * @param preloadedNetUtils adapters already retrieved off the EDT (null: they are retrieved here, blocking the caller)
+	 */
+	public NetInfoFrame(NetworkUtils preloadedNetUtils) {
 		super();
 		
 		logger.info(this.getClass().getName() + " Starting...");
@@ -130,7 +137,7 @@ public class NetInfoFrame extends ParentFrame{
 		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_NET_INFO, this);
 		
 		try {
-			netUtils = new NetworkUtils();
+			netUtils = preloadedNetUtils != null ? preloadedNetUtils : new NetworkUtils();
 		} catch (IOException e) {
 			handleException("Exception initializing network informations", e);
 		}
@@ -383,16 +390,19 @@ public class NetInfoFrame extends ParentFrame{
 		dynLblMTU.setEditable(false);
 		panel.add(dynLblMTU, "cell 1 7 2 1,growx");
 		
-		// call now cause before some gui elements can not be initialized yet
-		GuiUtilsExtended.launchThreadSafeSwingV2(new Runnable() {
+		// public IP, DNS and gateway come from the network and OS commands: retrieve them off the EDT, so the window shows up at once
+		updateCalculatingDispLbl();
+		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				
-				updateNetDisplayedINFO();
-				//validateConnectivity();
+				try {
+					updateNetDisplayedINFO();
+				} catch (Exception e) {
+					logger.error("Error retrieving network informations", e);
+				}
 			}
-		});
+		}, "NetInfo-initial-load").start();
 		
 		logger.info(this.getClass().getName() + " Started");
 	}
@@ -644,6 +654,10 @@ public class NetInfoFrame extends ParentFrame{
 	}
 	
 	public static NetInfoFrame getInstance() {
-		return singletonInstance == null ? new NetInfoFrame() : singletonInstance;
+		return getInstance(null);
+	}
+
+	public static NetInfoFrame getInstance(NetworkUtils preloadedNetUtils) {
+		return singletonInstance == null ? new NetInfoFrame(preloadedNetUtils) : singletonInstance;
 	}
 }

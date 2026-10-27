@@ -43,6 +43,7 @@ import initializer.configs.impl.INItializer;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import maingUI.MainGuiManager;
+import network.NetworkUtils;
 import network.main.NetInfoFrame;
 import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
@@ -315,7 +316,8 @@ public class WindowCreator {
 
 	public void newNetInfoFrame() {
 
-		GuiUtilsExtended.launchThreadSafeSwingV2(new Runnable() {
+		// the progress dialog is shown on the EDT, while adapters are retrieved in the background: the loader stays alive
+		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				UpdateProgressPanel prog = new UpdateProgressPanel(false);
@@ -324,10 +326,32 @@ public class WindowCreator {
 				prog.getLabel().setText("Loading Network informations...");
 				prog.getPb().setString("Loading...");
 
-				NetInfoFrame panelNetInfo = NetInfoFrame.getInstance();
-				panelNetInfo.setResizable(false);
-				commonGraphicInitAlwaysOnTop(panelNetInfo, "Network info - ", true);
-				prog.forceClose();
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						NetworkUtils preloaded = null;
+						if (NetInfoFrame.singletonInstance == null) {
+							try {
+								preloaded = new NetworkUtils();
+							} catch (Exception e) {
+								logger.error("Cannot retrieve network adapters", e);
+							}
+						}
+						final NetworkUtils netUtils = preloaded;
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									NetInfoFrame panelNetInfo = NetInfoFrame.getInstance(netUtils);
+									panelNetInfo.setResizable(false);
+									commonGraphicInitAlwaysOnTop(panelNetInfo, "Network info - ", true);
+								} finally {
+									prog.forceClose();
+								}
+							}
+						});
+					}
+				}, "NetInfo-loader").start();
 			}
 		});
 	}

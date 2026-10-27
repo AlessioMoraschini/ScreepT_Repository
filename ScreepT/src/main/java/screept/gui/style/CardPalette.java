@@ -18,8 +18,8 @@ import java.awt.RenderingHints;
 import javax.swing.UIManager;
 
 /**
- * Colors of the card based panels (quick notes, release notes), derived from the active look and feel:
- * warm paper on light themes, slate on dark ones.
+ * Colors of the card based panels (quick notes, release notes), derived from the colors of the active look and feel
+ * (panel, text and accent), so they match the theme selected in the graphic preferences.
  */
 public final class CardPalette {
 
@@ -41,48 +41,113 @@ public final class CardPalette {
 	public final Color badgeFixed;
 	public final Color onBadge;
 
-	private CardPalette(boolean dark) {
+	private CardPalette(Color panel, Color foreground, Color accentColor, boolean dark) {
 		this.dark = dark;
-		if (dark) {
-			background = new Color(0x1C1F25);
-			card = new Color(0x272B33);
-			cardHover = new Color(0x2F343E);
-			cardDone = new Color(0x22252C);
-			border = new Color(0x363B46);
-			text = new Color(0xE4E6EB);
-			muted = new Color(0x8A93A3);
-			accent = new Color(0xF2B84B);
-			onAccent = new Color(0x1C1F25);
-			highlight = new Color(0x806020);
-			selection = new Color(0x3E4C66);
-			danger = new Color(0xE57373);
-			badgeNew = new Color(0x4CAF7A);
-			badgeImproved = new Color(0x5B8DEF);
-			badgeFixed = new Color(0xE0895A);
-			onBadge = new Color(0x15171C);
-		} else {
-			background = new Color(0xF5F3EE);
-			card = Color.WHITE;
-			cardHover = new Color(0xFFFCF2);
-			cardDone = new Color(0xEFEDE7);
-			border = new Color(0xE0DCD2);
-			text = new Color(0x2A2A2A);
-			muted = new Color(0x8C877B);
-			accent = new Color(0xE0A100);
-			onAccent = Color.WHITE;
-			highlight = new Color(0xFFE38A);
-			selection = new Color(0xCFE0F7);
-			danger = new Color(0xC0392B);
-			badgeNew = new Color(0x2E8B57);
-			badgeImproved = new Color(0x3A6FD8);
-			badgeFixed = new Color(0xC8622D);
-			onBadge = Color.WHITE;
-		}
+		// surfaces follow the selected look and feel: cards are the panel color nudged towards white (or black), so the
+		// panel keeps the shape of the modern cards while staying in the colors of the theme
+		background = panel;
+		card = dark ? blend(panel, Color.WHITE, 0.06) : blend(panel, Color.WHITE, 0.70);
+		cardHover = dark ? blend(panel, Color.WHITE, 0.11) : blend(panel, Color.WHITE, 0.88);
+		cardDone = dark ? blend(panel, Color.BLACK, 0.12) : blend(panel, Color.BLACK, 0.04);
+		border = blend(panel, foreground, dark ? 0.20 : 0.16);
+		text = readable(foreground, card);
+		muted = blend(text, card, 0.45);
+		accent = accentColor;
+		onAccent = contrast(Color.WHITE, accentColor) >= contrast(new Color(0x1C1F25), accentColor) ? Color.WHITE : new Color(0x1C1F25);
+		highlight = dark ? new Color(0x806020) : new Color(0xFFE38A);
+		selection = blend(accentColor, panel, dark ? 0.55 : 0.70);
+		danger = dark ? new Color(0xE57373) : new Color(0xC0392B);
+		badgeNew = dark ? new Color(0x4CAF7A) : new Color(0x2E8B57);
+		badgeImproved = dark ? new Color(0x5B8DEF) : new Color(0x3A6FD8);
+		badgeFixed = dark ? new Color(0xE0895A) : new Color(0xC8622D);
+		onBadge = dark ? new Color(0x15171C) : Color.WHITE;
 	}
 
 	public static CardPalette current() {
-		Color base = UIManager.getColor("Panel.background");
-		return new CardPalette(base != null && luminance(base) < 0.45);
+		Color panel = firstColor("Panel.background", "control");
+		if (panel == null) {
+			panel = new Color(0xF0F0F0);
+		}
+		Color foreground = firstColor("Label.foreground", "textText");
+		boolean dark = luminance(panel) < 0.45;
+		if (foreground == null) {
+			foreground = dark ? new Color(0xE4E6EB) : new Color(0x2A2A2A);
+		}
+		return new CardPalette(panel, foreground, themeAccent(dark), dark);
+	}
+
+	/** First saturated color among the accent/selection colors of the look and feel, amber when the theme has none */
+	private static Color themeAccent(boolean dark) {
+		String[] keys = {"Component.accentColor", "Button.default.background", "List.selectionBackground",
+				"TextField.selectionBackground", "nimbusSelectionBackground", "nimbusFocus", "textHighlight"};
+		for (String key : keys) {
+			Color candidate = UIManager.getColor(key);
+			if (candidate != null && saturation(candidate) >= 0.3f) {
+				return new Color(candidate.getRGB());
+			}
+		}
+		return dark ? new Color(0xF2B84B) : new Color(0xE0A100);
+	}
+
+	private static Color firstColor(String... keys) {
+		for (String key : keys) {
+			Color color = UIManager.getColor(key);
+			if (color != null) {
+				return new Color(color.getRGB());
+			}
+		}
+		return null;
+	}
+
+	private static Color blend(Color from, Color to, double amount) {
+		return new Color(
+				(int) Math.round(from.getRed() + (to.getRed() - from.getRed()) * amount),
+				(int) Math.round(from.getGreen() + (to.getGreen() - from.getGreen()) * amount),
+				(int) Math.round(from.getBlue() + (to.getBlue() - from.getBlue()) * amount));
+	}
+
+	/** The color itself when it reads on the background, else black or white */
+	private static Color readable(Color color, Color background) {
+		if (contrast(color, background) >= 4.5) {
+			return color;
+		}
+		return contrast(Color.WHITE, background) >= contrast(Color.BLACK, background) ? Color.WHITE : new Color(0x1C1F25);
+	}
+
+	private static float saturation(Color c) {
+		return Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null)[1];
+	}
+
+	private static double contrast(Color first, Color second) {
+		double l1 = relativeLuminance(first);
+		double l2 = relativeLuminance(second);
+		return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+	}
+
+	/** WCAG relative luminance */
+	private static double relativeLuminance(Color c) {
+		return 0.2126 * linear(c.getRed()) + 0.7152 * linear(c.getGreen()) + 0.0722 * linear(c.getBlue());
+	}
+
+	private static double linear(int channel) {
+		double value = channel / 255.0;
+		return value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+	}
+
+	/**
+	 * Nimbus paints its own white background under text components, ignoring setOpaque(false): the cards would show white
+	 * boxes. The basic UI (which honors the transparency) is installed instead, only under Nimbus.
+	 */
+	public static void flatten(javax.swing.text.JTextComponent component) {
+		if (!"Nimbus".equals(UIManager.getLookAndFeel().getName())) {
+			return;
+		}
+		if (component instanceof javax.swing.JTextArea) {
+			component.setUI(new javax.swing.plaf.basic.BasicTextAreaUI());
+		} else if (component instanceof javax.swing.JTextField) {
+			component.setUI(new javax.swing.plaf.basic.BasicTextFieldUI());
+		}
+		component.setOpaque(false);
 	}
 
 	public static void antialias(Graphics2D g2) {

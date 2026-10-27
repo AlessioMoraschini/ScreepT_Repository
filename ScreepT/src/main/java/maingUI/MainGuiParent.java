@@ -192,6 +192,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmChangeLog;
 	CustomJmenuItem mntmExportLog;
 	CustomJmenuItem mntmViewTempFolder;
+	CustomJmenuItem mntmOpenInstallationFolder;
 	CustomJmenuItem mntmEraseLogs;
 	CustomJmenuItem mntmViewWebsite;
 	CustomJmenuItem mntmLookForUpdates;
@@ -442,6 +443,7 @@ public class MainGuiParent {
 			mnHelp.add(new JSeparator());
 			mnHelp.add(mntmExportLog);
 			mnHelp.add(mntmViewTempFolder);
+			mnHelp.add(mntmOpenInstallationFolder);
 			mnHelp.add(mntmEraseLogs);
 			mnHelp.add(mntmUserDocumentation);
 			mnHelp.add(new JSeparator());
@@ -605,6 +607,7 @@ public class MainGuiParent {
 		mntmChangeLog.setFont(menuItemFont);
 		mntmExportLog.setFont(menuItemFont);
 		mntmViewTempFolder.setFont(menuItemFont);
+		mntmOpenInstallationFolder.setFont(menuItemFont);
 		mntmEraseLogs.setFont(menuItemFont);
 		mntmUserDocumentation.setFont(menuItemFont);
 		mnWindowsRegistry.setFont(subMenuFont);
@@ -698,6 +701,7 @@ public class MainGuiParent {
 		mntmChangeLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DIFFERENCES));
 		mntmExportLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_LOG));
 		mntmViewTempFolder.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLOCK));
+		mntmOpenInstallationFolder.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_IMP_EXP));
 		mntmEraseLogs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 		mntmUserDocumentation.setIcon(new ImageIcon(IconsPathConfigurator.ICON_USER_GUIDE));
 		mntmReturnToWelcome.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HOME_PAGE));

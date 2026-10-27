@@ -436,8 +436,13 @@ public class MainGuiUtils {
 		return getMainPanel().getComponent(0) instanceof ConfigurationManagerPanel && (!withFocus || isMainFrameFocused());
 	}
 
+	/**
+	 * True when the main frame is the active window. The focus owner alone is not enough: switching panel (e.g. back to the
+	 * home page with a shortcut) removes the focused component, leaving the active frame with no focus owner until the user clicks.
+	 */
 	public boolean isMainFrameFocused() {
-		return GuiUtils.isFocusedOnTop(mainAppReference.getMainFrame());
+		JFrame mainFrame = mainAppReference.getMainFrame();
+		return mainFrame.isActive() || GuiUtils.isFocusedOnTop(mainFrame);
 	}
 
 	public void updateTitleRightPart(String newSuffix) {

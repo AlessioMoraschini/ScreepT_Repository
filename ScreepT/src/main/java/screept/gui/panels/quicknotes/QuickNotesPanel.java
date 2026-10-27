@@ -350,6 +350,7 @@ public class QuickNotesPanel extends JPanel {
 			area.setText(note.getText());
 			area.setLineWrap(true);
 			area.setWrapStyleWord(true);
+			CardPalette.flatten(area);
 			area.setOpaque(false);
 			area.setBorder(BorderFactory.createEmptyBorder());
 			area.setForeground(note.isDone() ? palette.muted : palette.text);

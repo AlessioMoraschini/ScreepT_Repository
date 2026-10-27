@@ -78,6 +78,7 @@ import multimedia.conversion.gui.PdfSelector2TextFrame;
 import net.miginfocom.swing.MigLayout;
 import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
+import screept.gui.panels.quicknotes.QuickNotesDrawer;
 import resources.IconsPathConfigurator;
 import screept.gui.panels.TextEditor;
 import screept.gui.utils.filedialog.TemplatesChooserFrame;
@@ -169,6 +170,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JToggleButton toggleBtnClipboard;
 	public JToggleButton toggleBtnConsole;
 	public JToggleButton toggleButtonSpellCheck;
+	public JToggleButton toggleButtonQuickNotes;
 
 	public JSpinner tabSizeSpinner;
 
@@ -273,6 +275,16 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		toggleButtonSpellCheck.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		toggleButtonSpellCheck.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPELLCHECKER));
 		add(toggleButtonSpellCheck, "cell 23 1,alignx center,grow");
+
+		// QUICK NOTES drawer ON/OFF (same as Ctrl+Alt+N), the state follows the drawer whoever opens it
+		toggleButtonQuickNotes = new JToggleButton("");
+		toggleButtonQuickNotes.setMinimumSize(new Dimension(25, 0));
+		toggleButtonQuickNotes.setToolTipText("Show/hide the Quick notes - (Ctrl+Alt+N)");
+		toggleButtonQuickNotes.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		toggleButtonQuickNotes.setIcon(new ImageIcon(GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/quickNotes.png"));
+		toggleButtonQuickNotes.addActionListener(e -> QuickNotesDrawer.getInstance(MainGUI.mainFrameScreept).toggle());
+		QuickNotesDrawer.addOpenListener(open -> SwingUtilities.invokeLater(() -> toggleButtonQuickNotes.setSelected(open)));
+		add(toggleButtonQuickNotes, "cell 24 1,alignx center,grow");
 
 		btnThemeEditor = new JButton("");
 		btnThemeEditor.setToolTipText(TextEditTooltips.tooltipThemeEditor);

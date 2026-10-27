@@ -6,6 +6,26 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.61 - 2026-10-28
+> A home page you can talk to, and a lot of polish
+
+### New
+- Home page assistant: type on the home page and a terminal wakes up. Ask about any ScreepT function in English or Italian, fully offline (it reads the guide and this changelog). Commands: help, news, shortcuts, topics, eggs. The home image dims while you type and comes back when idle. It keeps working while you use other sections, and history and answers are there when you come back.
+- ScreepT Dark editor theme: soft, deep and matte, matching the dark interface, for every language. Default for new installations.
+- Quick notes button in the text editor toolbar (right of the spell checker), same as Ctrl+Alt+N.
+- Help > Open current installation folder.
+- Puppynoid shows a how-to-play guide with the keys, in the start window and on top of the game.
+
+### Improved
+- Calculator: works from the keyboard on any layout (numpad, Enter, Backspace, + - * / ^ ( )) and every mode is readable with the dark theme.
+- Quick notes and release notes follow the colors of the selected theme, also with Nimbus.
+- Network info opens without freezing the loader.
+- Dialogs, easter eggs and the first-start name request open on the monitor you used last.
+
+### Fixed
+- Progress windows (and other frames) switched the whole application to Nimbus.
+- Shortcuts and easter eggs stopped working on the home page after switching section with a shortcut.
+
 ## 0.9.60 - 2026-10-27
 > Quick notes at your fingertips and a brand new "What's new"
 

@@ -896,6 +896,18 @@ public class MainGUI extends MainGuiParent {
 			}
 		});
 
+		// installation root: the folder containing the Application one
+		mntmOpenInstallationFolder = new CustomJmenuItem(new AbstractAction("Open current installation folder") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+				File applicationDir = new File(GeneralConfig.CURRENT_EXECUTION_DIR).getAbsoluteFile();
+				File installationDir = applicationDir.getParentFile() != null ? applicationDir.getParentFile() : applicationDir;
+				// open the folder itself (explorer /select would show its parent)
+				GuiUtilsExtended.openWithSystemDefault(installationDir);
+			}
+		});
+
 		// NOT OPENING VIEW - LOG ERASE
 		mntmEraseLogs = new CustomJmenuItem(new AbstractAction("Erase Logs") {
 			@Override
@@ -1515,6 +1527,13 @@ public class MainGUI extends MainGuiParent {
 		BufferedImage screeptImageDnD = ImageIO.read(new File(ImagesPathConfigurator.IMAGE_BCKG_DRAGNDROP));
 		SCREEPT_BACKGROUND_DRAGNDROP_IMAGE = screeptImageDnD.getScaledInstance(screeptImageDnD.getWidth(),
 				screeptImageDnD.getHeight(), Image.SCALE_SMOOTH);
+	}
+
+	/** Replays the code rain of the home page (no effect when another section is shown) */
+	public void replayHomeAnimation() {
+		if (homePanel != null && homePanel.isShowing()) {
+			homePanel.replay();
+		}
 	}
 
 	public void setBackgroundImage() {

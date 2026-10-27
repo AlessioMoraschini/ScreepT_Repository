@@ -28,6 +28,8 @@ import java.util.Random;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import screept.gui.panels.home.HomeTerminalView;
+
 /**
  * Home page background as a terminal: a rain of code reveals the home image glyph by glyph
  * (each glyph tinted with the image color below it), then the real image fades in and the
@@ -56,6 +58,7 @@ public class MatrixHomePanel extends JPanel {
 	private static final int TRAIL_IDLE_MAX_ALPHA = 110;
 
 	private final Image source;
+	private final HomeTerminalView terminal = new HomeTerminalView(this);
 	private final Random random = new Random();
 	private final Timer timer;
 	private final Color[] trailShades = new Color[TRAIL_SHADES];
@@ -106,6 +109,8 @@ public class MatrixHomePanel extends JPanel {
 		timer = new Timer(FRAME_MS, e -> tick());
 		timer.setCoalesce(true);
 
+		addMouseWheelListener(e -> terminal.onWheel(e.getWheelRotation()));
+
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -120,11 +125,13 @@ public class MatrixHomePanel extends JPanel {
 	public void addNotify() {
 		super.addNotify();
 		timer.start();
+		terminal.attach();
 	}
 
 	@Override
 	public void removeNotify() {
 		timer.stop();
+		terminal.detach();
 		super.removeNotify();
 	}
 
@@ -176,6 +183,7 @@ public class MatrixHomePanel extends JPanel {
 			lastFlickerMs = elapsed;
 		}
 
+		terminal.tick();
 		repaint();
 	}
 
@@ -340,6 +348,7 @@ public class MatrixHomePanel extends JPanel {
 		}
 		g.drawImage(frameBase, 0, 0, null);
 		paintRain((Graphics2D) g);
+		terminal.paint((Graphics2D) g, width, height);
 	}
 
 	private void composeBase() {

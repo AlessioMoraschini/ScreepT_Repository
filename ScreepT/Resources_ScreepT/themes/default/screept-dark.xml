@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE RSyntaxTheme SYSTEM "theme.dtd">
+
+<!--
+	ScreepT Dark: matte, soft and deep editor theme matching the ScreepT Dark look and feel.
+	Editor background (#16171A) is slightly deeper than the UI content color (#1E1F22).
+	Token colors are muted and desaturated, shared by every language supported by the editor.
+	See theme.dtd and org.fife.ui.rsyntaxtextarea.Theme for more information.
+-->
+<RSyntaxTheme version="1.0">
+
+	<!-- General editor colors. -->
+	<background color="16171A" />
+	<caret color="CED0D6" />
+	<selection useFG="false" bg="26385C" roundedEdges="false" />
+	<currentLineHighlight color="1D1F23" fade="false" />
+	<tabLine color="2B2D30" />
+	<marginLine fg="2B2D30" />
+	<markAllHighlight color="4A4630" />
+	<markOccurrencesHighlight color="2A3A4F" border="false" />
+	<matchedBracket fg="D9DBE0" bg="3A4A66" highlightBoth="false" animate="false" />
+	<hyperlinks fg="548AF7" />
+	<secondaryLanguages>
+		<language index="1" bg="1B1D24" />
+		<language index="2" bg="1A211D" />
+		<language index="3" bg="241C1D" />
+	</secondaryLanguages>
+
+	<!-- Gutter styling. -->
+	<gutterBackground color="131417" />
+	<gutterBorder color="25272B" />
+	<lineNumbers fg="5A5D63" />
+	<foldIndicator fg="6F737A" iconBg="1E1F22" iconArmedBg="2B2D30" />
+	<iconRowHeader activeLineRange="3574F0" inheritsGutterBG="true" />
+
+	<!-- Syntax tokens. -->
+	<tokenStyles>
+		<style token="NULL" fg="BCBEC4" />
+		<style token="IDENTIFIER" fg="BCBEC4" />
+		<style token="WHITESPACE" fg="BCBEC4" />
+		<style token="SEPARATOR" fg="A1A4AB" />
+		<style token="OPERATOR" fg="A1A4AB" />
+
+		<style token="RESERVED_WORD" fg="CF8E6D" />
+		<style token="RESERVED_WORD_2" fg="CF8E6D" italic="true" />
+		<style token="DATA_TYPE" fg="5FB3B3" />
+		<style token="FUNCTION" fg="56A8F5" />
+		<style token="VARIABLE" fg="C77DBB" />
+		<style token="ANNOTATION" fg="B3AE60" />
+		<style token="PREPROCESSOR" fg="C4A15A" />
+		<style token="REGEX" fg="5CC2C9" />
+
+		<style token="COMMENT_EOL" fg="7A7E85" italic="true" />
+		<style token="COMMENT_MULTILINE" fg="7A7E85" italic="true" />
+		<style token="COMMENT_DOCUMENTATION" fg="5F826B" italic="true" />
+		<style token="COMMENT_KEYWORD" fg="8DA891" italic="true" />
+		<style token="COMMENT_MARKUP" fg="8DA891" italic="true" />
+
+		<style token="LITERAL_BOOLEAN" fg="CF8E6D" />
+		<style token="LITERAL_NUMBER_DECIMAL_INT" fg="2AACB8" />
+		<style token="LITERAL_NUMBER_FLOAT" fg="2AACB8" />
+		<style token="LITERAL_NUMBER_HEXADECIMAL" fg="2AACB8" />
+		<style token="LITERAL_STRING_DOUBLE_QUOTE" fg="6AAB73" />
+		<style token="LITERAL_CHAR" fg="6AAB73" />
+		<style token="LITERAL_BACKQUOTE" fg="7DB87F" />
+
+		<style token="MARKUP_TAG_DELIMITER" fg="8A8D93" />
+		<style token="MARKUP_TAG_NAME" fg="D5B778" />
+		<style token="MARKUP_TAG_ATTRIBUTE" fg="A98AC9" />
+		<style token="MARKUP_TAG_ATTRIBUTE_VALUE" fg="6AAB73" />
+		<style token="MARKUP_COMMENT" fg="7A7E85" italic="true" />
+		<style token="MARKUP_DTD" fg="8A8D93" />
+		<style token="MARKUP_PROCESSING_INSTRUCTION" fg="B3AE60" />
+		<style token="MARKUP_CDATA" fg="6AAB73" />
+		<style token="MARKUP_CDATA_DELIMITER" fg="8A8D93" />
+		<style token="MARKUP_ENTITY_REFERENCE" fg="2AACB8" />
+
+		<style token="ERROR_IDENTIFIER" fg="E6E6E6" bg="4A2326" />
+		<style token="ERROR_NUMBER_FORMAT" fg="E6E6E6" bg="4A2326" />
+		<style token="ERROR_STRING_DOUBLE" fg="E6E6E6" bg="4A2326" />
+		<style token="ERROR_CHAR" fg="E6E6E6" bg="4A2326" />
+	</tokenStyles>
+
+</RSyntaxTheme>

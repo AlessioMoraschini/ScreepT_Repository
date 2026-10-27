@@ -41,6 +41,8 @@ public final class QuickNotesDrawer extends JPanel {
 	private static final int ANIMATION_MS = 160;
 
 	private static QuickNotesDrawer instance;
+	/** Notified with the new state whenever the drawer opens or closes (any trigger: shortcut, menu, button) */
+	private static final java.util.List<java.util.function.Consumer<Boolean>> OPEN_LISTENERS = new java.util.concurrent.CopyOnWriteArrayList<>();
 
 	private final JFrame frame;
 	private final QuickNotesStore store;
@@ -86,6 +88,16 @@ public final class QuickNotesDrawer extends JPanel {
 		return instance != null && instance.isVisible() && owner != null && SwingUtilities.isDescendingFrom(owner, instance);
 	}
 
+	public static void addOpenListener(java.util.function.Consumer<Boolean> listener) {
+		OPEN_LISTENERS.add(listener);
+	}
+
+	private static void fireOpenChanged(boolean open) {
+		for (java.util.function.Consumer<Boolean> listener : OPEN_LISTENERS) {
+			listener.accept(open);
+		}
+	}
+
 	public void toggle() {
 		if (isVisible() && opening) {
 			close();
@@ -102,12 +114,14 @@ public final class QuickNotesDrawer extends JPanel {
 		setVisible(true);
 		startAnimation();
 		notesPanel.focusAddField();
+		fireOpenChanged(true);
 	}
 
 	public void close() {
 		store.flush();
 		opening = false;
 		startAnimation();
+		fireOpenChanged(false);
 		if (previousFocus != null && previousFocus.isShowing()) {
 			previousFocus.requestFocusInWindow();
 		}

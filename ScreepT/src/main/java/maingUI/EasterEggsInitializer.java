@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import puppynoid.gui.StartFrame;
 import puppynoid.utils.config.GameConfigs;
 import resources.GeneralConfig;
+import screept.gui.panels.home.HomeTerminalSession;
 import various.common.light.easteregg.EasterEgg;
 import various.common.light.easteregg.EasterEggsManager;
 import various.common.light.easteregg.PhraseEasterEgg;
@@ -40,7 +41,11 @@ public class EasterEggsInitializer {
 
 		EasterEgg snakeGame = new EasterEgg(
 				"snakeGameEgg01",
-				() -> {Snake.getInstance("Snake - Easter Egg found!");},
+				() -> {
+					// the three letters of the shortcut were typed in the home terminal: take them back
+					HomeTerminalSession.get().undoRepeatedTyping(3);
+					launchSnake();
+				},
 				(e) -> {
 					return KeyEvent.VK_S == e.getKeyCode() &&
 							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 600) &&
@@ -52,11 +57,8 @@ public class EasterEggsInitializer {
 		EasterEgg arkanoidGame = new EasterEgg(
 				"arkanoidGameEgg01",
 				() -> {
-					GameConfigs.GAME_CONFIG_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/config/";
-					GameConfigs.IMG_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/images/";
-					GameConfigs.SOUNDS_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/sounds/";
-					StartFrame.size = new Dimension(450,150);
-					StartFrame.getInstance("Puppynoid - Easter Egg found!");
+					HomeTerminalSession.get().undoRepeatedTyping(3);
+					launchPuppynoid();
 				},
 				(e) -> {
 					return KeyEvent.VK_A == e.getKeyCode() &&
@@ -69,7 +71,10 @@ public class EasterEggsInitializer {
 		// Feo and Nano cross the main window: M (meow) x3 in home
 		EasterEgg catsParade = new EasterEgg(
 				"catsParadeEgg01",
-				() -> {CatsParade.start(mainGuiUtils.mainAppReference.getMainFrame());},
+				() -> {
+					HomeTerminalSession.get().undoRepeatedTyping(3);
+					launchCats();
+				},
 				(e) -> {
 					return KeyEvent.VK_M == e.getKeyCode() &&
 							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 600) &&
@@ -77,10 +82,34 @@ public class EasterEggsInitializer {
 					}
 		);
 
+		// the home terminal can summon them by name too
+		HomeTerminalSession session = HomeTerminalSession.get();
+		session.registerAction("snake", this::launchSnake);
+		session.registerAction("puppynoid", this::launchPuppynoid);
+		session.registerAction("cats", this::launchCats);
+		session.registerAction("poem", () -> poetryRandomEgg.getAction().run());
+		session.registerAction("matrix", () -> mainGuiUtils.mainAppReference.replayHomeAnimation());
+
 		// Add easter eggs to manager
 		manager.addEasterEgg(poetryRandomEgg);
 		manager.addEasterEgg(snakeGame);
 		manager.addEasterEgg(arkanoidGame);
 		manager.addEasterEgg(catsParade);
+	}
+
+	private void launchSnake() {
+		Snake.getInstance("Snake - Easter Egg found!");
+	}
+
+	private void launchPuppynoid() {
+		GameConfigs.GAME_CONFIG_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/config/";
+		GameConfigs.IMG_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/images/";
+		GameConfigs.SOUNDS_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/sounds/";
+		StartFrame.size = new Dimension(520,230);
+		StartFrame.getInstance("Puppynoid - Easter Egg found!");
+	}
+
+	private void launchCats() {
+		CatsParade.start(mainGuiUtils.mainAppReference.getMainFrame());
 	}
 }

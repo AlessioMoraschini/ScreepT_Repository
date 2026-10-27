@@ -51,6 +51,13 @@ public class RoundTextField extends JTextField {
 		});
 	}
 
+	@Override
+	public void updateUI() {
+		super.updateUI();
+		CardPalette.flatten(this);
+		setOpaque(false);
+	}
+
 	/** Colors from the current palette (call after a theme change) */
 	public void applyPalette() {
 		CardPalette p = palette.get();

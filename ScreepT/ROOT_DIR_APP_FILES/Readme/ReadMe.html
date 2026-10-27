@@ -140,6 +140,18 @@
 										<li><a class="subIndex3" href="#subSectTitleExit">EXIT</a></li>
 									</ul>
 								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcHomeAssistant">Home page assistant</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcQuickNotes">Quick notes</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcCalculator">Calculator</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcRecentOther">Theme and other new things</a>
+								</div></li>
 							</ul>
 								
 						</div>
@@ -611,8 +623,51 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 						</p>
 					<li class="highLineHeigthList"><span class="highlightBolded">Check for Software Updates </span>- this function is self explanatory: just be sure to have a working internet connection to update the software. NB: you can have some problems updating the software while using a proxy.
 					<li class="highLineHeigthList"><span class="highlightBolded">Install plugins </span>- this function is self explanatory: it opens a new pop up window when you can choose and install plugins for ScreepT. For the early ScreepT versions, this is made mainly to reduce the basic application size, because of some libraries that were very heavy to install as default choice, so I decided to make them installable as plugins. 
+					<li class="highLineHeigthList"><span class="highlightBolded">Open current installation folder </span>- opens in the file explorer the folder that contains the Application folder of this installation (the root of ScreepT), handy to find logs, backups, plugins and updates.</li>
 					<br><b>NB: </b>you may experience some troubles while installing plugins or updates while using a proxy: in this case you can setup your proxy going to preferences -> generic options, clicking the world icon. Here you can specify the url/port combination of your proxy, and eventually a username/password combination if you need it (for security reasons, by default password won't be saved, and must be specified again at each restart).
 				</ul></p>
+				<hr>
+				<h2 id="funcHomeAssistant" class="sectionSubTitle"> 2.7 - HOME PAGE ASSISTANT (TERMINAL)</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">Type anywhere on the home page and the terminal wakes up: the home image dims with an animation so what you type and the answers stay readable, then it fades back after a few seconds of inactivity.</li>
+					<li class="highLineHeigthList">Ask in plain words, in English or Italian, about any ScreepT function ("how do I encrypt a file", "come cambio il tema"). The assistant is fully offline: it reads this guide and the changelog that ship with ScreepT, no cloud, no API keys, no cost.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Commands: </span>help, news (what changed in the latest version), shortcuts [word] (keyboard shortcuts, optionally filtered), topics (sections of the guide), eggs, version, about, whoami, clear. You can also summon the hidden surprises by name: snake, puppynoid, cats, poem, matrix.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Keys: </span>Enter sends, Up/Down recall previous questions, PgUp/PgDn or the mouse wheel scroll the terminal, Esc or Ctrl+U clears the line, Ctrl+L clears the screen, Ctrl+V pastes.</li>
+					<li class="highLineHeigthList">Questions are answered in the background: you can open the text editor, the crypter or any other section while it works, and when you come back to the home page the answers, the history and the text you were typing are all there.</li>
+					<li class="highLineHeigthList">The hidden shortcuts of the home page (S three times, A three times, M three times) still work.</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcQuickNotes" class="sectionSubTitle"> 2.8 - QUICK NOTES</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">Quick notes is a to-do drawer on the right side of the window. Show or hide it with [Ctrl + Alt + N], from Various > Quick notes, or with the Quick notes button of the text editor toolbar (right of the spell checker toggle, it follows the state of the drawer).</li>
+					<li class="highLineHeigthList">Type a note and press Enter to add it, click a note to edit it inline, use the round checkbox (or Ctrl+Enter) to mark it as done: completed notes are grouped at the bottom. The search box filters the notes and highlights the matches.</li>
+					<li class="highLineHeigthList">Notes are saved automatically at every change in Resources_ScreepT/QuickNotes/quick_notes.md, a plain Markdown list with a backup copy.</li>
+					<li class="highLineHeigthList">The drawer takes its colors from the theme selected in the graphic preferences (dark, light, Nimbus and the others), keeping the modern card look.</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcCalculator" class="sectionSubTitle"> 2.9 - CALCULATOR KEYBOARD AND THEMES</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">The calculator ([Ctrl + Alt + C]) can be used from the keyboard on any layout: digits, numpad, + - * / ^ ( ), the decimal point or comma. Enter is =, Backspace deletes the last character, Delete is C.</li>
+					<li class="highLineHeigthList">Advanced and simple modes: r is square root, m and s are memory, c is clear, a is all clear. Base mode: letters A-F are hexadecimal digits and Ctrl+B, Ctrl+O, Ctrl+D, Ctrl+H change the base.</li>
+					<li class="highLineHeigthList">All the modes (simple, advanced, base, equation, unit converter, date calculator, prime numbers) follow the dark theme and stay readable.</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcRecentOther" class="sectionSubTitle"> 2.10 - EDITOR THEME AND OTHER NEW THINGS</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList"><span class="highlightBolded">ScreepT Dark editor theme </span>(screept-dark.xml): a soft, deep and matte syntax theme matching the dark interface, with colors for every language of the editor. It is the default for new installations and can be chosen in the theme combo box of the text editor toolbar.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Puppynoid </span>(easter egg) shows a how-to-play guide: left/right arrows move the paddle, Ctrl launches the ball, Space pauses, Esc quits, Enter retries, N goes to the next level.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Network info </span>opens without freezing: adapters, public IP, DNS and gateway load in the background.</li>
+					<li class="highLineHeigthList">Progress windows and secondary frames no longer switch the application to the Nimbus look and feel: the theme selected in the graphic preferences is always kept.</li>
+					<li class="highLineHeigthList">Dialogs, easter eggs and the first-start name request open on the monitor you used last.</li>
+				</ul></p>
+
 			
 			</div>
 			
@@ -675,6 +730,7 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 					<li> <span class="SHCT_TEXT">OPEN FILE CONTENT SEARCH</span> - [Ctrl + Alt + F]</li>
 					<li> <span class="SHCT_TEXT">OPEN SHELL</span> - [Ctrl + Alt + S]</li>
 					<li> <span class="SHCT_TEXT">OPEN CALCULATOR</span> - [Ctrl + Alt + C]</li>
+					<li> <span class="SHCT_TEXT">SHOW/HIDE QUICK NOTES</span> - [Ctrl + Alt + N]</li>
 					<li> <span class="SHCT_TEXT">OPEN CLIPBOARDS-MEMO PANEL</span> - [Alt + Shift + P]</li>
 					<hr>
 					<h4> 5.1 - Files and Folders actions submenu:</h4>
