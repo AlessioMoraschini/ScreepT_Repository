@@ -6,6 +6,14 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.62 - 2026-10-28
+> Six new easter eggs
+
+### New
+- Six new easter eggs: Bug Squasher, Cipher Breaker, Code Typist, Shortcut Trivia (questions from the guide), a fortune cookie and a glitch effect. Hidden behind a letter typed three times on the home page (B, C, W, T, F, G), or summoned by name from the home terminal.
+- About: the terminal line accepts text, and some words get an answer. Tell ScreepT how you feel and find out. The egg picker keeps the About window above every other window, also of other applications.
+- Home terminal: new commands bugs, cipher, typing, trivia, fortune and glitch.
+
 ## 0.9.61 - 2026-10-28
 > A home page you can talk to, and a lot of polish
 

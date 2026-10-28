@@ -295,6 +295,11 @@ public final class HomeTerminalSession {
 		actions.put(name, action);
 	}
 
+	/** Launches a registered action (an easter egg) by name, for other windows too: false when it does not exist */
+	public boolean launchAction(String name) {
+		return runAction(name);
+	}
+
 	boolean hasAction(String name) {
 		return actions.containsKey(name);
 	}

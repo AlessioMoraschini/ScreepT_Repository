@@ -129,6 +129,24 @@ final class AssistantEngine {
 		if (isAny(normalized, "matrix", "replay", "pioggia", "rain")) {
 			return launch(reply, session, "matrix", "Follow the white rabbit.");
 		}
+		if (isAny(normalized, "bugs", "bug", "squash", "bug squasher", "insetti")) {
+			return launch(reply, session, "bugs", "Releasing the bugs. Bring a shoe.");
+		}
+		if (isAny(normalized, "cipher", "caesar", "breaker", "cifrario", "cipher breaker")) {
+			return launch(reply, session, "cipher", "Loading something suspiciously encrypted...");
+		}
+		if (isAny(normalized, "typing", "typist", "wpm", "type", "dattilografia")) {
+			return launch(reply, session, "typing", "Stretch your fingers.");
+		}
+		if (isAny(normalized, "trivia", "quiz", "shortcut trivia")) {
+			return launch(reply, session, "trivia", "Let us see if you read the manual.");
+		}
+		if (isAny(normalized, "fortune", "cookie", "quote", "citazione", "biscotto")) {
+			return launch(reply, session, "fortune", "Cracking a cookie open...");
+		}
+		if (isAny(normalized, "glitch", "hack", "hacker", "breach")) {
+			return launch(reply, session, "glitch", "Do not panic.");
+		}
 		if (first.equals("sudo")) {
 			return reply.add(Kind.ERROR, userName() + " is not in the sudoers file. This incident will be reported (to nobody).");
 		}
@@ -253,8 +271,9 @@ final class AssistantEngine {
 
 	private static Reply eggs(Reply reply) {
 		reply.add(Kind.TITLE, "Hidden stuff");
-		reply.add(Kind.OUTPUT, "I will not spoil everything, but you can summon these by name: snake, puppynoid, cats, poem, matrix.");
-		reply.add(Kind.OUTPUT, "On the home page, the old shortcuts still work too. Find them yourself.");
+		reply.add(Kind.OUTPUT, "I will not spoil everything, but you can summon these by name: snake, puppynoid, cats, poem, matrix,");
+		reply.add(Kind.OUTPUT, "bugs, cipher, typing, trivia, fortune, glitch.");
+		reply.add(Kind.OUTPUT, "On the home page they also hide behind a letter typed three times in a row. Find them yourself.");
 		return reply;
 	}
 

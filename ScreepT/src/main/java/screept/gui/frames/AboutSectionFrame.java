@@ -11,6 +11,7 @@
  */
 package screept.gui.frames;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -18,8 +19,15 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.RadialGradientPaint;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.AWTEvent;
+import java.awt.event.AWTEventListener;
+import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -27,6 +35,7 @@ import java.io.File;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.imageio.ImageIO;
@@ -35,6 +44,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -43,6 +54,7 @@ import org.apache.log4j.Logger;
 import gui.commons.frameutils.frame.arch.ParentFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.guistyle.TextGuiUtils;
+import gui.commons.handlers.AlwaysOnTopManager;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import net.miginfocom.swing.MigLayout;
@@ -50,6 +62,8 @@ import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
+import screept.gui.easteregg.EasterEggPicker;
+import screept.gui.style.CardPalette;
 import various.common.light.easteregg.EasterEgg;
 
 /**
@@ -104,8 +118,13 @@ public class AboutSectionFrame extends ParentFrame {
 
 	private JButton websiteButton;
 	private JButton eggButton;
-	private JLabel cursorLabel;
+	private JTextField input;
+	private JLabel responseLabel;
+	private JPanel pickerHolder;
 	private PixelSprite padlock;
+	/** While the egg picker is shown the window stays above every other window, and so do the windows it opens */
+	private AWTEventListener topmostFollower;
+	private final List<Window> raisedWindows = new ArrayList<>();
 
 	public AboutSectionFrame(MainGUI main) {
 		super();
@@ -136,13 +155,14 @@ public class AboutSectionFrame extends ParentFrame {
 		animation.start();
 
 		addHandlers(background);
+		SwingUtilities.invokeLater(() -> input.requestFocusInWindow());
 		logger.info(this.getClass().getName() + " Started");
 	}
 
 	private JPanel createInfoCard() {
 
 		JPanel card = new CardPanel();
-		card.setLayout(new MigLayout("wrap 2, insets 18 24 18 24, gap 16 7", "[right][grow, left]"));
+		card.setLayout(new MigLayout("wrap 2, insets 18 24 18 24, gap 16 7, hidemode 3", "[right][grow, left]"));
 
 		addInfoRow(card, "version", GeneralConfig.APP_VERSION);
 		addInfoRow(card, "built on", GeneralConfig.BUILD_TS_DATE);
@@ -153,12 +173,105 @@ public class AboutSectionFrame extends ParentFrame {
 		websiteButton = linkButton(GeneralConfig.WEBSITE, ACCENT_LIGHT);
 		card.add(websiteButton);
 
-		cursorLabel = new JLabel("█");
-		cursorLabel.setFont(monospaced(Font.PLAIN, 15));
-		cursorLabel.setForeground(TEXT);
+		// the terminal line is real: type something and press Enter (some words get an answer)
+		input = new JTextField();
+		input.setFont(monospaced(Font.PLAIN, 15));
+		input.setForeground(TEXT);
+		input.setCaretColor(TEXT);
+		input.setBorder(null);
+		CardPalette.flatten(input);
+		input.setOpaque(false);
+		input.setBackground(new Color(0, 0, 0, 0));
+		input.addActionListener(e -> answer(input.getText()));
 		card.add(promptLabel(""), "gaptop 4");
-		card.add(cursorLabel, "gaptop 4");
+		card.add(input, "gaptop 4, growx");
+
+		responseLabel = new JLabel(" ");
+		responseLabel.setFont(monospaced(Font.BOLD, 15));
+		responseLabel.setForeground(EGG);
+		responseLabel.setVisible(false);
+		card.add(responseLabel, "span 2, growx, gaptop 8");
+
+		pickerHolder = new JPanel(new BorderLayout());
+		pickerHolder.setOpaque(false);
+		pickerHolder.setVisible(false);
+		card.add(pickerHolder, "span 2, growx, gaptop 6");
 		return card;
+	}
+
+	/** Answers to what was typed in the terminal line */
+	private void answer(String typed) {
+		String text = typed == null ? "" : typed.trim().toLowerCase(Locale.ROOT);
+		while (text.contains("  ")) {
+			text = text.replace("  ", " ");
+		}
+		input.setText("");
+		pickerHolder.removeAll();
+		pickerHolder.setVisible(false);
+		responseLabel.setVisible(false);
+		setTopmost(false);
+
+		if (text.equals("fuck")) {
+			responseLabel.setText("fuck you");
+			responseLabel.setVisible(true);
+		} else if (text.equals("i love screept")) {
+			responseLabel.setText("<html>I love you too, " + userName() + ". Have an egg, you earned it:</html>");
+			responseLabel.setVisible(true);
+			pickerHolder.add(new EasterEggPicker(), BorderLayout.CENTER);
+			pickerHolder.setVisible(true);
+			setTopmost(true);
+		}
+		getContentPane().revalidate();
+		getContentPane().repaint();
+		SwingUtilities.invokeLater(this::fitToContent);
+	}
+
+	/**
+	 * Keeps the window above everything, also above other applications, and the windows opened from it (the eggs it launches)
+	 * above it. Turned off, everything goes back to the normal always-on-top rule of the application.
+	 */
+	private void setTopmost(boolean on) {
+		AlwaysOnTopManager.keepOnTop(this, on);
+		if (on && topmostFollower == null) {
+			topmostFollower = event -> {
+				if (event.getID() == WindowEvent.WINDOW_OPENED) {
+					Window opened = ((WindowEvent) event).getWindow();
+					if (opened != this && opened != mainAppFrame && opened instanceof RootPaneContainer) {
+						AlwaysOnTopManager.keepOnTop(opened, true);
+						raisedWindows.add(opened);
+					}
+				}
+			};
+			Toolkit.getDefaultToolkit().addAWTEventListener(topmostFollower, AWTEvent.WINDOW_EVENT_MASK);
+		} else if (!on && topmostFollower != null) {
+			Toolkit.getDefaultToolkit().removeAWTEventListener(topmostFollower);
+			topmostFollower = null;
+			for (Window window : raisedWindows) {
+				AlwaysOnTopManager.keepOnTop(window, false);
+			}
+			raisedWindows.clear();
+		}
+	}
+
+	private static String userName() {
+		try {
+			String name = MainGUI.currentConfiguration.getGenOpt().getUserName();
+			return name == null || name.isEmpty() ? "friend" : name;
+		} catch (RuntimeException e) {
+			return "friend";
+		}
+	}
+
+	/** Grows the window (never shrinks it) so that the answer and the egg picker are fully visible, keeping it on its monitor */
+	private void fitToContent() {
+		Dimension wanted = getContentPane().getPreferredSize();
+		Insets insets = getInsets();
+		int height = Math.max(getHeight(), wanted.height + insets.top + insets.bottom);
+		if (height != getHeight()) {
+			Rectangle screen = getGraphicsConfiguration() != null ? getGraphicsConfiguration().getBounds() : new Rectangle(0, 0, 1920, 1080);
+			int y = Math.max(screen.y, Math.min(getY(), screen.y + screen.height - height));
+			setBounds(getX(), y, getWidth(), Math.min(height, screen.height));
+		}
 	}
 
 	/** Hidden until the background is clicked */
@@ -213,8 +326,7 @@ public class AboutSectionFrame extends ParentFrame {
 
 	private void animate() {
 		animationFrame++;
-		// blinking block cursor, floating padlock
-		cursorLabel.setForeground(animationFrame % 2 == 0 ? TEXT : new Color(0, 0, 0, 0));
+		// floating padlock
 		padlock.setOffset(animationFrame % 4 < 2 ? 0 : PIXEL);
 	}
 
@@ -256,6 +368,7 @@ public class AboutSectionFrame extends ParentFrame {
 
 				isActive.set(false);
 				animation.stop();
+				setTopmost(false);
 
 				mainAppFrame.setEnabled(true);
 				singletonInstance = null;
@@ -272,6 +385,7 @@ public class AboutSectionFrame extends ParentFrame {
 		background.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				input.requestFocusInWindow();
 				if (!eggButton.isVisible()) {
 					eggButton.setVisible(true);
 					background.revalidate();
