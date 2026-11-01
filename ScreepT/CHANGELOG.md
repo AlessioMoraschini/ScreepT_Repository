@@ -6,6 +6,24 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.63 - 2026-11-02
+> LogSearch for huge files, a real terminal in the shell and option descriptions
+
+### New
+- LogSearch (Various > LogSearch, Ctrl+Alt+L): opens a huge text file read-only, a portion at a time, so memory stays low whatever the size. Search as text or regular expression, case sensitive or not; matching lines are tinted, listed below and marked on a map beside the scrollbar. F3 / Shift+F3 jump between matches.
+- Opening in the editor a file over the size limit now proposes LogSearch (or loading it anyway, or cancelling).
+- Graphic preferences > Text editor: "Max file size (MB)" sets the size above which a file is not loaded in the editor directly.
+- Shell (System Console and editor panel): new Interactive checkbox. On, the panel is a real terminal with a real shell (Git Bash on Windows when installed, else PowerShell; your own shell on Linux and macOS): colors, history, line editing and full-screen programs work, Claude Code included. Off, it works as before in text mode. The choice is saved in the configuration file when ScreepT closes.
+- Graphic preferences and Generic options: rest the mouse on any option to see a description card. It closes with Esc, a click outside or moving the mouse away, scrolls when focused and can be resized (default about a quarter of the monitor).
+- Home assistant: answers now also list the related keyboard shortcuts, when the guide has some.
+- Home assistant: ask for a section by name ("text editor", "calculator", "home page"...) and it tells how to open it, with the menu path and the shortcut read from the real menus. It understands Italian and small typos, and says so (with a smile) when it does not understand.
+
+### Improved
+- Margin, font size, inline tabs and adapt text width moved from the text editor toolbar to the graphic preferences (Text editor section). Shortcuts are unchanged.
+- Graphic preferences: margin and interline now share one compact row, each with a slider and a spinner.
+- About stays above every window, also of other applications, for as long as it is open.
+- Shell terminal: bold, dim, 256 colors and true colors, block characters drawn exactly (logos and bars), symbol font for missing glyphs.
+
 ## 0.9.62 - 2026-10-28
 > Six new easter eggs
 

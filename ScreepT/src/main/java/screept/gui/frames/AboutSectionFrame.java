@@ -156,6 +156,8 @@ public class AboutSectionFrame extends ParentFrame {
 
 		addHandlers(background);
 		SwingUtilities.invokeLater(() -> input.requestFocusInWindow());
+		// always above every window, also of other applications: it must never get lost behind them
+		setTopmost(true);
 		logger.info(this.getClass().getName() + " Started");
 	}
 
@@ -209,7 +211,6 @@ public class AboutSectionFrame extends ParentFrame {
 		pickerHolder.removeAll();
 		pickerHolder.setVisible(false);
 		responseLabel.setVisible(false);
-		setTopmost(false);
 
 		if (text.equals("fuck")) {
 			responseLabel.setText("fuck you");
@@ -219,7 +220,6 @@ public class AboutSectionFrame extends ParentFrame {
 			responseLabel.setVisible(true);
 			pickerHolder.add(new EasterEggPicker(), BorderLayout.CENTER);
 			pickerHolder.setVisible(true);
-			setTopmost(true);
 		}
 		getContentPane().revalidate();
 		getContentPane().repaint();
@@ -228,7 +228,8 @@ public class AboutSectionFrame extends ParentFrame {
 
 	/**
 	 * Keeps the window above everything, also above other applications, and the windows opened from it (the eggs it launches)
-	 * above it. Turned off, everything goes back to the normal always-on-top rule of the application.
+	 * above it. It is on for the whole life of the window; turned off (when it closes) everything goes back to the normal
+	 * always-on-top rule of the application.
 	 */
 	private void setTopmost(boolean on) {
 		AlwaysOnTopManager.keepOnTop(this, on);
@@ -326,6 +327,10 @@ public class AboutSectionFrame extends ParentFrame {
 
 	private void animate() {
 		animationFrame++;
+		// the window manager can drop the topmost state (switching application, explorer...): ask for it again
+		if (!isAlwaysOnTop()) {
+			AlwaysOnTopManager.keepOnTop(this, true);
+		}
 		// floating padlock
 		padlock.setOffset(animationFrame % 4 < 2 ? 0 : PIXEL);
 	}

@@ -81,6 +81,7 @@ public final class HomeTerminalSession {
 	private final List<Runnable> listeners = new CopyOnWriteArrayList<>();
 	private final ThreadPoolExecutor executor;
 
+	private volatile MenuIndex menuIndex = MenuIndex.empty();
 	private int caret;
 	private int historyPosition;
 	private int pending;
@@ -298,6 +299,15 @@ public final class HomeTerminalSession {
 	/** Launches a registered action (an easter egg) by name, for other windows too: false when it does not exist */
 	public boolean launchAction(String name) {
 		return runAction(name);
+	}
+
+	/** Menu bar of the application, read by the home view: the assistant tells how to reach sections from it */
+	void setMenuIndex(MenuIndex index) {
+		menuIndex = index;
+	}
+
+	MenuIndex menuIndex() {
+		return menuIndex;
 	}
 
 	boolean hasAction(String name) {

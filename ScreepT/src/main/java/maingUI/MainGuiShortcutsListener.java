@@ -252,6 +252,13 @@ public class MainGuiShortcutsListener extends KeyListenerParent implements KeyEv
 				}
 
 				/*
+				 *  OPEN LOGSEARCH -> Ctrl+Alt+L
+				 */
+				else if (e.getKeyCode() == KeyEvent.VK_L && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					SwingUtilities.invokeLater(() -> currentGui.mntmLogSearch.doClick());
+				}
+
+				/*
 				 *  TOGGLE QUICK NOTES -> Ctrl+Alt+N
 				 */
 				else if (e.getKeyCode() == KeyEvent.VK_N && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {

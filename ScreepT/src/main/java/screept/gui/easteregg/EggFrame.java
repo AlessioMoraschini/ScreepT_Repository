@@ -42,6 +42,8 @@ abstract class EggFrame extends JFrame {
 
 	private static final Map<Class<?>, EggFrame> OPEN = new HashMap<>();
 
+	private final java.awt.Dimension contentSize;
+
 	/** Brings the window of this game to the front when it is already open */
 	static boolean focusIfOpen(Class<?> game) {
 		EggFrame open = OPEN.get(game);
@@ -63,7 +65,8 @@ abstract class EggFrame extends JFrame {
 		getContentPane().setBackground(BACKGROUND);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setResizable(false);
-		getContentPane().setPreferredSize(new java.awt.Dimension(width, height));
+		contentSize = new java.awt.Dimension(width, height);
+		getContentPane().setPreferredSize(contentSize);
 		pack();
 		ScreenMemory.centerOnLastScreen(this);
 
@@ -79,6 +82,14 @@ abstract class EggFrame extends JFrame {
 				onClosed();
 			}
 		});
+	}
+
+	/** Installs a content panel keeping the size the game asked for (a replaced content pane would lose it) */
+	protected void useContent(javax.swing.JComponent content) {
+		content.setPreferredSize(contentSize);
+		setContentPane(content);
+		pack();
+		ScreenMemory.centerOnLastScreen(this);
 	}
 
 	/** Stop timers and release what the game holds */

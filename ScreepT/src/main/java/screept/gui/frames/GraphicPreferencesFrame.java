@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import gui.texteditor.commons.TextEditTooltips;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -57,6 +58,7 @@ import gui.commons.guistyle.scale.UiScaleCustomDialog;
 import gui.commons.guistyle.scale.UiScaleManager;
 import gui.commons.panel.options.OptionSection;
 import gui.commons.panel.options.OptionsHeader;
+import gui.commons.panel.options.OptionHelp;
 import gui.commons.panel.options.OptionsPanel;
 import gui.texteditor.commons.om.TabTextEditorObject;
 import gui.texteditor.commons.utils.RsyntaxUtils;
@@ -123,6 +125,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private boolean BACKUP_AUTOSAVE_TEMP_FILES;
 	private String BACKUP_TXTAREA_SPECCLCHECKER_DICT;
 	private int BACKUP_INTERLINE;
+	private int BACKUP_MAX_FILE_SIZE_MB;
 
 	private INItializer currentConfiguration;
 
@@ -182,6 +185,17 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private Font BACKUP_EDITOR_FONT;
 
 	private JSpinner spinnerInterline;
+	private JSpinner spinnerMaxFileSize;
+	private JSpinner spinnerEditorMargin;
+	private JSlider sliderEditorMargin;
+	private JSlider sliderInterline;
+	private JPanel panelSpacing;
+	private JCheckBox chckbxInlineTabs;
+	private JCheckBox chckbxAdaptTextWidth;
+	private boolean BACKUP_ADAPT_TEXT_WIDTH;
+	private int BACKUP_EDITOR_MARGIN;
+	private boolean BACKUP_INLINE_TABS;
+	private boolean updatingMargin;
 	private JCheckBox checkBoxAutosaveTempFiles;
 	private JPanel footerPanel;
 
@@ -269,6 +283,17 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		spinnerEditorFontSize = new JSpinner(new SpinnerNumberModel(16, 4, 100, 1));
 
 		spinnerInterline = new JSpinner(new SpinnerNumberModel(0, 0, 20, 1));
+		spinnerMaxFileSize = new JSpinner(new SpinnerNumberModel(100, 1, 100000, 10));
+		spinnerMaxFileSize.setToolTipText("Files bigger than this (MB) are not opened in the editor: ScreepT proposes LogSearch, a read-only viewer for huge files");
+		spinnerEditorMargin = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+		spinnerEditorMargin.setToolTipText("Space between the border of the text editor and the text");
+		sliderEditorMargin = new JSlider(0, 100, 0);
+		sliderInterline = new JSlider(0, 20, 0);
+		panelSpacing = createSpacingPanel();
+		chckbxInlineTabs = newCheckBox("Inline tabs (one scrolling line)");
+		chckbxAdaptTextWidth = newCheckBox("Adapt text width (word wrap)");
+		chckbxAdaptTextWidth.setToolTipText(TextEditTooltips.tooltipCutWordsTo);
+		chckbxInlineTabs.setToolTipText("[Ctrl + Shift + I] If selected the tabs of the text editor are on one line, else they are organized in rows and always visible");
 		comboSpellcheckerDictionary = new JComboBox<FileNamed>(RsyntaxUtils.getSpellCheckerDIctionaries());
 
 		chckbxAutoindentation = newCheckBox("Auto-indentation");
@@ -322,6 +347,11 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		footerPanel.add(btnSaveConf, "cell 2 0");
 		footerPanel.add(btnUseSettings, "cell 3 0");
 		footerPanel.add(btnDiscard, "cell 4 0");
+
+		OptionHelp.attach("Reset initial values", "Brings every option of this window back to the value it had when the window was opened.", btnResetValues);
+		OptionHelp.attach("Save Values", "Closes the window, keeps the current settings and writes them to the configuration file.", btnSaveConf);
+		OptionHelp.attach("Use", "Closes the window and uses the current settings for this session. They are written to the configuration file only when it is saved (autosave or on exit).", btnUseSettings);
+		OptionHelp.attach("Discard", "Closes the window and drops every change made here: the previous settings are restored.", btnDiscard);
 	}
 
 	private JButton newFooterButton(String text, Color background) {
@@ -338,6 +368,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private void buildLayout() {
 
 		optionsPanel = new OptionsPanel();
+		optionsPanel.setHelpTexts(OptionDescriptions.graphic());
 		optionsPanel.addSection("Appearance", "Look and feel, theme and interface size")
 				.addRow("GUI style", comboStyleLaF)
 				.addRow("Theme", comboTheme)
@@ -348,7 +379,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				.addCheckBoxes(chckbxDarklight);
 		OptionSection textEditor = optionsPanel.addSection("Text editor", "Font, line spacing and spellchecker")
 				.addRow("Font", comboEditorFontFamily, spinnerEditorFontSize)
-				.addRow("Interline", spinnerInterline)
+				.addRow("Margin and interline", panelSpacing)
+				.addRow("Max file size (MB)", spinnerMaxFileSize)
 				.addRow("Spellchecker dictionary", comboSpellcheckerDictionary);
 		textEditor.addSubsection("Editing", "Typing helpers, tabs and files")
 				.addCheckBoxes(chckbxAutoindentation, chckbxCloseCurlybraces, chckbxCloseMarkuptags, chckbxEmulatedTabsWith,
@@ -356,7 +388,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		textEditor.addSubsection("Display", "How text is rendered and highlighted")
 				.addCheckBoxes(chckBoxAntiAliasingON, chckbxAllowFractionalFonts, chckbxCodeFolding, chckbxFadeHighlight,
 						chckbxHighlightndLanguages, chckbxShowWhitespaces, chckbxMarkEOL, chckbxRoundSelectionEdges,
-						chckbxHyperlinksEnabled, chckbxFocusableTips);
+						chckbxHyperlinksEnabled, chckbxFocusableTips, chckbxInlineTabs, chckbxAdaptTextWidth);
 		textEditor.addSubsection("Brackets and occurrences", null)
 				.addCheckBoxes(chckbxBracketsMatching, chckbxAnimateBrackets, chckbxHightlightBracketPairs, chckbxShowBracket,
 						checkBoxMarkOccurrences, chckbxMarkOccurrencesPaintBorder);
@@ -381,6 +413,69 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		Font font = new Font((String) comboEditorFontFamily.getSelectedItem(), current.getStyle(), (Integer) spinnerEditorFontSize.getValue());
 		currentConfiguration.getTextEditorOpt().setFont(font);
 		refreshEditorFont(font);
+	}
+
+	/** Margin and interline side by side, each with a slider and a spinner that follow each other */
+	private JPanel createSpacingPanel() {
+		JPanel panel = new JPanel(new MigLayout("insets 0, gap 8", "[][150!][64!]24[][150!][64!]"));
+		panel.setOpaque(false);
+		sliderEditorMargin.setOpaque(false);
+		sliderInterline.setOpaque(false);
+		sliderEditorMargin.setToolTipText("Space between the border of the text editor and the text");
+		sliderInterline.setToolTipText("Extra space between the lines of the text editor");
+
+		panel.add(new JLabel("Margin"));
+		panel.add(sliderEditorMargin);
+		panel.add(spinnerEditorMargin);
+		panel.add(new JLabel("Interline"));
+		panel.add(sliderInterline);
+		panel.add(spinnerInterline);
+
+		// slider and spinner of each pair follow each other (equal values raise no event, so there is no loop)
+		sliderEditorMargin.addChangeListener(e -> spinnerEditorMargin.setValue(sliderEditorMargin.getValue()));
+		spinnerEditorMargin.addChangeListener(e -> sliderEditorMargin.setValue((int) spinnerEditorMargin.getValue()));
+		sliderInterline.addChangeListener(e -> spinnerInterline.setValue(sliderInterline.getValue()));
+		spinnerInterline.addChangeListener(e -> sliderInterline.setValue((int) spinnerInterline.getValue()));
+		return panel;
+	}
+
+	/** Margin of the editor text areas: stored in the configuration and shown live in the open editor */
+	private void applyEditorMargin(int margin) {
+		currentConfiguration.getTextEditorOpt().setMargin(margin);
+		if (currentEditor != null) {
+			try {
+				currentEditor.subHeaderPanel.slider_margin.setValue(margin);
+			} catch (Exception e) {
+				logger.warn("Cannot refresh text editor margin", e);
+			}
+		}
+	}
+
+	/** Tabs of the editor on one scrolling line or in rows: stored in the configuration and shown live in the open editor */
+	private void applyInlineTabs(boolean inline) {
+		currentConfiguration.getTextEditorOpt().inlinedTabs = inline;
+		if (currentEditor != null) {
+			try {
+				currentEditor.headerPanel.checkBoxInlineTabs.setSelected(inline);
+				currentEditor.headerPanel.doInlinedCheck();
+			} catch (Exception e) {
+				logger.warn("Cannot refresh text editor tabs layout", e);
+			}
+		}
+	}
+
+	/** Word wrap of the editor: stored in the configuration and shown live in the open editor (its checkbox does the work) */
+	private void applyAdaptTextWidth(boolean adapt) {
+		currentConfiguration.getTextEditorOpt().breaklineActive = adapt;
+		if (currentEditor != null) {
+			try {
+				if (currentEditor.headerPanel.chkCutWordsTo.isSelected() != adapt) {
+					currentEditor.headerPanel.chkCutWordsTo.doClick();
+				}
+			} catch (Exception e) {
+				logger.warn("Cannot refresh text editor word wrap", e);
+			}
+		}
 	}
 
 	/** Applies the font to every open tab and to the editor toolbar size slider */
@@ -708,9 +803,18 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			}
 		});
 
+		spinnerEditorMargin.addChangeListener(e -> {
+			if (!updatingMargin) {
+				applyEditorMargin((int) spinnerEditorMargin.getValue());
+			}
+		});
+		chckbxInlineTabs.addActionListener(e -> applyInlineTabs(chckbxInlineTabs.isSelected()));
+		chckbxAdaptTextWidth.addActionListener(e -> applyAdaptTextWidth(chckbxAdaptTextWidth.isSelected()));
+
 		spinnerInterline.addChangeListener((e) -> {
 			currentConfiguration.getTextEditorOpt().setInterline((int)spinnerInterline.getValue());
 		});
+		spinnerMaxFileSize.addChangeListener(e -> currentConfiguration.getTextEditorOpt().setMaxFileSizeMb((int) spinnerMaxFileSize.getValue()));
 
 		// RESET BUTTON HANDLER
 		btnResetValues.addActionListener(new ActionListener() {
@@ -952,6 +1056,12 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		spinnerEditorFontSize.setValue(txtOpt.getFont().getSize());
 		updatingEditorFont = false;
 
+		updatingMargin = true;
+		spinnerEditorMargin.setValue(txtOpt.getMargin());
+		updatingMargin = false;
+		chckbxInlineTabs.setSelected(txtOpt.isInlinedTabs());
+		chckbxAdaptTextWidth.setSelected(txtOpt.isBreaklineActive());
+
 		// TEXT AREA
 		chckBoxAntiAliasingON.setSelected(txtOpt.antialiasedTxtArea);
 		chckbxAllowFractionalFonts.setSelected(txtOpt.fractionalFontMetricsEnabled);
@@ -978,6 +1088,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		chckbxSyncClipboardStyle.setSelected(txtOpt.clipboardSyncStyle);
 		checkBoxAutosaveTempFiles.setSelected(currentConfiguration.getTextEditorOpt().isAutosaveTempFiles());
 		spinnerInterline.setValue(txtOpt.getInterline());
+		spinnerMaxFileSize.setValue(txtOpt.getMaxFileSizeMb());
 		refreshTextEditorArea();
 		syncRightPaneCustomOptions();
 
@@ -1055,6 +1166,10 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		BACKUP_TXTAREA_SHOW_EOL_DELIM = txtOpt.markEndOfLine;
 		BACKUP_TXTAREA_SPECCLCHECKER_DICT = txtOpt.getPrefDictspellChecker();
 		BACKUP_INTERLINE = txtOpt.getInterline();
+		BACKUP_MAX_FILE_SIZE_MB = txtOpt.getMaxFileSizeMb();
+		BACKUP_EDITOR_MARGIN = txtOpt.getMargin();
+		BACKUP_INLINE_TABS = txtOpt.isInlinedTabs();
+		BACKUP_ADAPT_TEXT_WIDTH = txtOpt.isBreaklineActive();
 		BACKUP_SYNC_CLIPBOARD_STYLE = txtOpt.clipboardSyncStyle;
 		BACKUP_AUTOSAVE_TEMP_FILES = txtOpt.autosaveTempFiles;
 		BACKUP_TXTAREA_AUTOCHECK_CHANGES = currentConf.getGenOpt().isTxtEditorFileMonitorActive();
@@ -1100,6 +1215,10 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		txtOpt.setShowBracketsPopup(BACKUP_TXTAREA_SHOW_BRACKETS_POPUP);
 		txtOpt.setPrefDictspellChecker(BACKUP_TXTAREA_SPECCLCHECKER_DICT);
 		txtOpt.setInterline(BACKUP_INTERLINE);
+		txtOpt.setMaxFileSizeMb(BACKUP_MAX_FILE_SIZE_MB);
+		applyEditorMargin(BACKUP_EDITOR_MARGIN);
+		applyInlineTabs(BACKUP_INLINE_TABS);
+		applyAdaptTextWidth(BACKUP_ADAPT_TEXT_WIDTH);
 		txtOpt.setClipboardSyncStyle(BACKUP_SYNC_CLIPBOARD_STYLE);
 		txtOpt.setAutosaveTempFiles(BACKUP_AUTOSAVE_TEMP_FILES);
 		currentConf.getGenOpt().setTxtEditorFileMonitorActive(BACKUP_TXTAREA_AUTOCHECK_CHANGES);

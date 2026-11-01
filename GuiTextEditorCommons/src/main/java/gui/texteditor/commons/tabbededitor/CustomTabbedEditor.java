@@ -33,11 +33,14 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+
+import gui.texteditor.commons.logsearch.LogSearchFrame;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -293,9 +296,17 @@ public class CustomTabbedEditor implements ITabsManager {
 
 			if (exceedsLines || exceedsLength) {
 				String msg = exceedsLines
-						? "This file has more than " + GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES + " lines, and can slow down or crash ScreepT. Load anyway?"
-						: "This file is bigger than max admitted size [" + ConversionUtils.coolFileSize((long) GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024) + "] and can slow down or crash ScreepT. Load anyway?";
-				boolean userAcceptance = dialogHelper.yesOrNo(msg);
+						? "This file has more than " + GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES + " lines, and can slow down or crash ScreepT."
+						: "This file is bigger than max admitted size [" + ConversionUtils.coolFileSize((long) GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024) + "] and can slow down or crash ScreepT.";
+				msg += "\nLogSearch opens it read-only, a portion at a time, with fast text / regex search.\n(The size limit is in Graphic preferences > Text editor.)";
+				String[] choices = { "Open with LogSearch", "Load in editor anyway", "Cancel" };
+				int choice = JOptionPane.showOptionDialog(parent, msg, "Big file", JOptionPane.YES_NO_CANCEL_OPTION,
+						JOptionPane.WARNING_MESSAGE, null, choices, choices[0]);
+				if (choice == 0) {
+					LogSearchFrame.open(parent, fileToOpen);
+					return false;
+				}
+				boolean userAcceptance = choice == 1;
 				if (userAcceptance) {
 					userAcceptance = skipFileExtensionCheck || standardSupportedFileLoad(fileToOpen, false);
 				}

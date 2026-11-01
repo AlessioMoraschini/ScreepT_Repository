@@ -178,6 +178,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmQuickNotes;
 	CustomJmenuItem mntmShellStandalone;
 	CustomJmenuItem mntmFileContentSearch;
+	CustomJmenuItem mntmLogSearch;
 	CustomJmenuItem mntmImageViewer;
 	CustomJmenuItem mntmImageConverter;
 	CustomJmenuItem mntmTouppercaseDirectory;
@@ -418,6 +419,7 @@ public class MainGuiParent {
 			mnVarious.add(mntmQuickNotes);
 			mnVarious.add(mntmShellStandalone);
 			mnVarious.add(mntmFileContentSearch);
+			mnVarious.add(mntmLogSearch);
 			mnVarious.add(mnConversionsAndOther);
 				// SUB-MENU
 				mnConversionsAndOther.add(mntmImageViewer);
@@ -584,6 +586,7 @@ public class MainGuiParent {
 		mntmQuickNotes.setFont(menuItemFont);
 		mntmShellStandalone.setFont(menuItemFont);
 		mntmFileContentSearch.setFont(menuItemFont);
+		mntmLogSearch.setFont(menuItemFont);
 
 		// SUB -> CONVERSION UTILS SECTION
 		mntmImageViewer.setFont(menuItemFont);
@@ -682,6 +685,7 @@ public class MainGuiParent {
 		mntmQuickNotes.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CHECKMARK));
 		mntmShellStandalone.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 		mntmFileContentSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
+		mntmLogSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
 		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
 		mnFilesAndDirectories.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
 
@@ -766,6 +770,7 @@ public class MainGuiParent {
 		mntmQuickNotes.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | CTRL_MASK));
 		mntmShellStandalone.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | CTRL_MASK));
 		mntmFileContentSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, ALT_MASK | CTRL_MASK));
+		mntmLogSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_L, ALT_MASK | CTRL_MASK));
 		mntmImageViewer.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_O, ALT_MASK | SHIFT_MASK));
 		mntmImageConverter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, ALT_MASK | SHIFT_MASK));
 

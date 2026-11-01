@@ -108,8 +108,7 @@ public final class ShortcutTriviaFrame extends EggFrame {
 		content.add(top, BorderLayout.NORTH);
 		content.add(answers, BorderLayout.CENTER);
 		content.add(bottom, BorderLayout.SOUTH);
-		setContentPane(content);
-		pack();
+		useContent(content);
 
 		showIntro();
 	}

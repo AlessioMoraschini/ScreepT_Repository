@@ -50,6 +50,7 @@ import gui.commons.frameutils.frame.arch.ParentFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.handlers.AlwaysOnTopManager;
 import gui.commons.panel.options.OptionsHeader;
+import gui.commons.panel.options.OptionHelp;
 import gui.commons.panel.options.OptionsPanel;
 import initializer.configs.impl.INItializer;
 import initializer.configs.impl.om.FileOptions;
@@ -263,6 +264,11 @@ public class GeneralOptionsFrame extends ParentFrame{
 		footerPanel.add(btnSaveConf, "cell 2 0");
 		footerPanel.add(btnUseSettings, "cell 3 0");
 		footerPanel.add(btnDiscard, "cell 4 0");
+
+		OptionHelp.attach("Reset initial values", "Brings every option of this window back to the value it had when the window was opened.", btnResetValues);
+		OptionHelp.attach("Save Values", "Closes the window, keeps the current settings and writes them to the configuration file.", btnSaveConf);
+		OptionHelp.attach("Use", "Closes the window and uses the current settings for this session. They are written to the configuration file only when it is saved (autosave or on exit).", btnUseSettings);
+		OptionHelp.attach("Discard", "Closes the window and drops every change made here: the previous settings are restored.", btnDiscard);
 	}
 
 	private JButton newFooterButton(String text, String toolTip, Color background) {
@@ -280,6 +286,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private void buildLayout() {
 
 		optionsPanel = new OptionsPanel();
+		optionsPanel.setHelpTexts(OptionDescriptions.general());
 		optionsPanel.addSection("General", "User name, language and sounds")
 				.addRow("User name", textFieldUname)
 				.addRow("Language", comboLocale)

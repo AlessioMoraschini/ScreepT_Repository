@@ -208,6 +208,14 @@ public class MainGuiManager {
 			MainGuiUtils.logger.info("\n => Autosave OFF -> configuration saving skipped");
 		}
 
+	  	// the interactive shell setting is saved on exit also when autosave is off
+	  	try {
+	  		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "shellInteractive",
+	  				String.valueOf(currentConfiguration.getTextEditorOpt().isShellInteractive()));
+	  	} catch (Exception e) {
+	  		MainGuiUtils.logger.error("Cannot save the shell interactive setting", e);
+	  	}
+
 	  	// SAVE CURRENTLY OPENED FILES reference only (in text-editor)
 	  	MainGuiManager.backupOpenedFilesInConfig();
 

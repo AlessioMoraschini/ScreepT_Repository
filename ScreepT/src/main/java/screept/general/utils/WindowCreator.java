@@ -182,9 +182,17 @@ public class WindowCreator {
 		if(dark)
 			((ShellReadWritePanel)shellFrame.payloadPanel).darker();
 
+		bindInteractiveMode((ShellReadWritePanel)shellFrame.payloadPanel);
+
 		commonGraphicInit(shellFrame, "Shell Frame - ", true);
 
 		return shellFrame;
+	}
+
+	/** Interactive (terminal) mode of the shell panels: starts from the saved setting and keeps it updated in memory (written to the ini on exit) */
+	private void bindInteractiveMode(ShellReadWritePanel panel) {
+		panel.setInteractiveMode(MainGUI.currentConfiguration.getTextEditorOpt().isShellInteractive());
+		panel.setOnInteractiveChanged(interactive -> MainGUI.currentConfiguration.getTextEditorOpt().setShellInteractive(interactive));
 	}
 
 	public RSyntaxTextArea getDarkTextArea() {
@@ -201,6 +209,7 @@ public class WindowCreator {
 		File preloadFile = getLastValidFileFromList(MainGUI.currentConfiguration.getTextEditorOpt().getLastOpenedShellFrameFiles());
 		ShellReadWritePanel panel = new ShellReadWritePanel(80000, mainApplication.getMainFrame(), getDarkTextArea());
 		panel.darker();
+		bindInteractiveMode(panel);
 
 		panel.fileChooser = MainGuiGeneralAppStarter.fileDialogHelper;
 

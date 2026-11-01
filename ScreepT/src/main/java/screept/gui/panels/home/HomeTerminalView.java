@@ -107,6 +107,8 @@ public final class HomeTerminalView {
 		// answers that arrived while the home page was not shown are simply there
 		session.completeReveal();
 		session.addListener(sessionListener);
+		refreshMenuIndex();
+		SwingUtilities.invokeLater(this::refreshMenuIndex);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(dispatcher);
 	}
 
@@ -119,6 +121,17 @@ public final class HomeTerminalView {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(dispatcher);
 		session.removeListener(sessionListener);
 		session.completeReveal();
+	}
+
+	/** The assistant answers "how do I open X" with the real menus and shortcuts of this window */
+	private void refreshMenuIndex() {
+		Window window = SwingUtilities.getWindowAncestor(panel);
+		if (window instanceof javax.swing.JFrame) {
+			MenuIndex index = MenuIndex.scan(((javax.swing.JFrame) window).getJMenuBar());
+			if (index.size() > 0) {
+				session.setMenuIndex(index);
+			}
+		}
 	}
 
 	private void onSessionChanged() {

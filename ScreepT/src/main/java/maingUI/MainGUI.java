@@ -52,6 +52,7 @@ import org.ini4j.Wini;
 import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
 import gui.commons.dialogutils.NativeFileChooser;
+import gui.texteditor.commons.logsearch.LogSearchFrame;
 import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.frame.ImageViewerFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
@@ -1198,6 +1199,15 @@ public class MainGUI extends MainGuiParent {
 			public void actionPerformed(ActionEvent e) {
 
 				windowCreator.newShellFrame(true);
+			}
+		});
+
+		// open in a new window - LogSearch (read-only viewer and search for huge files)
+		mntmLogSearch = new CustomJmenuItem(new AbstractAction("LogSearch") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				LogSearchFrame.open(getMainFrame(), null);
 			}
 		});
 

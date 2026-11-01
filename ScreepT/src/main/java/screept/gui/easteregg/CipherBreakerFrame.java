@@ -108,8 +108,7 @@ public final class CipherBreakerFrame extends EggFrame {
 		content.add(titleLabel, BorderLayout.NORTH);
 		content.add(center, BorderLayout.CENTER);
 		content.add(bottom, BorderLayout.SOUTH);
-		setContentPane(content);
-		pack();
+		useContent(content);
 
 		showIntro();
 	}

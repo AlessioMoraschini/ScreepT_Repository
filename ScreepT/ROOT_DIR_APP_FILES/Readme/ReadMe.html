@@ -150,6 +150,15 @@
 									<a href="#funcCalculator">Calculator</a>
 								</div></li>
 								<li><div class="subIndex2">		
+									<a href="#funcLogSearch">LogSearch (big files)</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcShellInteractive">Shell: interactive mode</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcOptionHelp">Option descriptions</a>
+								</div></li>
+								<li><div class="subIndex2">		
 									<a href="#funcRecentOther">Theme and other new things</a>
 								</div></li>
 							</ul>
@@ -503,7 +512,7 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE THEME </span>- you can choose between different built-in color themes just chosing the wanted one from the given style combo box. It's possible to define your own theme using xml configuration: in order to have this in the combo box options, you have to add an xml with a valid scheme (take inspiration from the existing ones, you can copy one of them modifying the color hexadecimal values) into folder <b>Application\Resources_ScreepT\themes\custom</b>. To load your scheme you'll have to restart ScreepT. A built-in style scheme editor is scheduled for the next versions of ScreepT. Keep following the <u><a href="https://www.am-design-development.it">ScreepT website</a></u> or update your software regularly to have it when available ;)</li>
 						
 						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE COLORS/FONT </span>- (<u>works only when no theme is selected</u>) you can customize color of background <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/BackgroundColor.png"/> and text <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/TextColor_2.png"/> just by clicking on the relative button: a chooser dialog will appear and you'll be able to choose and preview the selected colors on the loaded text.<br>
-						The text editor font (family and size) is chosen in <u><a href="#subSectTitleGraphOpt">Graphics options</a></u>, section "Text editor".<br>
+						The text editor font (family and size) is chosen in <u><a href="#subSectTitleGraphOpt">Graphics options</a></u>, section "Text editor", where you also set the maximum size of a file opened in the editor ("Max file size (MB)": bigger files are proposed to <u><a href="#funcLogSearch">LogSearch</a></u>).<br>
 						If you'll press OK the selected colors/font will be added to current volatile configuration (theese will not be written to configuration file until you explicitly save them, or until autosave will occur, if selected).
 						
 						</li><li class="highLineHeigthList"><span id="subSectTitleImpExpCrypted" class="highlightBolded">IMPORT/EXPORT Crypter workspace </span>- with this function you can choose between import or export a workspace in Crypted form. When clicking this button, a po-up panel will appear, allowing to choose between import a previously crypted workspace folder from your file system, or either export one of the previously loaded workspace.
@@ -635,6 +644,7 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 					<li class="highLineHeigthList"><span class="highlightBolded">Commands: </span>help, news (what changed in the latest version), shortcuts [word] (keyboard shortcuts, optionally filtered), topics (sections of the guide), eggs, version, about, whoami, clear. You can also summon the hidden surprises by name: snake, puppynoid, cats, poem, matrix, bugs, cipher, typing, trivia, fortune, glitch.</li>
 					<li class="highLineHeigthList"><span class="highlightBolded">Keys: </span>Enter sends, Up/Down recall previous questions, PgUp/PgDn or the mouse wheel scroll the terminal, Esc or Ctrl+U clears the line, Ctrl+L clears the screen, Ctrl+V pastes.</li>
 					<li class="highLineHeigthList">Questions are answered in the background: you can open the text editor, the crypter or any other section while it works, and when you come back to the home page the answers, the history and the text you were typing are all there.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">How do I open...? </span>Ask for any section or function by name ("text editor", "crypter", "calculator", "quick notes", "home page", also in Italian and with small typos): the assistant answers with the path in the menu bar and the keyboard shortcut, read from the real menus of this version. When it does not understand it says so and suggests how to ask again.</li>
 					<li class="highLineHeigthList">The hidden shortcuts of the home page (S three times, A three times, M three times) still work.</li>
 				</ul></p>
 
@@ -658,6 +668,37 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 				</ul></p>
 
 				<hr>
+				<h2 id="funcLogSearch" class="sectionSubTitle"> 2.12 - LOGSEARCH (BIG FILES)</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">LogSearch opens a big text file (a log, a dump, a CSV of many gigabytes) read-only, without loading it in memory: only the visible portion is read from the disk, so it is fast and light whatever the size. The file is never modified. Open it from Various > LogSearch, with [Ctrl + Alt + L], by dropping a file on its window, or with the Open button.</li>
+					<li class="highLineHeigthList">When you open in the text editor a file bigger than the maximum size (or with too many lines), ScreepT proposes to open it with LogSearch instead. The maximum size is set in Graphics options > Text editor > "Max file size (MB)".</li>
+					<li class="highLineHeigthList">Search as plain text or as regular expression (Regex checkbox), distinguishing upper and lower case or not (Match case checkbox). Press Enter or Search; Stop interrupts a long search. [F3] and [Shift + F3] go to the next and previous match, [Ctrl + F] focuses the search box.</li>
+					<li class="highLineHeigthList">Matching lines are tinted in the file view (the matching text is stronger), listed in the "Matching lines" view below (click one to jump to it) and marked with orange ticks on the map beside the scrollbar. Click or drag the map to move around the file.</li>
+					<li class="highLineHeigthList">Select lines and press [Ctrl + C] to copy them (up to 200000 lines at a time).</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcShellInteractive" class="sectionSubTitle"> 2.13 - SHELL: INTERACTIVE MODE</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">The shell (Various > System Console, [Ctrl + Alt + S], and the collapsible panel of the text editor) has two modes, chosen with the Interactive checkbox in its header.</li>
+					<li class="highLineHeigthList">Text mode (checkbox off) is the classic one: the selected commands, or the current block, are run and their output is printed as plain text; a Live cmd field lets you answer to a running command.</li>
+										<li class="highLineHeigthList">Interactive mode (checkbox on) opens a real terminal inside the panel, as if you were using the native one: a real shell with colors, prompt, history, line editing, cursor movements and programs that need a terminal (editors, progress bars, prompts, TUI tools such as Claude Code: type <span class="highlightBolded">claude</span> and use it as usual). Type directly in it; the Play button types the selected commands (or the current block) in the terminal and presses Enter; Stop closes the shell, and Enter in a closed terminal starts a new one. The terminal opens in the folder of the loaded script, else in your home folder.</li>
+					<li class="highLineHeigthList">The shell is the same kind on every system: on Linux and macOS your own shell ($SHELL, started as login shell); on Windows Git Bash when Git is installed (so it feels like Linux), else PowerShell, else cmd. To use another one set the environment variable SCREEPT_SHELL before starting ScreepT, for example SCREEPT_SHELL=wsl.exe or SCREEPT_SHELL=pwsh.exe -NoLogo.</li>
+					<li class="highLineHeigthList">In the terminal: select with the mouse; [Ctrl + C] copies the selection (without a selection it interrupts the running program); [Ctrl + V], [Shift + Insert] or right click paste; the mouse wheel scrolls the history; [Esc] goes to the program, it does not close the window. Bold, dim, 256 colors and true colors are supported, with a symbol font for the glyphs the terminal font lacks.</li>
+					<li class="highLineHeigthList">The choice (text or interactive mode) is saved in the configuration file when ScreepT closes, and used the next time. Needs Windows 10 or newer, Linux or macOS.</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcOptionHelp" class="sectionSubTitle"> 2.14 - OPTION DESCRIPTIONS</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">In Graphic preferences and Generic options, rest the mouse on an option (its name, its control or its checkbox) to see a small card that explains it.</li>
+					<li class="highLineHeigthList">The card closes with [Esc], with a click outside it, or when the mouse moves away from both the option and the card. When the mouse enters the card, the text takes the focus and scrolls with the wheel and the keys. Drag the edges or corners of the card to resize it; by default it is about a quarter of the width and of the height of the monitor.</li>
+				</ul></p>
+
+				<hr>
 				<h2 id="funcEasterEggs" class="sectionSubTitle"> 2.11 - EASTER EGGS</h2>
 				<hr>
 				<p><ul>
@@ -675,6 +716,7 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 					<li class="highLineHeigthList"><span class="highlightBolded">Network info </span>opens without freezing: adapters, public IP, DNS and gateway load in the background.</li>
 					<li class="highLineHeigthList">Progress windows and secondary frames no longer switch the application to the Nimbus look and feel: the theme selected in the graphic preferences is always kept.</li>
 					<li class="highLineHeigthList">Dialogs, easter eggs and the first-start name request open on the monitor you used last.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Margin, font size, inline tabs and adapt text width </span>are now set in the graphic preferences (Text editor section: Font, Margin, and the Inline tabs and Adapt text width checkboxes) instead of the text editor toolbar. Their shortcuts keep working: inline tabs [Ctrl + Shift + I], font size [Ctrl + Shift + MouseWheel].</li>
 				</ul></p>
 
 			
@@ -740,6 +782,7 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 					<li> <span class="SHCT_TEXT">OPEN SHELL</span> - [Ctrl + Alt + S]</li>
 					<li> <span class="SHCT_TEXT">OPEN CALCULATOR</span> - [Ctrl + Alt + C]</li>
 					<li> <span class="SHCT_TEXT">SHOW/HIDE QUICK NOTES</span> - [Ctrl + Alt + N]</li>
+					<li> <span class="SHCT_TEXT">OPEN LOGSEARCH (big files, read-only)</span> - [Ctrl + Alt + L]</li>
 					<li> <span class="SHCT_TEXT">OPEN CLIPBOARDS-MEMO PANEL</span> - [Alt + Shift + P]</li>
 					<hr>
 					<h4> 5.1 - Files and Folders actions submenu:</h4>

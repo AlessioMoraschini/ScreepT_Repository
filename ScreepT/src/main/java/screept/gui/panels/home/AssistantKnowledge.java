@@ -64,11 +64,13 @@ public final class AssistantKnowledge {
 		put("appunti", "notes clipboard");
 		put("nota note promemoria", "notes");
 		put("calcolatrice calcolatore", "calculator");
-		put("avvio avviare avviarlo lanciare partenza", "start launch");
+		put("avvio avviare avviarlo avvia avvio lanciare lancio partenza", "start launch");
 		put("aggiornare aggiorna aggiornamento aggiornamenti", "update");
 		put("cartella cartelle directory", "folder directory");
 		put("salvare salva salvataggio", "save");
-		put("aprire apri apertura", "open");
+		put("aprire apri apertura apro aprirlo apriamo", "open");
+		put("dove", "where");
+		put("vai andare raggiungere raggiungo accedere", "go open");
 		put("chiudere chiudi", "close");
 		put("cercare cerca ricerca trova trovare", "search find");
 		put("sostituire sostituisci", "replace");
@@ -340,6 +342,10 @@ public final class AssistantKnowledge {
 		return token.length() > PREFIX_LENGTH ? token.substring(0, PREFIX_LENGTH) : token;
 	}
 
+	static boolean isStopWord(String word) {
+		return STOP_WORDS.contains(word);
+	}
+
 	/** First English term for an Italian word (the word itself when it is not in the vocabulary) */
 	static String englishFor(String word) {
 		String english = VOCABULARY.get(normalize(word));
@@ -370,7 +376,7 @@ public final class AssistantKnowledge {
 	public Answer search(String query) {
 		ensureLoaded();
 		Index snapshot = index;
-		Set<String> terms = queryStems(query);
+		Set<String> terms = correctTypos(queryStems(query), snapshot.documentFrequency);
 		if (terms.isEmpty() || snapshot.chunks.isEmpty()) {
 			return new Answer(false, "", "", new ArrayList<String>(), new ArrayList<String>());
 		}
@@ -414,6 +420,56 @@ public final class AssistantKnowledge {
 			}
 		}
 		return new Answer(true, best.title, best.source, lines, also);
+	}
+
+	/** Words the documents never use are replaced by the closest word they do use (one letter of difference): typos still find something */
+	private static Set<String> correctTypos(Set<String> terms, Map<String, Integer> known) {
+		Set<String> corrected = new LinkedHashSet<>();
+		for (String term : terms) {
+			if (known.containsKey(term) || term.length() < 5) {
+				corrected.add(term);
+				continue;
+			}
+			String best = null;
+			int bestFrequency = -1;
+			for (Map.Entry<String, Integer> candidate : known.entrySet()) {
+				String word = candidate.getKey();
+				if (Math.abs(word.length() - term.length()) <= 1 && candidate.getValue() > bestFrequency && editDistance(word, term, 1) <= 1) {
+					best = word;
+					bestFrequency = candidate.getValue();
+				}
+			}
+			corrected.add(best != null ? best : term);
+		}
+		return corrected;
+	}
+
+	/** Edit distance between two words, giving up (returning max + 1) as soon as it exceeds {@code max} */
+	static int editDistance(String a, String b, int max) {
+		if (Math.abs(a.length() - b.length()) > max) {
+			return max + 1;
+		}
+		int[] previous = new int[b.length() + 1];
+		int[] current = new int[b.length() + 1];
+		for (int j = 0; j <= b.length(); j++) {
+			previous[j] = j;
+		}
+		for (int i = 1; i <= a.length(); i++) {
+			current[0] = i;
+			int rowMin = current[0];
+			for (int j = 1; j <= b.length(); j++) {
+				int cost = a.charAt(i - 1) == b.charAt(j - 1) ? 0 : 1;
+				current[j] = Math.min(Math.min(current[j - 1] + 1, previous[j] + 1), previous[j - 1] + cost);
+				rowMin = Math.min(rowMin, current[j]);
+			}
+			if (rowMin > max) {
+				return max + 1;
+			}
+			int[] swap = previous;
+			previous = current;
+			current = swap;
+		}
+		return previous[b.length()];
 	}
 
 	private static List<String> bestLines(Chunk chunk, Set<String> terms, Index snapshot) {

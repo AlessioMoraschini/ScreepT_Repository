@@ -164,7 +164,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		checkBoxInlineTabs.setBackground(Color.DARK_GRAY);
 		checkBoxInlineTabs.setIconTextGap(1);
 		checkBoxInlineTabs.setFont(new Font("SansSerif", Font.BOLD, 12));
-		add(checkBoxInlineTabs, "cell 14 0,alignx center,aligny center");
+		// shown in the graphic preferences: the checkbox only holds the state (and Ctrl+Shift+I still toggles it)
 		
 		chkCutWordsTo = new JCheckBox("Adapt Text Width  ");
 		chkCutWordsTo.setOpaque(false);
@@ -175,7 +175,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		chkCutWordsTo.setBackground(Color.DARK_GRAY);
 		chkCutWordsTo.setIconTextGap(1);
 		chkCutWordsTo.setFont(new Font("SansSerif", Font.BOLD, 12));
-		add(chkCutWordsTo, "cell 15 0,alignx center,aligny center");
+		// shown in the graphic preferences: the checkbox only holds the state (and the shortcut still toggles it)
 		
 		addHandlers();
 		

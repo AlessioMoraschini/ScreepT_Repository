@@ -404,13 +404,12 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		lblMargin.setForeground(Color.LIGHT_GRAY);
 		lblMargin.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
-		add(lblMargin, "cell 28 0,alignx right,aligny center");
+		// margin and font size are set in the graphic preferences: these controls only hold the values for the editor (not shown)
 
 		lBLMargin = new JLabel("12");
 		lBLMargin.setMinimumSize(new Dimension(14, 12));
 		lBLMargin.setForeground(Color.WHITE);
 		lBLMargin.setFont(new Font("SansSerif", Font.BOLD, 13));
-		add(lBLMargin, "cell 29 0,alignx center,aligny center");
 
 		btnToggleFileView = new JToggleButton("");
 		btnToggleFileView.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
@@ -540,13 +539,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		lblFontSize.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFontSize.setForeground(Color.LIGHT_GRAY);
-		add(lblFontSize, "cell 28 1,alignx right,aligny center");
 
 		lblSIZE = new JLabel("");
 		lblSIZE.setToolTipText(TextEditTooltips.tooltipIncreaseTextSize);
 		lblSIZE.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblSIZE.setForeground(SystemColor.window);
-		add(lblSIZE, "cell 29 1,alignx center,aligny center");
 		lblSIZE.setText(String.valueOf(GeneralConfig.DEFAULT_FONT.getSize()) + " Px");
 
 		sliderFontSize = new JSlider(4, 100);
@@ -555,12 +552,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		sliderFontSize.setForeground(SystemColor.activeCaptionBorder);
 		sliderFontSize.setBackground(UIManager.getColor("Button.shadow"));
 		sliderFontSize.setValue(currentConfiguration.getTextEditorOpt().getFont().getSize());
-		add(sliderFontSize, "cell 30 1 3 1,growx");
 
 		slider_margin = new JSlider(0, 100, 0);
 		slider_margin.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
 		slider_margin.setBackground(UIManager.getColor("Button.shadow"));
-		add(slider_margin, "cell 30 0 3 1,growx");
 
 		btnLoadTextFile = new JButton("");
 		btnLoadTextFile.setToolTipText(TextEditTooltips.tooltipLoadTextFile);

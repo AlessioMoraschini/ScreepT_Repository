@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.Locale;
 import java.util.Random;
 
@@ -35,10 +36,14 @@ final class AssistantEngine {
 			"Found it.", "I know this one.", "Easy.", "Pulling it from the manual...", "Here you go.", "Glad you asked."
 	};
 	private static final String[] NOT_FOUND = {
-			"My circuits found nothing about that. Try other words, or type \"topics\".",
+			"My circuits found nothing about that. I did not get it, sorry.",
 			"No match. The manual and I are both a bit embarrassed.",
-			"That is not in my docs (yet). Rephrase it, or try \"topics\".",
-			"404: answer not found. Try one keyword, like \"crypter\" or \"theme\"."
+			"That went over my silicon head. Even Feo understands me better.",
+			"404: answer not found. Nano knocked it off the shelf, probably.",
+			"I tried hard, I really did, but I did not understand the request."
+	};
+	private static final String[] REACH_INTROS = {
+			"Here is the way.", "Easy, follow me.", "I know the shortcut.", "Take this route.", "Found it in the menus."
 	};
 	private static final String[] GREETINGS = {
 			"Hello, human. Ask me anything about ScreepT.", "Greetings. Keys are ready when you are.",
@@ -171,7 +176,7 @@ final class AssistantEngine {
 			}
 		}
 
-		return search(reply, question);
+		return search(reply, question, session);
 	}
 
 	private static final String[] SHORTCUT_WORDS = {"shortcut", "shortcuts", "scorciatoia", "scorciatoie", "tasti", "tasto", "hotkey", "hotkeys", "keybinding"};
@@ -288,25 +293,150 @@ final class AssistantEngine {
 
 	////////// DOCUMENTATION SEARCH ////////////////
 
-	private static Reply search(Reply reply, String question) {
+	private static Reply search(Reply reply, String question, HomeTerminalSession session) {
+
+		// how to reach a section: the real menus and shortcuts of this window
+		List<MenuIndex.Entry> menuMatches = session.menuIndex().search(question, 4);
+		boolean reach = MenuIndex.asksToReach(question);
 		AssistantKnowledge.Answer answer = AssistantKnowledge.get().search(question);
-		if (!answer.found) {
-			reply.add(Kind.OUTPUT, NOT_FOUND[RANDOM.nextInt(NOT_FOUND.length)]);
-			if (!answer.alsoSee.isEmpty()) {
-				reply.add(Kind.SOURCE, "Closest sections: " + String.join(", ", answer.alsoSee));
+
+		boolean named = !menuMatches.isEmpty() && session.menuIndex().covers(menuMatches.get(0), question);
+		boolean explain = asksToExplain(question);
+		if (!menuMatches.isEmpty() && (reach || !answer.found || (named && !explain))) {
+			howToReach(reply, menuMatches);
+			if (answer.found && !reach && relatedTitle(answer.title, menuMatches.get(0))) {
+				// a hint about what it is, after the way to reach it
+				for (String line : answer.lines) {
+					if (line.length() >= 40) {
+						reply.add(Kind.SOURCE, "about it: " + trim(line, 170));
+						break;
+					}
+				}
 			}
+			appendShortcuts(reply, question, menuMatches.get(0).shortcut != null);
 			return reply;
 		}
+		if (!answer.found) {
+			return notUnderstood(reply, answer);
+		}
+
 		reply.add(Kind.SYSTEM, FOUND_INTROS[RANDOM.nextInt(FOUND_INTROS.length)]);
 		reply.add(Kind.TITLE, answer.title);
 		for (String line : answer.lines) {
 			reply.add(Kind.OUTPUT, "  - " + line);
 		}
+		// the user named an item of the menus: say where it is
+		MenuIndex.Entry mentioned = namedByQuestion(menuMatches, question);
+		if (mentioned != null) {
+			reply.add(Kind.SOURCE, "open it: " + route(mentioned));
+		}
+		appendShortcuts(reply, question, mentioned != null && mentioned.shortcut != null);
 		StringBuilder source = new StringBuilder("source: ").append("changelog".equals(answer.source) ? "changelog" : "guide");
 		if (!answer.alsoSee.isEmpty()) {
 			source.append("  |  see also: ").append(String.join(", ", answer.alsoSee));
 		}
 		reply.add(Kind.SOURCE, source.toString());
+		return reply;
+	}
+
+	/**
+	 * Keyboard shortcuts of the guide related to the question (the first topic word that has some), so that every answer
+	 * also says "how to do it fast". Skipped when the menu route already gave the shortcut.
+	 */
+	private static void appendShortcuts(Reply reply, String question, boolean alreadyGiven) {
+		if (alreadyGiven) {
+			return;
+		}
+		for (String word : AssistantKnowledge.normalize(question).split("[^a-z0-9]+")) {
+			if (word.length() < 3 || AssistantKnowledge.isStopWord(word) || isAny(word, SHORTCUT_WORDS) || isAny(word, FILLER_WORDS)) {
+				continue;
+			}
+			List<String> found = AssistantKnowledge.get().shortcuts(AssistantKnowledge.englishFor(word), 3);
+			if (!found.isEmpty()) {
+				reply.add(Kind.TITLE, "Shortcuts");
+				for (String line : found) {
+					reply.add(Kind.OUTPUT, "  - " + line);
+				}
+				return;
+			}
+		}
+	}
+
+	/** The documentation section talks about the menu item (they share a word) */
+	private static boolean relatedTitle(String title, MenuIndex.Entry entry) {
+		for (String stem : AssistantKnowledge.stems(title)) {
+			if (entry.stems.contains(stem)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean asksToExplain(String question) {
+		String normalized = " " + AssistantKnowledge.normalize(question) + " ";
+		String[] markers = {" what is ", " what are ", " what does ", " cosa e ", " che cos", " che cosa ", " come funziona", " how does ",
+				" how do ", " explain ", " spiega", " describe ", " descrivi", " cos'e ", " about "};
+		for (String marker : markers) {
+			if (normalized.contains(marker) && !MenuIndex.asksToReach(question)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Menu item whose every word is in the question, if any */
+	private static MenuIndex.Entry namedByQuestion(List<MenuIndex.Entry> matches, String question) {
+		Set<String> asked = AssistantKnowledge.queryStems(question);
+		for (MenuIndex.Entry entry : matches) {
+			if (!entry.submenu && asked.containsAll(AssistantKnowledge.stems(entry.text))) {
+				return entry;
+			}
+		}
+		return null;
+	}
+
+	private static String route(MenuIndex.Entry entry) {
+		return entry.path + " > " + entry.text + (entry.shortcut != null ? "   [" + entry.shortcut + "]" : "");
+	}
+
+	private static Reply howToReach(Reply reply, List<MenuIndex.Entry> matches) {
+		reply.add(Kind.SYSTEM, REACH_INTROS[RANDOM.nextInt(REACH_INTROS.length)]);
+		int shown = 0;
+		for (MenuIndex.Entry entry : matches) {
+			if (shown >= 2) {
+				break;
+			}
+			reply.add(Kind.TITLE, entry.text);
+			if (entry.submenu) {
+				reply.add(Kind.OUTPUT, "  - Menu: " + ("Menu bar".equals(entry.path) ? entry.text : entry.path + " > " + entry.text)
+						+ " (click it in the menu bar of this window)");
+			} else {
+				reply.add(Kind.OUTPUT, "  - With the mouse: menu bar > " + entry.path + " > " + entry.text);
+				if (entry.shortcut != null) {
+					reply.add(Kind.OUTPUT, "  - With the keyboard: " + entry.shortcut);
+				} else {
+					reply.add(Kind.OUTPUT, "  - It has no shortcut: use the menu.");
+				}
+			}
+			shown++;
+		}
+		if (matches.size() > shown) {
+			StringBuilder others = new StringBuilder();
+			for (int i = shown; i < matches.size(); i++) {
+				others.append(others.length() == 0 ? "" : ", ").append(matches.get(i).text);
+			}
+			reply.add(Kind.SOURCE, "also: " + others);
+		}
+		return reply;
+	}
+
+	/** Nothing found: a smile, the closest things found, and an invitation to ask differently */
+	private static Reply notUnderstood(Reply reply, AssistantKnowledge.Answer answer) {
+		reply.add(Kind.OUTPUT, NOT_FOUND[RANDOM.nextInt(NOT_FOUND.length)]);
+		if (!answer.alsoSee.isEmpty()) {
+			reply.add(Kind.SOURCE, "Closest things I know: " + String.join(", ", answer.alsoSee));
+		}
+		reply.add(Kind.SOURCE, "Try another prompt: a feature name (text editor, crypter, calculator...), \"shortcuts\", \"news\" or \"help\".");
 		return reply;
 	}
 
