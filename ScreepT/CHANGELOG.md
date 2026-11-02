@@ -9,6 +9,9 @@
 ## 0.9.69 - 2026-11-02
 > The Java 21 downloaded by ScreepT is now really used
 
+### Improved
+- Guide: new section 1.4 "If the exe is blocked" for company PCs: how to start ScreepT with ScreepT.bat, ScreepT.sh or the jar when ScreepT.exe is blocked, and how to create a shortcut with the ScreepT icon (included in Readme/Images/ScreepT.ico) and pin it to the taskbar.
+
 ### Fixed
 - Launcher: choosing the Java 21 downloaded with "Get Java 21" (or any Java in a folder not named after its version, such as "jre") and saving the options silently replaced it with the Java 8 found automatically, so ScreepT kept starting with Java 8. The version is now read from the "release" file of the Java, not from the folder name.
 - Launcher: the preferred Java is now matched by folder, so differences in upper/lower case or in the form of the path no longer make it be ignored.

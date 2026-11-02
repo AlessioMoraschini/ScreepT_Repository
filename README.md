@@ -62,6 +62,22 @@ A dark look and feel with a dark title bar, interface size presets (Mini to XXL)
 2. Run `ScreepT.exe` (or `ScreepT_64.exe`) on Windows, `ScreepT.sh` on Linux and macOS. Accept the license on first start.
 3. Not sure where to start? Type a question on the home page, or open *Help > Tutorial*.
 
+**If `ScreepT.exe` is blocked** (company PCs, antivirus false positives), you don't need it: run `ScreepT.bat` on Windows or `ScreepT.sh` on Linux and macOS (`chmod +x ScreepT.sh` first), or from the `Application` folder `java -jar ScreepT_Launcher.jar`. To get a desktop shortcut with the ScreepT icon (`Readme/Images/ScreepT.ico`) that you can pin to the taskbar, paste this in PowerShell, setting `$app` to your ScreepT folder:
+
+```powershell
+$app = "C:\ScreepT"
+$shell = New-Object -ComObject WScript.Shell
+$link = $shell.CreateShortcut("$([Environment]::GetFolderPath('Desktop'))\ScreepT.lnk")
+$link.TargetPath = "$env:WINDIR\System32\cmd.exe"
+$link.Arguments = "/c `"`"$app\ScreepT.bat`"`""
+$link.WorkingDirectory = $app
+$link.IconLocation = "$app\Readme\Images\ScreepT.ico"
+$link.WindowStyle = 7
+$link.Save()
+```
+
+The full guide (section 1.4, also in *Help > Tutorial*) explains how to pin it to the taskbar.
+
 Release notes: [`ScreepT/CHANGELOG.md`](ScreepT/CHANGELOG.md), also shown in the app under *Help > What's new*. News and articles: [am-design-development.com](https://www.am-design-development.com).
 
 ## Project status

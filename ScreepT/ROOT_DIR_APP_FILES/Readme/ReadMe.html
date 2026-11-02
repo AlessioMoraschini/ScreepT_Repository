@@ -73,6 +73,11 @@
 								<a href="#subOSdepLauncher">OS dependency</a>
 							</div></li>
 						</ul>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#subExeBlocked">If the exe is blocked</a>
+							</div></li>
+						</ul>
 					</li>
 					
 					<li>
@@ -263,6 +268,56 @@
 				
 				</p>
 			
+				<hr>
+				<h2 id="subExeBlocked" class="sectionSubTitle"> 1.4 - IF THE EXE IS BLOCKED (COMPANY PCs)</h2>
+				<hr>
+				<p>
+					On some PCs, mostly company ones, the antivirus or the security policy can block <i>ScreepT.exe</i> and <i>ScreepT_64.exe</i>
+					(Windows says it cannot access the specified device, path or file, or the file is flagged as a false positive that you cannot unblock as a normal user).
+					The executables are only small launchers: <b>you don't need them</b>. Start ScreepT in one of these ways:
+				</p>
+				<ul>
+					<li><p><span class="subMenuthirdLevel"><strong>Windows: </strong></span>double click on <i>ScreepT.bat</i>, in the same folder as the exe. It finds Java (and offers to download it if it is missing) and starts the launcher.</p></li>
+					<li><p><span class="subMenuthirdLevel"><strong>Linux and macOS: </strong></span>use <i>ScreepT.sh</i>. If it does not start with a double click, open a terminal in the ScreepT folder and run <code>chmod +x ScreepT.sh</code> and then <code>./ScreepT.sh</code>.</p></li>
+					<li><p><span class="subMenuthirdLevel"><strong>Any system: </strong></span>go inside the <i>Application</i> folder and run <code>java -jar ScreepT_Launcher.jar</code> (on Windows <code>javaw</code> instead of <code>java</code> avoids the console window).</p></li>
+				</ul>
+				<p>
+					<b>Shortcut with the ScreepT icon, and pinning it to the taskbar (Windows).</b> The shortcut runs <i>cmd.exe</i>, which is part of Windows and is not blocked, and asks it to start <i>ScreepT.bat</i>.
+					The icon is in <i>Readme\Images\ScreepT.ico</i>. The quickest way is to paste the following in PowerShell (set <code>$app</code> to the folder that contains <i>ScreepT.bat</i>): it creates <i>ScreepT.lnk</i> on your desktop.
+				</p>
+				<pre style="background:#1e1f22;color:#dfe1e5;padding:10px;border:1px solid #4e5157;white-space:pre-wrap"><code># folder of ScreepT: the one that contains ScreepT.bat
+$app = "C:\ScreepT"
+
+$desktop = [Environment]::GetFolderPath("Desktop")
+$shell   = New-Object -ComObject WScript.Shell
+$link    = $shell.CreateShortcut("$desktop\ScreepT.lnk")
+$link.TargetPath       = "$env:WINDIR\System32\cmd.exe"
+$link.Arguments        = "/c `"`"$app\ScreepT.bat`"`""
+$link.WorkingDirectory = $app
+$link.IconLocation     = "$app\Readme\Images\ScreepT.ico"
+$link.WindowStyle      = 7   # 7 = minimized: hides the black console window
+$link.Description      = "ScreepT"
+$link.Save()</code></pre>
+				<p>The same by hand: right click on the desktop, <i>New - Shortcut</i>, as location write <code>C:\Windows\System32\cmd.exe /c ""C:\ScreepT\ScreepT.bat""</code> (keep the double quotes, adapt the path), name it <i>ScreepT</i>.
+					Then right click on it, <i>Properties</i>: set <i>Start in</i> to the ScreepT folder, <i>Run</i> to <i>Minimized</i>, and with <i>Change Icon - Browse</i> choose <i>Readme\Images\ScreepT.ico</i>.</p>
+				<p><b>Add it to the taskbar:</b></p>
+				<ul>
+					<li><p><b>Windows 10:</b> right click on the shortcut and choose <i>Pin to taskbar</i>.</p></li>
+					<li><p><b>Windows 11:</b> right click on the shortcut, <i>Show more options</i>, <i>Pin to taskbar</i> (or drag the shortcut onto the taskbar).</p></li>
+					<li><p>If the pin option is not shown for a shortcut that runs cmd.exe, use this variant that starts Java directly (it also has no console window): set <code>$java</code> to the <i>javaw.exe</i> of your Java, or of the <i>jre</i> folder downloaded by ScreepT.</p></li>
+				</ul>
+				<pre style="background:#1e1f22;color:#dfe1e5;padding:10px;border:1px solid #4e5157;white-space:pre-wrap"><code>$app  = "C:\ScreepT"
+$java = "C:\Program Files\Java\jdk1.8.0_162\bin\javaw.exe"   # or "$app\jre\bin\javaw.exe"
+
+$desktop = [Environment]::GetFolderPath("Desktop")
+$shell   = New-Object -ComObject WScript.Shell
+$link    = $shell.CreateShortcut("$desktop\ScreepT.lnk")
+$link.TargetPath       = $java
+$link.Arguments        = "-jar `"$app\Application\ScreepT_Launcher.jar`""
+$link.WorkingDirectory = "$app\Application"
+$link.IconLocation     = "$app\Readme\Images\ScreepT.ico"
+$link.Save()</code></pre>
+				<p><b>NB: </b>these shortcuts go through the normal launcher, so everything works as usual (launcher options, plugins, updates).</p>
 			</div>
 			
 			<br><hr>
