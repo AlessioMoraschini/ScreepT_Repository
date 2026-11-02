@@ -6,6 +6,15 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.65 - 2026-11-02
+> Starters that fetch Java when it is missing
+
+### New
+- Starters (ScreepT.exe, ScreepT_64.exe, ScreepT.bat, ScreepT.sh): when no Java 8 or newer is found (local jre, JAVA_HOME, PATH, registry) they offer to download Amazon Corretto 8 (checksum verified) into the "jre" folder next to the starter, then start ScreepT. Nothing is installed system wide and no administrator rights are needed. Whoever already has Java is not asked anything.
+
+### Improved
+- ScreepT.exe and ScreepT_64.exe are rewritten: small plain launchers (no packer), with version info and the ScreepT icon, to avoid antivirus false positives. Source and build script in ScreepT_Launcher/native.
+
 ## 0.9.64 - 2026-11-02
 > The About window talks back
 

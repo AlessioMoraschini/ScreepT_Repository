@@ -81,6 +81,8 @@ javaw -jar ScreepT_Launcher.jar
 
 `<version>` is the current `screept.version`. Check the folder and the jar date: older version folders may still be around. See also `ScreepT.bat`.
 
+The starters in `ScreepT/ROOT_DIR_APP_FILES` (`ScreepT.exe`, `ScreepT_64.exe`, `ScreepT.bat`, `ScreepT.sh`) offer to download Amazon Corretto 8 into `jre/` when no Java 8+ is found. The two exe are built from `ScreepT_Launcher/native/ScreepT.cs` with `build_exe.bat` (C# compiler included in Windows): this is NOT part of the Maven build, rebuild and commit them only when the source changes. To test the download without removing Java: set `SCREEPT_FORCE_NO_JAVA=1` and delete `jre/`.
+
 ## Working on the code
 
 ### Modules
