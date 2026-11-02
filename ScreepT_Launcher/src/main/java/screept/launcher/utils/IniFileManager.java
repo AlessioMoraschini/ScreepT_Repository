@@ -39,8 +39,8 @@ public class IniFileManager {
 	public String preferredJvm = "";
 	public String manualPathJvm = "";
 	public static String MIN_JRE_VERSION = "1.8"; // default included MIN
-	public static String MAX_JRE_VERSION = "1.9"; // default excluded MAX
-	public static String MAX_JRE_VERSION_FULL_COMPATIBILITY = "1.9"; // default excluded MAX
+	public static String MAX_JRE_VERSION = "22"; // default excluded MAX
+	public static String MAX_JRE_VERSION_FULL_COMPATIBILITY = "22"; // default excluded MAX
 	public String GUI_SCALE_ARG_VALUE = "1";
 	public String JVM_MEMORY_OPTIONS = "-Xmx2048m -Xms512m"; // default memory options
 	public String JVM_STACK_SIZE = "-Xss128m"; // default stack size

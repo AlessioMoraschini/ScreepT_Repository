@@ -6,6 +6,18 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.66 - 2026-11-02
+> Java 21 ready, a new built-in guide viewer, no more JavaFX
+
+### New
+- ScreepT now runs on Java 8 and on newer Java up to 21 (LTS): the old Java 8 limit is gone. Plugins loading, the JavaScript code formatter and the file dialogs work on both.
+- The guide (Help > Tutorial) has a new viewer written only in Swing, themed like the application (dark or light): table of contents on the side, search with highlighted results (Ctrl+F, Enter / Shift+Enter, F3), zoom (Ctrl + wheel, Ctrl + / -, Ctrl+0), selectable and copyable text, external links open in the browser.
+- A small label with the Java version in use is shown in the top bar, next to the ScreepT resources. Hover it for a popup with the Java path, version, vendor, VM and JVM arguments: the text is selectable and a button copies it all.
+
+### Improved
+- When no Java is found, the starters (ScreepT.exe, ScreepT_64.exe, ScreepT.bat, ScreepT.sh) now offer to download Eclipse Temurin 21 JRE (about 50 MB, SHA-256 checked) into the "jre" folder. On a 32 bit Windows, where Temurin 21 does not exist, Amazon Corretto 8 is used.
+- JavaFX is no longer needed: it is gone from the application.
+
 ## 0.9.65 - 2026-11-02
 > Starters that fetch Java when it is missing
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# ScreepT starter (Linux/macOS). Finds Java 8 or newer; if missing, offers to download Amazon Corretto 8
+# ScreepT starter (Linux/macOS). Finds Java 8 or newer; if missing, offers to download Java 21 (Eclipse Temurin JRE)
 # into the "jre" folder next to this file (no root needed, nothing installed system wide).
 # To test the download without removing Java: SCREEPT_FORCE_NO_JAVA=1 ./ScreepT.sh (delete "jre" to repeat).
 
@@ -48,7 +48,7 @@ find_java() {
 
 ask_download() {
 	local msg="ScreepT needs Java 8 or newer, but no compatible Java was found.
-Download Amazon Corretto 8 (free, about 100 MB) into:
+Download Java 21 (Eclipse Temurin JRE, free, about 50 MB) into:
 $ROOT/jre
 It is not installed system wide and needs no root rights."
 	if [ -t 0 ]; then
@@ -73,22 +73,26 @@ fail() {
 }
 
 download_java() {
-	local os arch name tmp md5 got
+	local os arch tmp sha got url piece os_api
 	case "$(uname -s)" in Linux) os=linux ;; Darwin) os=macos ;; *) fail "Unsupported system for the automatic Java download." ;; esac
 	case "$(uname -m)" in x86_64|amd64) arch=x64 ;; aarch64|arm64) arch=aarch64 ;; *) fail "Unsupported CPU ($(uname -m)) for the automatic Java download." ;; esac
-	name="amazon-corretto-8-$arch-$os-jdk.tar.gz"
 	tmp="$(mktemp -d)" || fail "Cannot create a temporary folder."
 	trap 'rm -rf "$tmp" "$ROOT/jre.tmp"' EXIT
 
 	fetch() { if command -v curl >/dev/null 2>&1; then curl -fL --progress-bar -o "$2" "$1"; else wget -O "$2" "$1"; fi; }
 	command -v curl >/dev/null 2>&1 || command -v wget >/dev/null 2>&1 || fail "curl or wget is needed to download Java."
 
-	fetch "https://corretto.aws/downloads/latest_checksum/$name" "$tmp/md5.txt" >/dev/null 2>&1 || fail "Cannot reach the Java download server."
-	md5="$(tr -d '[:space:]' < "$tmp/md5.txt")"
-	echo "Downloading Java (Amazon Corretto 8)..."
-	fetch "https://corretto.aws/downloads/latest/$name" "$tmp/jre.tar.gz" || fail "Java download failed."
-	if command -v md5sum >/dev/null 2>&1; then got="$(md5sum "$tmp/jre.tar.gz" | cut -d' ' -f1)"; else got="$(md5 -q "$tmp/jre.tar.gz")"; fi
-	[ "$got" = "$md5" ] || fail "The downloaded Java is corrupted (checksum mismatch). Try again."
+	# Eclipse Temurin 21 JRE: link and SHA-256 come from the Adoptium API (os names there: linux, mac)
+	[ "$os" = "macos" ] && os_api=mac || os_api=linux
+	fetch "https://api.adoptium.net/v3/assets/latest/21/hotspot?architecture=$arch&image_type=jre&os=$os_api" "$tmp/api.json" >/dev/null 2>&1
+	piece="$(tr -d '\n' < "$tmp/api.json" 2>/dev/null | grep -o '"checksum": *"[0-9a-f]\{64\}"[^}]*"link": *"[^"]*\.tar\.gz"' | head -n 1)"
+	sha="$(printf '%s' "$piece" | grep -o '[0-9a-f]\{64\}' | head -n 1)"
+	url="$(printf '%s' "$piece" | grep -o 'https://[^"]*\.tar\.gz' | head -n 1)"
+	[ -n "$sha" ] && [ -n "$url" ] || fail "Cannot reach the Java download server."
+	echo "Downloading Java (Eclipse Temurin 21)..."
+	fetch "$url" "$tmp/jre.tar.gz" || fail "Java download failed."
+	if command -v sha256sum >/dev/null 2>&1; then got="$(sha256sum "$tmp/jre.tar.gz" | cut -d" " -f1)"; else got="$(shasum -a 256 "$tmp/jre.tar.gz" | cut -d" " -f1)"; fi
+	[ "$got" = "$sha" ] || fail "The downloaded Java is corrupted (checksum mismatch). Try again."
 
 	rm -rf "$ROOT/jre.tmp"; mkdir -p "$ROOT/jre.tmp"
 	tar -xzf "$tmp/jre.tar.gz" -C "$ROOT/jre.tmp" || fail "Cannot unpack Java."

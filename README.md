@@ -21,7 +21,7 @@ User-facing release notes live in [`ScreepT/CHANGELOG.md`](ScreepT/CHANGELOG.md)
 
 | Tool | Version | Notes |
 |------|---------|-------|
-| JDK | **8** (with JavaFX, e.g. Oracle 8u162) | Always Java 8, both to build and to run. A newer `java` in `PATH` is **not** supported. |
+| JDK | **8** (e.g. Oracle 8u162) | Always Java 8 to build. To run, ScreepT supports Java 8 up to 21 (LTS); the starters download Temurin 21 when no Java is found. |
 | Maven | **3.8.x** | Maven 3.9 fails: the unversioned antrun plugin resolves to a release that rejects `<tasks>`. |
 | Git | any | |
 | OS | Windows | Native file dialogs use JNA/IFileDialog. |
@@ -81,7 +81,7 @@ javaw -jar ScreepT_Launcher.jar
 
 `<version>` is the current `screept.version`. Check the folder and the jar date: older version folders may still be around. See also `ScreepT.bat`.
 
-The starters in `ScreepT/ROOT_DIR_APP_FILES` (`ScreepT.exe`, `ScreepT_64.exe`, `ScreepT.bat`, `ScreepT.sh`) offer to download Amazon Corretto 8 into `jre/` when no Java 8+ is found. The two exe are built from `ScreepT_Launcher/native/ScreepT.cs` with `build_exe.bat` (C# compiler included in Windows): this is NOT part of the Maven build, rebuild and commit them only when the source changes. To test the download without removing Java: set `SCREEPT_FORCE_NO_JAVA=1` and delete `jre/`.
+The starters in `ScreepT/ROOT_DIR_APP_FILES` (`ScreepT.exe`, `ScreepT_64.exe`, `ScreepT.bat`, `ScreepT.sh`) offer to download Eclipse Temurin 21 JRE into `jre/` when no Java 8+ is found. The two exe are built from `ScreepT_Launcher/native/ScreepT.cs` with `build_exe.bat` (C# compiler included in Windows): this is NOT part of the Maven build, rebuild and commit them only when the source changes. To test the download without removing Java: set `SCREEPT_FORCE_NO_JAVA=1` and delete `jre/`.
 
 ## Working on the code
 

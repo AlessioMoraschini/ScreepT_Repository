@@ -60,7 +60,6 @@ public class TutorialFrame extends ParentFrame{
 		mainHtmlReadmePanel = new HtmlPanel(new Integer(40), "indexList");
 		File htmlTutorialFile = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
 		mainHtmlReadmePanel.loadHtmlFx(htmlTutorialFile.toURI().toString());
-		mainHtmlReadmePanel.jfxPanel.resizeComp(thisPanel.getWidth(), thisPanel.getHeight());
 		mainHtmlReadmePanel.setBorder(BorderFactory.createEmptyBorder());
 		add(mainHtmlReadmePanel, "cell 0 0,grow");
 
@@ -92,7 +91,6 @@ public class TutorialFrame extends ParentFrame{
 			public void componentShown(ComponentEvent e) {
 			}
 			public void componentResized(ComponentEvent e) {
-				mainHtmlReadmePanel.jfxPanel.resizeComp(mainHtmlReadmePanel.getWidth(), mainHtmlReadmePanel.getHeight()-40);
 			}
 			public void componentMoved(ComponentEvent e) {
 			}

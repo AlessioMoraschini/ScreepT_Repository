@@ -21,14 +21,13 @@ public class HtmlPanelTest {
 
 	public static void testHtmlPanel() throws MalformedURLException, IOException, BadLocationException {
 		JFrame testFrame = new JFrame("Test Html");
-		HtmlPanel htmlPane = new HtmlPanel(new Integer(40));
+		HtmlPanel htmlPane = new HtmlPanel(new Integer(40), "indexList");
 		testFrame.add(htmlPane);
 		File f = new File(GeneralConfig.RESOURCES_DIR  + "Readme/ReadMe.html");
 		htmlPane.loadHtmlFx(f.toURI().toString());
 //		HtmlLoader.loadHtmlInEditPaneV2(htmlPane.getMainHtmlEditorPane(), "https://www.google.com");
 		testFrame.setBounds(0,0,GuiUtilsExtended.getScreenSize().width, GuiUtilsExtended.getScreenSize().height);
 		testFrame.setVisible(true);
-		htmlPane.getFxHtmlPane().resizeComp(htmlPane.jfxPanel.getWidth(), htmlPane.jfxPanel.getHeight());
 		
 		
 		testFrame.addWindowListener(new WindowListener() {

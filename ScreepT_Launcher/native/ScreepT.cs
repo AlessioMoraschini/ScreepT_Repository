@@ -53,7 +53,7 @@ namespace ScreepTLauncher
 			if (javaw == null)
 			{
 				if (!Ui.AskInstall()) return 1;
-				if (!Ui.RunDownload(JreInstaller.Url(), JreInstaller.ChecksumUrl(), localJre)) return 3;
+				if (!Ui.RunDownload(localJre)) return 3;
 				javaw = JavaFinder.Find(localJre);
 				if (javaw == null)
 				{
@@ -208,16 +208,35 @@ namespace ScreepTLauncher
 		}
 	}
 
+	/// <summary>Where the Java runtime to download comes from: Temurin 21 JRE (SHA-256 from the Adoptium API);
+	/// on a 32 bit Windows, where Temurin 21 does not exist, Amazon Corretto 8 JRE (MD5).</summary>
 	internal static class JreInstaller
 	{
-		private static string FileName()
+		public const string DISPLAY_NAME = "Eclipse Temurin 21";
+
+		public static void Resolve(out string url, out string hash, out string algorithm)
 		{
-			return "amazon-corretto-8-" + (Environment.Is64BitOperatingSystem ? "x64" : "x86") + "-windows-jre.zip";
+			if (!Environment.Is64BitOperatingSystem)
+			{
+				const string file = "amazon-corretto-8-x86-windows-jre.zip";
+				url = "https://corretto.aws/downloads/latest/" + file;
+				using (WebClient wc = new WebClient()) hash = wc.DownloadString("https://corretto.aws/downloads/latest_checksum/" + file).Trim().ToLowerInvariant();
+				algorithm = "MD5";
+				return;
+			}
+			string json;
+			using (WebClient wc = new WebClient())
+			{
+				wc.Headers[HttpRequestHeader.UserAgent] = "ScreepT-launcher";
+				json = wc.DownloadString("https://api.adoptium.net/v3/assets/latest/21/hotspot?architecture=x64&image_type=jre&os=windows");
+			}
+			// the zip package: "checksum" comes before "link" inside the same object
+			Match m = Regex.Match(json, "\"checksum\"\\s*:\\s*\"([0-9a-fA-F]{64})\"[^}]*?\"link\"\\s*:\\s*\"([^\"]+\\.zip)\"");
+			if (!m.Success) throw new Exception("Unexpected answer from the Java download server.");
+			hash = m.Groups[1].Value.ToLowerInvariant();
+			url = m.Groups[2].Value;
+			algorithm = "SHA256";
 		}
-
-		public static string Url() { return "https://corretto.aws/downloads/latest/" + FileName(); }
-
-		public static string ChecksumUrl() { return "https://corretto.aws/downloads/latest_checksum/" + FileName(); }
 	}
 
 	internal static class Ui
@@ -234,15 +253,15 @@ namespace ScreepTLauncher
 			Application.EnableVisualStyles();
 			DialogResult r = MessageBox.Show(
 				"ScreepT needs Java 8 or newer, but no compatible Java was found on this PC.\n\n" +
-				"Download Amazon Corretto 8 (free, about 40 MB) into the ScreepT folder and start ScreepT?\n\n" +
+				"Download Java 21 (Eclipse Temurin, free, about 50 MB) into the ScreepT folder and start ScreepT?\n\n" +
 				"It is not installed system wide and needs no administrator rights.",
 				TITLE, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 			return r == DialogResult.Yes;
 		}
 
-		public static bool RunDownload(string url, string checksumUrl, string targetDir)
+		public static bool RunDownload(string targetDir)
 		{
-			using (DownloadForm form = new DownloadForm(url, checksumUrl, targetDir))
+			using (DownloadForm form = new DownloadForm(targetDir))
 			{
 				Application.Run(form);
 				if (!form.Success && form.ErrorMessage != null) Error(form.ErrorMessage);
@@ -253,7 +272,8 @@ namespace ScreepTLauncher
 
 	internal sealed class DownloadForm : Form
 	{
-		private readonly string url, checksumUrl, targetDir;
+		private readonly string targetDir;
+		private string url;
 		private readonly Label label = new Label();
 		private readonly ProgressBar bar = new ProgressBar();
 		private readonly Button cancel = new Button();
@@ -265,9 +285,9 @@ namespace ScreepTLauncher
 		public bool Success;
 		public string ErrorMessage;
 
-		public DownloadForm(string url, string checksumUrl, string targetDir)
+		public DownloadForm(string targetDir)
 		{
-			this.url = url; this.checksumUrl = checksumUrl; this.targetDir = targetDir;
+			this.targetDir = targetDir;
 			Text = "ScreepT - Java setup";
 			FormBorderStyle = FormBorderStyle.FixedDialog;
 			MaximizeBox = false; MinimizeBox = false;
@@ -291,9 +311,8 @@ namespace ScreepTLauncher
 			try
 			{
 				ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; // TLS 1.2
-				string expectedMd5;
-				using (WebClient wc = new WebClient()) expectedMd5 = wc.DownloadString(checksumUrl).Trim().ToLowerInvariant();
-				if (!Regex.IsMatch(expectedMd5, "^[0-9a-f]{32}$")) throw new Exception("Invalid checksum received from the server.");
+				string expectedHash, algorithm;
+				JreInstaller.Resolve(out url, out expectedHash, out algorithm);
 
 				zipPath = Path.Combine(Path.GetTempPath(), "screept_jre_" + Guid.NewGuid().ToString("N") + ".zip");
 				SetStatus("Downloading Java...", true);
@@ -318,7 +337,7 @@ namespace ScreepTLauncher
 				if (downloadError != null) throw downloadError;
 
 				SetStatus("Checking the download...", false);
-				if (Md5Of(zipPath) != expectedMd5) throw new Exception("The downloaded file is corrupted (checksum mismatch). Try again.");
+				if (HashOf(zipPath, algorithm) != expectedHash) throw new Exception("The downloaded file is corrupted (checksum mismatch). Try again.");
 
 				SetStatus("Unpacking Java...", false);
 				if (Directory.Exists(tmpExtract)) Directory.Delete(tmpExtract, true);
@@ -355,9 +374,9 @@ namespace ScreepTLauncher
 			});
 		}
 
-		private static string Md5Of(string path)
+		private static string HashOf(string path, string algorithm)
 		{
-			using (MD5 md5 = MD5.Create())
+			using (HashAlgorithm md5 = HashAlgorithm.Create(algorithm))
 			using (FileStream fs = File.OpenRead(path))
 			{
 				StringBuilder sb = new StringBuilder();

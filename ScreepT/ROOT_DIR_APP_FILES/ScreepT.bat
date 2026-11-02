@@ -1,5 +1,5 @@
 @echo off
-rem ScreepT starter (Windows). Finds Java 8 or newer; if missing, offers to download Amazon Corretto 8 JRE into the "jre" folder next to this file.
+rem ScreepT starter (Windows). Finds Java 8 or newer; if missing, offers to download a Java JRE into the "jre" folder next to this file.
 rem To test the download without removing Java: set SCREEPT_FORCE_NO_JAVA=1 (then delete the "jre" folder to repeat).
 setlocal EnableExtensions
 set "SR=%~dp0"
@@ -47,7 +47,7 @@ exit /b 0
 :nojava
 echo.
 echo ScreepT needs Java 8 or newer, but no compatible Java was found on this PC.
-echo Amazon Corretto 8 (free, about 40 MB) can be downloaded into the ScreepT folder:
+echo Java 21 (Eclipse Temurin, free, about 50 MB) can be downloaded into the ScreepT folder:
 echo %SR%jre
 echo It is not installed system wide and needs no administrator rights.
 echo.
@@ -55,7 +55,7 @@ choice /c YN /m "Download it now"
 if errorlevel 2 exit /b 1
 echo.
 echo Downloading, please wait...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; [Net.ServicePointManager]::SecurityProtocol=3072; $r=$env:SR; $a=if([Environment]::Is64BitOperatingSystem){'x64'}else{'x86'}; $f='amazon-corretto-8-'+$a+'-windows-jre.zip'; $md5=(New-Object Net.WebClient).DownloadString('https://corretto.aws/downloads/latest_checksum/'+$f).Trim().ToLower(); $z=Join-Path $env:TEMP ('screept_jre_'+[guid]::NewGuid().ToString('N')+'.zip'); $t=$r+'jre.tmp'; try { (New-Object Net.WebClient).DownloadFile('https://corretto.aws/downloads/latest/'+$f,$z); if((Get-FileHash $z -Algorithm MD5).Hash.ToLower() -ne $md5){throw 'checksum mismatch'}; if(Test-Path $t){Remove-Item $t -Recurse -Force}; Expand-Archive $z $t -Force; $h=(Get-ChildItem $t -Recurse -Filter javaw.exe | Select-Object -First 1).Directory.Parent.FullName; if(Test-Path ($r+'jre')){Remove-Item ($r+'jre') -Recurse -Force}; Move-Item $h ($r+'jre') } finally { Remove-Item $z -Force -ErrorAction SilentlyContinue; Remove-Item $t -Recurse -Force -ErrorAction SilentlyContinue }"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%SR%ScreepT_JavaSetup.ps1" -Root "%SR:~0,-1%"
 if errorlevel 1 goto dlfail
 call :check "%SR%jre\bin\java.exe"
 if defined JAVA_EXE goto run
@@ -63,7 +63,7 @@ if defined JAVA_EXE goto run
 :dlfail
 echo.
 echo Cannot download Java automatically. Install Java 8 or newer manually
-echo (for example Amazon Corretto 8: https://aws.amazon.com/corretto) and start ScreepT again.
+echo (for example Eclipse Temurin: https://adoptium.net) and start ScreepT again.
 pause
 exit /b 1
 
