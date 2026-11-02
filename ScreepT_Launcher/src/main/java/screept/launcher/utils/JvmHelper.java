@@ -60,6 +60,28 @@ public class JvmHelper {
 	
 	// SOME UTILS
 	
+	/** The entry of homes that is the same folder as candidate (compared canonically, so case and path form do not matter), or null */
+	public static String findSameHome(List<String> homes, String candidate) {
+		if (candidate == null || candidate.trim().isEmpty()) {
+			return null;
+		}
+		try {
+			File wanted = new File(candidate.trim()).getCanonicalFile();
+			for (String home : homes) {
+				if (new File(home).getCanonicalFile().equals(wanted)) {
+					return home;
+				}
+			}
+		} catch (IOException e) {
+			for (String home : homes) {
+				if (home.equals(candidate)) {
+					return home;
+				}
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Version of a Java home: the one declared in its "release" file (reliable, also for folders named just "jre"),
 	 * or the name of the folder when there is no release file.
@@ -122,9 +144,10 @@ public class JvmHelper {
 			return binPath.getParentFile().getAbsolutePath();
 		}
 		
-		// PREFERRED BY USER IS DEFINED -> Use that
-		if(foundJVMS.contains(ScreepTLauncher.iniFileManager.preferredJvm)) {
-			String currentPath = ScreepTLauncher.iniFileManager.preferredJvm;
+			// PREFERRED BY USER IS DEFINED -> Use that (compared as folders, not as strings)
+		String preferredHome = findSameHome(foundJVMS, ScreepTLauncher.iniFileManager.preferredJvm);
+		if(preferredHome != null) {
+			String currentPath = preferredHome;
 			String currentPathName = versionOfHome(currentPath);
 			if(checkSingleJavaVersionOK(currentPathName)) {
 				return currentPath;

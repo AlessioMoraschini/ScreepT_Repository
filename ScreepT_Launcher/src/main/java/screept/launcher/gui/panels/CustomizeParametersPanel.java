@@ -622,8 +622,8 @@ public class CustomizeParametersPanel extends JFrame{
 	
 	private String checkJvmString(String jvmStr) {
 		String result = ("".equals(jvmStr) 
-				|| !SysUtils.findJvmVersionsInstalled(new OSinfo()).contains(jvmStr) 
-				|| !ScreepTLauncher.jvmHelper.checkSingleJavaVersionOK(new File(jvmStr).getName()))?
+				|| JvmHelper.findSameHome(SysUtils.findJvmVersionsInstalled(new OSinfo()), jvmStr) == null 
+				|| !ScreepTLauncher.jvmHelper.checkSingleJavaVersionOK(JvmHelper.versionOfHome(jvmStr)))?
 						
 				ScreepTLauncher.jvmHelper.retrieveCorrectJVMS(false) : jvmStr;
 		return result;

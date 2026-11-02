@@ -6,6 +6,13 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.69 - 2026-11-02
+> The Java 21 downloaded by ScreepT is now really used
+
+### Fixed
+- Launcher: choosing the Java 21 downloaded with "Get Java 21" (or any Java in a folder not named after its version, such as "jre") and saving the options silently replaced it with the Java 8 found automatically, so ScreepT kept starting with Java 8. The version is now read from the "release" file of the Java, not from the folder name.
+- Launcher: the preferred Java is now matched by folder, so differences in upper/lower case or in the form of the path no longer make it be ignored.
+
 ## 0.9.68 - 2026-11-02
 > A faster start, a restyled Crypter and a "Get Java 21" button
 
