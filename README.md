@@ -1,21 +1,76 @@
+<div align="center">
+
 # ScreepT
 
-A desktop toolbox for technicians and developers: a text/script editor with a built-in crypter, steganographic key images, a plugin system and a handful of small utilities. Swing, Java 8, Windows desktop.
+**A smart crypter... and much more.** A free, portable desktop toolbox for people who live in text files: editor, crypter, huge-log viewer, quick notes, calculator, plugins, and an offline assistant that knows its own manual.
 
-This is a **personal side project**, built purely out of love for software made for technical people. It has no commercial or utilitarian goal and no roadmap promised to anyone: things get done when I have time and desire.
+[![Download](https://img.shields.io/badge/Download-ScreepT%200.9.67-ff7a1a?style=for-the-badge)](https://www.am-design-development.com/ScreepT/Release/ScreepT_Download.html)
+
+![Version](https://img.shields.io/badge/version-0.9.67-blue) ![Java](https://img.shields.io/badge/Java-8%20to%2021-orange) ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey) ![Offline](https://img.shields.io/badge/works-100%25%20offline-brightgreen)
+
+<img src="https://www.am-design-development.com/Static/IMAGES/articoli/0.9.67/screept-home-assistant.gif" alt="ScreepT home assistant answering questions about the application" width="760">
+
+*Ask the home terminal how to do something: it answers from the real guide, offline, in English or Italian.*
+
+</div>
+
+## Why ScreepT
+
+ScreepT started as a crypter and grew into the small toolbox I wanted open all day: one portable app, no installer, no admin rights, no cloud, no telemetry. It is not trying to replace your IDE or Notepad++; it is the tool you reach for when you need to **edit, hide, search, calculate or jot down something right now**.
+
+- **Portable and private**: unzip and run. Nothing is installed system-wide, nothing leaves your PC, no account, no keys.
+- **Actually useful for technical work**: encrypt text and files, open a 3 GB log without freezing, compare code, hash files, pick colors, take quick notes.
+- **Runs on Java 8 to 21**. If no Java is found, the starters offer to download Eclipse Temurin 21 (checksum verified) next to the app.
+- **Self-updating**: *Help > Check for software updates* installs new versions (and can reinstall a clean copy if something breaks).
+- **Has a personality**: a dark theme made with care, a talking About window and ten hidden easter eggs.
+
+## See it in action
+
+### LogSearch: huge files, small memory
+
+Opens multi-gigabyte logs read-only, a portion at a time (`Ctrl+Alt+L`). Text or regex search, matching lines tinted, listed and drawn on a map beside the scrollbar, `F3` to jump between matches. The editor offers it by itself when you open a file over the size limit.
+
+<img src="https://www.am-design-development.com/Static/IMAGES/articoli/0.9.67/screept-logsearch.gif" alt="LogSearch running a regex search on a 400,000-line log" width="760">
+
+### ScreepT Dark: app and editor
+
+A dark look and feel with a dark title bar, interface size presets (Mini to XXL), and a matching editor theme for every supported language.
+
+<img src="https://www.am-design-development.com/Static/IMAGES/articoli/0.9.67/screept-editor-theme-java.png" alt="ScreepT Dark editor theme with Java code" width="760">
+
+### More
+
+| Quick notes (`Ctrl+Alt+N`) | Built-in guide viewer |
+|---|---|
+| <img src="https://www.am-design-development.com/Static/IMAGES/articoli/0.9.67/screept-quick-notes-dark.png" alt="Quick notes drawer" width="380"> | <img src="https://www.am-design-development.com/Static/IMAGES/articoli/0.9.67/screept-guide-viewer.png" alt="Guide viewer with index and search" width="380"> |
+| An auto-saving to-do drawer, stored as plain Markdown. | Searchable guide, themed like the app. |
 
 ## What's inside
 
-- **Text editor**: tabs, syntax highlighting for many languages (RSyntaxTextArea), rectangular selection (Alt+drag), search/replace, text transformations, spell checker, themes (including the **ScreepT Dark** editor theme), auto-completion, minimap.
+- **Text editor**: tabs, syntax highlighting for many languages, rectangular selection (Alt+drag), search/replace, text transformations, spell checker, auto-completion, minimap, tail -f mode and automatic temp saves.
 - **Crypter**: encrypt/decrypt text and files, optionally combined with a *key image* (steganographic second factor).
-- **Quick notes**: an auto-saving to-do drawer (Ctrl+Alt+N) stored as plain Markdown.
-- **Utilities**: file hasher, color picker, calculator, clipboard history, code comparator, Markdown viewer, media converters.
-- **Look and feel**: *ScreepT Dark* (FlatLaf based) plus other LAFs, adjustable UI size, rich Graphic Preferences.
-- **Home page assistant**: a small offline terminal on the home page that answers questions about ScreepT, using the guide and the changelog (no cloud, no keys).
-- **Plugins** and a built-in **in-app updater**.
-- A few easter eggs, because why not.
+- **LogSearch**: read-only viewer and searcher for huge files.
+- **Quick notes**: auto-saving to-do drawer in Markdown.
+- **Utilities**: file hasher, color picker, calculator (keyboard friendly), clipboard history, code comparator, Markdown viewer, media converters, network info.
+- **Home assistant**: offline terminal that answers questions about ScreepT from its own guide and changelog.
+- **Plugins** and an **in-app updater**.
+- Easter eggs, because why not.
 
-User-facing release notes live in [`ScreepT/CHANGELOG.md`](ScreepT/CHANGELOG.md) (also shown in the app under *Help > What's new*). The old tutorial, written for v0.9.17 and partly outdated, is kept in [`TUTORIAL.md`](TUTORIAL.md).
+## Get it
+
+1. **[Download ScreepT](https://www.am-design-development.com/ScreepT/Release/ScreepT_Download.html)** and unzip it anywhere.
+2. Run `ScreepT.exe` (or `ScreepT_64.exe`) on Windows, `ScreepT.sh` on Linux and macOS. Accept the license on first start.
+3. Not sure where to start? Type a question on the home page, or open *Help > Tutorial*.
+
+Release notes: [`ScreepT/CHANGELOG.md`](ScreepT/CHANGELOG.md), also shown in the app under *Help > What's new*. News and articles: [am-design-development.com](https://www.am-design-development.com).
+
+## Project status
+
+This is a **personal side project**, built purely out of love for software made for technical people. It has no commercial goal and no roadmap promised to anyone: things get done when I have time and desire. It runs on Windows, Linux and macOS (anywhere Java does); a few features are Windows-only, such as native file dialogs and the interactive terminal. Bug reports and ideas are welcome (see [Contributing](#contributing-and-pull-requests)).
+
+---
+
+# For developers
 
 ## Requirements
 
@@ -24,7 +79,7 @@ User-facing release notes live in [`ScreepT/CHANGELOG.md`](ScreepT/CHANGELOG.md)
 | JDK | **8** (e.g. Oracle 8u162) | Always Java 8 to build. To run, ScreepT supports Java 8 up to 21 (LTS); the starters download Temurin 21 when no Java is found. |
 | Maven | **3.8.x** | Maven 3.9 fails: the unversioned antrun plugin resolves to a release that rejects `<tasks>`. |
 | Git | any | |
-| OS | Windows | Native file dialogs use JNA/IFileDialog. |
+| OS | Windows, Linux, macOS | Windows gets native file dialogs (JNA/IFileDialog) and the interactive terminal; other systems use the Java ones. |
 
 ## Workspace layout
 
@@ -132,7 +187,7 @@ ScreepT is a hobby: no deadlines, no commercial purpose, no support obligations.
 - Don't mix in unrelated reformatting or generated files.
 - By submitting a PR you agree that your contribution may be used, modified or rewritten within the project, under the project license.
 
-Bug reports are welcome too: please include the ScreepT version (*Help > About*), Windows and Java versions, steps to reproduce and the relevant part of the log (`LOG` folder).
+Bug reports are welcome too: please include the ScreepT version (*Help > About*), OS and Java versions, steps to reproduce and the relevant part of the log (`LOG` folder).
 
 ## License
 
