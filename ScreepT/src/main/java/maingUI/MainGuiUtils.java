@@ -77,6 +77,45 @@ public class MainGuiUtils {
 		dialogHelper = new JOptionHelperExtended(mainApp != null ? mainApp.getMainFrame() : null);
 	}
 
+	/**
+	 * Downloads the updates (or the clean copy of the same version) and asks to restart to install them
+	 */
+	private static void downloadUpdatesAndAskRestart() {
+		try {
+			MainGUI.updatesDownloaded = MainGuiGeneralAppStarter.updatesManager.downloadAndExtractUpdates();
+			MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(true);
+			boolean restartNow = dialogHelper.yesOrNo(
+					"ScreepT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
+
+			if (restartNow) {
+				MainGuiManager.closeApplication(0);
+			} else {
+				dialogHelper.info("Updates will be installed when you'll close current session", "Update will start at close");
+			}
+
+		} catch (Exception e1) {
+			// Error during download/extraction or user killed process
+			if (!(e1 instanceof ProgressBarInterruptedException)) {
+				String msg = "Cannot download updates, an error occurred";
+				logger.error(msg, e1);
+				dialogHelper.errorScroll(msg, "Error during download or unzipping", e1);
+
+			} else if(e1 instanceof TimeoutException) {
+				String message = "Server is unreachable!";
+				dialogHelper.error(message, "An error occurred");
+				logger.error(message, e1);
+
+			} else if(e1 instanceof UpdatesUnavailableException) {
+				dialogHelper.warn(e1.getMessage(), "Updates not found. It's possibile that they're being upgraded, retry again later.");
+				logger.error(e1.getMessage(), e1);
+
+			} else {
+				dialogHelper.info("Process killed by user", "Process killed by user");
+				logger.info("User has killed process" + e1.toString());
+			}
+		}
+	}
+
 	public static Thread lookForUpdates(final boolean silent) {
 		dialogHelper.setAdvicesEnabled(!silent);
 
@@ -101,39 +140,7 @@ public class MainGuiUtils {
 									"<html>New version [" + newVersion + "] found, do you want to download and install it? </br>(you can disable automatic check at start going to preferences -> generalOptions)</html>",
 									"Update found: " + newVersion);
 							if (downloadUpdates && checkNewLicense()) {
-								try {
-									MainGUI.updatesDownloaded = MainGuiGeneralAppStarter.updatesManager.downloadAndExtractUpdates();
-									MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(true);
-									boolean restartNow = dialogHelper.yesOrNo(
-											"ScreepT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
-
-									if (restartNow) {
-										MainGuiManager.closeApplication(0);
-									} else {
-										dialogHelper.info("Updates will be installed when you'll close current session", "Update will start at close");
-									}
-
-								} catch (Exception e1) {
-									// Error during download/extraction or user killed process
-									if (!(e1 instanceof ProgressBarInterruptedException)) {
-										String msg = "Cannot download updates, an error occurred";
-										logger.error(msg, e1);
-										dialogHelper.errorScroll(msg, "Error during download or unzipping", e1);
-
-									} else if(e1 instanceof TimeoutException) {
-										String message = "Server is unreachable!";
-										dialogHelper.error(message, "An error occurred");
-										logger.error(message, e1);
-
-									} else if(e1 instanceof UpdatesUnavailableException) {
-										dialogHelper.warn(e1.getMessage(), "Updates not found. It's possibile that they're being upgraded, retry again later.");
-										logger.error(e1.getMessage(), e1);
-
-									} else {
-										dialogHelper.info("Process killed by user", "Process killed by user");
-										logger.info("User has killed process" + e1.toString());
-									}
-								}
+								downloadUpdatesAndAskRestart();
 							} else {
 								// User skipped updates pressing no or cancel
 								logger.info("Update skipped, as requested from user.");
@@ -144,7 +151,13 @@ public class MainGuiUtils {
 							// If version == null means that sw is already updated
 							if (MainGuiGeneralAppStarter.updatesManager.udpdatesReachable()) {
 								logger.info("Nothing to download, current version is up to date :)");
-								dialogHelper.info("Nothing to download, current version is up to date :)", "Already up to date");
+								boolean reinstall = silent ? false : dialogHelper.yesOrNo(
+										"<html>Nothing to download, current version is up to date :)<br><br>Do you want to reinstall it anyway from the server?<br>It replaces the application files with a clean copy, your settings and data are kept.</html>",
+										"Already up to date");
+								if (reinstall && checkNewLicense()) {
+									logger.info("User asked to reinstall the current version from the server.");
+									downloadUpdatesAndAskRestart();
+								}
 							}else {
 								logger.error("Cannot retrieve remote update data, server is unreachable.");
 								dialogHelper.error("Cannot retrieve remote update data, server is unreachable.", "Connection error");

@@ -9,10 +9,14 @@
 ## 0.9.67 - 2026-11-02
 > The Java chosen in the launcher is really used
 
+### New
+- Help > Check for software updates: when ScreepT is already up to date it now offers to reinstall the current version from the server. It replaces the application files with a clean copy (useful if something got broken), your settings and personal data are kept.
+
 ### Fixed
 - Launcher: choosing a newer Java (for example 17, 19 or 21) in the launcher settings no longer ends up starting ScreepT with Java 8. Installations created by older versions kept in their launcher ini the old limit "max Java 12", so any newer Java was refused and replaced by Java 8: that limit is now ignored when lower than the newest supported Java (21).
 - Launcher: the "restore defaults" button in the launcher settings looked only for Java 8, now it considers every supported Java.
 - Text Editor: on Java 17 and newer it did not open (an internal error while styling its buttons) and the home page kept the busy mouse pointer. The style code now skips the protected fields of the Java classes.
+- Updates: updating to the very same version already installed no longer deletes the new main jar (ScreepT would not start afterwards).
 
 ## 0.9.66 - 2026-11-02
 > Java 21 ready, a new built-in guide viewer, no more JavaFX
