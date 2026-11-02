@@ -351,7 +351,7 @@ public class CustomizeParametersPanel extends JFrame{
 						chckBoxLaunchAsJar.setSelected(GeneralConfig.DEFAULT_JVM_JAR_MODE);
 						chckbxActiveShell.setSelected(GeneralConfig.DEFAULT_JVM_SHELL_ON);
 						
-						String javaPath = new JvmHelper("1.9", "1.8").retrieveCorrectJVMS(false);
+						String javaPath = new JvmHelper(IniFileManager.MAX_JRE_VERSION, IniFileManager.MIN_JRE_VERSION).retrieveCorrectJVMS(false);
 						selectComboJVM(javaPath);
 						thisPanel.revalidate();
 						thisPanel.repaint();

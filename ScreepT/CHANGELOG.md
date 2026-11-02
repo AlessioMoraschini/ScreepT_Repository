@@ -6,6 +6,13 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.67 - 2026-11-02
+> The Java chosen in the launcher is really used
+
+### Fixed
+- Launcher: choosing a newer Java (for example 17, 19 or 21) in the launcher settings no longer ends up starting ScreepT with Java 8. Installations created by older versions kept in their launcher ini the old limit "max Java 12", so any newer Java was refused and replaced by Java 8: that limit is now ignored when lower than the newest supported Java (21).
+- Launcher: the "restore defaults" button in the launcher settings looked only for Java 8, now it considers every supported Java.
+
 ## 0.9.66 - 2026-11-02
 > Java 21 ready, a new built-in guide viewer, no more JavaFX
 

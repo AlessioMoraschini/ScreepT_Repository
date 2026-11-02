@@ -39,6 +39,8 @@ public class IniFileManager {
 	public String preferredJvm = "";
 	public String manualPathJvm = "";
 	public static String MIN_JRE_VERSION = "1.8"; // default included MIN
+	/** Newest Java (excluded) this ScreepT supports: an older limit written in a launcher ini by previous versions (12) is ignored */
+	public static final String SUPPORTED_MAX_JRE_VERSION = "22";
 	public static String MAX_JRE_VERSION = "22"; // default excluded MAX
 	public static String MAX_JRE_VERSION_FULL_COMPATIBILITY = "22"; // default excluded MAX
 	public String GUI_SCALE_ARG_VALUE = "1";
@@ -60,6 +62,14 @@ public class IniFileManager {
 		DEFAULT_INI_PATH = INI_PATH;
 	}
 
+	private static String atLeastSupportedMax(String fromIni) {
+		try {
+			return StringWorker.compareVersions(fromIni, SUPPORTED_MAX_JRE_VERSION) < 0 ? SUPPORTED_MAX_JRE_VERSION : fromIni;
+		} catch (RuntimeException e) {
+			return SUPPORTED_MAX_JRE_VERSION;
+		}
+	}
+
 	// read configuration from ini file with null-value check
 	public void initFromINIFile(){
 		try {
@@ -72,6 +82,8 @@ public class IniFileManager {
 			MAX_JRE_VERSION = (MAX_JVERSION_INI != null)? MAX_JVERSION_INI : MAX_JRE_VERSION;
 			String MAX_JVERSION_FULL_COMP_INI = iniConfigFile.get(INI_JVM_OPT, "maxJvmVersionFullCompatibility");
 			MAX_JRE_VERSION_FULL_COMPATIBILITY = (MAX_JVERSION_FULL_COMP_INI != null)? MAX_JVERSION_FULL_COMP_INI : MAX_JRE_VERSION_FULL_COMPATIBILITY;
+			MAX_JRE_VERSION = atLeastSupportedMax(MAX_JRE_VERSION);
+			MAX_JRE_VERSION_FULL_COMPATIBILITY = atLeastSupportedMax(MAX_JRE_VERSION_FULL_COMPATIBILITY);
 			String MIN_JVERSION_INI = iniConfigFile.get(INI_JVM_OPT, "minJvmVersion");
 			MIN_JRE_VERSION = (MIN_JVERSION_INI != null)? MIN_JVERSION_INI : MIN_JRE_VERSION;
 			String MEM_JOPTIONS_INI = iniConfigFile.get(INI_JVM_OPT, "memoryArgs");
