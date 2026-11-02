@@ -71,6 +71,8 @@ import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import screept.crypter.util.ScreeptUtils;
+import javax.swing.JOptionPane;
+import screept.general.utils.OpenWithContextMenu;
 import screept.general.utils.WindowCreator;
 import screept.gui.frames.GeneralOptionsFrame;
 import screept.gui.frames.GraphicPreferencesFrame;
@@ -629,15 +631,31 @@ public class MainGUI extends MainGuiParent {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 
-						String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-						try {
-							Process proc = SysUtils.launchExeAsAdmin(path, path,
-									ScreepTLauncher.CMD_REGISTRY_ADD_OPEN_WITH);
-							proc.waitFor();
-							dialogHelper.info("Done!");
-						} catch (Exception e1) {
-							logger.error("Cannot launch registry adder", e1);
-							dialogHelper.error("An error occurred!");
+												File[] starters = OpenWithContextMenu.availableStarters();
+						if (starters.length == 0) {
+							dialogHelper.error("Neither ScreepT.exe nor ScreepT.bat found in the installation folder.");
+							return;
+						}
+						// starters = [exe, bat] when both exist
+						File chosen = starters[0];
+						if (starters.length > 1) {
+							Object[] options = { "ScreepT.bat (works everywhere)", "ScreepT.exe", "Cancel" };
+							int choice = JOptionPane.showOptionDialog(mainFrameScreept,
+									"Which starter should the right click menu use?\n\n"
+									+ "ScreepT.bat works on every PC, but shows a minimized console window.\n"
+									+ "ScreepT.exe has no console window, but on some company PCs it is blocked.",
+									"Add to Windows context menu", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+							if (choice != 0 && choice != 1) {
+								return; // cancelled by user
+							}
+							chosen = (choice == 0) ? starters[1] : starters[0];
+						}
+						OpenWithContextMenu.Result result = OpenWithContextMenu.register(chosen);
+						if (result.ok) {
+							dialogHelper.info(result.message);
+						} else {
+							logger.error("Cannot add the context menu entry: " + result.message);
+							dialogHelper.error("Cannot add it to the context menu:\n" + result.message);
 						}
 					}
 				});
@@ -647,15 +665,12 @@ public class MainGUI extends MainGuiParent {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 
-						String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-						try {
-							Process proc = SysUtils.launchExeAsAdmin(path, path,
-									ScreepTLauncher.CMD_REGISTRY_REMOVE_OPEN_WITH);
-							proc.waitFor();
-							dialogHelper.info("Done!");
-						} catch (Exception e1) {
-							logger.error("Cannot launch registry adder", e1);
-							dialogHelper.error("An error occurred!");
+												OpenWithContextMenu.Result result = OpenWithContextMenu.unregister();
+						if (result.ok) {
+							dialogHelper.info(result.message);
+						} else {
+							logger.error("Cannot remove the context menu entry: " + result.message);
+							dialogHelper.error("Cannot remove it from the context menu:\n" + result.message);
 						}
 					}
 				});

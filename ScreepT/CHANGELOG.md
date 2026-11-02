@@ -6,6 +6,14 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.70 - 2026-11-02
+> Right click menu and "Restart as administrator" work without ScreepT.exe
+
+### Fixed
+- "Restart as administrator" no longer relaunches ScreepT.exe (blocked on some company PCs): it asks Windows to start ScreepT.bat as administrator through cmd.exe, and uses the exe only when there is no ScreepT.bat. It checks that a starter exists before closing ScreepT.
+- "Add to Windows context menu after right click on file" no longer relaunches ScreepT.exe as administrator, so it works when the exe is blocked (company PCs) and needs no administrator rights. It is written directly for your user, with the ScreepT icon (shipped in Resources_ScreepT/Icons, so it is always there), and you choose what it starts: ScreepT.bat (works everywhere) or ScreepT.exe. The result is checked and reported, instead of always saying "Done!".
+- "Remove from Windows file right click context menu" removes the entry and says clearly if an old entry created for all users is left, because removing it needs administrator rights.
+
 ## 0.9.69 - 2026-11-02
 > The Java 21 downloaded by ScreepT is now really used
 

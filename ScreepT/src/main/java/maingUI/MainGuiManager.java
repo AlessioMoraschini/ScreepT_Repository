@@ -25,6 +25,7 @@ import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
+import screept.general.utils.AdminStarter;
 import screept.general.utils.ScreepTLoggerUtils;
 import screept.gui.panels.CrypterPanel;
 import screept.gui.panels.TextEditor;
@@ -62,6 +63,15 @@ public class MainGuiManager {
 			File launcherNativeFile = new File(nativeLauncherPath);
 			if (launcherNativeFile.exists()) {
 
+				// as administrator: ScreepT.bat if present (the exe can be blocked on company PCs); checked before closing anything
+				File adminStarter = asAdmin ? AdminStarter.chooseStarter() : null;
+				if (asAdmin && adminStarter == null) {
+					String errorMsg = "Cannot restart as administrator: neither ScreepT.bat nor ScreepT.exe found";
+					MainGUI.dialogHelper.error(errorMsg);
+					logger.error(errorMsg);
+					return;
+				}
+
 				MainGuiUtils.logger.info("Restart requested: restarting application...");
 
 				closeApplication(999);
@@ -71,8 +81,7 @@ public class MainGuiManager {
 					System.exit(0);
 
 				if(asAdmin) {
-					String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-					SysUtils.launchExeAsAdmin(path, path, (String[])null);
+					AdminStarter.startAsAdministrator(adminStarter);
 				} else {
 					SysUtils.launchBatchOrBash(nativeLauncherPath, false);
 				}
