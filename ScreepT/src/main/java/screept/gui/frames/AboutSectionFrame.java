@@ -35,7 +35,10 @@ import java.io.File;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.imageio.ImageIO;
@@ -63,6 +66,12 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import screept.gui.easteregg.EasterEggPicker;
+import screept.gui.frames.about.AboutNpc;
+import screept.gui.frames.about.EggHatchAnimation;
+import screept.gui.frames.about.NpcBubble;
+import screept.gui.frames.about.NpcReply;
+import screept.gui.frames.about.PadlockArt;
+import screept.gui.frames.about.UnlockLevel;
 import screept.gui.style.CardPalette;
 import various.common.light.easteregg.EasterEgg;
 
@@ -97,20 +106,6 @@ public class AboutSectionFrame extends ParentFrame {
 	private static final int LOGO_PIXEL = 6;
 	private static final int ANIMATION_MS = 450;
 
-	private static final String[] PADLOCK = {
-			"...SSSSS...",
-			"..S.....S..",
-			".S.......S.",
-			".S.......S.",
-			".S.......S.",
-			"XXXXXXXXXXX",
-			"XOOOOOOOOOX",
-			"XOOOO#OOOOX",
-			"XOOO###OOOX",
-			"XOOOO#OOOOX",
-			"XOOOOOOOOOX",
-			"XXXXXXXXXXX" };
-
 	// GENERAL FIELDS //
 	private final JFrame mainAppFrame;
 	private final Timer animation;
@@ -119,7 +114,18 @@ public class AboutSectionFrame extends ParentFrame {
 	private JButton websiteButton;
 	private JButton eggButton;
 	private JTextField input;
-	private JLabel responseLabel;
+	private NpcBubble bubble;
+	private EasterEggPicker picker;
+	private EggHatchAnimation hatch;
+	/** The ironic assistant of the terminal line: it answers away from the event thread (it may read the guide) */
+	private final AboutNpc npc = new AboutNpc(AboutSectionFrame::userName);
+	private final ExecutorService npcWorker = Executors.newSingleThreadExecutor(runnable -> {
+		Thread thread = new Thread(runnable, "About-assistant");
+		thread.setDaemon(true);
+		return thread;
+	});
+	private final Set<String> unlockedEggs = new HashSet<>();
+	private UnlockLevel unlockLevel = UnlockLevel.NONE;
 	private JPanel pickerHolder;
 	private PixelSprite padlock;
 	/** While the egg picker is shown the window stays above every other window, and so do the windows it opens */
@@ -142,9 +148,12 @@ public class AboutSectionFrame extends ParentFrame {
 		background.setLayout(new MigLayout("wrap 1, fillx, insets 28 34 18 34, hidemode 3", "[grow, center]"));
 		setContentPane(background);
 
-		padlock = new PixelSprite(PADLOCK);
-		background.add(padlock, "split 2, center, gapright 18, aligny bottom");
+		padlock = new PixelSprite(PadlockArt.CLOSED);
+		background.add(padlock, "split 3, center, gapright 18, aligny bottom");
 		background.add(new PixelTitle(GeneralConfig.APPLICATION_SHORT_NAME), "aligny bottom");
+		hatch = new EggHatchAnimation(PIXEL);
+		hatch.setVisible(false);
+		background.add(hatch, "gapleft 14, aligny bottom");
 		background.add(label("A smart crypter... and much more!", MUTED, Font.ITALIC, 14), "gaptop 6");
 		background.add(createInfoCard(), "growx, gaptop 22");
 		background.add(createEggButton(), "gaptop 12");
@@ -188,11 +197,8 @@ public class AboutSectionFrame extends ParentFrame {
 		card.add(promptLabel(""), "gaptop 4");
 		card.add(input, "gaptop 4, growx");
 
-		responseLabel = new JLabel(" ");
-		responseLabel.setFont(monospaced(Font.BOLD, 15));
-		responseLabel.setForeground(EGG);
-		responseLabel.setVisible(false);
-		card.add(responseLabel, "span 2, growx, gaptop 8");
+		bubble = new NpcBubble(monospaced(Font.PLAIN, 14), TEXT, EGG, MUTED, ACCENT_LIGHT, new Color(0xFF, 0x9A, 0x3C));
+		card.add(bubble, "span 2, growx, gaptop 8");
 
 		pickerHolder = new JPanel(new BorderLayout());
 		pickerHolder.setOpaque(false);
@@ -201,29 +207,45 @@ public class AboutSectionFrame extends ParentFrame {
 		return card;
 	}
 
-	/** Answers to what was typed in the terminal line */
+	/** Sends what was typed in the terminal line to the assistant */
 	private void answer(String typed) {
-		String text = typed == null ? "" : typed.trim().toLowerCase(Locale.ROOT);
-		while (text.contains("  ")) {
-			text = text.replace("  ", " ");
-		}
 		input.setText("");
-		pickerHolder.removeAll();
-		pickerHolder.setVisible(false);
-		responseLabel.setVisible(false);
+		npcWorker.execute(() -> {
+			NpcReply reply = npc.reply(typed);
+			SwingUtilities.invokeLater(() -> showReply(reply));
+		});
+	}
 
-		if (text.equals("fuck")) {
-			responseLabel.setText("fuck you");
-			responseLabel.setVisible(true);
-		} else if (text.equals("i love screept")) {
-			responseLabel.setText("<html>I love you too, " + userName() + ". Have an egg, you earned it:</html>");
-			responseLabel.setVisible(true);
-			pickerHolder.add(new EasterEggPicker(), BorderLayout.CENTER);
-			pickerHolder.setVisible(true);
+	private void showReply(NpcReply reply) {
+		bubble.show(reply);
+		if (reply.unlock != UnlockLevel.NONE) {
+			unlock(reply);
 		}
 		getContentPane().revalidate();
 		getContentPane().repaint();
 		SwingUtilities.invokeLater(this::fitToContent);
+	}
+
+	/** Master key: the padlock opens and the egg hatches (super powers); a named egg: the padlock is just ajar (mini powers) */
+	private void unlock(NpcReply reply) {
+		unlockedEggs.addAll(reply.unlockedEggs);
+		if (reply.unlock == UnlockLevel.FULL && unlockLevel != UnlockLevel.FULL) {
+			unlockLevel = UnlockLevel.FULL;
+			padlock.setBitmap(PadlockArt.OPEN);
+			hatch.setVisible(true);
+			hatch.play();
+		} else if (unlockLevel == UnlockLevel.NONE) {
+			unlockLevel = UnlockLevel.PARTIAL;
+			padlock.setBitmap(PadlockArt.AJAR);
+		}
+		Set<String> launchable = unlockLevel == UnlockLevel.FULL ? null : unlockedEggs;
+		if (picker == null) {
+			picker = new EasterEggPicker(launchable);
+			pickerHolder.add(picker, BorderLayout.CENTER);
+			pickerHolder.setVisible(true);
+		} else {
+			picker.setUnlocked(launchable);
+		}
 	}
 
 	/**
@@ -263,15 +285,17 @@ public class AboutSectionFrame extends ParentFrame {
 		}
 	}
 
-	/** Grows the window (never shrinks it) so that the answer and the egg picker are fully visible, keeping it on its monitor */
+	/** Grows the window (never shrinks it) so that the answer, the egg and the egg picker are fully visible, keeping it on its monitor */
 	private void fitToContent() {
 		Dimension wanted = getContentPane().getPreferredSize();
 		Insets insets = getInsets();
-		int height = Math.max(getHeight(), wanted.height + insets.top + insets.bottom);
-		if (height != getHeight()) {
-			Rectangle screen = getGraphicsConfiguration() != null ? getGraphicsConfiguration().getBounds() : new Rectangle(0, 0, 1920, 1080);
+		Rectangle screen = getGraphicsConfiguration() != null ? getGraphicsConfiguration().getBounds() : new Rectangle(0, 0, 1920, 1080);
+		int width = Math.min(screen.width, Math.max(getWidth(), wanted.width + insets.left + insets.right));
+		int height = Math.min(screen.height, Math.max(getHeight(), wanted.height + insets.top + insets.bottom));
+		if (width != getWidth() || height != getHeight()) {
+			int x = Math.max(screen.x, Math.min(getX(), screen.x + screen.width - width));
 			int y = Math.max(screen.y, Math.min(getY(), screen.y + screen.height - height));
-			setBounds(getX(), y, getWidth(), Math.min(height, screen.height));
+			setBounds(x, y, width, height);
 		}
 	}
 
@@ -373,6 +397,8 @@ public class AboutSectionFrame extends ParentFrame {
 
 				isActive.set(false);
 				animation.stop();
+				hatch.stop();
+				npcWorker.shutdownNow();
 				setTopmost(false);
 
 				mainAppFrame.setEnabled(true);
@@ -558,12 +584,17 @@ public class AboutSectionFrame extends ParentFrame {
 	/** Small bitmap sprite (S = shackle, X = outline, O = body, # = keyhole) with a floating offset */
 	private static final class PixelSprite extends JComponent {
 		private static final long serialVersionUID = 1L;
-		private final String[] bitmap;
+		private String[] bitmap;
 		private int offset;
 
 		PixelSprite(String[] bitmap) {
 			this.bitmap = bitmap;
 			setPreferredSize(new Dimension(bitmap[0].length() * PIXEL, (bitmap.length + 1) * PIXEL));
+		}
+
+		void setBitmap(String[] bitmap) {
+			this.bitmap = bitmap;
+			repaint();
 		}
 
 		void setOffset(int offset) {

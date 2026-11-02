@@ -37,10 +37,31 @@ public final class EasterEggCatalog {
 			this.description = description;
 		}
 
+		/** What the entry says while it is still locked: the same sentence for every egg, finished with what that egg does */
+		public String teaser() {
+			String clause = TEASER_CLAUSES.get(action);
+			return "Let's see if you can discover how to " + (clause != null ? clause : "activate me") + "...";
+		}
+
 		@Override
 		public String toString() {
 			return name + "  -  " + summary;
 		}
+	}
+
+	private static final java.util.Map<String, String> TEASER_CLAUSES = new java.util.HashMap<>();
+
+	static {
+		TEASER_CLAUSES.put("snake", "feed a very hungry pixel serpent");
+		TEASER_CLAUSES.put("puppynoid", "make puppies bounce a ball against a wall of bricks");
+		TEASER_CLAUSES.put("cats", "send Feo and Nano parading over your window");
+		TEASER_CLAUSES.put("poem", "make a piece of software recite poetry");
+		TEASER_CLAUSES.put("bugs", "squash a swarm of bugs before the clock runs out");
+		TEASER_CLAUSES.put("cipher", "break a Caesar cipher like a proper spy");
+		TEASER_CLAUSES.put("typing", "prove how fast your fingers really are");
+		TEASER_CLAUSES.put("trivia", "pass a quiz about your own keyboard shortcuts");
+		TEASER_CLAUSES.put("fortune", "crack open a fortune cookie full of ScreepT wisdom");
+		TEASER_CLAUSES.put("glitch", "make the whole window go haywire, harmlessly");
 	}
 
 	private static final List<Entry> ENTRIES = new ArrayList<>();

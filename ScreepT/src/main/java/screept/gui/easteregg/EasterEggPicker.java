@@ -19,6 +19,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
@@ -46,9 +49,20 @@ public final class EasterEggPicker extends JPanel {
 	private final JComboBox<EasterEggCatalog.Entry> combo = new JComboBox<>();
 	private final JTextArea description = new JTextArea(6, 36);
 	private final JButton launch = new LaunchButton("▶  Launch");
+	/** Actions of the eggs that can be launched; null = all of them */
+	private Set<String> unlocked;
 
 	public EasterEggPicker() {
+		this(null);
+	}
+
+	/**
+	 * @param unlocked actions of the eggs that can be launched; the others are listed as locked, with a teaser of what they do.
+	 *                 Null means all of them.
+	 */
+	public EasterEggPicker(Set<String> unlocked) {
 		super(new BorderLayout(0, 8));
+		this.unlocked = unlocked == null ? null : new HashSet<>(unlocked);
 		setOpaque(false);
 		setBorder(BorderFactory.createEmptyBorder(10, 12, 12, 12));
 
@@ -65,8 +79,12 @@ public final class EasterEggPicker extends JPanel {
 			@Override
 			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean selected, boolean focus) {
 				super.getListCellRendererComponent(list, value, index, selected, focus);
+				boolean locked = value instanceof EasterEggCatalog.Entry && !isUnlocked((EasterEggCatalog.Entry) value);
+				if (locked) {
+					setText("[locked]  " + ((EasterEggCatalog.Entry) value).teaser());
+				}
 				setBackground(selected ? palette.selection : palette.card);
-				setForeground(palette.text);
+				setForeground(locked ? palette.muted : palette.text);
 				setBorder(BorderFactory.createEmptyBorder(3, 8, 3, 8));
 				return this;
 			}
@@ -108,15 +126,28 @@ public final class EasterEggPicker extends JPanel {
 		return base != null ? base.deriveFont(style, size) : new Font(Font.SANS_SERIF, style, size);
 	}
 
+	private boolean isUnlocked(EasterEggCatalog.Entry entry) {
+		return unlocked == null || unlocked.contains(entry.action);
+	}
+
+	/** Changes which eggs can be launched (the selection stays); null = all of them */
+	public void setUnlocked(Set<String> actions) {
+		this.unlocked = actions == null ? null : new HashSet<>(Collections.unmodifiableSet(actions));
+		combo.repaint();
+		showDescription();
+	}
+
 	private void showDescription() {
 		EasterEggCatalog.Entry entry = (EasterEggCatalog.Entry) combo.getSelectedItem();
-		description.setText(entry == null ? "" : entry.description);
+		boolean open = entry != null && isUnlocked(entry);
+		description.setText(entry == null ? "" : open ? entry.description : entry.teaser());
 		description.setCaretPosition(0);
+		launch.setEnabled(open);
 	}
 
 	private void launchSelected() {
 		EasterEggCatalog.Entry entry = (EasterEggCatalog.Entry) combo.getSelectedItem();
-		if (entry == null) {
+		if (entry == null || !isUnlocked(entry)) {
 			return;
 		}
 		if (!HomeTerminalSession.get().launchAction(entry.action)) {

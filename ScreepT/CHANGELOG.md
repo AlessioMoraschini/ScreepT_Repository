@@ -6,6 +6,16 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.64 - 2026-11-02
+> The About window talks back
+
+### New
+- About: the terminal line is now an ironic assistant, with movie quotes (Star Wars, The Lord of the Rings, The Godfather, Old School, Scary Movie...) and true information about ScreepT that fits what you say. Angry face when you swear, thinking face in every other case.
+- About: it hints at the easter eggs every two or three answers and says "acqua", "fuochino" or "fuoco" depending on how close your sentence is to waking one up.
+- About: naming an easter egg unlocks just that one (the padlock opens a little); the egg list shows the others locked, with a teaser of what each one does. The master phrase still opens everything: the padlock opens completely and an egg hatches next to the title, with Feo and Nano inside.
+
+### Improved
+- About: the window grows, never beyond the monitor, to fit the answers and the egg.
 ## 0.9.63 - 2026-11-02
 > LogSearch for huge files, a real terminal in the shell and option descriptions
 
