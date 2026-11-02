@@ -57,6 +57,7 @@ import initializer.configs.impl.om.FileOptions;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import maingUI.MainGuiManager;
+import screept.general.utils.AutostartShortcut;
 import net.miginfocom.swing.MigLayout;
 import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
@@ -597,7 +598,7 @@ public class GeneralOptionsFrame extends ParentFrame{
     	updateComboLocale();
     	Locale.setDefault(currentConfiguration.getGenOpt().getLocale());
     	chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
-		chckbxAutostart.setSelected(SysUtils.isPresentInAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER));
+		chckbxAutostart.setSelected(AutostartShortcut.isPresent());
 
 		refreshAutosaveControls();
 	}
@@ -659,16 +660,16 @@ public class GeneralOptionsFrame extends ParentFrame{
 		dialogHelper.enabledAdvices = showDialogs;
 		try {
 			if(flagAutostartActive) {
-				String[] outcome = SysUtils.addToAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
+				String[] outcome = AutostartShortcut.add();
 				if(outcome[1].isEmpty()) {
 					dialogHelper.info(outcome[0]);
 					chckbxAutostart.setSelected(true);
 				} else {
-					dialogHelper.error(GuiUtils.encapsulateInHtml(outcome[1] + "<br><br> Try to restart application with Administration rights."), "Error");
+					dialogHelper.error(GuiUtils.encapsulateInHtml(outcome[1] + (SysUtils.getOsInfoLazy().isWindows() ? "" : "<br><br> Try to restart application with Administration rights.")), "Error");
 					chckbxAutostart.setSelected(false);
 				}
 			} else {
-				if(!SysUtils.removeFromAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER)) {
+				if(!AutostartShortcut.remove()) {
 					chckbxAutostart.setSelected(true);
 					boolean tryAsAdmin = dialogHelper.yesOrNo(GuiUtils.encapsulateInHtml("Cannot remove from autostart menu <br><br> Try to restart application with Administration rights?"), "Error");
 					if(tryAsAdmin)

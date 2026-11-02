@@ -6,6 +6,15 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.71 - 2026-11-02
+> Start at login without the exe, and .log files ask where to open
+
+### Improved
+- Log files (.log) are now a recognised type of the text editor, and opening one (also with "Open With ScreepT") asks whether to open it in the ScreepT Text Editor or with LogSearch. Big files still get the existing big file question.
+
+### Fixed
+- "Start at login" (autostart): it no longer writes a symbolic link to ScreepT.exe in the Startup folder of all users, which needed administrator rights and failed when the exe was blocked. It now creates a real shortcut in the Startup folder of your user that starts ScreepT.bat through cmd.exe (the exe only when there is no bat), with the ScreepT icon and a minimized window. The old entry for all users is still recognised and removed when possible.
+
 ## 0.9.70 - 2026-11-02
 > Right click menu and "Restart as administrator" work without ScreepT.exe
 

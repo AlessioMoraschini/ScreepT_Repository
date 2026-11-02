@@ -113,7 +113,7 @@ public final class OpenWithContextMenu {
 	 *
 	 * @return null if nothing is available
 	 */
-	private static String findIconPath() throws IOException {
+	static String findIconPath() throws IOException {
 		File[] candidates = {
 				new File(GeneralConfig.RESOURCES_DIR, "Icons/ScreepT.ico"),
 				new File(GeneralConfig.MAIN_APP_PARENT_DIR, "Application/" + GeneralConfig.RESOURCES_DIR + "Icons/ScreepT.ico"),

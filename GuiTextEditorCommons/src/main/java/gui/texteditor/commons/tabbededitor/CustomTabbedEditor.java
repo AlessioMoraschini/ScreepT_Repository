@@ -293,6 +293,20 @@ public class CustomTabbedEditor implements ITabsManager {
 		if (fileToOpen != null && fileToOpen.exists()) {
 			boolean exceedsLines = FileWorker.checkIfHasMoreThanNLines(fileToOpen, GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES);
 			boolean exceedsLength = fileToOpen.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB;
+			// log files: ask where to open them (bigger ones are handled by the big file question below)
+			if (!skipFileExtensionCheck && !exceedsLines && !exceedsLength && fileToOpen.getName().toLowerCase().endsWith(".log")) {
+				String[] logChoices = { "Open in ScreepT Text Editor", "Open with LogSearch", "Cancel" };
+				int logChoice = JOptionPane.showOptionDialog(parent,
+						"How do you want to open this log file?\n\n" + fileToOpen.getName()
+								+ "\n\nThe text editor lets you edit it. LogSearch opens it read-only, with fast text / regex search.",
+						"Log file", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, logChoices, logChoices[0]);
+				if (logChoice == 1) {
+					LogSearchFrame.open(parent, fileToOpen);
+					return false;
+				}
+				return logChoice == 0; // anything else: cancelled by user
+			}
+
 
 			if (exceedsLines || exceedsLength) {
 				String msg = exceedsLines

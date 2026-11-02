@@ -51,6 +51,7 @@ public enum SupportedFileTextEditor {
 									 JSP(".jsp","jsp", SyntaxConstants.SYNTAX_STYLE_JSP, GeneralResourcesPaths.WORDLIST_JAVA, null),
 									 LATEX(".tex","tex", SyntaxConstants.SYNTAX_STYLE_LATEX, null, null),
 									 LISP(".lisp","lisp", SyntaxConstants.SYNTAX_STYLE_LISP, null, null),
+									 LOG(".log","log", SyntaxConstants.SYNTAX_STYLE_NONE, null, IconsPathConfigurator.F_ICON_TXT),
 									 LUA(".lua","lua", SyntaxConstants.SYNTAX_STYLE_LUA, null, null),
 									 MARKDOWN(".md","md", SyntaxConstants.SYNTAX_STYLE_MARKDOWN, null, null),
 									 NONE(".txt",".txt", SyntaxConstants.SYNTAX_STYLE_NONE, null, IconsPathConfigurator.ICON_NEW_FILE),
