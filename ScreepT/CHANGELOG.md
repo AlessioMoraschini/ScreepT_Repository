@@ -6,6 +6,25 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.68 - 2026-11-02
+> A faster start, a restyled Crypter and a "Get Java 21" button
+
+### New
+- Launcher: new "Get Java 21" button next to the Preferred JVM list (Customize launch parameters). It downloads the latest Eclipse Temurin 21 JRE (checksum verified) into the "jre" folder of ScreepT and selects it. Nothing is installed system wide and no administrator rights are needed.
+- Launcher: the "jre" folder next to ScreepT is now searched for Java, so the Java you download (or put there) is found automatically.
+
+### Improved
+- Faster start: with "hide launcher at start" the launcher now reuses the starter file (LauncherBatch.bat / LauncherBash.sh) of the last clean launch instead of building itself again, and the application starts about a second sooner. The launcher panel still opens when that file is missing, outdated, the Java it points to is gone or the application does not come up, and always when "hide launcher at start" is off.
+- Faster start: the CPU and RAM indicator in the menu bar loads in background, so the main window opens sooner. The launcher splash no longer waits for a decorative animation.
+- Crypter restyled with the ScreepT Dark palette: flat panels with thin separators, a highlighted Creept button, readable tabs, key list and selected files, and a dashed drop zone. Behaviour is unchanged.
+- Java detection is more complete: besides Oracle and OpenJDK it now finds Eclipse Adoptium (Temurin), Amazon Corretto, Microsoft, Azul Zulu, BellSoft Liberica, IBM Semeru, JAVA_HOME, the PATH, and on Linux and macOS the usual system folders, SDKMAN, IntelliJ and Homebrew.
+- The Java version is now read from the "release" file of each Java instead of the folder name, so folders with unusual names (like "jre") are recognised correctly.
+
+### Fixed
+- Crypter: when the key dictionary folder (IMG/KEY_DICTIONARY) was missing, a background thread looped without pause and wrote hundreds of thousands of error lines in the log.
+- Launcher: a Java located manually was rejected when its "release" file did not start with the version line (Temurin, for example).
+- Launcher: the Java the launcher itself runs on could be listed twice because of upper/lower case in the path.
+
 ## 0.9.67 - 2026-11-02
 > The Java chosen in the launcher is really used
 

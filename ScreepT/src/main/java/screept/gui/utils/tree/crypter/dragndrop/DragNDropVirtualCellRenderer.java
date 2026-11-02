@@ -65,11 +65,11 @@ public class DragNDropVirtualCellRenderer implements TreeCellRenderer {
         // selected custom graphics
         if(selected) {
         	iconContainer.setOpaque(true);
-        	iconContainer.setBackground(new Color(81, 81, 81));
+        	iconContainer.setBackground(new Color(0x2E436E));
         	iconContainer.setForeground(Color.WHITE);
         }else {
         	iconContainer.setOpaque(false);
-        	iconContainer.setForeground(Color.DARK_GRAY);
+        	iconContainer.setForeground(new Color(0xDFE1E5));
         }
         
         return iconContainer;

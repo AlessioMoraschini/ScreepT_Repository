@@ -153,12 +153,31 @@ public class ScreepTLauncher {
 
 		checkAlreadyRunning();
 
+		GeneralConfig.initLazyGeneralConfig();
+
+		// FAST START: with "hide launcher at start" the starter written by the last clean launch is reused, without building the launcher.
+		// The full launcher (below) runs when the starter is missing or outdated, or the application does not come up.
+		if (ARGS.length == 0 && GeneralConfig.LICENSE_ACCEPTED) {
+			iniFileManager.initFromINIFile();
+			if (iniFileManager.hideNStartDirect) {
+				try {
+					startPendingPluginsCleanerThread();
+					if (pendingPluginsRemoverThread != null) {
+						pendingPluginsRemoverThread.join(5000);
+					}
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+				if (ExistingStarterReuse.tryFastStart(!iniFileManager.viewShellAfterStart)) {
+					System.exit(0);
+				}
+			}
+		}
+
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
 		loaderGraphics.setIconImage(new ImageIcon(ImagesPathConfigurator.MAIN_APP_ICON).getImage());
 		loaderGraphics.update("Reading configuration... ", 5);
 		loaderGraphics.indeterminate(true);
-
-		GeneralConfig.initLazyGeneralConfig();
 
 		GuiUtils.setupTooltips(500, 30000, new Font("Segoe UI", Font.PLAIN, 17));
 
@@ -200,16 +219,7 @@ public class ScreepTLauncher {
 
 		JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR + "lib;\"";
 
-		for (int i = 0; i < 20; i++) {
-			String dots = new String(new char[i + 1]).replace("\0", ".");
-			String msg = "Initializing launcher" + dots;
-			loaderGraphics.update(msg, i / 2);
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				logger.error("Error waiting before starting launcher", e);
-			}
-		}
+		loaderGraphics.update("Initializing launcher...", 10);
 
 		loaderGraphics.update("Reading Configuration File " + DEFAULT_INI_PATH, 15);
 		iniFileManager.initFromINIFile();
@@ -274,9 +284,15 @@ public class ScreepTLauncher {
 		// present -> launch directly
 		// NB incompatible jvm is potential blocking cause for medium user, so by
 		// default when jvm is "warning" launcher panel will be prompted
-		if (!JvmHelper.warningJVM && criticalDependenciesOK && (iniFileManager.hideNStartDirect || ARGS.length != 0)) {
+		if (!JvmHelper.warningJVM && criticalDependenciesOK && !ExistingStarterReuse.fastStartFailed
+				&& (iniFileManager.hideNStartDirect || ARGS.length != 0)) {
 
 			appLogEnd();
+
+			// the starter just generated depends on no argument: next time it can be reused directly
+			if (ARGS.length == 0) {
+				ExistingStarterReuse.markVerified();
+			}
 
 			SysUtils.launchBatchOrBash(generatedNativeLauncherPath, !ScreepTLauncher.iniFileManager.viewShellAfterStart);
 
@@ -446,6 +462,9 @@ public class ScreepTLauncher {
 		logger.debug(LauncherLoggerUtils.getExitString("ScreepT - Launcher", true));
 	}
 
+	/** The thread removing the files left to delete by the last execution (joined by the fast start) */
+	public static volatile Thread pendingPluginsRemoverThread;
+
 	public static void startPendingPluginsCleanerThread() {
 		final ArrayList<File> pendingDeletes = installedPluginProperties.getFileList(installedPluginPendingDeleteListKey, ";", true);
 		Thread pendingPluginsRemover = new Thread(new Runnable() {
@@ -519,6 +538,7 @@ public class ScreepTLauncher {
 			}
 		});
 
+		pendingPluginsRemoverThread = pendingPluginsRemover;
 		pendingPluginsRemover.start();
 
 		if (!pendingDeletes.isEmpty()) {

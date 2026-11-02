@@ -61,6 +61,15 @@ public class JvmHelper {
 	// SOME UTILS
 	
 	/**
+	 * Version of a Java home: the one declared in its "release" file (reliable, also for folders named just "jre"),
+	 * or the name of the folder when there is no release file.
+	 */
+	public static String versionOfHome(String homePath) {
+		String declared = os.commons.utils.JvmLocator.versionOfHome(new File(homePath));
+		return declared.isEmpty() ? new File(homePath).getName() : declared;
+	}
+	
+	/**
 	 * Find right versions of JVM installed on this machine (According to OS), and set its path to javaPath field in this class.
 	 * 
 	 * @return If found return true, else return false
@@ -83,7 +92,7 @@ public class JvmHelper {
 		}
 
 		// Update JVM Warning wignal
-		String foundCorrectName = new File(foundCorrect).getName();
+		String foundCorrectName = versionOfHome(foundCorrect);
 		warningJVM = foundCorrect.equals(NOT_FOUND_JVM) 
 				|| StringWorker.trimToEmpty(foundCorrect).equals("") 
 				|| !checkSingleJavaVersionOK(foundCorrectName, IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, IniFileManager.MIN_JRE_VERSION);
@@ -116,7 +125,7 @@ public class JvmHelper {
 		// PREFERRED BY USER IS DEFINED -> Use that
 		if(foundJVMS.contains(ScreepTLauncher.iniFileManager.preferredJvm)) {
 			String currentPath = ScreepTLauncher.iniFileManager.preferredJvm;
-			String currentPathName = new File(currentPath).getName();
+			String currentPathName = versionOfHome(currentPath);
 			if(checkSingleJavaVersionOK(currentPathName)) {
 				return currentPath;
 			}
@@ -127,7 +136,7 @@ public class JvmHelper {
 		for(String currentPath : foundJVMS) {
 			
 			// find name from path
-			String versionDirName = new File(currentPath).getName();
+			String versionDirName = versionOfHome(currentPath);
 			
 			try {
 				// MATCH PREFERRED DEFAULT JVM CONDITION
@@ -146,7 +155,7 @@ public class JvmHelper {
 		for(String currentPath : foundJVMS) {
 			
 			// find name from path
-			String versionDirName = new File(currentPath).getName();
+			String versionDirName = versionOfHome(currentPath);
 			
 			try {
 					

@@ -575,7 +575,7 @@ public class CrypterPanel extends ModulePanel {
 				tree.setVisibleRowCount(10);
 				// set custom graphic renderer to jtree
 				// tree.setCellRenderer(new TreeCellRendererDark());
-				tree.setBackground(new Color(80,80,80));
+				tree.setBackground(UI_CONTENT);
 				tree.putClientProperty("Nimbus.Overrides", paneDefaults);
 				tree.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
 				scrollPaneTree.setViewportView(tree);
@@ -609,6 +609,7 @@ public class CrypterPanel extends ModulePanel {
 						Thread.sleep(1000);
 					} catch (Exception e) {
 						logger.error(e.toString());
+						sleepQuietly(1000);
 					}
 				}
 			}
@@ -641,6 +642,7 @@ public class CrypterPanel extends ModulePanel {
 						Thread.sleep(200);
 					} catch (Exception e) {
 						logger.error(e.getMessage());
+						sleepQuietly(1000);
 					}
 
 				}
@@ -659,7 +661,145 @@ public class CrypterPanel extends ModulePanel {
 		shortcutsListener = new CrypterPanelShortcutsListener(thisPanel);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(shortcutsListener);
 
+		applyModernStyle();
+
 		refreshRightSplitSize();
+	}
+
+	// Palette shared with ScreepTDarkLaf (IntelliJ "New UI" dark): cosmetic only, no behaviour depends on it.
+	private static final Color UI_PANEL = new Color(0x2B2D30);
+	private static final Color UI_CONTENT = new Color(0x1E1F22);
+	private static final Color UI_SEPARATOR = new Color(0x393B40);
+	private static final Color UI_BORDER = new Color(0x4E5157);
+	private static final Color UI_ACCENT = new Color(0x3574F0);
+	private static final Color UI_TEXT = new Color(0xDFE1E5);
+	private static final Color UI_MUTED = new Color(0x9DA0A8);
+	private static final Color UI_LINK = new Color(0x548AF7);
+
+	/**
+	 * Restyles the panel with the ScreepT Dark palette: flat surfaces, hairline separators, a primary
+	 * action button and a dashed drop zone. Only colors, fonts and borders change; the logic is untouched.
+	 */
+	private void applyModernStyle() {
+		Font regular = new Font("Segoe UI", Font.PLAIN, 13);
+		Font bold = regular.deriveFont(Font.BOLD);
+		javax.swing.border.Border hairline = BorderFactory.createLineBorder(UI_SEPARATOR, 1);
+
+		setBackground(UI_PANEL);
+		panelMainContainer.setBackground(UI_PANEL);
+		mainScrollPane.getViewport().setBackground(UI_PANEL);
+
+		// header: file labels on the left, title in the middle, actions on the right
+		panelHeader.setBackground(UI_PANEL);
+		panelHeader.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UI_SEPARATOR));
+		for (JLabel label : new JLabel[] { lblSourceFileStatic, lblSelectedInputStatic }) {
+			label.setForeground(UI_MUTED);
+			label.setFont(bold);
+		}
+		for (JLabel label : new JLabel[] { lblSrcFileSel, lblKeyImageSelected }) {
+			label.setForeground(UI_LINK);
+			label.setFont(regular);
+		}
+		lblScreeptHeader.setForeground(UI_TEXT);
+		lblScreeptHeader.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
+		styleActionButton(btnCreept, true);
+		styleActionButton(btnDeCreept, false);
+
+		// status bar: password, mode, options and readiness message
+		panelStatus.setBackground(UI_PANEL);
+		panelStatus.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UI_SEPARATOR));
+		lblAesKeyStatic.setForeground(UI_MUTED);
+		lblSelectedModeStatic.setForeground(UI_MUTED);
+		comboModeCrypto.setFont(regular);
+		chckbxShuffle.setFont(regular);
+		chckbxHashKey.setFont(regular);
+
+		// left column: key dictionary and its toolbar, log and image preview tabs
+		leftSplitTopPanel.setBackground(UI_PANEL);
+		for (JButton button : new JButton[] { btnDispoKeyImg, btnGenerateKeyImg, btnGenerateKeyPsw }) {
+			styleToolButton(button);
+		}
+		scrollPaneTree.setBorder(hairline);
+		scrollPaneTree.getViewport().setBackground(UI_CONTENT);
+		tree.setBackground(UI_CONTENT);
+
+		tabbedPane.setBackground(UI_PANEL);
+		tabbedPane.setBorder(null);
+		tabbedPane.putClientProperty("JTabbedPane.tabType", "underlined");
+		for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+			tabbedPane.setBackgroundAt(i, UI_PANEL);
+		}
+		scrollPaneLog.setBorder(hairline);
+		textAreaLog.setBorder(null);
+		textAreaLog.setBackground(UI_CONTENT);
+		textAreaLog.setForeground(UI_TEXT);
+		scrollPanelTabImagePreview.setBorder(hairline);
+		scrollPanelTabImagePreview.getViewport().setBackground(UI_CONTENT);
+		panelContainerKey.setBackground(UI_CONTENT);
+		lblDisplayedKey.setForeground(UI_MUTED);
+		lblDisplayedKey.setFont(regular);
+		panelKeyImgDisp.setBackground(UI_CONTENT);
+		panelKeyImgDisp.setBorder(hairline);
+
+		// center: instructions and results
+		textAreaMain.setBackground(UI_CONTENT);
+		textAreaMain.setForeground(UI_TEXT);
+		textAreaMain.setCaretColor(UI_MUTED);
+		scrollPaneText.setBorder(hairline);
+
+		// right column: selected files pool and drop zone
+		scrollPaneDragNDropSource.setBackground(UI_PANEL);
+		scrollPaneDragNDropSource.setBorder(hairline);
+		scrollPaneDragNDropSource.getViewport().setBackground(UI_PANEL);
+		panelBackgroundDragSources.setBackground(UI_PANEL);
+		lblSelectedFilesDragTitle.setForeground(UI_TEXT);
+		lblSelectedFilesDragTitle.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 20));
+		separatorDragNDropTitle.setForeground(UI_SEPARATOR);
+		styleToolButton(btnAddSourceFile);
+		btnAddSourceFile.setFont(bold);
+		treeSourcesDragAndDrop.setBackground(UI_CONTENT);
+		java.awt.Container treeContainer = SwingUtilities.getAncestorOfClass(JScrollPane.class, treeSourcesDragAndDrop);
+		if (treeContainer instanceof JScrollPane) {
+			((JScrollPane) treeContainer).setBorder(hairline);
+			((JScrollPane) treeContainer).getViewport().setBackground(UI_CONTENT);
+		}
+		panelVDragNDropPane.setBackground(UI_CONTENT);
+		panelVDragNDropPane.setBorder(BorderFactory.createDashedBorder(UI_BORDER, 1.5f, 6f, 4f, true));
+		panelVDragNDropPane.message.setForeground(UI_MUTED);
+
+		// splitters: no frames, a little breathing room around the three columns
+		for (javax.swing.JSplitPane split : new javax.swing.JSplitPane[] { leftSplitPaneVertical, mainSplitTextAreaMain, mainSplitTextAreaRight }) {
+			split.setBorder(null);
+			split.setBackground(UI_PANEL);
+		}
+		mainSplitTextAreaRight.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+	}
+
+	private void styleActionButton(JButton button, boolean primary) {
+		button.putClientProperty("JButton.buttonType", "roundRect");
+		button.setBorder(javax.swing.UIManager.getBorder("Button.border"));
+		button.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
+		button.setIconTextGap(8);
+		button.setForeground(primary ? Color.WHITE : UI_TEXT);
+		button.setBackground(primary ? UI_ACCENT : javax.swing.UIManager.getColor("Button.background"));
+	}
+
+	/** Avoids busy loops in the monitoring threads when something keeps failing (e.g. missing key dictionary folder). */
+	private static void sleepQuietly(long millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+	}
+
+	private void styleToolButton(JButton button) {
+		button.putClientProperty("JButton.buttonType", "roundRect");
+		button.setBorder(javax.swing.UIManager.getBorder("Button.border"));
+		button.setMargin(new java.awt.Insets(2, 4, 2, 4));
+		button.setIconTextGap(4);
+		button.setForeground(UI_TEXT);
+		button.setBackground(javax.swing.UIManager.getColor("Button.background"));
 	}
 
 	@Override
@@ -1488,7 +1628,7 @@ public class CrypterPanel extends ModulePanel {
 				tree.putClientProperty("Nimbus.Overrides", paneDefaults);
 				tree.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
 				scrollPaneTree.setViewportView(tree);
-				tree.setBackground(Color.GRAY);
+				tree.setBackground(UI_CONTENT);
 				tree.setVisibleRowCount(10);
 				tree.addTreeSelectionListener(treeListener);
 				TreeUtils.restoreExpansionStates(tree, expansionsBackup);

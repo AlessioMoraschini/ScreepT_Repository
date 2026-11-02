@@ -23,6 +23,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import screept.launcher.utils.IniFileManager;
+import screept.launcher.utils.JreDownloader;
 import screept.launcher.utils.JvmHelper;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
@@ -121,6 +122,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private JLabel dynLblScaleGui;
 	private JLabel labelGuiScale;
 	private JComboBox<String> comboPrefJvm;
+	private JButton btnDownloadJava;
 	private JLabel lblPreferredJvm;
 	private JLabel lblJvmInfo;
 	
@@ -264,7 +266,12 @@ public class CustomizeParametersPanel extends JFrame{
 		comboPrefJvm = new JComboBox<String>(JVMS.toArray(jvmArr));
 //		comboPrefJvm = new JComboBox<String>(); // Window builder bug workaround for test
 		comboPrefJvm.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(comboPrefJvm, "cell 3 3 6 1,growx");
+		getContentPane().add(comboPrefJvm, "cell 3 3 5 1,growx");
+		
+		btnDownloadJava = new JButton("Get Java " + JreDownloader.FEATURE_VERSION);
+		btnDownloadJava.setToolTipText("<html>Downloads the latest Java " + JreDownloader.FEATURE_VERSION + " (Eclipse Temurin JRE, checksum verified)<br/>into the \"jre\" folder of this ScreepT installation.<br/>Nothing is installed system wide.</html>");
+		btnDownloadJava.setCursor(GuiUtils.CURSOR_HAND);
+		getContentPane().add(btnDownloadJava, "cell 8 3");
 		
 		separator = new JSeparator();
 		getContentPane().add(separator, "cell 0 4 9 1,growx");
@@ -490,6 +497,13 @@ public class CustomizeParametersPanel extends JFrame{
 			}
 		});
 		
+		btnDownloadJava.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				downloadJava();
+			}
+		});
+
 		// Update icon warn or info
 		comboPrefJvm.addActionListener(new ActionListener() {
 			@Override
@@ -519,7 +533,7 @@ public class CustomizeParametersPanel extends JFrame{
 			public void run() {
 				String selectedVersion = (String)comboPrefJvm.getSelectedItem();
 				File selectedVersionFile = new File(selectedVersion);
-				JVM_WARN = !ScreepTLauncher.jvmHelper.checkSingleJavaVersionOK(selectedVersionFile.getName(), IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, IniFileManager.MIN_JRE_VERSION);
+				JVM_WARN = !ScreepTLauncher.jvmHelper.checkSingleJavaVersionOK(JvmHelper.versionOfHome(selectedVersion), IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, IniFileManager.MIN_JRE_VERSION);
 				
 				if (JVM_WARN) {
 					lblJvmInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
@@ -628,6 +642,67 @@ public class CustomizeParametersPanel extends JFrame{
 		return result;
 	}
 	
+	/** Downloads Java into the "jre" folder of the application in background, then selects it in the combo box */
+	private void downloadJava() {
+		btnDownloadJava.setEnabled(false);
+
+		final javax.swing.JDialog dialog = new javax.swing.JDialog(this, "Java " + JreDownloader.FEATURE_VERSION, false);
+		final JLabel message = new JLabel("Starting...");
+		final javax.swing.JProgressBar bar = new javax.swing.JProgressBar(0, 100);
+		bar.setIndeterminate(true);
+		javax.swing.JPanel content = new javax.swing.JPanel(new java.awt.BorderLayout(0, 10));
+		content.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 16, 16, 16));
+		content.add(message, java.awt.BorderLayout.NORTH);
+		content.add(bar, java.awt.BorderLayout.CENTER);
+		dialog.setContentPane(content);
+		dialog.setSize(460, 130);
+		dialog.setLocationRelativeTo(this);
+		dialog.setVisible(true);
+
+		new javax.swing.SwingWorker<File, Void>() {
+			@Override
+			protected File doInBackground() throws Exception {
+				return JreDownloader.download(new File(os.commons.utils.JvmLocator.LOCAL_JRE_DIR), new JreDownloader.Progress() {
+					@Override
+					public void update(final String text, final int percent) {
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								message.setText(text);
+								bar.setIndeterminate(percent < 0);
+								bar.setValue(Math.max(percent, 0));
+							}
+						});
+					}
+				});
+			}
+
+			@Override
+			protected void done() {
+				dialog.dispose();
+				btnDownloadJava.setEnabled(true);
+				try {
+					String home = get().getAbsolutePath();
+					boolean present = false;
+					for (int i = 0; i < comboPrefJvm.getItemCount(); i++) {
+						present = present || home.equals(comboPrefJvm.getItemAt(i));
+					}
+					if (!present) {
+						comboPrefJvm.insertItemAt(home, 0);
+					}
+					comboPrefJvm.setSelectedItem(home);
+					updateJvmIcon();
+					javax.swing.JOptionPane.showMessageDialog(thisPanel, "Java " + JreDownloader.FEATURE_VERSION + " is ready in:\n" + home
+							+ "\n\nIt is selected: save the options to use it.", "Java " + JreDownloader.FEATURE_VERSION, javax.swing.JOptionPane.INFORMATION_MESSAGE);
+				} catch (Exception e) {
+					logger.error("Cannot download Java", e);
+					Throwable cause = e.getCause() != null ? e.getCause() : e;
+					javax.swing.JOptionPane.showMessageDialog(thisPanel, "Java " + JreDownloader.FEATURE_VERSION + " could not be downloaded:\n" + cause.getMessage(),
+							"Java " + JreDownloader.FEATURE_VERSION, javax.swing.JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}.execute();
+	}
+
 	private void selectComboJVM(String target) {
 		if(target == null) {return;}
 		

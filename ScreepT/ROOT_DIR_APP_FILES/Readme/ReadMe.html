@@ -223,6 +223,7 @@
 					<p> You don't need to pass through the launcher panel each time... if you want, after the first launch is gone, you
 						can disable launcher panel in the "general options" tab in ScreepT menu bar under the voice "preferences -> general options".
 					</p>
+				<p><span class="highlightBolded">Fast start</span>: when the launcher panel is disabled, ScreepT reuses the start file written by the last clean launch (LauncherBatch.bat or LauncherBash.sh) instead of preparing everything again, so it opens sooner. If that file is missing or outdated, the Java it uses is gone, or the application does not come up, the launcher panel opens by itself. With the panel enabled nothing changes: it waits for you.</p>
 				</p>
 				
 				<hr>
@@ -236,6 +237,7 @@
 					it's recommended to use the default settings if you don't have any particular need.
 					</p>
 					<p><strong>IMPORTANT: </strong>it's recommended to launch ScreepT as ".class", cause jar launch setting can cause plugins to not being loaded after launch.</p>
+					<p><span class="highlightBolded">Java</span>: the "Preferred JVM" list shows the Java found on your PC: Oracle, OpenJDK, Eclipse Adoptium (Temurin), Amazon Corretto, Microsoft, Azul Zulu, BellSoft, JAVA_HOME, the PATH and the "jre" folder next to ScreepT. The "Get Java 21" button next to it downloads the latest Eclipse Temurin 21 JRE (checksum verified) into the "jre" folder of ScreepT and selects it: nothing is installed system wide and no administrator rights are needed. Save the options to use it.</p>
 				</p>
 
 				<hr>
