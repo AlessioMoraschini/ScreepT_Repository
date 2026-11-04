@@ -6,6 +6,15 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.74 - 2026-11-04
+> Cleaner Plugin Manager
+
+### Improved
+- Plugin Manager: new look in the ScreepT Dark theme. Header with the counters (plugins, installed, to update), filter with search icon, a colored tile for every plugin, status with icon (installed, update available with the versions, not installed), compact Install / Update / Uninstall buttons with icons and tooltips, warnings with an icon. The buttons react only when clicked, Esc closes the window. Same functions as before.
+
+### Fixed
+- Code Compare plugin 1.1.1: it opened with an error on Java 9 and newer (JAXB, used by JMeld to read its settings, is no longer part of Java). The libraries now travel with the plugin; it keeps working on Java 8.
+
 ## 0.9.73 - 2026-11-04
 > Restart with the launcher, and a new Markdown viewer
 
