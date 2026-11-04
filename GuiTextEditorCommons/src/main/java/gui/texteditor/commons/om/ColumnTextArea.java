@@ -11,6 +11,7 @@
  */
 package gui.texteditor.commons.om;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -594,7 +595,7 @@ class ColumnSelectionCaret extends DefaultCaret {
     	}
 
     	this.altDown = e.isAltDown();
-        this.ctrlDown = e.isControlDown();
+        this.ctrlDown = ShortcutKeys.isCtrlDown(e);
         this.shiftDown = e.isShiftDown();
 
         super.mouseReleased(e);
@@ -615,7 +616,7 @@ class ColumnSelectionCaret extends DefaultCaret {
     public void mousePressed(MouseEvent e){
         super.mousePressed(e);
         this.altDown = e.isAltDown();
-        this.ctrlDown = e.isControlDown();
+        this.ctrlDown = ShortcutKeys.isCtrlDown(e);
         this.shiftDown = e.isShiftDown();
 
         if (isRectangularModeOn.get()) {

@@ -6,6 +6,24 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.72 - 2026-11-04
+> Code Compare text zoom, PDF reader fixed, shortcuts also for Mac and Linux
+
+### New
+- Code Compare plugin 1.1.0: text size zoom with Ctrl + mouse wheel (Cmd + wheel on Mac), Ctrl/Cmd and + / - / 0, or the new "Text size" control in the top toolbar (minus, slider, plus, percentage; click the percentage to reset). The zoom is remembered.
+- Code Compare plugin: new "Blank" toolbar button, compares two empty documents (type or paste text on both sides). JMeld "New" only compares existing files. The temporary files are deleted when the last Code Compare window is closed.
+- Keyboard shortcuts now work with Cmd on macOS wherever they used Ctrl (menus, text editor, tree, shell, find windows); Ctrl keeps working. Nothing changes on Windows and Linux.
+
+### Improved
+- Code Compare plugin: updated to JMeld 3.4 (still runs on Java 8 up to 21).
+- Code Compare plugin: readable on dark themes (diff colors and the side map follow the look of the window), and the zoom keeps the line you are reading.
+- Code Compare plugin: closing with unsaved changes now offers "Save selected", "Don't save" (close without saving anything) and "Cancel"; Esc closes the window (Esc inside a search box still only closes the search).
+- PDF and image readers: every button now has a tooltip explaining what it does.
+
+### Fixed
+- Plugins no longer change the look of the application: Code Compare used to install its own look and feel (JGoodies) in the whole program, causing odd graphics in other windows. It now inherits the look of the main window. Checked all plugins: only Code Compare did it.
+- PDF reader: graphic glitches, freezes and unreadable pages while scrolling. The viewer was placed inside a second scroll area; it now uses the whole window and its own scrolling.
+
 ## 0.9.71 - 2026-11-02
 > Start at login without the exe, and .log files ask where to open
 

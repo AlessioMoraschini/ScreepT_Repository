@@ -11,6 +11,7 @@
  */
 package gui.texteditor.commons.om;
 
+import various.common.light.gui.ShortcutKeys;
 import static java.awt.Event.ALT_MASK;
 import static java.awt.Event.SHIFT_MASK;
 
@@ -388,26 +389,26 @@ public class TabTextEditorObject {
 		try {
 			JMenuItem undoItem = (JMenuItem)textArea.getPopupMenu().getComponent(0);
 			undoItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
-			undoItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Z, KeyEvent.CTRL_MASK));
+			undoItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Z, ShortcutKeys.MENU_MASK));
 
 			JMenuItem redoItem = (JMenuItem)textArea.getPopupMenu().getComponent(1);
 			redoItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REDO));
-			redoItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y, KeyEvent.CTRL_MASK));
+			redoItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y, ShortcutKeys.MENU_MASK));
 
 			JMenuItem cutItem = (JMenuItem)textArea.getPopupMenu().getComponent(3);
 			cutItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CUT));
-			cutItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_X, KeyEvent.CTRL_MASK));
+			cutItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_X, ShortcutKeys.MENU_MASK));
 
 			JMenuItem copyItem = (JMenuItem)textArea.getPopupMenu().getComponent(4);
 			copyItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY));
-			copyItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, KeyEvent.CTRL_MASK));
+			copyItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, ShortcutKeys.MENU_MASK));
 
 			JMenuItem pasteItem = (JMenuItem)textArea.getPopupMenu().getComponent(5);
 			pasteItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PASTE));
-			pasteItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_V, KeyEvent.CTRL_MASK));
+			pasteItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_V, ShortcutKeys.MENU_MASK));
 
 			JMenuItem selectAllItem = (JMenuItem)textArea.getPopupMenu().getComponent(8);
-			selectAllItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_A, KeyEvent.CTRL_MASK));
+			selectAllItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_A, ShortcutKeys.MENU_MASK));
 
 		} catch (Exception e) {}
 
@@ -522,7 +523,7 @@ public class TabTextEditorObject {
 
 		filePropertiesItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, ALT_MASK));
 		copySyntaxHighlightItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, ALT_MASK));
-		showColorPicker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P, KeyEvent.CTRL_MASK | SHIFT_MASK | ALT_MASK));
+		showColorPicker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P, ShortcutKeys.MENU_MASK | SHIFT_MASK | ALT_MASK));
 
 
 		// SHOW/HIDE listener

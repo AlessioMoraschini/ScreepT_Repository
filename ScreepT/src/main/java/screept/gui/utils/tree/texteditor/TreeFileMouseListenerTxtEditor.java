@@ -11,6 +11,7 @@
  */
 package screept.gui.utils.tree.texteditor;
 
+import various.common.light.gui.ShortcutKeys;
 import static java.awt.Event.ALT_MASK;
 import static java.awt.Event.SHIFT_MASK;
 
@@ -651,10 +652,10 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	public void keyReleased(KeyEvent event) {
 		super.keyReleased(event);
 		if (tree.hasFocus()) {
-			if (!event.isControlDown() && event.isAltDown() && !event.isShiftDown()  && event.getKeyCode() == KeyEvent.VK_F2) {
+			if (!ShortcutKeys.isCtrlDown(event) && event.isAltDown() && !event.isShiftDown()  && event.getKeyCode() == KeyEvent.VK_F2) {
 				GuiUtils.fireActionListener(getRenameActionListener(), null);
 
-			} else if (event.isControlDown() && !event.isAltDown() && !event.isShiftDown() &&  event.getKeyCode() == KeyEvent.VK_N) {
+			} else if (ShortcutKeys.isCtrlDown(event) && !event.isAltDown() && !event.isShiftDown() &&  event.getKeyCode() == KeyEvent.VK_N) {
 				if(event.isShiftDown()) {
 					GuiUtils.fireActionListener(getNewFolderActionListener(), null);
 
@@ -662,13 +663,13 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					GuiUtils.fireActionListener(getNewFileActionListener(), null);
 
 				}
-			} else if (event.isAltDown() && event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_F5) {
+			} else if (event.isAltDown() && ShortcutKeys.isCtrlDown(event) && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_F5) {
 				refreshItem.doClick();
 
-			} else if (event.isAltDown() && event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_U) {
+			} else if (event.isAltDown() && ShortcutKeys.isCtrlDown(event) && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_U) {
 				hashingItem.doClick();
 
-			} else if (!event.isAltDown() && event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_ENTER) {
+			} else if (!event.isAltDown() && ShortcutKeys.isCtrlDown(event) && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_ENTER) {
 				propertiesItem.doClick();
 			}
 
@@ -677,16 +678,16 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 
 	private void updateShortcutStrings() {
 		itemLoadFile.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, KeyEvent.KEY_LOCATION_UNKNOWN));
-		itemNewFile.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, KeyEvent.CTRL_MASK));
-		itemNewFolder.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, KeyEvent.CTRL_MASK | SHIFT_MASK));
-		selectAllItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_A, KeyEvent.CTRL_MASK));
-		hashingItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, KeyEvent.CTRL_MASK | ALT_MASK));
-		copyItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, KeyEvent.CTRL_MASK));
-		pasteItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_V, KeyEvent.CTRL_MASK));
-		propertiesItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, KeyEvent.CTRL_MASK));
+		itemNewFile.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ShortcutKeys.MENU_MASK));
+		itemNewFolder.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ShortcutKeys.MENU_MASK | SHIFT_MASK));
+		selectAllItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_A, ShortcutKeys.MENU_MASK));
+		hashingItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, ShortcutKeys.MENU_MASK | ALT_MASK));
+		copyItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, ShortcutKeys.MENU_MASK));
+		pasteItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_V, ShortcutKeys.MENU_MASK));
+		propertiesItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, ShortcutKeys.MENU_MASK));
 		itemRename.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F2, ALT_MASK));
 		deleteItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_CANCEL, KeyEvent.KEY_LOCATION_UNKNOWN));
-		refreshItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F5, KeyEvent.CTRL_MASK | ALT_MASK));
+		refreshItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F5, ShortcutKeys.MENU_MASK | ALT_MASK));
 	}
 
 	public JMenuItem getItemLoadFile() {

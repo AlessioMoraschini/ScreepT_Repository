@@ -11,6 +11,7 @@
  */
 package gui.texteditor.commons.om;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -28,7 +29,7 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 	public static int instancesCreatedTotalNumber = 0;
 	
 	int ALT = InputEvent.ALT_MASK;
-	int CTRL = InputEvent.CTRL_MASK;
+	int CTRL = ShortcutKeys.MENU_MASK;
 	int SHIFT = InputEvent.SHIFT_MASK;
 	int ALT_CTRL = ALT | CTRL;
 	int ALT_CTRL_SHIFT = ALT | CTRL | SHIFT;
@@ -71,7 +72,7 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 		if (e.getID() == KeyEvent.KEY_TYPED) {
 			char typed = e.getKeyChar();
 			// ctrl alone is a shortcut, ctrl + alt is AltGr (types chars like @ # [ ])
-			boolean shortcut = e.isControlDown() && !e.isAltDown();
+			boolean shortcut = ShortcutKeys.isCtrlDown(e) && !e.isAltDown();
 			if (!shortcut && typed != KeyEvent.CHAR_UNDEFINED && !Character.isISOControl(typed)) {
 				area.rectangularType(String.valueOf(typed));
 				e.consume();
@@ -81,7 +82,7 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 		}
 
 		// clipboard keys: Swing TransferHandler works on the linear selection only, so they are routed here
-		if (e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && !e.isAltDown() && !e.isShiftDown()) {
+		if (e.getID() == KeyEvent.KEY_PRESSED && ShortcutKeys.isCtrlDown(e) && !e.isAltDown() && !e.isShiftDown()) {
 			switch (e.getKeyCode()) {
 				case KeyEvent.VK_X:
 					area.rectangularCut();
@@ -128,7 +129,7 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 	}
 	
 	private boolean isShortcutKey(KeyEvent e) {
-		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
+		return (e.isAltDown() || ShortcutKeys.isCtrlDown(e) || e.isShiftDown());
 	}
 	
 	public void addKeyMapActions(ColumnTextArea textArea) {

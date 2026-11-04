@@ -11,6 +11,7 @@
  */
 package screept.gui.panels.quicknotes;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -144,7 +145,7 @@ public class QuickNotesPanel extends JPanel {
 		bindKey(addField, KeyEvent.VK_DOWN, 0, "qn-add-down", this::focusFirstNote);
 
 		// Ctrl+F and Esc anywhere inside the panel
-		bindKey(this, KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK, "qn-find", () -> {
+		bindKey(this, KeyEvent.VK_F, ShortcutKeys.MENU_DOWN_MASK, "qn-find", () -> {
 			searchField.requestFocusInWindow();
 			searchField.selectAll();
 		});
@@ -455,7 +456,7 @@ public class QuickNotesPanel extends JPanel {
 				}
 			});
 			area.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), DefaultEditorKit.insertBreakAction);
-			bindKey(area, KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK, "qn-toggle", this::toggleDone);
+			bindKey(area, KeyEvent.VK_ENTER, ShortcutKeys.MENU_DOWN_MASK, "qn-toggle", this::toggleDone);
 			bindKey(area, KeyEvent.VK_UP, InputEvent.ALT_DOWN_MASK, "qn-up", () -> moveBy(-1));
 			bindKey(area, KeyEvent.VK_DOWN, InputEvent.ALT_DOWN_MASK, "qn-down", () -> moveBy(1));
 

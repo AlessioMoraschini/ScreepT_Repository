@@ -11,6 +11,7 @@
  */
 package screept.general.utils;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
@@ -73,13 +74,13 @@ public class SafetyScreepTShortcutsListener extends KeyListenerParent implements
 				/*
 				 *  Safe app restart : alt + F5
 				 */
-				if (e.getKeyCode() == KeyEvent.VK_F5 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+				if (e.getKeyCode() == KeyEvent.VK_F5 && e.isAltDown() && !ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {
 					MainGuiManager.restartApplication(false);
 				}
 				/*
 				 *  Safe app restart : alt + F6: as admin
 				 */
-				if (e.getKeyCode() == KeyEvent.VK_F6 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+				if (e.getKeyCode() == KeyEvent.VK_F6 && e.isAltDown() && !ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {
 					MainGuiManager.restartApplication(true);
 				}
 			}

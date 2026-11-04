@@ -12,7 +12,7 @@
 package maingUI;
 
 import static java.awt.Event.ALT_MASK;
-import static java.awt.Event.CTRL_MASK;
+import static various.common.light.gui.ShortcutKeys.MENU_MASK;
 import static java.awt.Event.SHIFT_MASK;
 
 import java.awt.Component;
@@ -738,12 +738,12 @@ public class MainGuiParent {
 
 		// file submenu
 		mntmInspectCurrentConfiguration.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_1, ALT_MASK | SHIFT_MASK));
-		mntmExportPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_E, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-		mntmloadPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_O, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-		mntmReloadPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_R, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-		mntmSaveCurrent.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-		mntmSaveCurrentAs.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_W, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-		mntmloadSrcrYptDefaultConf.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_D, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmExportPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_E, MENU_MASK | ALT_MASK | SHIFT_MASK));
+		mntmloadPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_O, MENU_MASK | ALT_MASK | SHIFT_MASK));
+		mntmReloadPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_R, MENU_MASK | ALT_MASK | SHIFT_MASK));
+		mntmSaveCurrent.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, MENU_MASK | ALT_MASK | SHIFT_MASK));
+		mntmSaveCurrentAs.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_W, MENU_MASK | ALT_MASK | SHIFT_MASK));
+		mntmloadSrcrYptDefaultConf.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_D, MENU_MASK | ALT_MASK | SHIFT_MASK));
 
 		// preferences submenu
 		mntmGenOpt.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_2, ALT_MASK | SHIFT_MASK));
@@ -753,27 +753,27 @@ public class MainGuiParent {
 
 		// ScreepT submenu
 		mntmCreepter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | SHIFT_MASK));
-		mntmgenerateKeyPswSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_K, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmgenerateKeyPswSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_K, MENU_MASK | ALT_MASK | SHIFT_MASK));
 		mntmgenerateKeyImageSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_K, ALT_MASK | SHIFT_MASK));
 		mntmViewKeyDictionary.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_D, ALT_MASK | SHIFT_MASK));
 
 		// Text editor sub-menu
 		mntmTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_T, ALT_MASK | SHIFT_MASK));
-		mntmFileSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, CTRL_MASK | ALT_MASK));
-		mntmFileQuickSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_R, CTRL_MASK | ALT_MASK));
-		mntmTxtEditorImpExpCryptedWkspc.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmFileSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, MENU_MASK | ALT_MASK));
+		mntmFileQuickSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_R, MENU_MASK | ALT_MASK));
+		mntmTxtEditorImpExpCryptedWkspc.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, MENU_MASK | ALT_MASK | SHIFT_MASK));
 
 		// Various submenu
 		mntmnetInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | SHIFT_MASK));
 		mntmhwInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y, ALT_MASK | SHIFT_MASK));
 		mntmHashChecker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, ALT_MASK | SHIFT_MASK));
-		mntmColorPicker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P,CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmColorPicker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P,MENU_MASK | ALT_MASK | SHIFT_MASK));
 		mntmClipboardStandalone.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P, ALT_MASK | SHIFT_MASK));
-		mntmCalculator.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, ALT_MASK | CTRL_MASK));
-		mntmQuickNotes.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | CTRL_MASK));
-		mntmShellStandalone.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | CTRL_MASK));
-		mntmFileContentSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, ALT_MASK | CTRL_MASK));
-		mntmLogSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_L, ALT_MASK | CTRL_MASK));
+		mntmCalculator.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, ALT_MASK | MENU_MASK));
+		mntmQuickNotes.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | MENU_MASK));
+		mntmShellStandalone.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | MENU_MASK));
+		mntmFileContentSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, ALT_MASK | MENU_MASK));
+		mntmLogSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_L, ALT_MASK | MENU_MASK));
 		mntmImageViewer.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_O, ALT_MASK | SHIFT_MASK));
 		mntmImageConverter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, ALT_MASK | SHIFT_MASK));
 
@@ -790,15 +790,15 @@ public class MainGuiParent {
 		mntmExportLog.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_E, ALT_MASK | SHIFT_MASK));
 		mntmEraseLogs.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_CANCEL, ALT_MASK | SHIFT_MASK));
 		mntmReturnToWelcome.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_H, ALT_MASK | SHIFT_MASK));
-		mntmViewWebsite.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_4, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-		mntmLookForUpdates.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_5, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-		mntmLookForPlugins.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_6, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmViewWebsite.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_4, MENU_MASK | ALT_MASK | SHIFT_MASK));
+		mntmLookForUpdates.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_5, MENU_MASK | ALT_MASK | SHIFT_MASK));
+		mntmLookForPlugins.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_6, MENU_MASK | ALT_MASK | SHIFT_MASK));
 		mntmUserDocumentation.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Q, ALT_MASK | SHIFT_MASK));
 			// Reset functions
-			mntmResetAllPanels.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_0, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-			mntmResetTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_9, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-			mntmResetCrypterPanel.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_8, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-			mntmResetConfigManager.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_7, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+			mntmResetAllPanels.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_0, MENU_MASK | ALT_MASK | SHIFT_MASK));
+			mntmResetTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_9, MENU_MASK | ALT_MASK | SHIFT_MASK));
+			mntmResetCrypterPanel.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_8, MENU_MASK | ALT_MASK | SHIFT_MASK));
+			mntmResetConfigManager.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_7, MENU_MASK | ALT_MASK | SHIFT_MASK));
 		mntmRestart.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F5, ALT_MASK));
 		mntmRestartAsAdmin.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F6, ALT_MASK));
 		mntmExit.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F4, ALT_MASK ));

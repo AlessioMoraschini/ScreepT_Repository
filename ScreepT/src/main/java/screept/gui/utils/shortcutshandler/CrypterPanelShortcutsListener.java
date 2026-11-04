@@ -11,6 +11,7 @@
  */
 package screept.gui.utils.shortcutshandler;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
@@ -57,21 +58,21 @@ public class CrypterPanelShortcutsListener implements KeyEventDispatcher{
 				/*
 				 *  Creept FILE -> CTRL+S
 				 */
-				if (e.getKeyCode() == 83 && !e.isAltDown() && e.isControlDown()	&& !e.isShiftDown()) {
+				if (e.getKeyCode() == 83 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e)	&& !e.isShiftDown()) {
 					currentGui.btnCreept.doClick();
 				}
 
 				/*
 				 *  Decreept FILE -> CTRL+D
 				 */
-				if (e.getKeyCode() == 68 && !e.isAltDown() && e.isControlDown()	&& !e.isShiftDown()) {
+				if (e.getKeyCode() == 68 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e)	&& !e.isShiftDown()) {
 					currentGui.btnDeCreept.doClick();
 				}
 
 				/*
 				 *  LOAD FILE -> CTRL+L
 				 */
-				if (e.getKeyCode() == 76 && !e.isAltDown() && e.isControlDown()	&& !e.isShiftDown()) {
+				if (e.getKeyCode() == 76 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e)	&& !e.isShiftDown()) {
 					currentGui.btnAddSourceFile.doClick();
 				}
 
@@ -83,6 +84,6 @@ public class CrypterPanelShortcutsListener implements KeyEventDispatcher{
 	}
 
 	private boolean isShortcutKey(KeyEvent e) {
-		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
+		return (e.isAltDown() || ShortcutKeys.isCtrlDown(e) || e.isShiftDown());
 	}
 }

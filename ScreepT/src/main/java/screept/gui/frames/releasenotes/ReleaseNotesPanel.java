@@ -11,6 +11,7 @@
  */
 package screept.gui.frames.releasenotes;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -111,7 +112,7 @@ public class ReleaseNotesPanel extends JPanel {
 				rebuild();
 			}
 		});
-		getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK), "rn-find");
+		getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, ShortcutKeys.MENU_DOWN_MASK), "rn-find");
 		getActionMap().put("rn-find", new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 
