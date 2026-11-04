@@ -23,6 +23,7 @@ import mainlauncher.ScreepTLauncher;
 
 import java.awt.Button;
 import java.awt.Color;
+import screept.launcher.gui.utils.LauncherTheme;
 
 import net.miginfocom.swing.MigLayout;
 import os.commons.om.OSinfo;
@@ -303,7 +304,7 @@ public class DependenciesManagerPanel extends JFrame{
 		setLocationRelativeTo(parentStarterFrame);
 		
 		logger.debug("icon image setted to main window");
-		UIManager.put("ToolTip.background", new Color(255, 250, 205));
+		// tooltips follow the look and feel (the light yellow one is unreadable on the dark theme)
 	}
 	
 	// methods used to check dependency status and install //
@@ -492,5 +493,17 @@ public class DependenciesManagerPanel extends JFrame{
 				logger.error("Error launching MacOS installer " + relativePathToLauncher, e);
 			}
 		}
+	}
+	private boolean themed = false;
+
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && !themed) {
+			themed = true;
+			LauncherTheme.polish(this);
+			LauncherTheme.primary(btnInstallDependency);
+			LauncherTheme.primary(btnDownloadDependency);
+		}
+		super.setVisible(visible);
 	}
 }

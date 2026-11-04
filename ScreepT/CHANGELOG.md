@@ -6,6 +6,18 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.73 - 2026-11-04
+> Restart with the launcher, and a new Markdown viewer
+
+### New
+- Restart and Restart as administrator (Help menu, Alt+F5 / Alt+F6): when "Hide launcher at start" is on, a dialog asks if the launcher must be shown on this restart. "Keep as default" turns "Hide launcher at start" off in the launcher configuration (the same property as Generic Options); without it the launcher is shown just this time. When the launcher is not hidden, the restart goes through it without questions. Restarts for updates or plugins waiting to be installed work as before.
+- Markdown viewer plugin 1.1.0: markdown editor with live preview (tables, task lists, strikethrough, autolinks, table of contents), outline of the headings, formatting toolbar with icons and tooltips, HTML source tab, text zoom (Ctrl + mouse wheel), export to a standalone HTML page, copy HTML, open in the browser. Esc closes the window and asks what to do with unsaved changes.
+- Launcher: new look with the ScreepT Dark theme and an animated pixel art background in the style of the home page (code rain that draws the ScreepT icon). The window is bigger and the Start button is large and always visible.
+
+### Fixed
+- After installing or updating plugins, ScreepT restarted the launcher again every time it was closed. The files of a plugin that has just been installed are no longer left in the "delete at next start" list, old entries of installed plugins are ignored, and the launcher waits a few seconds for the previous run to release the files it has to delete.
+- Launcher, Plugin Manager, progress bars and dialogs now always open on the monitor where the main ScreepT window opens (they could open on the other one).
+
 ## 0.9.72 - 2026-11-04
 > Code Compare text zoom, PDF reader fixed, shortcuts also for Mac and Linux
 

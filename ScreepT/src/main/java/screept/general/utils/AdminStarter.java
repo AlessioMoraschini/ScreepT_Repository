@@ -45,6 +45,13 @@ public final class AdminStarter {
 		new ProcessBuilder("powershell.exe", "-NoProfile", "-NonInteractive", "-EncodedCommand", encoded).start();
 	}
 
+	/** Starts the given starter normally (no administrator rights), then returns without waiting for it */
+	public static void startNormally(File starter) throws IOException {
+		String script = buildScript(starter, false);
+		String encoded = Base64.getEncoder().encodeToString(script.getBytes(Charset.forName("UTF-16LE")));
+		new ProcessBuilder("powershell.exe", "-NoProfile", "-NonInteractive", "-EncodedCommand", encoded).start();
+	}
+
 	/** The PowerShell script that starts the starter (bat through cmd.exe, exe directly), in its folder */
 	public static String buildScript(File starter, boolean asAdministrator) throws IOException {
 		String path = starter.getCanonicalPath();

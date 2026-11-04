@@ -53,6 +53,8 @@ public class IniFileManager {
 	
 	public boolean showInstallOptions = true;
 	public boolean hideNStartDirect = false;
+	/** Set (once per run) when the application asked to see the launcher at this start only: see flagShowLauncherOnce */
+	public static boolean showLauncherOnce = false;
 	
 	public Wini iniConfigFile;
 	
@@ -102,6 +104,13 @@ public class IniFileManager {
 			showInstallOptions = (autoInstallerOpt!=null && autoInstallerOpt.equalsIgnoreCase("false"))? false : true;
 			String hideNStart = iniConfigFile.get(INI_APP_OPT, "flagHideNStartDirect");
 			hideNStartDirect = (hideNStart!=null && hideNStart.equalsIgnoreCase("true"))? true : false;
+			// one-time request written by the application (restart with launcher): consumed here, so it applies to this start only
+			String showOnce = iniConfigFile.get(INI_APP_OPT, "flagShowLauncherOnce");
+			if (showOnce != null && showOnce.equalsIgnoreCase("true")) {
+				showLauncherOnce = true;
+				iniConfigFile.put(INI_APP_OPT, "flagShowLauncherOnce", "false");
+				iniConfigFile.store();
+			}
 			preferredJvm = StringWorker.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
 			preferredJvmVersionIfNotSpecified = StringWorker.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvmVersionIfNotSpecified"));
 			manualPathJvm = StringWorker.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "manualPathJvm"));
@@ -117,6 +126,11 @@ public class IniFileManager {
 		}
 	}
 	
+	/** True when the launcher must not be shown at this start: hidden by configuration and not asked once by the application */
+	public boolean isHiddenForThisStart() {
+		return hideNStartDirect && !showLauncherOnce;
+	}
+
 	/**
 	 * use this function to write a single value to launcher configuration file
 	 * @param OPT_SECTION

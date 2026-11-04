@@ -26,7 +26,9 @@ import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import screept.general.utils.AdminStarter;
+import screept.general.utils.LauncherIniOptions;
 import screept.general.utils.ScreepTLoggerUtils;
+import screept.gui.frames.RestartLauncherDialog;
 import screept.gui.panels.CrypterPanel;
 import screept.gui.panels.TextEditor;
 import updater.module.plugins.PluginManager;
@@ -55,8 +57,34 @@ public class MainGuiManager {
 	public static void restartApplication(boolean asAdmin) {
 
 		String adminFlag = asAdmin ? " as administrator" : "";
-		if(!MainGUI.dialogHelper.yesOrNo("Restart " + GeneralConfig.APPLICATION_SHORT_NAME + adminFlag + " ?")) {
-			return;
+
+		// Updates or plugins waiting for a restart keep their own procedure: no question about the launcher in that case
+		boolean pendingChanges = hasPendingUpdatesOrPlugins();
+		Boolean launcherHidden = pendingChanges ? null : LauncherIniOptions.isLauncherHidden();
+		boolean viaLauncher = false;
+
+		if (launcherHidden != null && launcherHidden.booleanValue()) {
+			// "Hide launcher at start" is on: ask if the launcher must be shown on this restart
+			RestartLauncherDialog.Result answer = RestartLauncherDialog.ask(MainGUI.mainFrameScreept, asAdmin);
+			if (answer.choice == RestartLauncherDialog.Choice.CANCEL) {
+				return;
+			}
+			viaLauncher = answer.choice == RestartLauncherDialog.Choice.LAUNCHER;
+			if (viaLauncher) {
+				// "Keep as default" writes "hide launcher" = false in the launcher ini (as Generic Options does),
+				// otherwise the launcher is asked to show itself just for the next start
+				if (answer.keepAsDefault) {
+					LauncherIniOptions.setLauncherHidden(false);
+				} else {
+					LauncherIniOptions.setShowLauncherOnce(true);
+				}
+			}
+		} else {
+			if(!MainGUI.dialogHelper.yesOrNo("Restart " + GeneralConfig.APPLICATION_SHORT_NAME + adminFlag + " ?")) {
+				return;
+			}
+			// launcher not hidden by configuration: the restart goes through it, without further questions
+			viaLauncher = launcherHidden != null;
 		}
 
 		try {
@@ -82,11 +110,13 @@ public class MainGuiManager {
 
 				if(asAdmin) {
 					AdminStarter.startAsAdministrator(adminStarter);
+				} else if(viaLauncher) {
+					startThroughStarter();
 				} else {
 					SysUtils.launchBatchOrBash(nativeLauncherPath, false);
 				}
 
-				MainGuiUtils.logger.info("\n [RESTART REQUESTED - adminMode="+asAdmin+"] \n\n" + ScreepTLoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
+				MainGuiUtils.logger.info("\n [RESTART REQUESTED - adminMode="+asAdmin+" - launcher="+viaLauncher+"] \n\n" + ScreepTLoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 
 				System.exit(0);
 
@@ -98,6 +128,42 @@ public class MainGuiManager {
 		} catch (Exception e) {
 			MainGuiUtils.logger.error("Cannot restart application: an error occurred", e);
 		}
+	}
+
+	/** True when updates are waiting to be installed or plugins to be installed/updated/removed at the next start */
+	private static boolean hasPendingUpdatesOrPlugins() {
+		try {
+			boolean updates = MainGuiGeneralAppStarter.updatesManager != null
+					&& MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.get()
+					&& MainGUI.updatesDownloaded != null;
+			ArrayList<String> toDelete = PluginManager.installedPluginProperties.getStringList(PluginManager.installedPluginPendingDeleteListKey, ";");
+			ArrayList<String> toUpdate = PluginManager.installedPluginProperties.getStringList(PluginManager.installedPluginPendingUpdateListKey, ";");
+			return updates
+					|| (toDelete != null && !toDelete.isEmpty())
+					|| (toUpdate != null && !toUpdate.isEmpty())
+					|| !PluginManager.pluginsFreshlyInstalled.isEmpty();
+		} catch (Throwable t) {
+			// in doubt the restart keeps its usual procedure
+			return true;
+		}
+	}
+
+	/** Starts ScreepT again through its starter (ScreepT.bat / ScreepT.sh), so the launcher decides what to show */
+	private static void startThroughStarter() throws java.io.IOException {
+		if (new OSinfo().isWindows()) {
+			File starter = AdminStarter.chooseStarter();
+			if (starter != null) {
+				AdminStarter.startNormally(starter);
+				return;
+			}
+		} else {
+			File shellStarter = new File(GeneralConfig.MAIN_APP_PARENT_DIR, "ScreepT.sh");
+			if (shellStarter.isFile()) {
+				SysUtils.launchBatchOrBash(shellStarter.getAbsolutePath(), false);
+				return;
+			}
+		}
+		restartFromLauncher();
 	}
 
 	public void exportLogs() {

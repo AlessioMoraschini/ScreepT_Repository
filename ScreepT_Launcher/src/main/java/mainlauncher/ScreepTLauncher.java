@@ -159,7 +159,7 @@ public class ScreepTLauncher {
 		// The full launcher (below) runs when the starter is missing or outdated, or the application does not come up.
 		if (ARGS.length == 0 && GeneralConfig.LICENSE_ACCEPTED) {
 			iniFileManager.initFromINIFile();
-			if (iniFileManager.hideNStartDirect) {
+			if (iniFileManager.isHiddenForThisStart()) {
 				try {
 					startPendingPluginsCleanerThread();
 					if (pendingPluginsRemoverThread != null) {
@@ -285,7 +285,7 @@ public class ScreepTLauncher {
 		// NB incompatible jvm is potential blocking cause for medium user, so by
 		// default when jvm is "warning" launcher panel will be prompted
 		if (!JvmHelper.warningJVM && criticalDependenciesOK && !ExistingStarterReuse.fastStartFailed
-				&& (iniFileManager.hideNStartDirect || ARGS.length != 0)) {
+				&& (iniFileManager.isHiddenForThisStart() || ARGS.length != 0)) {
 
 			appLogEnd();
 
@@ -462,6 +462,47 @@ public class ScreepTLauncher {
 		logger.debug(LauncherLoggerUtils.getExitString("ScreepT - Launcher", true));
 	}
 
+	/** Time budget (ms) shared by all the pending files that are still in use by the previous execution */
+	private static final long PENDING_DELETE_RETRY_BUDGET_MS = 12000;
+	private static long pendingDeleteDeadline = 0;
+
+	private static boolean deleteWithRetries(File file) {
+		if (pendingDeleteDeadline == 0) {
+			pendingDeleteDeadline = System.currentTimeMillis() + PENDING_DELETE_RETRY_BUDGET_MS;
+		}
+		while (true) {
+			if (!file.exists() || file.delete()) {
+				return true;
+			}
+			if (System.currentTimeMillis() >= pendingDeleteDeadline) {
+				return false;
+			}
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				return false;
+			}
+		}
+	}
+
+	/** True if the file is in the list of files of a plugin that is currently installed */
+	private static boolean isFileOfInstalledPlugin(File file) {
+		try {
+			File canonical = file.getCanonicalFile();
+			for (String pluginName : installedPluginProperties.getStringList(PluginManager.installedPluginPropsListKey, PluginManager.installedPluginPropsListSeparator)) {
+				for (String relative : installedPluginProperties.getStringList(pluginName, PluginManager.installedPluginPropsListSeparator)) {
+					if (new File(relative).getCanonicalFile().equals(canonical)) {
+						return true;
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.warn("Cannot check if " + file + " belongs to an installed plugin", e);
+		}
+		return false;
+	}
+
 	/** The thread removing the files left to delete by the last execution (joined by the fast start) */
 	public static volatile Thread pendingPluginsRemoverThread;
 
@@ -480,8 +521,15 @@ public class ScreepTLauncher {
 						boolean deleted = false;
 						try {
 							logger.info("Deleting pending file to be deleted: " + pending);
-							deleted = pending.delete();
-							logger.info(pending + " deleted succesfully!");
+							if (isFileOfInstalledPlugin(pending)) {
+								// old entry: the file belongs to a plugin that is installed now, it must not be deleted
+								logger.warn(pending + " belongs to an installed plugin: it is kept and only removed from the pending list");
+								deleted = true;
+							} else {
+								// the previous execution may still be closing and keep the file in use for a moment
+								deleted = deleteWithRetries(pending);
+								logger.info(pending + (deleted ? " deleted succesfully!" : " cannot be deleted (in use?)"));
+							}
 						} catch (Exception e) {
 							logger.error("An error occurred, cannot delete current pending file to delete: " + pending, e);
 						}

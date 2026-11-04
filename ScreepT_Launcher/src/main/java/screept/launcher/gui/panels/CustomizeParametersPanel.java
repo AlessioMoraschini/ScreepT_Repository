@@ -32,6 +32,7 @@ import various.common.light.utility.string.StringWorker;
 import javax.swing.JLabel;
 
 import java.awt.Color;
+import screept.launcher.gui.utils.LauncherTheme;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -734,5 +735,17 @@ public class CustomizeParametersPanel extends JFrame{
 		lblSTackSizeInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 		lblSTackSizeInfo.setToolTipText(TOOLTIP_STACK_SIZE);
 		lblSTackSizeInfo.setVisible(true);
+	}
+	private boolean themed = false;
+
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && !themed) {
+			themed = true;
+			LauncherTheme.polish(this);
+			LauncherTheme.primary(btnSaveConfig);
+			LauncherTheme.danger(btnExitConfiguration);
+		}
+		super.setVisible(visible);
 	}
 }

@@ -44,7 +44,7 @@ public class LauncherLoaderFrame extends JFrame{
 		H = (height > 100 && height < 800)? height: H ;
 		W = (int)(H * 1.78);
 		
-		applyLaf(GUIStyelSettings.NimbusLookAndFeel);
+		LauncherTheme.apply();
 
 		this.setUndecorated(true);
 		this.setAlwaysOnTop(true);
@@ -66,16 +66,8 @@ public class LauncherLoaderFrame extends JFrame{
 	}
 	
 	public boolean applyLaf(String lafClass) {
-        try {
-			UIManager.setLookAndFeel(lafClass);
-			UIManager.put("nimbusOrange", GUIStyelSettings.nimbusProgBarColor);
-			UIManager.put("nimbusBase", new Color(18, 30, 49));
-			UIManager.put("ScrollBar.background", new Color(70, 70, 70));
-			return true;
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			logger.warn("Cannot set laf ["+lafClass+"], an error occurred.", e);
-			return false;
-		}
+		// the launcher uses the ScreepT Dark look and feel (the one of the application)
+		return LauncherTheme.apply();
 	}
 	
 	public void setProgBarColor(Color target) {

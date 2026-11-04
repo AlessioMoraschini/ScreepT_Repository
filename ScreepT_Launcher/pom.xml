@@ -244,6 +244,29 @@
 			</exclusions>
 		</dependency>
 
+		<!-- ScreepT Dark look and feel (same as the application): only GuiCommons itself, its few needs are listed here -->
+		<dependency>
+			<groupId>GuiCommons</groupId>
+			<artifactId>GuiCommons</artifactId>
+			<version>${gui.commons.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.formdev</groupId>
+			<artifactId>flatlaf</artifactId>
+			<version>3.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>5.13.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>OsCommons</groupId>
 			<artifactId>OsCommons</artifactId>

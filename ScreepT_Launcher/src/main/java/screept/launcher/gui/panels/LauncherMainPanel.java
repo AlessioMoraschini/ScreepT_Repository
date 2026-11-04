@@ -20,6 +20,7 @@ import mainlauncher.ScreepTLauncher;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -47,6 +48,10 @@ import java.io.IOException;
 import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.Dialog.ModalityType;
+import java.awt.Image;
+import javax.swing.BorderFactory;
+import screept.launcher.gui.utils.LauncherTheme;
+import screept.launcher.gui.utils.LauncherBackdropPanel;
 
 public class LauncherMainPanel extends JFrame{
 	private static final long serialVersionUID = 5822120722073962394L;
@@ -73,8 +78,12 @@ public class LauncherMainPanel extends JFrame{
 	private JLabel label;
 	private JLabel lblAmDesign;
 	
-	private final int W = 570;
-	private final int H = 170;
+	private final int W = 800;
+	private final int H = 590;
+
+	/** Heights of the header and of the controls area: the pixel art icon is centered in the space between */
+	private static final int HEADER_HEIGHT = 74;
+	private static final int CONTROLS_HEIGHT = 176;
 	private JButton btnNetworkConfig;
 	
 	public LauncherMainPanel(String frameTitle, ScreepTLauncher launcher) {
@@ -92,65 +101,66 @@ public class LauncherMainPanel extends JFrame{
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
 		
-		mainPanel = new JPanel();
-		mainPanel.setBackground(Color.DARK_GRAY);
+		// animated pixel art background (teal code rain drawing the ScreepT icon, like the home page)
+		mainPanel = new LauncherBackdropPanel(HEADER_HEIGHT, CONTROLS_HEIGHT);
 		getContentPane().add(mainPanel, BorderLayout.CENTER);
-		mainPanel.setLayout(new MigLayout("insets 4, fill", "[40px:n][grow][40px:n,grow][40px:n,grow][20px:n,grow][40px:n,grow][20px]", "[30px,grow][:27px:27px][:27px:27px][25px]"));
-		
-		JLabel lblWelcomeToScreept = new JLabel("Welcome to ScreepT, choose your preferences... or just start me :)");
-		lblWelcomeToScreept.setForeground(Color.WHITE);
-		lblWelcomeToScreept.setFont(new Font("Segoe UI Black", Font.PLAIN, 13));
-		mainPanel.add(lblWelcomeToScreept, "cell 0 0 7 1,alignx center");
-		
-		btnStartScreept = new JButton("Start ScreepT");
-		btnStartScreept.setMargin(new Insets(10, 10, 10, 10));
-		btnStartScreept.setForeground(new Color(0, 0, 0));
-		btnStartScreept.setBorder(null);
-		btnStartScreept.setBackground(new Color(102, 153, 51));
-		btnStartScreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnStartScreept.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		mainPanel.add(btnStartScreept, "cell 4 1 3 2,grow");
-		
+		mainPanel.setLayout(new MigLayout("insets 0, fill", "[grow]", "[" + HEADER_HEIGHT + "!][grow,fill][" + CONTROLS_HEIGHT + "!]"));
+
+		// header over the animation
+		JPanel header = new JPanel(new MigLayout("insets 16 24 0 24, fillx", "[grow][]", "[]2[]"));
+		header.setOpaque(false);
+
+		lblScreeptLauncher = new JLabel("ScreepT Launcher");
+		lblScreeptLauncher.setFont(lblScreeptLauncher.getFont().deriveFont(Font.BOLD, 24f));
+		lblScreeptLauncher.setForeground(new Color(0xE8FFFC));
+		header.add(lblScreeptLauncher, "cell 0 0");
+
+		JLabel lblWelcomeToScreept = new JLabel("Choose your preferences, or just start :)");
+		lblWelcomeToScreept.setForeground(new Color(0x7FBFB8));
+		header.add(lblWelcomeToScreept, "cell 0 1");
+
+		label = new JLabel("Launcher V1.0");
+		label.setForeground(new Color(0x7FBFB8));
+		label.setFont(label.getFont().deriveFont(11f));
+		header.add(label, "cell 1 0,alignx right,aligny top");
+		mainPanel.add(header, "cell 0 0,growx");
+
+		// the animation shows through here
+		JPanel stage = new JPanel();
+		stage.setOpaque(false);
+		mainPanel.add(stage, "cell 0 1,grow");
+
+		// controls: always visible at the bottom, Start is big
+		JPanel controls = new LauncherBackdropPanel.Glass(new MigLayout("insets 16 26 10 26, fillx", "[grow][grow][]", "[]12[]6[]"));
+
 		btnCustomizeParameters = new JButton("Customize launch parameters");
-		btnCustomizeParameters.setBorder(null);
-		btnCustomizeParameters.setForeground(new Color(0, 0, 0));
-		btnCustomizeParameters.setBackground(new Color(169, 169, 169));
+		btnCustomizeParameters.setToolTipText("Memory, Java version, log level and the other start options");
 		btnCustomizeParameters.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnCustomizeParameters.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mainPanel.add(btnCustomizeParameters, "cell 0 1 4 1,grow");
-		
+		controls.add(btnCustomizeParameters, "cell 0 0,grow,h 36!");
+
+		btnDependencyManager = new JButton("Open Dependency Manager");
+		btnDependencyManager.setToolTipText("Check and install what ScreepT needs (Java and libraries)");
+		btnDependencyManager.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		controls.add(btnDependencyManager, "cell 1 0,grow,h 36!");
+
 		btnNetworkConfig = new JButton("");
-		btnNetworkConfig.setForeground(Color.BLACK);
+		btnNetworkConfig.setToolTipText("Network and proxy settings");
 		btnNetworkConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNetworkConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
-		btnNetworkConfig.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		btnNetworkConfig.setBorder(null);
-		btnNetworkConfig.setBackground(new Color(169, 169, 169));
-		mainPanel.add(btnNetworkConfig, "cell 0 2,grow");
-		
-		btnDependencyManager = new JButton("Open Dependency Manager");
-		btnDependencyManager.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnDependencyManager.setForeground(Color.BLACK);
-		btnDependencyManager.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		btnDependencyManager.setBorder(null);
-		btnDependencyManager.setBackground(new Color(169, 169, 169));
-		mainPanel.add(btnDependencyManager, "cell 1 2 3 1,grow");
-		
+		controls.add(btnNetworkConfig, "cell 2 0,h 36!,w 48!");
+
+		btnStartScreept = new JButton("Start ScreepT");
+		btnStartScreept.setToolTipText("Start ScreepT with the current options");
+		btnStartScreept.setFont(btnStartScreept.getFont().deriveFont(Font.BOLD, 24f));
+		btnStartScreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		controls.add(btnStartScreept, "cell 0 1 3 1,grow,h 66!");
+
 		lblAmDesign = new JLabel("A.M. Design & Development");
-		lblAmDesign.setForeground(Color.LIGHT_GRAY);
-		lblAmDesign.setFont(new Font("SansSerif", Font.PLAIN, 10));
-		mainPanel.add(lblAmDesign, "cell 0 3 3 1,alignx left,aligny bottom");
-		
-		lblScreeptLauncher = new JLabel("ScreepT Launcher");
-		lblScreeptLauncher.setFont(new Font("SansSerif", Font.PLAIN, 12));
-		lblScreeptLauncher.setForeground(new Color(240, 248, 255));
-		mainPanel.add(lblScreeptLauncher, "cell 3 3 2 1,alignx center,aligny bottom");
-		
-		label = new JLabel("ScreepT Launcher - V1.0");
-		label.setForeground(Color.LIGHT_GRAY);
-		label.setFont(new Font("SansSerif", Font.PLAIN, 10));
-		mainPanel.add(label, "cell 5 3 2 1,alignx right,aligny bottom");
-	
+		lblAmDesign.setForeground(new Color(0x6C8F8B));
+		lblAmDesign.setFont(lblAmDesign.getFont().deriveFont(11f));
+		controls.add(lblAmDesign, "cell 0 2 3 1,alignx left,aligny bottom");
+		mainPanel.add(controls, "cell 0 2,growx");
+
 		addHandlers();
 		
 		SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
@@ -231,7 +241,7 @@ public class LauncherMainPanel extends JFrame{
 			logger.error("Exception happened!", e1);
 		}
 		// initialize default UI
-		GUIStyelSettings.setStyle(GUIStyelSettings.NimbusLookAndFeel, 1);
+		LauncherTheme.apply();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				GUIStyelSettings.setFocusDefaultBtn();
@@ -239,4 +249,15 @@ public class LauncherMainPanel extends JFrame{
 		});
 	}
 	
+	private boolean themed = false;
+
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && !themed) {
+			themed = true;
+			// colors are already defined by this panel: only the main action gets the accent
+			LauncherTheme.primary(btnStartScreept);
+		}
+		super.setVisible(visible);
+	}
 }
