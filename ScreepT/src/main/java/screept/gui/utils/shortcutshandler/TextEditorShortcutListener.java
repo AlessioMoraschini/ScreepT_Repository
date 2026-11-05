@@ -77,6 +77,11 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	@Override
 	  public boolean dispatchKeyEvent(final KeyEvent e) {
 
+		// a terminal with the focus owns the keyboard: no shortcut of the other panels
+		if(ShortcutKeys.isFocusOwnerCapturingKeys()) {
+			return false;
+		}
+
 		if(GenericFileChooserDialog.blockEventsModal.get()) {
 			return false;
 		}

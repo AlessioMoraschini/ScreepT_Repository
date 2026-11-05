@@ -6,6 +6,20 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.75 - 2026-11-05
+> Search and scroll in the interactive terminal
+
+### New
+- Interactive terminal: search bar docked above the screen (magnifier button, Ctrl+Shift+H, Cmd+Shift+H on macOS). Highlights every match in the whole history, with match case, regular expression and whole word options, match counter, previous/next buttons (Enter / Shift+Enter) and Esc to close. It also works after the process has ended.
+- Interactive terminal: Shift+PageUp / PageDown / Home / End scroll the history from the keyboard. History grown from 5,000 to 10,000 lines.
+
+### Improved
+- Interactive terminal: with the focus in it, the terminal owns the keyboard: the shortcuts of the menus and of the other panels (including the global ones, Esc to leave full screen, easter eggs) no longer fire while you type in it. Its own shortcuts are not used by any other function.
+- Interactive terminal: while you read the history the view stays on the same lines when new output arrives (it used to slide), and typing brings you back to the bottom. Resizing the window or opening the search bar gives back the lines of the history that fit again.
+- Full screen programs in the terminal (editors, pagers, TUI tools) receive the mouse wheel as they ask for it (mouse reports) or as arrow keys, instead of ignoring it.
+- User guide: new look (dark and light theme, reading progress, back to top), collapsible chapters, a side index that appears while you scroll and fades after 4 seconds of rest, and a search that filters the sections (match case, whole word, regular expression, all words) with highlighted matches and previous/next that wraps around. The guide no longer depends on the application folder, so it also works from the website.
+
+
 ## 0.9.74 - 2026-11-04
 > Cleaner Plugin Manager
 
