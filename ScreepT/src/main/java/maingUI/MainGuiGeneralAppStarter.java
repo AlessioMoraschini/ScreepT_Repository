@@ -43,9 +43,11 @@ import plugin.api.AbstractPluginApplicationApi;
 import plugin.api.AbstractPluginApplicationApi.PluginType;
 import plugin.external.arch.IPlugin;
 import resources.GeneralConfig;
+import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
+import screept.general.utils.DarkThemeMigration;
 import screept.general.utils.SafetyScreepTShortcutsListener;
 import screept.general.utils.ScreepTLoggerUtils;
 import screept.gui.frames.releasenotes.WhatsNewDialog;
@@ -60,6 +62,7 @@ import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.LightLicenseViewer;
+import various.common.light.gui.WindowIcons;
 import various.common.light.gui.LightLicenseViewer.UserLicenseChoice;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.network.proxy.ProxySettingsGUI;
@@ -142,6 +145,8 @@ public class MainGuiGeneralAppStarter {
 
 				currentConfiguration = new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 				currentConfiguration.readConfigIniFile();
+				// the first update to a version with the dark theme as default moves the user to it, once (see DarkThemeMigration)
+				DarkThemeMigration.applyOnce(currentConfiguration);
 				System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
 
 			} catch (IOException e) {
@@ -180,10 +185,22 @@ public class MainGuiGeneralAppStarter {
 	}
 
 
+	/** Every window gets an icon: its own when set, else the one registered here for its class, else the icon of ScreepT */
+	private static void installWindowIcons() {
+		WindowIcons.install(() -> ImagesPathConfigurator.MAIN_APP_ICON);
+		WindowIcons.register("RestartLauncherDialog", () -> IconsPathConfigurator.ICON_RESTART);
+		WindowIcons.register("WhatsNewDialog", () -> IconsPathConfigurator.ICON_UPDATES);
+		WindowIcons.register("SearchFrame", () -> IconsPathConfigurator.ICON_SEARCH);
+		WindowIcons.register("LogSearchFrame", () -> IconsPathConfigurator.ICON_FILE_SEARCH);
+		WindowIcons.register("UiScaleCustomDialog", () -> GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/graphics.png");
+		WindowIcons.register("JFontChooserExtended", () -> IconsPathConfigurator.ICON_TEXT_COLOR);
+	}
+
 	public static void main(String[] args) {
 		System.setProperty("sun.java2d.dpiaware", "true");
 		long startTime = System.currentTimeMillis();
 		logger.setLoggerAvailable(false);
+		installWindowIcons();
 
 		logger.info("Starting MainGuiGeneralAppStarter.main(" + Arrays.deepToString(args) + ")");
 		SCREEPT_BENCHMARKER.registerEvent("Main function entered");

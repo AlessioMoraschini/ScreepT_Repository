@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * One search over the file, streamed from the disk on a daemon thread: only the current line is in memory.
@@ -30,7 +28,7 @@ final class LogSearcher {
 	private static final int MAX_MATCHED_BYTES = 1 << 20;
 
 	final IntList results = new IntList();
-	final Pattern pattern;
+	final LogQuery query;
 
 	private final File file;
 	private final long length;
@@ -39,12 +37,10 @@ final class LogSearcher {
 	private volatile long bytesRead;
 	private volatile int linesScanned;
 
-	/** @throws java.util.regex.PatternSyntaxException when {@code regex} is true and the text is not a valid expression */
-	LogSearcher(File file, String text, boolean regex, boolean matchCase) {
+	LogSearcher(File file, LogQuery query) {
 		this.file = file;
 		this.length = file.length();
-		int flags = matchCase ? 0 : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
-		this.pattern = Pattern.compile(regex ? text : Pattern.quote(text), flags);
+		this.query = query;
 	}
 
 	void start() {
@@ -80,13 +76,12 @@ final class LogSearcher {
 			int lineLength = 0;
 			boolean pending = false;
 			int lineNumber = 0;
-			Matcher matcher = pattern.matcher("");
 			int read;
 			while (!cancelled && (read = in.read(buffer)) > 0) {
 				for (int i = 0; i < read; i++) {
 					byte current = buffer[i];
 					if (current == '\n') {
-						scan(matcher, line, lineLength, lineNumber++);
+						scan(line, lineLength, lineNumber++);
 						lineLength = 0;
 						pending = false;
 						continue;
@@ -103,7 +98,7 @@ final class LogSearcher {
 				linesScanned = lineNumber;
 			}
 			if (!cancelled && pending) {
-				scan(matcher, line, lineLength, lineNumber++);
+				scan(line, lineLength, lineNumber++);
 			}
 			linesScanned = lineNumber;
 		} catch (IOException e) {
@@ -113,10 +108,9 @@ final class LogSearcher {
 		}
 	}
 
-	private void scan(Matcher matcher, byte[] line, int length, int lineNumber) {
+	private void scan(byte[] line, int length, int lineNumber) {
 		int end = length > 0 && line[length - 1] == '\r' ? length - 1 : length;
-		matcher.reset(new String(line, 0, end, StandardCharsets.UTF_8));
-		if (matcher.find()) {
+		if (query.test(new String(line, 0, end, StandardCharsets.UTF_8))) {
 			results.add(lineNumber);
 		}
 	}

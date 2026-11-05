@@ -34,6 +34,10 @@ final class IntList {
 		return size;
 	}
 
+	synchronized void clear() {
+		size = 0;
+	}
+
 	/** Lines are appended in ascending order, so the list is sorted */
 	synchronized boolean contains(int value) {
 		return Arrays.binarySearch(data, 0, size, value) >= 0;

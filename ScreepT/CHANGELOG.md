@@ -7,16 +7,22 @@
 -->
 
 ## 0.9.75 - 2026-11-05
-> Search and scroll in the interactive terminal
+> New LogSearch, search and scroll in the interactive terminal
 
 ### New
+- LogSearch redesigned in the ScreepT Dark style, quicker to use: it searches while you type, with a log-oriented syntax (all the words in any order, "exact phrase", -excluded word) besides regular expression, match case and whole word. Recognises the level of every line (ERROR, WARN, INFO, DEBUG, TRACE; a stack trace follows its entry): coloured stripe in the gutter, errors and warnings on the map beside the scroll bar, level chips with the line counts that filter the matches, F8 / Shift+F8 jump between errors. The matches list shows the context lines you choose (0 to 8) and can be exported to a file. Bookmarks (Ctrl+B, gutter click, F2 / Shift+F2), go to line (Ctrl+G) and zoom (Ctrl +/-/0).
 - Interactive terminal: search bar docked above the screen (magnifier button, Ctrl+Shift+H, Cmd+Shift+H on macOS). Highlights every match in the whole history, with match case, regular expression and whole word options, match counter, previous/next buttons (Enter / Shift+Enter) and Esc to close. It also works after the process has ended.
 - Interactive terminal: Shift+PageUp / PageDown / Home / End scroll the history from the keyboard. History grown from 5,000 to 10,000 lines.
 
 ### Improved
+- ScreepT Dark is the default look and feel. The first time you update to this version your look and feel is switched to ScreepT Dark; from the following updates on, whatever you choose in Graphics preferences (Nimbus, light...) is kept and never changed again.
+- LogSearch: with the ScreepT Dark theme the window uses its own soft dark palette (light gray text in the search field, a medium gray list of matches that stands out from the file view, the same scroll bars as the rest of the application) and follows the theme even when it is opened before the theme is applied; the other themes are unchanged. Header, toolbar and status bar stand out from the file view, and the map beside the scroll bar shows how dense the matches are.
+- Crypter: a warning shown when the module is opened says that it is in beta (experimental, not extensively tested), with a "Don't show this again" option. The user guide says the same, with a notice at the top, and the statements about the security of the Crypter are now plain and objective.
+- Every window now has an icon: the ones that had none get an icon that fits (LogSearch, restart, what's new, search, scale, font chooser) or the one of ScreepT, in the application and in the launcher.
 - Interactive terminal: with the focus in it, the terminal owns the keyboard: the shortcuts of the menus and of the other panels (including the global ones, Esc to leave full screen, easter eggs) no longer fire while you type in it. Its own shortcuts are not used by any other function.
 - Interactive terminal: while you read the history the view stays on the same lines when new output arrives (it used to slide), and typing brings you back to the bottom. Resizing the window or opening the search bar gives back the lines of the history that fit again.
 - Full screen programs in the terminal (editors, pagers, TUI tools) receive the mouse wheel as they ask for it (mouse reports) or as arrow keys, instead of ignoring it.
+- User guide: a "Why ScreepT?" section at the top sums up what ScreepT does best (huge files, integrated terminal, editor, portability, everyday tools, keyboard and dark mode) for who does not know it yet.
 - User guide: new look (dark and light theme, reading progress, back to top), collapsible chapters, a side index that appears while you scroll and fades after 4 seconds of rest, and a search that filters the sections (match case, whole word, regular expression, all words) with highlighted matches and previous/next that wraps around. The guide no longer depends on the application folder, so it also works from the website.
 
 

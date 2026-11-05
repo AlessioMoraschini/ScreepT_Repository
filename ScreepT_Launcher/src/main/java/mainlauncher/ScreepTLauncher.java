@@ -31,6 +31,7 @@ import org.apache.log4j.PropertyConfigurator;
 import os.commons.om.OSinfo;
 import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
+import various.common.light.gui.WindowIcons;
 import resources.ImagesPathConfigurator;
 import screept.launcher.gui.panels.CustomizeParametersPanel;
 import screept.launcher.gui.panels.DependenciesManagerPanel;
@@ -141,6 +142,7 @@ public class ScreepTLauncher {
 		}
 
 		logger.setLoggerAvailable(false);
+		WindowIcons.install(() -> ImagesPathConfigurator.MAIN_APP_ICON);
 		ARGS = args;
 		logger.info("ARGS:" + StringWorker.strArray(ARGS));
 		argumentsFiles = getFileArrayFromStrings(args);

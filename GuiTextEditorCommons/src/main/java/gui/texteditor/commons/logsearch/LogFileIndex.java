@@ -34,6 +34,10 @@ final class LogFileIndex implements Closeable {
 	static final int MAX_DISPLAY_BYTES = 4000;
 	private static final int MAX_BLOCK_BYTES = 16 * 1024 * 1024;
 	private static final int CACHED_BLOCKS = 256;
+	/** Bytes of a line looked at to find its level */
+	private static final int HEAD = 160;
+	/** Longest line returned in full (export) */
+	private static final int MAX_FULL_BYTES = 8 * 1024 * 1024;
 
 	private final File file;
 	private final RandomAccessFile reader;
@@ -44,6 +48,9 @@ final class LogFileIndex implements Closeable {
 	private int blockCount;
 
 	private volatile int lineCount;
+	private volatile byte[] levels = new byte[1 << 16];
+	private final int[] levelCounts = new int[LogLevel.COUNT];
+	private volatile boolean anyLevel;
 	private volatile long indexedBytes;
 	private volatile boolean complete;
 	private volatile boolean closed;
@@ -77,6 +84,26 @@ final class LogFileIndex implements Closeable {
 		return complete;
 	}
 
+	/** Stored level of the line (see {@link LogLevel}), {@link LogLevel#NONE} when unknown */
+	byte levelByte(int line) {
+		byte[] current = levels;
+		return line >= 0 && line < current.length && line < lineCount ? current[line] : (byte) LogLevel.NONE;
+	}
+
+	int level(int line) {
+		return LogLevel.level(levelByte(line));
+	}
+
+	/** Lines found so far for a level (the inherited ones of a stack trace are not counted) */
+	int levelCount(int level) {
+		return levelCounts[level];
+	}
+
+	/** True when at least one line with a level word was found */
+	boolean hasLevels() {
+		return anyLevel;
+	}
+
 	/** Fraction of the file already indexed, 0..1 */
 	double progress() {
 		return length == 0 ? 1d : Math.min(1d, indexedBytes / (double) length);
@@ -92,6 +119,9 @@ final class LogFileIndex implements Closeable {
 	private void buildIndex() {
 		try (InputStream in = new FileInputStream(file)) {
 			byte[] buffer = new byte[1 << 20];
+			byte[] head = new byte[HEAD];
+			int headLength = 0;
+			int previousLevel = LogLevel.NONE;
 			long position = 0;
 			long lines = 0;
 			boolean lineStart = true;
@@ -104,14 +134,22 @@ final class LogFileIndex implements Closeable {
 						}
 						lines++;
 						lineStart = false;
+						headLength = 0;
 					}
-					if (buffer[i] == '\n') {
+					byte current = buffer[i];
+					if (current == '\n') {
 						lineStart = true;
+						previousLevel = finishLine(head, headLength, (int) (lines - 1), previousLevel);
+					} else if (headLength < HEAD) {
+						head[headLength++] = current;
 					}
 				}
 				position += read;
 				indexedBytes = position;
 				lineCount = (int) Math.min(lines, Integer.MAX_VALUE);
+			}
+			if (!lineStart && lines > 0) {
+				finishLine(head, headLength, (int) (lines - 1), previousLevel);
 			}
 		} catch (IOException e) {
 			// a file that cannot be read further just stays as indexed so far
@@ -119,6 +157,28 @@ final class LogFileIndex implements Closeable {
 			complete = true;
 			indexedBytes = length;
 		}
+	}
+
+	/** Stores the level of the line that just ended; returns the level that its continuation lines will inherit */
+	private int finishLine(byte[] head, int length, int line, int previousLevel) {
+		int level = LogLevel.detect(head, length);
+		byte stored;
+		if (level >= 0) {
+			stored = (byte) level;
+			levelCounts[level]++;
+			anyLevel = true;
+		} else if (previousLevel != LogLevel.NONE && LogLevel.looksLikeContinuation(head, length)) {
+			stored = (byte) (previousLevel | LogLevel.CONTINUATION);
+		} else {
+			stored = (byte) LogLevel.NONE;
+		}
+		byte[] current = levels;
+		if (line >= current.length) {
+			current = Arrays.copyOf(current, Math.max(current.length * 2, line + 1));
+			levels = current;
+		}
+		current[line] = stored;
+		return LogLevel.level(stored);
 	}
 
 	private void addBlockOffset(long offset) {
@@ -138,6 +198,48 @@ final class LogFileIndex implements Closeable {
 		String[] lines = block(number / BLOCK);
 		int inBlock = number % BLOCK;
 		return inBlock < lines.length ? lines[inBlock] : "";
+	}
+
+	/** The line as it is in the file (up to 8 MB), for export; the displayed text of a very long line is cut */
+	String lineFull(int number) {
+		if (number < 0 || number >= lineCount) {
+			return "";
+		}
+		long start;
+		long end;
+		int block = number / BLOCK;
+		synchronized (offsetsLock) {
+			if (block >= blockCount) {
+				return "";
+			}
+			start = blockOffsets[block];
+			end = block + 1 >= blockCount ? Math.max(start, complete ? length : indexedBytes) : blockOffsets[block + 1];
+		}
+		try {
+			byte[] data = new byte[(int) Math.min(end - start, MAX_BLOCK_BYTES)];
+			synchronized (reader) {
+				reader.seek(start);
+				reader.readFully(data);
+			}
+			int wanted = number % BLOCK;
+			int from = 0;
+			for (int n = 0; n < wanted && from < data.length; n++) {
+				while (from < data.length && data[from] != '\n') {
+					from++;
+				}
+				from++;
+			}
+			int to = from;
+			while (to < data.length && data[to] != '\n') {
+				to++;
+			}
+			if (to > from && data[to - 1] == '\r') {
+				to--;
+			}
+			return from >= data.length ? "" : new String(data, from, Math.min(to - from, MAX_FULL_BYTES), StandardCharsets.UTF_8);
+		} catch (IOException | RuntimeException e) {
+			return "";
+		}
 	}
 
 	private String[] block(int block) {

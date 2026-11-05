@@ -753,7 +753,7 @@
 									<filtering>false</filtering>
 									<directory>./UTILS_BUILD</directory>
 									<includes>
-										<include>FTP.properties</include>
+										<!-- FTP.properties is never copied: it holds the real credentials, kept in ScreepT_Build -->
 										<include>NO_UPLOAD_hash.bat</include>
 										<include>NO_UPLOAD_hash_zip.bat</include>
 										<include>NO_UPLOAD_hash_zip_uploadFTP.bat</include>

@@ -44,6 +44,7 @@ import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import screept.gui.panels.ConfigurationManagerPanel;
+import screept.gui.utils.CrypterBetaNotice;
 import screept.gui.panels.CrypterPanel;
 import screept.gui.panels.TextEditor;
 import updater.module.exception.UpdatesUnavailableException;
@@ -507,6 +508,11 @@ public class MainGuiUtils {
 				MainGUI.crypterPanel.initGuiFromConfig();
 
 				resetMainAppCursor();
+
+				// beta warning, unless the user asked not to see it again (not on a restart of the panel)
+				if (!forceStart) {
+					CrypterBetaNotice.showIfNeeded(mainAppReference.getMainFrame(), MainGUI.currentConfiguration);
+				}
 			}
 		});
 	}

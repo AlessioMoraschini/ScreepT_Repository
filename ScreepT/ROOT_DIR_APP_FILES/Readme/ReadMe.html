@@ -27,7 +27,7 @@
 			<br>
 		</div>
 		
-		<div id="subTitleBlock"class="centerColoredSub2">A smart crypter... and much more!
+		<div id="subTitleBlock"class="centerColoredSub2">A portable workbench for code, huge logs and everyday tools
 			<div id="subTitle" class="centerColoredSub1">
 				<span>By A.M. Design and Development - 2019 - Version ${project.version}</span>
 			</div>
@@ -40,13 +40,49 @@
 			<!--  DESCTIPTION  -->
 			<div id="desSrcYpTion" align="center"><hr>
 				<p>Welcome to <b><span class="subIndex2">ScreepT</span></b> tutorial! Here you can find all informations on how to use it properly.</p>
-				<p>ScreepT was born as a crypter...	but it became a multi-platform tool written for fun, and to help me during my own programming tasks. 
+				<p>ScreepT started as an experimental crypter and grew into a portable workbench, written for fun and to help me in my own programming work. 
 					<br>
 					If you find something you'll like to improve, or you want to signal a bug you can write to <i>${developer.bugs.mail}</i>. Enjoy!
 				</p>
 				<p><b>NB: </b>you should take care of buttons tooltips and keyboard shortcuts, they can be <u>very helpful</u>!</p>
 				<hr>
 			</div>
+
+			<div id="whyScreept">
+			<h2 class="whyTitle">Why ScreepT?</h2>
+			<p class="whyLead">Made for people who read logs, edit code and scripts, and like to have everything in one portable window.</p>
+			<div class="whyCards">
+				<div class="whyCard whyA">
+					<h3>Open huge files, instantly</h3>
+					<p>LogSearch opens multi-gigabyte logs read-only, without loading them in memory. Search as you type, spot ERROR and WARN lines at a glance, keep the context, bookmark and export the matches. A 150 MB log is indexed in about a second.</p>
+				</div>
+				<div class="whyCard whyB">
+					<h3>A terminal inside your editor</h3>
+					<p>Run a real shell next to your code, with colors, full-screen programs, a scrollable history and search in the output. Send the selected lines to it with one key.</p>
+				</div>
+				<div class="whyCard whyC">
+					<h3>An editor that stays out of the way</h3>
+					<p>Syntax highlighting, themes, templates, file tree, rectangular selection, text transformations and formatters. Compare files and preview Markdown with the plugins.</p>
+				</div>
+				<div class="whyCard whyD">
+					<h3>Portable and private</h3>
+					<p>No installer, no administrator rights: unpack and run. Your settings stay in its own folder, and if your PC has no Java it offers to download one for ScreepT only. Windows is the main platform; Linux and macOS are supported but less tested.</p>
+				</div>
+				<div class="whyCard whyE">
+					<h3>Everyday tools in one window</h3>
+					<p>Search files by name or content, hashes, color picker, image conversion, text from images and PDFs (OCR), clipboard history, system and network info, calculators.</p>
+				</div>
+				<div class="whyCard whyF">
+					<h3>Made for keyboard and dark mode</h3>
+					<p>ScreepT Dark by default, shortcuts for almost everything, tooltips on every button, an offline assistant that answers from this guide, and built-in updates.</p>
+				</div>
+			</div>
+			<p class="whyNote">Also inside: the <b>Crypter</b>, an experimental file encryption module. It is in beta: see the notice below.</p>
+		</div>
+		<div class="betaNotice">
+					<b>Crypter module: beta version.</b> The Crypter (CreepT) is <b>experimental and not yet extensively tested</b>. Its algorithms (AES-128 combined with the custom Steg-Crypt, plus the hash and shuffle options) have not been reviewed by independent experts. Do not rely on it as the only protection of important data, and always keep an independent copy of your original files and of your keys: a bug or a lost key can make crypted files impossible to recover.
+					<br>The rest of ScreepT is also under active development. Over the coming weeks and months updates will improve both the Crypter and its integration in the software, and will add new features.
+				</div>
 	
 			<br>
 			
@@ -431,10 +467,11 @@ $link.Save()</code></pre>
 				<p><ul>
 				
 					<p>
-						This is the core function of this software, and implements a multi crypter/decrypter for files and folders, with key generators and a custom key dictionary manager.
-						<br>In this section you can find all the stuff you need to encrypt and decrypt a copy of your files, using different algorithms combinations.
+						This module encrypts and decrypts copies of your files and folders, with key generators and a custom key dictionary manager.
 						<br><br>
-						CreepT uses AES-128 bit and STEG_CRYPT algorithm, that can be combined togheter in order to encrypt/decrypt a copy of your data, with different options.
+						<span class="highlightBoldedGrey">Beta:</span> the Crypter is experimental and not yet extensively tested (see the notice at the top of this guide). Keep an independent copy of your originals and of your keys.
+						<br><br>
+						CreepT uses AES-128 and an experimental algorithm called STEG_CRYPT, which can be combined in different modes and with different options.
 						You can find information about how it works in the CreepT section below :)
 					</p>
 					<span class="highlightBolded">IMPORTANT: </span>your source files will NOT be deleted or modified. Instead, a unique named folder will be created in the destination folder you choose, and result files will be created in this folder.<br><br>
@@ -460,7 +497,7 @@ $link.Save()</code></pre>
 					<p>
 						<ul>
 							<li><span class="highlightBolded">AES_ONLY</span>
-							This mode will use only the AES encryption algorithm, given a text key that you have to write in the password box on top panel. For top security, you should use a 16 characters-long password. (look at the password field color, it gives you a feedback about your password strength).<br>
+							This mode will use only the AES encryption algorithm, given a text key that you have to write in the password box on top panel. Use a long, random password (at least 16 characters). (look at the password field color, it gives you a feedback about your password strength).<br>
 							<span class="highlightBoldedGrey">IMPORTANT: </span> you will need text password to decrypt the result crypted files, be sure to remember it!<br></li>
 							
 							<br><li><span class="highlightBolded">STEG_ONLY</span>
@@ -474,7 +511,7 @@ $link.Save()</code></pre>
 							
 							<br><li><span class="highlightBolded">COMPLETE</span>
 							This mode will combine AES and STEG mode this way: first the source bytes from each file will be coded with AES encryption standard, and then they will be encrypted with STEG mode explained before.
-							<br> When used with "Ultra secure" option, this grant a very secure encription by increasing exponentially the entrophy and the number of possible combination... making it very hard to decrypt them without both text key and Image key.<br>
+							<br> With the "Ultra secure" option an extra, experimental step is added: a key-dependent reordering of the bytes. This step has not been analysed by independent experts, so it must not be considered a proven security improvement.<br>
 							<span class="highlightBoldedGrey">IMPORTANT: </span> you will need both text password and key image to decrypt the result crypted files, be sure to keep them in a safe place (USD stick or HD, but remember: never keep the keys under the doormat!).
 							<br> The number of images created depends on the size of source file and size of image: <br>
 							 <ol><li>If you have to encode a large number of small files use a small image key, or the result will waste space.</li>
@@ -491,7 +528,7 @@ $link.Save()</code></pre>
 							<span class="highlightBoldedGrey">IMPORTANT: </span>if you cript files with this mode, you won't have to select this option also when decrypting result later. CreepT will keep memory of the selected option by saving an added bit into the result file.</p>
 							
 							<br><li><span class="highlightBolded">HASH KEY OPTION</span>
-							<p>When this checkbox is selected, you text password (the AES one) will be hashed using a secure algorithm (<u>pbkdf2 with hmac sha512</u>). This means that even if your encripted file will be broken, the attacker won't discover your actual password, but an irreversible String sequence calculated from it.<br>
+							<p>When this checkbox is selected, you text password (the AES one) will be hashed using a secure algorithm (<u>pbkdf2 with hmac sha512</u>). This way the file keeps a value derived from the password, not the password itself.<br>
 								<span class="highlightBoldedGrey">IMPORTANT: </span>if you cript files with this mode, you won't have to select this option also when decrypting result later. CreepT will keep memory of the selected option by saving an added bit into the result file.
 								<br><b>NB:</b> <i>this mode is't available when using STEG_ONLY mode</i>.
 							</p>
@@ -500,7 +537,7 @@ $link.Save()</code></pre>
 				
 					<li><image class="iconImgTitleSect" src="Images/icons/imageWriter.png"/> <span id="subSectTitleKeyGenImg" class="subMenuthirdLevel">KEY IMAGE GENERATOR</span></li>
 						<p>
-						In this panel you can generate your own random .png key image... But remember where you put it: CreepT is so secure that losing this key will result in the impossibility to recover your crypted files!
+						In this panel you can generate your own random .png key image... But remember where you put it: Losing this key makes your crypted files impossible to recover: keep a backup of it!
 						<br>I suggest to keep the keys in a pen drive or a portable HD, keeping it in a safe place (maybe right next to your heart :D).
 						<p>
 						You can choose different options when generating a key image, and you can use it to crypt files or folder with STEG or COMPLETE mode. When generating a key you can specify:
@@ -738,7 +775,10 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 				<p><ul>
 					<li class="highLineHeigthList">LogSearch opens a big text file (a log, a dump, a CSV of many gigabytes) read-only, without loading it in memory: only the visible portion is read from the disk, so it is fast and light whatever the size. The file is never modified. Open it from Various > LogSearch, with [Ctrl + Alt + L], by dropping a file on its window, or with the Open button.</li>
 					<li class="highLineHeigthList">When you open in the text editor a file bigger than the maximum size (or with too many lines), ScreepT proposes to open it with LogSearch instead. The maximum size is set in Graphics options > Text editor > "Max file size (MB)".</li>
-					<li class="highLineHeigthList">Search as plain text or as regular expression (Regex checkbox), distinguishing upper and lower case or not (Match case checkbox). Press Enter or Search; Stop interrupts a long search. [F3] and [Shift + F3] go to the next and previous match, [Ctrl + F] focuses the search box.</li>
+					<li class="highLineHeigthList">The search runs while you type. As plain text it understands a small language made for logs: <span class="highlightBolded">error timeout</span> (all the words, in any order), <span class="highlightBolded">"connection reset"</span> (an exact phrase) and <span class="highlightBolded">-healthcheck</span> (lines without that word). The Regex button makes the text a regular expression; Aa matches the case and "ab" whole words. [F3] / [Shift + F3] (or Enter) go to the next and previous match, [Ctrl + F] focuses the search box, Stop interrupts a long search.</li>
+					<li class="highLineHeigthList"><b>Levels.</b> ERROR, WARN, INFO, DEBUG and TRACE are recognised while the file is read: they colour the left stripe of each line and the map beside the scroll bar (red for errors, orange for warnings), and a stack trace follows the level of its entry. The level chips in the toolbar show how many lines each level has: click one to show or hide that level in the matches, right click to see only that one. [F8] / [Shift + F8] jump to the next and previous error.</li>
+					<li class="highLineHeigthList"><b>Matches.</b> The list under the file shows the matching lines, with the number of lines of context you choose (Context menu: none, 1, 2, 3, 5 or 8 lines around each match). The save button writes the matching lines to a new file.</li>
+					<li class="highLineHeigthList"><b>Bookmarks and navigation.</b> Click the gutter or press [Ctrl + B] to mark a line; [F2] / [Shift + F2] move between the bookmarks and the bookmark button lists them. [Ctrl + G] goes to a line, [Ctrl + +] / [Ctrl + -] / [Ctrl + 0] zoom the text. Click or drag on the map to move around the file.</li>
 					<li class="highLineHeigthList">Matching lines are tinted in the file view (the matching text is stronger), listed in the "Matching lines" view below (click one to jump to it) and marked with orange ticks on the map beside the scrollbar. Click or drag the map to move around the file.</li>
 					<li class="highLineHeigthList">Select lines and press [Ctrl + C] to copy them (up to 200000 lines at a time).</li>
 				</ul></p>
@@ -1004,8 +1044,8 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 				<p>
 					<span class="highlightBoldedGrey">ScreepT is a free software</span> created with passion during my free time and my busy nights :)
 					Nice to meet you, I'm Alessio Moraschini, and I am the creator of ScreepT!<br><br>
-					The <span class="highlightBoldedGrey">CryptoSTEG</span> (the brand new core crypter-algorithm), is the result of many crazy nights passed coding strange ideas born during university period. I've to thank google search: without it shouldn't have been possible to find all necessary informations about many functions implemented in this software :)<br><br>
-					<span class="highlightBolded">ScreepT was created mainly with the aim to implement a new generation of crypters</span>, more secure than existing algorithms (it improves AES-128 combining it with my algorithm called "Steg-Crypt", providing also some pluggable options such as Hash and Shuffle mode). 
+					The <span class="highlightBoldedGrey">CryptoSTEG</span> (the experimental core algorithm of the Crypter), is the result of many crazy nights passed coding strange ideas born during university period. I've to thank google search: without it shouldn't have been possible to find all necessary informations about many functions implemented in this software :)<br><br>
+					<span class="highlightBolded">ScreepT started as an experiment: a crypter that combines AES-128 with my own algorithm, "Steg-Crypt"</span>, with optional hash and shuffle modes. It is a personal project and the Crypter is still in beta: the algorithm is not peer-reviewed and is not a replacement for established, audited tools. 
 					<br>
 					To create this software, I used different opensource public libraries: without them this software maybe could have not seen daylight.<br>
 					<br><u>I really want give some special thanks to:</u>

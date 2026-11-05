@@ -1152,3 +1152,150 @@ body.light #guideNav .navTop{
 body.light #guideNav .navTop:hover{
 	color: #04403a;
 }
+
+/* ---------- beta notice ---------- */
+
+.betaNotice{
+	margin: 18px auto 6px auto;
+	padding: 14px 18px;
+	max-width: 780px;
+	text-align: left;
+	font-size: .95em;
+	line-height: 1.6;
+	color: #ffe9c2;
+	background: rgba(214, 140, 38, .14);
+	border: 1px solid rgba(214, 140, 38, .55);
+	border-left: 5px solid #d68c26;
+	border-radius: 10px;
+}
+
+.betaNotice b{
+	color: #ffd48a;
+}
+
+body.light .betaNotice{
+	color: #4a3000;
+	background: #fff3dc;
+	border-color: #e2b46a;
+	border-left-color: #c47a0e;
+}
+
+body.light .betaNotice b{
+	color: #7a4a00;
+}
+
+/* ---------- "Why ScreepT" ---------- */
+
+#whyScreept{
+	margin: 8px 0 26px 0;
+	text-align: center;
+}
+
+.whyTitle{
+	font-size: 26px;
+	color: #f2f6fa;
+	margin: 6px 0 4px 0;
+}
+
+.whyLead{
+	max-width: 640px;
+	margin: 0 auto 20px auto;
+	color: #aab6c2;
+	font-size: 1.02em;
+}
+
+.whyCards{
+	text-align: left;
+	font-size: 0;
+}
+
+.whyCard{
+	display: inline-block;
+	vertical-align: top;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	width: 31.5%;
+	margin: 0 .8% 14px .8%;
+	padding: 16px 18px 14px 18px;
+	font-size: 16px;
+	background: #181e25;
+	border: 1px solid #25303a;
+	border-top: 3px solid #2ec4b6;
+	border-radius: 12px;
+	-webkit-transition: border-color .2s, background .2s;
+	transition: border-color .2s, background .2s;
+}
+
+.whyCard:hover{
+	background: #1b232b;
+	border-color: #34414d;
+}
+
+.whyCard h3{
+	margin: 0 0 6px 0;
+	font-size: 1.02em;
+	line-height: 1.3;
+	color: #f2f6fa;
+}
+
+.whyCard p{
+	margin: 0;
+	font-size: .93em;
+	line-height: 1.55;
+	color: #b4c0cc;
+}
+
+.whyA{ border-top-color: #2ec4b6; }
+.whyB{ border-top-color: #5aa9ff; }
+.whyC{ border-top-color: #7be495; }
+.whyD{ border-top-color: #f2c14e; }
+.whyE{ border-top-color: #ff8aa7; }
+.whyF{ border-top-color: #b49cff; }
+
+.whyNote{
+	margin: 4px 0 0 0;
+	font-size: .92em;
+	color: #94a3b1;
+}
+
+body.light .whyTitle{
+	color: #14202b;
+}
+body.light .whyLead{
+	color: #3f4d5b;
+}
+body.light .whyCard{
+	background: #ffffff;
+	border-color: #dbe1ea;
+}
+body.light .whyCard:hover{
+	background: #f8fafc;
+	border-color: #c9d2de;
+}
+body.light .whyCard h3{
+	color: #14202b;
+}
+body.light .whyCard p{
+	color: #3b4856;
+}
+body.light .whyA{ border-top-color: #14a89a; }
+body.light .whyB{ border-top-color: #2f7fd6; }
+body.light .whyC{ border-top-color: #2f9e55; }
+body.light .whyD{ border-top-color: #d99a1d; }
+body.light .whyE{ border-top-color: #d6467a; }
+body.light .whyF{ border-top-color: #7a5fd6; }
+body.light .whyNote{
+	color: #4d5b69;
+}
+
+@media (max-width: 960px){
+	.whyCard{
+		width: 48.4%;
+	}
+}
+
+@media (max-width: 620px){
+	.whyCard{
+		width: 98.4%;
+	}
+}
