@@ -129,7 +129,6 @@ public class MainGuiParent {
 		public BrowserOpenerMenu menuBrowserOpenerActions;
 
 	JMenu mnVarious;
-		JMenu mnConversionsAndOther;
 	JMenu mnFilesAndDirectories;
 	JMenu mnPlugins;
 		CustomJmenuItem mntmLookForPlugins;
@@ -182,7 +181,6 @@ public class MainGuiParent {
 	CustomJmenuItem mntmFileContentSearch;
 	CustomJmenuItem mntmLogSearch;
 	CustomJmenuItem mntmImageViewer;
-	CustomJmenuItem mntmImageConverter;
 	CustomJmenuItem mntmTouppercaseDirectory;
 	CustomJmenuItem mntmDeleteDirectoryContentByExtension;
 	CustomJmenuItem mntmDeleteDirectoryAllContentRecursive;
@@ -236,7 +234,6 @@ public class MainGuiParent {
 			});
 
 		mnVarious = new JMenu("Various");
-			mnConversionsAndOther = new JMenu("Conversions and Media");
 			mnFilesAndDirectories = new JMenu("Files And Directories");
 		mnPlugins = new JMenu("Plugins");
 		mnHelp = new JMenu("Help");
@@ -423,10 +420,7 @@ public class MainGuiParent {
 			mnVarious.add(mntmShellStandalone);
 			mnVarious.add(mntmFileContentSearch);
 			mnVarious.add(mntmLogSearch);
-			mnVarious.add(mnConversionsAndOther);
-				// SUB-MENU
-				mnConversionsAndOther.add(mntmImageViewer);
-				mnConversionsAndOther.add(mntmImageConverter);
+			mnVarious.add(mntmImageViewer);
 				mnVarious.add(mnFilesAndDirectories);
 				// SUB-MENU
 				mnFilesAndDirectories.add(mntmTouppercaseDirectory);
@@ -543,7 +537,6 @@ public class MainGuiParent {
 
 		// SUBDIRECTORIES
 		mnFilesAndDirectories.setFont(subMenuFont);
-		mnConversionsAndOther.setFont(subMenuFont);
 
 		// FILE SECTION
 		mntmInspectCurrentConfiguration.setFont(menuItemFont);
@@ -593,7 +586,6 @@ public class MainGuiParent {
 
 		// SUB -> CONVERSION UTILS SECTION
 		mntmImageViewer.setFont(menuItemFont);
-		mntmImageConverter.setFont(menuItemFont);
 
 		// SUB-> FILES AND DIRECTORIES SECTION
 		mntmTouppercaseDirectory.setFont(menuItemFont);
@@ -689,11 +681,9 @@ public class MainGuiParent {
 		mntmShellStandalone.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 		mntmFileContentSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
 		mntmLogSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
-		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
 		mnFilesAndDirectories.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
 
 		mntmImageViewer.setIcon(new ImageIcon(IconsPathConfigurator.F_ICON_IMAGE));
-		mntmImageConverter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER));
 
 		mntmTouppercaseDirectory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPPERCASE_FIRST));
 		mntmMakeDirsFromPath.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CREATE_FOLDER));
@@ -775,7 +765,6 @@ public class MainGuiParent {
 		mntmFileContentSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, ALT_MASK | MENU_MASK));
 		mntmLogSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_L, ALT_MASK | MENU_MASK));
 		mntmImageViewer.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_O, ALT_MASK | SHIFT_MASK));
-		mntmImageConverter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, ALT_MASK | SHIFT_MASK));
 
 			// Folder and files functions
 			mntmTouppercaseDirectory.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_0, ALT_MASK | SHIFT_MASK));
@@ -1300,9 +1289,6 @@ public class MainGuiParent {
 		return mntmImageViewer;
 	}
 
-	public JMenuItem getMntmImageConverter() {
-		return mntmImageConverter;
-	}
 
 	public CustomJmenuItem getMntmViewWebsite() {
 		return mntmViewWebsite;

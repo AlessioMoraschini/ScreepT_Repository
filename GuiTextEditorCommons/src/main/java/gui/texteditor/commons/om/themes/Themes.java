@@ -18,7 +18,8 @@ import java.util.Vector;
 
 import resources.GeneralConfig;
 
-public enum Themes {DARK(GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml", "dark.xml", "/org/fife/ui/rsyntaxtextarea/themes/dark.xml"),
+public enum Themes {SCREEPT_DARK(GeneralConfig.THEMES_FOLDER_DEFAULT + "screept-dark.xml", "screept-dark.xml", "/screept/bundled/screept-dark.xml"),
+					DARK(GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml", "dark.xml", "/org/fife/ui/rsyntaxtextarea/themes/dark.xml"),
 					DEFAULT(GeneralConfig.THEMES_FOLDER_DEFAULT + "default.xml", "default.xml", "/org/fife/ui/rsyntaxtextarea/themes/default.xml"),
 					DEFAULT_V2(GeneralConfig.THEMES_FOLDER_DEFAULT + "default-alt.xml", "default-alt.xml", "/org/fife/ui/rsyntaxtextarea/themes/default-alt.xml"),
 					ECLIPSE(GeneralConfig.THEMES_FOLDER_DEFAULT + "eclipse.xml", "eclipse.xml", "/org/fife/ui/rsyntaxtextarea/themes/eclipse.xml"),
@@ -90,8 +91,14 @@ public enum Themes {DARK(GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml", "dark
 	}
 	
 	public static ThemesWrapper getThemesWrapperFromName(String themeName, Vector<ThemesWrapper> wrappers) {
+		// exact name first: "dark.xml" must not be taken for "screept-dark.xml", which contains it
 		for(ThemesWrapper wrapper : wrappers) {
-			if(wrapper.name.equals(themeName) || wrapper.name.contains(themeName) || themeName.contains(wrapper.name)) {
+			if(wrapper.name.equals(themeName)) {
+				return wrapper;
+			}
+		}
+		for(ThemesWrapper wrapper : wrappers) {
+			if(wrapper.name.contains(themeName) || themeName.contains(wrapper.name)) {
 				return wrapper;
 			}
 		}

@@ -76,7 +76,6 @@ import screept.general.utils.OpenWithContextMenu;
 import screept.general.utils.WindowCreator;
 import screept.gui.frames.GeneralOptionsFrame;
 import screept.gui.frames.GraphicPreferencesFrame;
-import screept.gui.frames.ImageConverterFrame;
 import screept.gui.panels.ConfigurationManagerPanel;
 import screept.gui.panels.CrypterPanel;
 import screept.gui.panels.MatrixHomePanel;
@@ -1252,24 +1251,8 @@ public class MainGUI extends MainGuiParent {
 			}
 		});
 
-		// open in a new window - IMAGE CONVERTER
-		mntmImageConverter = new CustomJmenuItem(new AbstractAction("Image Converter") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				windowCreator.newImageConverterFrame();
-			}
-		});
-
-		ImageViewerFrame.imageConverterOpener = () -> {
-			ImageConverterFrame converter = windowCreator.newImageConverterFrame();
-			SwingUtilities.invokeLater(() -> {
-				converter.loadImage(ImageViewerFrame.getViewerInstanceList().get(0).imageFile);
-			});
-		};
-
-		// open in a new window - IMAGE CONVERTER
-		mntmImageViewer = new CustomJmenuItem(new AbstractAction("Image Viewer") {
+		// open Image Studio (viewer and converter in one tool)
+		mntmImageViewer = new CustomJmenuItem(new AbstractAction("Image Studio") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (ImageViewerFrame.history.isEmpty()) {

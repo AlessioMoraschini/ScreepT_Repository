@@ -54,7 +54,6 @@ import screept.gui.frames.AboutSectionFrame;
 import screept.gui.frames.ChangeLogFrame;
 import screept.gui.frames.GeneralOptionsFrame;
 import screept.gui.frames.GraphicPreferencesFrame;
-import screept.gui.frames.ImageConverterFrame;
 import screept.gui.frames.ImportExportWorkspcCryptFrame;
 import screept.gui.frames.KeyDictionaryFrame;
 import screept.gui.frames.KeyGenFrame;
@@ -310,17 +309,6 @@ public class WindowCreator {
 		GuiUtilsExtended.centerComponent(panelGeneralOptions);
 
 		return panelGeneralOptions;
-	}
-
-	public ImageConverterFrame newImageConverterFrame() {
-
-		ImageConverterFrame panelImgConv = ImageConverterFrame.getInstance(MainGUI.currentConfiguration);
-
-		commonGraphicInit(panelImgConv, "IMG Converter - ", true);
-
-		panelImgConv.setResizable(false);
-
-    	return panelImgConv;
 	}
 
 	public void newNetInfoFrame() {

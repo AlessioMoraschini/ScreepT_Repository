@@ -324,17 +324,10 @@ public class MainGuiShortcutsListener extends KeyListenerParent implements KeyEv
 
 				// MEDIA - CONVERTERS //
 				/**
-				 *  OPEN IMAGE-VIEWER : ALT+SHIFT+O
+				 *  OPEN IMAGE STUDIO : ALT+SHIFT+O
 				 */
 				else if (e.getKeyCode() == KeyEvent.VK_O && e.isAltDown() && !ShortcutKeys.isCtrlDown(e) && e.isShiftDown()) {
 					currentGui.getMntmImageViewer().doClick();
-				}
-
-				/**
-				 *  OPEN IMAGE-CONVERTER : ALT+SHIFT+I
-				 */
-				else if (e.getKeyCode() == 73 && e.isAltDown() && !ShortcutKeys.isCtrlDown(e) && e.isShiftDown()) {
-					currentGui.getMntmImageConverter().doClick();
 				}
 
 				// FILE & FOLDER ACTIONS

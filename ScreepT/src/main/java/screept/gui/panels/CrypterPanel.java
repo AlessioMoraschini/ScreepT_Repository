@@ -1839,8 +1839,8 @@ public class CrypterPanel extends ModulePanel {
 	}
 
 	public void showMessageImageNotSupported() {
-		if(dialogHelper.yesOrNo("Image type not supported! Do you want to open image converter tool to convert it?", "Image not Supported!")) {
-			mainApplication.getMntmImageConverter().doClick();
+		if(dialogHelper.yesOrNo("Image type not supported! Do you want to open Image Studio to convert it?", "Image not Supported!")) {
+			mainApplication.getMntmImageViewer().doClick();
 		}
 	}
 
