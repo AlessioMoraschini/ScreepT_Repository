@@ -78,8 +78,8 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final String TITLE_LAUNCH_AS_JAR = "Launch as .Jar:";
 	private static final String TITLE_LAUNCH_AS_CLASS = "Launch as .Class:";
 	
-	private static final int DEF_FIXED_HEIGHT = 255;
-	private static final int DEF_FIXED_WIDTH = 650;
+	private static final int DEF_FIXED_HEIGHT = 400;
+	private static final int DEF_FIXED_WIDTH = 780;
 	public static final Dimension DEF_DIMENSION = new Dimension(DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
 	
 	public static boolean active = false;
@@ -123,6 +123,9 @@ public class CustomizeParametersPanel extends JFrame{
 	private JLabel dynLblScaleGui;
 	private JLabel labelGuiScale;
 	private JComboBox<String> comboPrefJvm;
+	private ArrayList<String> jvmHomes = new ArrayList<String>();
+	private java.util.List<String> jvmLabels = new ArrayList<String>();
+	private javax.swing.JEditorPane jvmInfoPane;
 	private JButton btnDownloadJava;
 	private JLabel lblPreferredJvm;
 	private JLabel lblJvmInfo;
@@ -156,7 +159,7 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][20px:n][80px,grow]", "[grow][grow][grow][grow][][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][20px:n][80px,grow]", "[grow][grow][grow][150:150:,grow][][grow]"));
 		
 		lblMaxMemory = new JLabel("Max memory(MB):");
 		lblMaxMemory.setForeground(new Color(220, 220, 220));
@@ -267,7 +270,47 @@ public class CustomizeParametersPanel extends JFrame{
 		comboPrefJvm = new JComboBox<String>(JVMS.toArray(jvmArr));
 //		comboPrefJvm = new JComboBox<String>(); // Window builder bug workaround for test
 		comboPrefJvm.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(comboPrefJvm, "cell 3 3 5 1,growx");
+
+		// the list shows readable names ("jdk Oracle 21 OpenJDK", with a progressive number when repeated), the value stays the path
+		jvmHomes = new ArrayList<String>(JVMS);
+		jvmLabels = os.commons.utils.JvmInfo.uniqueLabels(jvmHomes);
+		comboPrefJvm.setRenderer(new javax.swing.DefaultListCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+				int position = jvmHomes.indexOf(value);
+				if (position >= 0) {
+					setText(jvmLabels.get(position));
+					setToolTipText((String) value);
+				}
+				return this;
+			}
+		});
+
+		// information about the selected Java, shown under the list
+		jvmInfoPane = new javax.swing.JEditorPane();
+		jvmInfoPane.setContentType("text/html");
+		jvmInfoPane.setEditable(false);
+		jvmInfoPane.setOpaque(false);
+		jvmInfoPane.addHyperlinkListener(new javax.swing.event.HyperlinkListener() {
+			@Override
+			public void hyperlinkUpdate(javax.swing.event.HyperlinkEvent e) {
+				if (e.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED && e.getURL() != null) {
+					try {
+						java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
+					} catch (Exception ex) {
+						logger.warn("Cannot open " + e.getURL(), ex);
+					}
+				}
+			}
+		});
+		javax.swing.JPanel jvmBox = new javax.swing.JPanel(new MigLayout("insets 0, wrap 1, gapy 4", "[grow,fill]", "[][grow,fill]"));
+		jvmBox.setOpaque(false);
+		jvmBox.add(comboPrefJvm, "growx");
+		jvmBox.add(jvmInfoPane, "grow");
+		getContentPane().add(jvmBox, "cell 3 3 5 1,grow");
 		
 		btnDownloadJava = new JButton("Get Java " + JreDownloader.FEATURE_VERSION);
 		btnDownloadJava.setToolTipText("<html>Downloads the latest Java " + JreDownloader.FEATURE_VERSION + " (Eclipse Temurin JRE, checksum verified)<br/>into the \"jre\" folder of this ScreepT installation.<br/>Nothing is installed system wide.</html>");
@@ -529,9 +572,54 @@ public class CustomizeParametersPanel extends JFrame{
 		}
 	}
 	
+	/** Information box about the selected Java: path, version, vendor, parameters the launcher will use, documentation */
+	private void refreshJvmInfo() {
+		Object selected = comboPrefJvm.getSelectedItem();
+		if (selected == null || jvmInfoPane == null) {
+			return;
+		}
+		String home = (String) selected;
+		os.commons.utils.JvmInfo info = os.commons.utils.JvmInfo.of(home);
+		int position = jvmHomes.indexOf(home);
+		String label = position >= 0 ? jvmLabels.get(position) : info.displayName();
+		boolean supported = ScreepTLauncher.jvmHelper != null
+				&& ScreepTLauncher.jvmHelper.checkSingleJavaVersionOK(JvmHelper.versionOfHome(home), IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, IniFileManager.MIN_JRE_VERSION);
+		IniFileManager ini = ScreepTLauncher.iniFileManager;
+		String params = ini == null ? "-" : (ini.JVM_MEMORY_OPTIONS + " " + ini.JVM_STACK_SIZE + " (UI scale " + ini.GUI_SCALE_ARG_VALUE + ")");
+		Color fg = javax.swing.UIManager.getColor("Label.foreground");
+		Color muted = javax.swing.UIManager.getColor("Label.disabledForeground");
+		String fgHex = String.format("#%06x", (fg == null ? new Color(220, 220, 220) : fg).getRGB() & 0xFFFFFF);
+		String mutedHex = String.format("#%06x", (muted == null ? Color.GRAY : muted).getRGB() & 0xFFFFFF);
+		StringBuilder html = new StringBuilder("<html><body style='font-family:SansSerif; font-size:11px; color:").append(fgHex).append(";'>");
+		html.append("<b>").append(escape(label)).append("</b> &nbsp;<span style='color:").append(supported ? "#3d9b5c" : "#d68c26").append(";'>")
+				.append(supported ? "compatible with ScreepT" : "outside the range supported by ScreepT (Java 8 to 21)").append("</span><br>");
+		html.append("<span style='color:").append(mutedHex).append(";'>Path</span> ").append(escape(home)).append("<br>");
+		html.append("<span style='color:").append(mutedHex).append(";'>Version</span> ").append(escape(info.version))
+				.append(" &nbsp; <span style='color:").append(mutedHex).append(";'>Vendor</span> ").append(escape(info.vendor))
+				.append(" &nbsp; <span style='color:").append(mutedHex).append(";'>Type</span> ").append(info.jdk ? "JDK (with compiler)" : "JRE (run only)")
+				.append(info.architecture.isEmpty() ? "" : " &nbsp; " + escape(info.architecture)).append("<br>");
+		html.append("<span style='color:").append(mutedHex).append(";'>Launch parameters</span> ").append(escape(params)).append("<br>");
+		if (!info.hasJavaExecutable) {
+			html.append("<span style='color:#c94842;'>No java executable found in this folder.</span><br>");
+		}
+		html.append("<span style='color:").append(mutedHex).append(";'>Documentation</span> <a href='").append(info.documentationUrl()).append("'>Java ")
+				.append(info.major > 0 ? info.major : "").append(" docs</a>");
+		if (info.vendorUrl() != null) {
+			html.append(" &nbsp;|&nbsp; <a href='").append(info.vendorUrl()).append("'>").append(escape(info.vendor)).append("</a>");
+		}
+		html.append("</body></html>");
+		jvmInfoPane.setText(html.toString());
+		jvmInfoPane.setCaretPosition(0);
+	}
+
+	private static String escape(String text) {
+		return text == null ? "" : text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+	}
+
 	private void updateJvmIcon() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				refreshJvmInfo();
 				String selectedVersion = (String)comboPrefJvm.getSelectedItem();
 				File selectedVersionFile = new File(selectedVersion);
 				JVM_WARN = !ScreepTLauncher.jvmHelper.checkSingleJavaVersionOK(JvmHelper.versionOfHome(selectedVersion), IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, IniFileManager.MIN_JRE_VERSION);

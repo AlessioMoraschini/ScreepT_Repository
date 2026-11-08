@@ -11,38 +11,55 @@
  */
 package screept.launcher.gui.utils;
 
-import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.geom.RoundRectangle2D;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.border.LineBorder;
+import javax.swing.Timer;
 
 import org.apache.log4j.Logger;
 
-import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
-import various.common.light.gui.GUIStyelSettings;
+import various.common.light.easteregg.cats.CatsPlayground;
 import various.common.light.utility.string.StringWorker;
 
+/**
+ * Loading panel of the launcher and of the application: the ScreepT image, Feo and Nano playing on the floor with a ball
+ * of yarn (the pixel-art cats of the easter egg, with elastic physics), the status text and a smooth animated progress
+ * bar. Everything is painted here and animated by one timer that stops when the window closes.
+ * The {@link #progressBar} stays as the model of the progress (value, indeterminate) for the callers.
+ */
 public class LauncherLoaderPanel extends JPanel{
 	private static final long serialVersionUID = 2754216601762407439L;
 
 	// mainGUI logger
 	static Logger logger = Logger.getLogger(LauncherLoaderPanel.class);
 
-	private JLayeredPane layeredPane;
-	private Image backgroundImage;
-	private JLabel lblText;
+	private static final Color TEAL = new Color(0x2D, 0xD4, 0xBF);
+	private static final Color CYAN = new Color(0x38, 0xBD, 0xF8);
+
+	private final Image backgroundImage;
+	/** Model of the progress: callers set its value and indeterminate flag; it is not shown as a component */
 	public JProgressBar progressBar;
-	private LauncherLoaderFrame parentFrame;
+	private final LauncherLoaderFrame parentFrame;
+	private final CatsPlayground cats;
+	private final Timer animation;
+	private final Font textFont = new Font("Segoe UI", Font.BOLD, 12);
+
+	private volatile String statusText = "Loading...";
+	private volatile Color accent = TEAL;
+	private float shownProgress;
+	private float shine;
+	private float bounce;
 
 	public AtomicBoolean indeterminated = new AtomicBoolean();
 
@@ -52,58 +69,141 @@ public class LauncherLoaderPanel extends JPanel{
 
 		parentFrame = parent;
 		backgroundImage = background;
-
 		setBackground(Color.BLACK);
-		setLayout(new CardLayout(0, 0));
-
-		layeredPane = new JLayeredPane();
-		add(layeredPane, "name_9667472767499");
-		layeredPane.setLayout(new MigLayout("", "[2px][4px][grow][2px]", "[grow][][:20px:20px]"));
-
-		JLabel lblBackgroundImage = new JLabel("");
-		layeredPane.add(lblBackgroundImage, "cell 0 0 4 1,aligny baseline");
-
-		lblText = new JLabel("Loading...");
-		lblText.setForeground(new Color(220, 220, 220));
-		lblText.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		lblText.setMaximumSize(new Dimension(LauncherLoaderFrame.W - 50, 20));
-		layeredPane.add(lblText, "cell 2 1,alignx left,aligny center");
+		setOpaque(true);
 
 		progressBar = new JProgressBar();
-		progressBar.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		progressBar.setBorderPainted(false);
-		progressBar.setBackground(Color.BLACK);
-		progressBar.setOpaque(true);
-		progressBar.setMinimumSize(new Dimension(10, 10));
-		progressBar.setSize(new Dimension(0, 10));
-		layeredPane.setLayer(progressBar, 1);
-		progressBar.setForeground(Color.GREEN);
-		layeredPane.add(progressBar, "cell 1 2 2 1,growx,aligny baseline");
+		int scale = LauncherLoaderFrame.W >= 500 ? 3 : 2;
+		cats = new CatsPlayground(scale);
+		cats.setArea(26, Math.max(200, LauncherLoaderFrame.W - 52), Math.max(14, LauncherLoaderFrame.H / 12));
 
-		GUIStyelSettings.applyNimbusSize(0, progressBar);
+		animation = new Timer(33, e -> {
+			cats.tick();
+			float target = progressBar.getValue() / 100f;
+			shownProgress += (target - shownProgress) * 0.12f;
+			if (Math.abs(target - shownProgress) < 0.002f) {
+				shownProgress = target;
+			}
+			shine = (shine + 0.018f) % 1.6f;
+			bounce = (bounce + 0.014f) % 2f;
+			repaint();
+		});
+		animation.start();
 
 		logger.info(this.getClass().getName() + " Started");
 	}
 
 	@Override
-	  protected void paintComponent(Graphics g) {
+	public void removeNotify() {
+		animation.stop();
+		super.removeNotify();
+	}
 
-	    super.paintComponent(g);
-	        g.drawImage(backgroundImage, 0, 0, null);
+	@Override
+	protected void paintComponent(Graphics g0) {
+		super.paintComponent(g0);
+		Graphics2D g = (Graphics2D) g0.create();
+		int w = getWidth();
+		int h = getHeight();
+		g.drawImage(backgroundImage, 0, 0, null);
+
+		// darkens the lower part, so cats and text read well on top of the image
+		g.setPaint(new GradientPaint(0, h * 0.62f, new Color(0, 0, 0, 0), 0, h, new Color(8, 10, 14, 235)));
+		g.fillRect(0, 0, w, h);
+
+		int barHeight = 10;
+		int barX = 26;
+		int barWidth = w - 52;
+		int barY = h - 30;
+		int textBaseline = barY - 12;
+		int ground = (int) (h * 0.66); // the cats stand on the picture, above the text
+
+		cats.paint(g, ground);
+
+		// status text and percentage
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setFont(textFont);
+		FontMetrics metrics = g.getFontMetrics();
+		g.setColor(new Color(0xDC, 0xDF, 0xE4));
+		g.drawString(fit(statusText, metrics, barWidth - 60), barX, textBaseline);
+		if (!progressBar.isIndeterminate()) {
+			String percent = Math.round(shownProgress * 100) + "%";
+			g.setColor(new Color(0xA8, 0xAE, 0xB8));
+			g.drawString(percent, barX + barWidth - metrics.stringWidth(percent), textBaseline);
+		}
+
+		// progress bar, pixel style: dark frame and blocks that light up one by one (no smoothing, no glow)
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		Color frame = new Color(0x12, 0x14, 0x18);
+		g.setColor(frame);
+		g.fillRect(barX, barY, barWidth, barHeight + 4);
+		g.setColor(new Color(0x2A, 0x2E, 0x36));
+		g.fillRect(barX + 2, barY + 2, barWidth - 4, barHeight);
+		int blockWidth = 8;
+		int blockGap = 2;
+		int step = blockWidth + blockGap;
+		int blocks = Math.max(1, (barWidth - 6) / step);
+		Color lit = accent;
+		Color litLight = lighter(accent);
+		int first;
+		int count;
+		if (progressBar.isIndeterminate()) {
+			count = Math.max(3, blocks / 6);
+			float t = bounce <= 1f ? bounce : 2f - bounce;
+			first = Math.round((blocks - count) * t);
+		} else {
+			first = 0;
+			count = Math.round(blocks * shownProgress);
+		}
+		for (int i = first; i < first + count && i < blocks; i++) {
+			int bx = barX + 3 + i * step;
+			g.setColor(lit);
+			g.fillRect(bx, barY + 3, blockWidth, barHeight - 2);
+			g.setColor(litLight);
+			g.fillRect(bx, barY + 3, blockWidth, 2);
+			g.setColor(new Color(0, 0, 0, 70));
+			g.fillRect(bx, barY + 2 + barHeight - 2, blockWidth, 2);
+		}
+		// a bright block runs along the lit part, like a cursor
+		if (count > 0) {
+			int runner = first + (int) ((shine * 12) % Math.max(1, count));
+			if (runner < first + count && runner < blocks) {
+				g.setColor(new Color(255, 255, 255, 150));
+				g.fillRect(barX + 3 + runner * step, barY + 3, blockWidth, barHeight - 2);
+			}
+		}
+		// thin border of the window
+		g.setColor(new Color(255, 255, 255, 40));
+		g.drawRect(0, 0, w - 1, h - 1);
+		g.dispose();
+	}
+
+	private static Color lighter(Color c) {
+		return new Color(Math.min(255, c.getRed() + 50), Math.min(255, c.getGreen() + 50), Math.min(255, c.getBlue() + 50));
+	}
+
+	private static String fit(String text, FontMetrics metrics, int maxWidth) {
+		if (text == null || metrics.stringWidth(text) <= maxWidth) {
+			return text == null ? "" : text;
+		}
+		String cut = text;
+		while (cut.length() > 4 && metrics.stringWidth(cut + "...") > maxWidth) {
+			cut = cut.substring(0, cut.length() - 1);
+		}
+		return cut + "...";
 	}
 
 	/** METHODS **/
 
 	public void setProgBarColor(Color target) {
-		progressBar.setBackground(target);
+		if (target != null) {
+			accent = target;
+		}
 	}
 
 	public void setText(String txt) {
-		if (lblText != null) {
-			lblText.setText(txt);
-			lblText.revalidate();
-			lblText.repaint();
-		}
+		statusText = txt == null ? "" : txt;
+		repaint();
 	}
 
 	public void setProgress(int progress, int msDelay) {
@@ -117,10 +217,10 @@ public class LauncherLoaderPanel extends JPanel{
 				} catch (InterruptedException e) {
 					logger.warn("Cannot wait at end of loading");
 				}
+				animation.stop();
 				parentFrame.dispose();
 			}
-			progressBar.revalidate();
-			progressBar.repaint();
+			repaint();
 		}
 	}
 
@@ -175,7 +275,7 @@ public class LauncherLoaderPanel extends JPanel{
 
 		if(indeterminated && !this.indeterminated.get()) {
 			this.indeterminated.set(true);
-			indeterminatedDotsAnimation(lblText.getText()).start();
+			indeterminatedDotsAnimation(statusText).start();
 			progressBar.setIndeterminate(indeterminated);
 		} else {
 			this.indeterminated.set(false);

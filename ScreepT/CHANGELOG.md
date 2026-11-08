@@ -6,6 +6,19 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.76 - 2026-11-08
+> Launcher Java list with details, ScreepT Dark in the editor
+
+### New
+- Launcher > Customize: the list of installed Javas shows readable names ("jdk Oracle 21 Java SE", with a progressive number when the same name appears more than once) and, under the list, a box with the path, version, vendor, type (JDK or JRE), architecture, the launch parameters in use, compatibility with ScreepT and links to the documentation.
+- Pixel art cats (Feo and Nano) play on the launcher: they run on the loading image, sit on the edge of the controls over the animated backdrop, and visit the ScreepT home after 30 seconds of quiet (a small overlay of the ScreepT window, hidden when ScreepT is not the active window).
+
+### Improved
+- Network Info: the speed test now measures the real upload speed too, with an HTTP upload to a public server (with a fallback server).
+- Launcher buttons in a pixel art style (8-bit bevel, pixel arrow, monospaced capitals) and a loader with a block progress bar.
+- Quick, medium and full automated test levels (run_tests.cmd|.sh, see TESTING.md).
+- The text editor moves to the ScreepT Dark theme the first time you start after the update (only once: a theme you choose afterwards is kept).
+
 ## 0.9.75 - 2026-11-08
 > Image Studio with batch and tabs, viewers integrated in the editor tabs, new LogSearch and terminal search
 

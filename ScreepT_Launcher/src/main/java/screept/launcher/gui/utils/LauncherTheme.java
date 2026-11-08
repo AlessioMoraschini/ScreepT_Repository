@@ -108,10 +108,13 @@ public final class LauncherTheme {
 		if (button == null) {
 			return;
 		}
-		button.putClientProperty("JButton.buttonType", "roundRect");
 		button.setBackground(background);
 		button.setForeground(Color.WHITE);
 		button.setFocusPainted(false);
+		if (button instanceof javax.swing.JButton) {
+			// the professional look: gradient, glow and light sweep (see ActionButtonUI)
+			button.setUI(new ActionButtonUI(background));
+		}
 	}
 
 	private static void walk(Container container) {

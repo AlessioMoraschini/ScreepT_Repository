@@ -150,6 +150,8 @@ public class MainGuiGeneralAppStarter {
 				DarkThemeMigration.applyOnce(currentConfiguration);
 				// the ScreepT Dark editor theme must exist for everyone (see EditorThemeInstaller)
 				EditorThemeInstaller.ensureInstalled();
+				// first start after the update: the editor too gets the ScreepT Dark theme, once
+				DarkThemeMigration.applyEditorThemeOnce(currentConfiguration);
 				// integrated viewers for the editor tabs, and the extension associations chosen by the user
 				gui.commons.tabs.TabImplementors.register(new gui.commons.imagestudio.ImageStudioTabImplementor());
 				gui.commons.tabs.TabImplementors.register(new gui.texteditor.commons.logsearch.LogSearchFrame.Implementor());

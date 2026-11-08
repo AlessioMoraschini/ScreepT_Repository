@@ -111,6 +111,9 @@ public class MatrixHomePanel extends JPanel {
 
 		addMouseWheelListener(e -> terminal.onWheel(e.getWheelRotation()));
 
+		// easter egg: after 30 seconds on the home page Feo and Nano come to play, then leave together
+		various.common.light.easteregg.cats.CatsVisit.attach(this, 30);
+
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

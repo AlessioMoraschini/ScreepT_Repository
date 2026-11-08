@@ -33,6 +33,36 @@ public final class DarkThemeMigration {
 	private DarkThemeMigration() {
 	}
 
+	/** Key written in the TEXT_EDITOR_OPT section once the editor theme migration has run */
+	public static final String EDITOR_THEME_KEY = "screeptDarkEditorThemeForced";
+
+	/**
+	 * Moves the text editor to the ScreepT Dark theme, once: the first start after the update that introduced it.
+	 * Never run again, so a theme chosen afterwards by the user is kept. Needs the theme file on disk (see
+	 * EditorThemeInstaller), otherwise it waits for the next start.
+	 */
+	public static void applyEditorThemeOnce(INItializer config) {
+		try {
+			if (config == null || "true".equalsIgnoreCase(config.getIniFile().get(INItializer.TEXT_EDITOR_OPT, EDITOR_THEME_KEY))) {
+				return;
+			}
+			String target = initializer.configs.impl.om.TextEditorOption.DEFAULT_SELECTED_THEME;
+			if (!new java.io.File(target).isFile()) {
+				logger.warn("ScreepT Dark editor theme not found, migration postponed: " + target);
+				return;
+			}
+			String current = config.getTextEditorOpt().getSelectedTheme();
+			if (!target.equals(current)) {
+				logger.info("Editor theme changed from [" + current + "] to ScreepT Dark (one-time migration)");
+				config.getTextEditorOpt().setSelectedTheme(target);
+				config.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "preferredTheme", target);
+			}
+			config.writeSingleValue(INItializer.TEXT_EDITOR_OPT, EDITOR_THEME_KEY, "true");
+		} catch (RuntimeException e) {
+			logger.warn("Editor theme migration skipped", e);
+		}
+	}
+
 	/** Runs the migration if it never ran for this configuration; call it right after the configuration is read */
 	public static void applyOnce(INItializer config) {
 		try {

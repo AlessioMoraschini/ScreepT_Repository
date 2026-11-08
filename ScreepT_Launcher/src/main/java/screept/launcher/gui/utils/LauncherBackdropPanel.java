@@ -97,6 +97,9 @@ public class LauncherBackdropPanel extends JPanel {
 		timer = new Timer(FRAME_MS, e -> tick());
 	}
 
+	/** Feo and Nano (pixel art, as in the easter egg) play on the picture, on the upper edge of the controls */
+	private final various.common.light.easteregg.cats.CatsPlayground cats = new various.common.light.easteregg.cats.CatsPlayground(3);
+
 	@Override
 	public void setLayout(LayoutManager mgr) {
 		super.setLayout(mgr);
@@ -184,6 +187,8 @@ public class LauncherBackdropPanel extends JPanel {
 			return;
 		}
 		frame++;
+		cats.setArea(18, Math.max(200, getWidth() - 36), 22);
+		cats.tick();
 		for (int c = 0; c < cols; c++) {
 			if (wait[c] > 0) {
 				wait[c]--;
@@ -266,6 +271,7 @@ public class LauncherBackdropPanel extends JPanel {
 			g.drawImage(base, 0, 0, null);
 			paintLogo(g);
 			paintRain(g);
+			cats.paint(g, h - reservedBottom - 8);
 			paintScanlines(g, w, h);
 		} finally {
 			g.dispose();

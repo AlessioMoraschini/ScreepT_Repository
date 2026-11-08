@@ -208,34 +208,119 @@ public class NetworkUtils {
         }
 	}
 	
-	public static String retrieveUpSpeed(InetAddress localAddress, FtpSpeedTestOptions testOptions, JProgressBar progress) throws SocketException, IOException, InterruptedException {
+	/** Upload test with no way to stop it from outside (see {@link #retrieveUpSpeedV2}) */
+	public static String retrieveUpSpeed(InetAddress localAddress, FtpSpeedTestOptions testOptions, JProgressBar progress) throws Exception {
+		return retrieveUpSpeedV2(new DynaBoolean() {
+			@Override
+			public boolean isTrue() {
+				return false;
+			}
+		}, localAddress, testOptions, progress);
+	}
 
-		//if(progress != null) progress.setIndeterminate(true);
-		//updatePb(progress, 30);
-		//
-		//byte[] randomFile = new byte[testOptions.upSize];
-		//byte fill = (byte) 56;
-		//Arrays.fill(randomFile, fill);
-		//ByteArrayInputStream randomStream = new ByteArrayInputStream(randomFile);
-        //
-		//FTPClient ftpClient = ftpUPinit(localAddress);
-		//
-		//// start upload
-		//long start = System.currentTimeMillis();		
-		//ftpClient.storeUniqueFile(randomStream);
-		//long end = System.currentTimeMillis();
-		//
-		//ftpClient.logout();
-		//randomStream.close();
-		//
-		//// calculate speed
-		//int upSpeed = (int)(randomFile.length/((end-start)/(1000F)));
-		//String UP_Speed = ConversionUtils.coolFileSize((long)upSpeed)+"/s  ["+ConversionUtils.coolFileSizeBits((long)upSpeed)+"ps]";
-		//
-		//if(progress != null) progress.setIndeterminate(false);
-		//updatePb(progress, 100);
+	/**
+	 * Upload speed: random bytes are sent with an HTTP POST to the first of the configured servers (UP_URL, then
+	 * UP_URL_FALLBACK) that answers, through the network adapter selected. A small request first opens the connection
+	 * (TLS handshake and slow start would otherwise be counted as slow upload), then the real payload is timed.
+	 */
+	public static String retrieveUpSpeedV2(DynaBoolean stopProcess, InetAddress localAddress, FtpSpeedTestOptions testOptions, JProgressBar progress) throws Exception {
+		return retrieveUpSpeedV2(stopProcess, localAddress, testOptions, progress, GeneralConfig.UP_URL, GeneralConfig.UP_URL_FALLBACK);
+	}
 
-		return "UNAVAILABLE";
+	/** Same as above, with the servers given (used by the tests with a local server) */
+	public static String retrieveUpSpeedV2(DynaBoolean stopProcess, InetAddress localAddress, FtpSpeedTestOptions testOptions, JProgressBar progress, String... urls) throws Exception {
+		if (progress != null) {
+			progress.setIndeterminate(true);
+		}
+		updatePb(progress, 5);
+		// a short payload is mostly connection setup: never less than 1 MB
+		int size = Math.max(1024 * 1024, testOptions.upSize);
+		Exception last = null;
+		try {
+			for (String url : urls) {
+				if (url == null || url.trim().isEmpty()) {
+					continue;
+				}
+				try {
+					return uploadOnce(stopProcess, localAddress, size, progress, url.trim());
+				} catch (Exception e) {
+					if (stopProcess.isTrue()) {
+						throw e;
+					}
+					last = e;
+					logger.warn("Upload test failed on " + url + ", trying the next server: " + e.getMessage());
+				}
+			}
+			throw last != null ? new IOException("Upload failed: " + (last.getMessage() != null ? last.getMessage() : last.getClass().getSimpleName()), last) : new IOException("No upload server is configured (UP_URL)");
+		} finally {
+			if (progress != null) {
+				progress.setIndeterminate(false);
+			}
+			updatePb(progress, 100);
+		}
+	}
+
+	private static String uploadOnce(final DynaBoolean stopProcess, InetAddress localAddress, final int size, final JProgressBar progress, String url) throws Exception {
+		RequestConfig requestConfig = RequestConfig.custom()
+				.setLocalAddress(localAddress)
+				.setConnectTimeout(10000)
+				.setSocketTimeout(90000)
+				.build();
+		CloseableHttpClient httpClient = HttpClients.createSystem();
+		try {
+			// 1) open (and keep) the connection with a tiny request
+			org.apache.http.client.methods.HttpPost warmUp = new org.apache.http.client.methods.HttpPost(url);
+			warmUp.setConfig(requestConfig);
+			warmUp.setEntity(new org.apache.http.entity.ByteArrayEntity(new byte[1024]));
+			org.apache.http.util.EntityUtils.consumeQuietly(httpClient.execute(warmUp).getEntity());
+			if (progress != null) {
+				progress.setIndeterminate(false);
+			}
+			updatePb(progress, 10);
+
+			// 2) the timed upload: random bytes generated on the fly, progress counted while they leave
+			final byte[] block = new byte[64 * 1024];
+			new java.util.Random().nextBytes(block);
+			final long[] sent = {0};
+			java.io.InputStream payload = new java.io.InputStream() {
+				@Override
+				public int read() throws IOException {
+					byte[] one = new byte[1];
+					return read(one, 0, 1) < 0 ? -1 : (one[0] & 0xFF);
+				}
+
+				@Override
+				public int read(byte[] buffer, int offset, int length) throws IOException {
+					if (stopProcess.isTrue()) {
+						throw new IOException("Stopped by user");
+					}
+					if (sent[0] >= size) {
+						return -1;
+					}
+					int chunk = (int) Math.min(Math.min(length, block.length), size - sent[0]);
+					System.arraycopy(block, 0, buffer, offset, chunk);
+					sent[0] += chunk;
+					updatePb(progress, 10 + (int) (sent[0] * 90 / size));
+					return chunk;
+				}
+			};
+			org.apache.http.client.methods.HttpPost post = new org.apache.http.client.methods.HttpPost(url);
+			post.setConfig(requestConfig);
+			post.setEntity(new org.apache.http.entity.InputStreamEntity(payload, size));
+			long start = System.nanoTime();
+			HttpResponse response = httpClient.execute(post);
+			long end = System.nanoTime();
+			int code = response.getStatusLine().getStatusCode();
+			org.apache.http.util.EntityUtils.consumeQuietly(response.getEntity());
+			if (code >= 400) {
+				throw new IOException("The server answered HTTP " + code);
+			}
+			double seconds = Math.max(0.001, (end - start) / 1_000_000_000d);
+			long bytesPerSecond = (long) (size / seconds);
+			return ConversionUtils.coolFileSize(bytesPerSecond) + "/s  [" + ConversionUtils.coolFileSizeBits(bytesPerSecond) + "ps]";
+		} finally {
+			httpClient.close();
+		}
 	}
 	
 	public static String retrieveDownSpeed(InetAddress localAddress, FtpSpeedTestOptions testOptions, JProgressBar progress) throws IOException {

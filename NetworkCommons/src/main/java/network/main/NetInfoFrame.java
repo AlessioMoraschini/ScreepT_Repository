@@ -459,7 +459,7 @@ public class NetInfoFrame extends ParentFrame{
 	private void calculateUPspeed(FtpSpeedTestOptions options) {
 		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
 		try {
-			setText(dynLblUPspeed, NetworkUtils.retrieveUpSpeed(currentSelAdapter.getInetAddr(), options, progressBarUp));
+			setText(dynLblUPspeed, NetworkUtils.retrieveUpSpeedV2(()->!this.isActive.get(), currentSelAdapter.getInetAddr(), options, progressBarUp));
 		} catch (Exception e) {
 			String msg = "An error occcurred";
 			setText(dynLblUPspeed, msg);
