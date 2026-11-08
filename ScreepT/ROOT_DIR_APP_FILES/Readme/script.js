@@ -973,3 +973,74 @@
 		init();
 	}
 })();
+
+/*
+ * Animated hero: pixel rain behind the title (ScreepT teal, like the launcher). ES5, canvas only,
+ * stops when the hero is out of view or the page is hidden; without canvas the title stays as it is.
+ */
+(function () {
+	'use strict';
+
+	var CELL = 8;
+	var canvas, ctx, drops, cols, rows, timer = null, block;
+
+	function isLight() {
+		return /(^|\s)light(\s|$)/.test(document.body.className);
+	}
+
+	function resize() {
+		var w = block.offsetWidth, h = block.offsetHeight;
+		canvas.width = w;
+		canvas.height = h;
+		cols = Math.ceil(w / CELL);
+		rows = Math.ceil(h / CELL);
+		drops = [];
+		for (var c = 0; c < cols; c++) {
+			drops.push({ y: -Math.random() * rows, speed: 0.25 + Math.random() * 0.55, len: 5 + Math.floor(Math.random() * 9) });
+		}
+	}
+
+	function frame() {
+		if (document.hidden || (window.pageYOffset || 0) > block.offsetHeight + 40) {
+			return;
+		}
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		var rgb = isLight() ? '31,127,118' : '46,196,182';
+		for (var c = 0; c < cols; c++) {
+			var d = drops[c];
+			d.y += d.speed;
+			if (d.y - d.len > rows) {
+				d.y = -Math.random() * 12;
+				d.speed = 0.25 + Math.random() * 0.55;
+				d.len = 5 + Math.floor(Math.random() * 9);
+			}
+			for (var i = 0; i < d.len; i++) {
+				var row = Math.floor(d.y) - i;
+				if (row < 0 || row >= rows) {
+					continue;
+				}
+				var a = (1 - i / d.len) * (isLight() ? 0.28 : 0.34);
+				ctx.fillStyle = 'rgba(' + (i === 0 ? '200,255,248' : rgb) + ',' + a + ')';
+				ctx.fillRect(c * CELL, row * CELL, CELL - 2, CELL - 2);
+			}
+		}
+	}
+
+	function start() {
+		block = document.getElementById('titleBlock');
+		canvas = document.getElementById('heroCanvas');
+		if (!block || !canvas || !canvas.getContext) {
+			return;
+		}
+		ctx = canvas.getContext('2d');
+		resize();
+		window.addEventListener('resize', resize, false);
+		timer = window.setInterval(frame, 60);
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', start, false);
+	} else {
+		start();
+	}
+})();

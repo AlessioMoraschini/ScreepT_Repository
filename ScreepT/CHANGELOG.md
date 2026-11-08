@@ -6,6 +6,13 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.77 - 2026-11-08
+> Animated guide header, quicker cats
+
+### Improved
+- User Guide: the two static logos at the top are replaced by an animated header in the ScreepT style (teal pixel rain, a light sweeping over the title, blinking cursor, typed tagline), in dark and light theme.
+- The cats visit the home page after 10 seconds of quiet (it was 30).
+
 ## 0.9.76 - 2026-11-08
 > Launcher Java list with details, ScreepT Dark in the editor
 

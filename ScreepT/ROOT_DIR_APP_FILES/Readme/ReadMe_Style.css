@@ -1299,3 +1299,80 @@ body.light .whyNote{
 		width: 98.4%;
 	}
 }
+
+/* ---------- animated hero (pixel rain + cursor), replaces the two logos ---------- */
+
+#titleBlock{
+	position: relative;
+	overflow: hidden;
+	padding: 46px 20px 34px 20px;
+}
+
+#heroCanvas{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+}
+
+#mainTitle{
+	position: relative;
+	z-index: 1;
+	margin: 0;
+	font-family: Consolas, "Lucida Console", "Courier New", monospace;
+	font-weight: 700;
+	font-size: 64px;
+	letter-spacing: .04em;
+}
+
+#mainTitle h1{
+	display: inline-block;
+	background: #2ec4b6;
+	background: -webkit-linear-gradient(left, #9ff0e6 0%, #2ec4b6 30%, #5aa9ff 50%, #2ec4b6 70%, #9ff0e6 100%);
+	background-size: 200% 100%;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	-webkit-animation: heroShimmer 5s linear infinite;
+	animation: heroShimmer 5s linear infinite;
+	text-shadow: 0 0 18px rgba(46, 196, 182, .45);
+}
+
+.heroCursor{
+	-webkit-text-fill-color: #2ec4b6;
+	-webkit-animation: heroBlink 1s steps(1) infinite;
+	animation: heroBlink 1s steps(1) infinite;
+}
+
+.heroTag{
+	margin-top: 6px;
+	font-size: 15px;
+	font-weight: 400;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+	color: #7fcfc6;
+}
+
+.heroDots:after{
+	content: "";
+	-webkit-animation: heroDots 1.8s steps(1) infinite;
+	animation: heroDots 1.8s steps(1) infinite;
+}
+
+@-webkit-keyframes heroShimmer{ 0%{ background-position: 0% 0; } 100%{ background-position: -200% 0; } }
+@keyframes heroShimmer{ 0%{ background-position: 0% 0; } 100%{ background-position: -200% 0; } }
+@-webkit-keyframes heroBlink{ 0%{ opacity: 1; } 50%{ opacity: 0; } 100%{ opacity: 1; } }
+@keyframes heroBlink{ 0%{ opacity: 1; } 50%{ opacity: 0; } 100%{ opacity: 1; } }
+@-webkit-keyframes heroDots{ 0%{ content: ""; } 25%{ content: "."; } 50%{ content: ".."; } 75%{ content: "..."; } }
+@keyframes heroDots{ 0%{ content: ""; } 25%{ content: "."; } 50%{ content: ".."; } 75%{ content: "..."; } }
+
+body.light #mainTitle h1{
+	text-shadow: none;
+}
+body.light .heroTag{
+	color: #1f7f76;
+}
+body.light .heroCursor{
+	-webkit-text-fill-color: #1f7f76;
+}
