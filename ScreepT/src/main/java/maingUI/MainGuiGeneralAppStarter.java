@@ -48,6 +48,7 @@ import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import screept.general.utils.DarkThemeMigration;
+import screept.general.utils.EditorThemeInstaller;
 import screept.general.utils.SafetyScreepTShortcutsListener;
 import screept.general.utils.ScreepTLoggerUtils;
 import screept.gui.frames.releasenotes.WhatsNewDialog;
@@ -147,6 +148,13 @@ public class MainGuiGeneralAppStarter {
 				currentConfiguration.readConfigIniFile();
 				// the first update to a version with the dark theme as default moves the user to it, once (see DarkThemeMigration)
 				DarkThemeMigration.applyOnce(currentConfiguration);
+				// the ScreepT Dark editor theme must exist for everyone (see EditorThemeInstaller)
+				EditorThemeInstaller.ensureInstalled();
+				// integrated viewers for the editor tabs, and the extension associations chosen by the user
+				gui.commons.tabs.TabImplementors.register(new gui.commons.imagestudio.ImageStudioTabImplementor());
+				gui.commons.tabs.TabImplementors.register(new gui.texteditor.commons.logsearch.LogSearchFrame.Implementor());
+				gui.commons.tabs.TabImplementors.register(new gui.commons.tabs.HtmlViewerTab.Implementor());
+				gui.commons.tabs.TabImplementors.loadOverrides(currentConfiguration.getTextEditorOpt().viewerAssociations);
 				System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
 
 			} catch (IOException e) {

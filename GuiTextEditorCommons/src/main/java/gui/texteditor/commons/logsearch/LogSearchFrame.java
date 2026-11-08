@@ -170,6 +170,105 @@ public class LogSearchFrame extends JFrame {
 		frame.setVisible(true);
 	}
 
+	/** Viewer for an editor tab: the same LogSearch panel, without a window (the frame is never shown) */
+	public static gui.commons.tabs.TabContent createTabContent(final File file) {
+		final LogSearchFrame frame = new LogSearchFrame(null);
+		frame.load(file);
+		final JComponent content = (JComponent) frame.getContentPane();
+		final JPanel holder = new JPanel(new BorderLayout());
+		holder.add(content, BorderLayout.CENTER);
+		// the shortcuts were bound to the (hidden) window: bind them to the tab
+		javax.swing.InputMap inputs = frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		javax.swing.ActionMap actions = frame.getRootPane().getActionMap();
+		if (inputs.allKeys() != null) {
+			for (KeyStroke key : inputs.allKeys()) {
+				holder.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(key, inputs.get(key));
+			}
+		}
+		if (actions.allKeys() != null) {
+			for (Object key : actions.allKeys()) {
+				holder.getActionMap().put(key, actions.get(key));
+			}
+		}
+		return new gui.commons.tabs.TabContent() {
+			@Override
+			public JComponent getComponent() {
+				return holder;
+			}
+
+			@Override
+			public String getTitle() {
+				return file.getName();
+			}
+
+			@Override
+			public File getFile() {
+				return file;
+			}
+
+			@Override
+			public boolean isModified() {
+				return false;
+			}
+
+			@Override
+			public boolean save() {
+				return true;
+			}
+
+			@Override
+			public boolean confirmClose(Component parent) {
+				return true;
+			}
+
+			@Override
+			public void onSelected() {
+				frame.txtSearch.requestFocusInWindow();
+			}
+
+			@Override
+			public void dispose() {
+				frame.release();
+				frame.dispose();
+			}
+
+			@Override
+			public void setChangeListener(Runnable listener) {
+				// LogSearch is read only: nothing changes
+			}
+		};
+	}
+
+	/** Registers LogSearch as an integrated viewer (extension log) */
+	public static class Implementor implements gui.commons.tabs.TabImplementor {
+		public static final String ID = "logsearch";
+
+		@Override
+		public String getId() {
+			return ID;
+		}
+
+		@Override
+		public String getDisplayName() {
+			return "LogSearch";
+		}
+
+		@Override
+		public java.util.Set<String> getDefaultExtensions() {
+			return java.util.Collections.singleton("log");
+		}
+
+		@Override
+		public boolean canOpen(File file) {
+			return file != null && file.isFile();
+		}
+
+		@Override
+		public gui.commons.tabs.TabContent open(File file) {
+			return createTabContent(file);
+		}
+	}
+
 	private LogSearchFrame(Component parent) {
 		super("LogSearch");
 		Theme.refresh();

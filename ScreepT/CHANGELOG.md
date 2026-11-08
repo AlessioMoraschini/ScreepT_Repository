@@ -6,15 +6,21 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
-## 0.9.75 - 2026-11-05
-> New LogSearch, search and scroll in the interactive terminal
+## 0.9.75 - 2026-11-08
+> Image Studio with batch and tabs, viewers integrated in the editor tabs, new LogSearch and terminal search
 
 ### New
+- Image Studio (replaces Image Viewer and Image Converter): several images in tabs, conversion options in an accordion on the right that grows with the mode (Basic: convert and resize; Classic: + adjustments, filters, rotate, flip, copy, paste; Nerd: + histogram, gamma, hue, temperature, resampling choice, pixel grid, metadata). 17 ready made filters (black and white, sepia, vintage, warm, cool, vignette, sharpen, blur, emboss, edges, posterize, pixelate...), live preview, undo, estimated size of the exported file, export to every format of your Java (PNG, JPG with quality, BMP, GIF, TIFF where available).
+- Batch processing in Image Studio: choose the settings on a built-in sample or on one of your photos, then apply convert, resize and every edit to a list of images or a whole folder, with name pattern ({name}, {n}, {date}), counter, digits, collision policy and target folder.
+- Integrated viewers in the editor tabs, like an IDE: images open in Image Studio, .log files in LogSearch and .html pages in a simple HTML viewer, instead of separate windows. Graphic preferences > Text editor > Viewers chooses the viewer of each extension (filter as you type); only your differences from the defaults are saved in the ini file.
 - LogSearch redesigned in the ScreepT Dark style, quicker to use: it searches while you type, with a log-oriented syntax (all the words in any order, "exact phrase", -excluded word) besides regular expression, match case and whole word. Recognises the level of every line (ERROR, WARN, INFO, DEBUG, TRACE; a stack trace follows its entry): coloured stripe in the gutter, errors and warnings on the map beside the scroll bar, level chips with the line counts that filter the matches, F8 / Shift+F8 jump between errors. The matches list shows the context lines you choose (0 to 8) and can be exported to a file. Bookmarks (Ctrl+B, gutter click, F2 / Shift+F2), go to line (Ctrl+G) and zoom (Ctrl +/-/0).
 - Interactive terminal: search bar docked above the screen (magnifier button, Ctrl+Shift+H, Cmd+Shift+H on macOS). Highlights every match in the whole history, with match case, regular expression and whole word options, match counter, previous/next buttons (Enter / Shift+Enter) and Esc to close. It also works after the process has ended.
 - Interactive terminal: Shift+PageUp / PageDown / Home / End scroll the history from the keyboard. History grown from 5,000 to 10,000 lines.
 
 ### Improved
+- License window (launcher and app) redesigned: sidebar with ScreepT license, libraries and reports with a filter, find in the text (Ctrl+F, F3, Shift+F3), zoom (Ctrl +/-/0), colors that follow the theme, clear Accept / Decline. Accepting no longer shows an extra confirmation popup.
+- Network Info redesigned: cards for interface, addressing and name servers with a copy button per value and "Copy all" (Ctrl+Shift+C), speed test with large readings, F5 to reload the adapters, resizable window. It now lists only physical adapters with their IPv4 address; virtual machines, VPNs, containers, tunnels, IPv6 and link-local addresses appear with the new "Deep search" checkbox (off by default).
+- Hash Checker rewritten: several algorithms in a single pass, progress with Stop, drag and drop of files, expected hash with match/mismatch result, copy one or all.
 - ScreepT Dark is the default look and feel. The first time you update to this version your look and feel is switched to ScreepT Dark; from the following updates on, whatever you choose in Graphics preferences (Nimbus, light...) is kept and never changed again.
 - LogSearch: with the ScreepT Dark theme the window uses its own soft dark palette (light gray text in the search field, a medium gray list of matches that stands out from the file view, the same scroll bars as the rest of the application) and follows the theme even when it is opened before the theme is applied; the other themes are unchanged. Header, toolbar and status bar stand out from the file view, and the map beside the scroll bar shows how dense the matches are.
 - Crypter: a warning shown when the module is opened says that it is in beta (experimental, not extensively tested), with a "Don't show this again" option. The user guide says the same, with a notice at the top, and the statements about the security of the Crypter are now plain and objective.
@@ -33,6 +39,8 @@
 - Plugin Manager: new look in the ScreepT Dark theme. Header with the counters (plugins, installed, to update), filter with search icon, a colored tile for every plugin, status with icon (installed, update available with the versions, not installed), compact Install / Update / Uninstall buttons with icons and tooltips, warnings with an icon. The buttons react only when clicked, Esc closes the window. Same functions as before.
 
 ### Fixed
+- The "ScreepT Dark" text editor theme is now guaranteed on every installation: besides the update package, the app restores it at startup from a copy inside the jar if the file is missing (an existing file is never overwritten).
+- Plugin Manager: the Install/Uninstall button now reacts to the first click after opening the window (the clickable area was wrong), and a right click no longer starts the action.
 - Code Compare plugin 1.1.1: it opened with an error on Java 9 and newer (JAXB, used by JMeld to read its settings, is no longer part of Java). The libraries now travel with the plugin; it keeps working on Java 8.
 
 ## 0.9.73 - 2026-11-04

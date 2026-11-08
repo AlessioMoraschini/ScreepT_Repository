@@ -143,6 +143,41 @@ public class NetworkAdapter {
 		return "- Address Undefined -";
 	}
 
+	/** Name fragments of adapters created by VMs, VPNs, containers and the OS itself: real hardware never has them */
+	private static final String[] VIRTUAL_NAME_HINTS = {"virtual", "vmware", "vmnet", "vbox", "virtualbox", "host-only", "hyper-v", "vethernet", "wsl", "docker", "veth", "br-", "tap-", "tap0", "tun", "tunnel", "teredo", "isatap", "6to4", "pseudo", "miniport", "npcap", "loopback", "bluetooth", "vpn", "wan ", "ppp", "tailscale", "zerotier", "hamachi", "wireguard", "kernel debug", "wi-fi direct", "virbr", "utun", "awdl", "llw", "bridge"};
+
+	/**
+	 * Heuristic: true for adapters that are not physical network cards (VM, VPN, container, tunnel, Bluetooth...).
+	 * Java has no reliable flag for it, so it combines the interface flags, a missing MAC and the usual name fragments.
+	 */
+	public boolean isVirtual() {
+		if (networkInterface == null) {
+			return true;
+		}
+		try {
+			if (networkInterface.isVirtual() || networkInterface.isPointToPoint() || networkInterface.isLoopback()) {
+				return true;
+			}
+		} catch (java.net.SocketException e) {
+			// unreadable flags: judged by name and MAC
+		}
+		if (localMAC == null || localMAC.length == 0) {
+			return true;
+		}
+		String lower = ((name == null ? "" : name) + " " + networkInterface.getName()).toLowerCase(java.util.Locale.ROOT);
+		for (String hint : VIRTUAL_NAME_HINTS) {
+			if (lower.contains(hint)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** True for addresses that are noise for a normal user: IPv6 and link-local (169.254.x.x, fe80::) */
+	public boolean isSecondaryAddress() {
+		return inetAddr == null || inetAddr instanceof java.net.Inet6Address || inetAddr.isLinkLocalAddress();
+	}
+
 	@Override
 	public String toString() {
 		return name +" - "+ locMAC + " - "+ locIP;

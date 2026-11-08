@@ -913,6 +913,14 @@ public class MainGuiUtils {
 		TextEditorOption txtOpt = MainGUI.currentConfiguration.getTextEditorOpt();
 
 		CustomTabbedEditor currentTabEditor = initTxtWriter.getCurrentTabEditor();
+
+		// integrated viewers (image studio...) with edits not saved: they ask by themselves
+		for (TabTextEditorObject viewerTab : currentTabEditor.loadedList.getList()) {
+			if (viewerTab.isEmbeddedViewer() && viewerTab.viewer.isModified() && !viewerTab.viewer.confirmClose(currentTabEditor.mainTabList)) {
+				return false;
+			}
+		}
+
 		boolean askCondition = false;
 		boolean atLeastOneTemp = false;
 		List<File> tempFiles = new ArrayList<>();

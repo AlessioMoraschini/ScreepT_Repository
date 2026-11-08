@@ -62,6 +62,9 @@ import gui.commons.tabbedpaneutils.TabbedPaneMouseWheelListener;
 import gui.texteditor.commons.om.ColumnTextArea;
 import gui.texteditor.commons.om.HistoryNode;
 import gui.texteditor.commons.om.SupportedFileTextEditor;
+import gui.commons.tabs.TabContent;
+import gui.commons.tabs.TabImplementor;
+import gui.commons.tabs.TabImplementors;
 import gui.texteditor.commons.om.TabTextEditorObject;
 import initializer.configs.impl.INItializer;
 import resources.GeneralConfig;
@@ -293,21 +296,6 @@ public class CustomTabbedEditor implements ITabsManager {
 		if (fileToOpen != null && fileToOpen.exists()) {
 			boolean exceedsLines = FileWorker.checkIfHasMoreThanNLines(fileToOpen, GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES);
 			boolean exceedsLength = fileToOpen.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB;
-			// log files: ask where to open them (bigger ones are handled by the big file question below)
-			if (!skipFileExtensionCheck && !exceedsLines && !exceedsLength && fileToOpen.getName().toLowerCase().endsWith(".log")) {
-				String[] logChoices = { "Open in ScreepT Text Editor", "Open with LogSearch", "Cancel" };
-				int logChoice = JOptionPane.showOptionDialog(parent,
-						"How do you want to open this log file?\n\n" + fileToOpen.getName()
-								+ "\n\nThe text editor lets you edit it. LogSearch opens it read-only, with fast text / regex search.",
-						"Log file", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, logChoices, logChoices[0]);
-				if (logChoice == 1) {
-					LogSearchFrame.open(parent, fileToOpen);
-					return false;
-				}
-				return logChoice == 0; // anything else: cancelled by user
-			}
-
-
 			if (exceedsLines || exceedsLength) {
 				String msg = exceedsLines
 						? "This file has more than " + GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES + " lines, and can slow down or crash ScreepT."
@@ -317,7 +305,9 @@ public class CustomTabbedEditor implements ITabsManager {
 				int choice = JOptionPane.showOptionDialog(parent, msg, "Big file", JOptionPane.YES_NO_CANCEL_OPTION,
 						JOptionPane.WARNING_MESSAGE, null, choices, choices[0]);
 				if (choice == 0) {
-					LogSearchFrame.open(parent, fileToOpen);
+					if (!openViewerById(LogSearchFrame.Implementor.ID, fileToOpen)) {
+						LogSearchFrame.open(parent, fileToOpen);
+					}
 					return false;
 				}
 				boolean userAcceptance = choice == 1;
@@ -327,7 +317,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 				return userAcceptance;
 
-			} else if(isImageFileSupported(fileToOpen)) {
+			} else if(isImageFileSupported(fileToOpen) && !TabImplementors.TEXT_ID.equals(TabImplementors.effectiveIdFor(TabImplementors.extensionOf(fileToOpen)))) {
 				ImageViewerFrame.loadIntoLastExistingInstance(fileToOpen);
 				return false;
 
@@ -395,6 +385,12 @@ public class CustomTabbedEditor implements ITabsManager {
 	public void loadFile(final File fileToLoad) {
 
 		if(goToTabByFile(fileToLoad)) {
+			return;
+		}
+
+		// integrated viewers (image studio, LogSearch, HTML...) open in their own tab, as chosen in the preferences
+		TabImplementor viewerImplementor = fileToLoad != null && fileToLoad.isFile() ? TabImplementors.resolve(fileToLoad) : null;
+		if(viewerImplementor != null && openInViewerTab(fileToLoad, viewerImplementor)) {
 			return;
 		}
 
@@ -549,6 +545,66 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 
 
+	/** Opens the file with the integrated viewer of the given id; false if it is not available or fails */
+	public boolean openViewerById(String implementorId, File file) {
+		TabImplementor implementor = TabImplementors.byId(implementorId);
+		return implementor != null && file != null && openInViewerTab(file, implementor);
+	}
+
+	/** Opens the file in a new tab hosting the viewer instead of the text area */
+	public boolean openInViewerTab(File file, TabImplementor implementor) {
+		try {
+			addViewerTab(file, implementor);
+			currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(file, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
+			return true;
+		} catch (Throwable e) {
+			logger.error("Cannot open " + file + " with " + implementor.getDisplayName(), e);
+			new JOptionHelperExtended(parent).error("Cannot open the file with " + implementor.getDisplayName() + ":\n" + e.getMessage(), (String) null);
+			return false;
+		}
+	}
+
+	/**
+	 * Adds a tab whose content is a viewer. The tab object is a normal TabTextEditorObject (so the whole editor keeps
+	 * its structure) with an empty text area that is never written to the file, and the viewer shown in its place.
+	 */
+	public TabTextEditorObject addViewerTab(File file, TabImplementor implementor) throws Exception {
+		try {
+			isAddingTab = true;
+			backupCurrentBeforeSwitch();
+
+			final TabContent content = implementor.open(file);
+			String name = content.getTitle();
+			int newIndex = mainTabList.getTabCount();
+
+			final TabTextEditorObject newTabNode = new TabTextEditorObject(
+					this,
+					file,
+					"",
+					getChangeListener(),
+					currentConfiguration,
+					changeMonManager,
+					tabEditorManager.getShortcutManager());
+			newTabNode.textArea.addFocusListener(getFocusListener());
+			newTabNode.embedViewer(content);
+			newTabNode.textArea.setEditable(false);
+
+			mainTabList.addTab(name, newTabNode.currentScrollPane);
+			loadedList.add(newTabNode);
+			loadedTabObj = newTabNode;
+			mainTabList.setTabComponentAt(newIndex, getCustomClosableTab(name, newIndex));
+			mainTabList.setSelectedIndex(newIndex);
+			newTabNode.unsaved = false;
+			content.setChangeListener(() -> SwingUtilities.invokeLater(() -> updateSavedLabelNTab(geIndexOfTabObj(newTabNode))));
+			addToHystory(loadedTabObj);
+			updateSavedLabelNTab(newIndex);
+			content.onSelected();
+			return newTabNode;
+		} finally {
+			isAddingTab = false;
+		}
+	}
+
 	public TabTextEditorObject addTab(File file) {
 		try {
 			isAddingTab = true;
@@ -641,6 +697,11 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 
 	public void reloadCurrentTab(boolean askDialogOn) {
+
+		// an integrated viewer has no text to reload: it keeps showing its own content
+		if (loadedTabObj.isEmbeddedViewer()) {
+			return;
+		}
 
 		loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 
@@ -757,6 +818,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 			if (index > 0 && mainTabList.getTabCount() > 1) {
 
+				releaseViewerOf(loadedList.getList().get(index));
 				loadedList.getList().get(index).deleteTempFile();
 				loadedList.getList().remove(index);
 				mainTabList.remove(index);
@@ -770,6 +832,7 @@ public class CustomTabbedEditor implements ITabsManager {
 			} else if (index == 0 && mainTabList.getTabCount() > 1) {
 
 				if (!loadedList.getList().isEmpty()) {
+					releaseViewerOf(loadedList.getList().get(0));
 					loadedList.getList().remove(0);
 					loadedList.getList().get(0).deleteTempFile();
 				}
@@ -782,6 +845,7 @@ public class CustomTabbedEditor implements ITabsManager {
 					// IF LAST DO NOT REMOVE: EMPTY FIRST REFERENCES
 					if (!loadedList.getList().isEmpty()) {
 						TabTextEditorObject currentTab = loadedList.getList().get(0);
+						releaseViewerOf(currentTab);
 						currentTab.deleteTempFile();
 						currentTab.resetData();
 						getPanelFromTabHeader(0).setToolTipText("Unexisting file");
@@ -836,6 +900,18 @@ public class CustomTabbedEditor implements ITabsManager {
 			mainTabList.setSelectedIndex(index);
 		} catch (Exception e) {
 			logger.error("Cannot go to next tab!", e);
+		}
+	}
+
+	/** Closes the integrated viewer of a tab (releases its resources); the tab object becomes a plain text tab */
+	private void releaseViewerOf(TabTextEditorObject tab) {
+		if (tab != null && tab.isEmbeddedViewer()) {
+			try {
+				tab.releaseViewer();
+			} catch (Throwable e) {
+				logger.warn("Cannot release the viewer of " + tab.loadedFile, e);
+			}
+			tab.loadedFile = null;
 		}
 	}
 
@@ -949,7 +1025,7 @@ public class CustomTabbedEditor implements ITabsManager {
 	public boolean saveAllUnsavedExisting() throws IOException {
 		boolean done = true;
 		for (TabTextEditorObject element : loadedList.getList()) {
-			if (element.unsaved && element.loadedFile != null && element.loadedFile.exists()) {
+			if (element.unsaved && !element.isEmbeddedViewer() && element.loadedFile != null && element.loadedFile.exists()) {
 				if (!FileWorker.writeStringToFile(element.textArea.getText(), element.loadedFile, true)) {
 					done = false;
 				} else {
@@ -1018,6 +1094,21 @@ public class CustomTabbedEditor implements ITabsManager {
 		int indexChange = (sourceIndex == null) ? mainTabList.getSelectedIndex() : sourceIndex;
 		newFileStringTarget = tabEditorManager.getNewFileStringTarget();
 		TabTextEditorObject indexTabObj = getTabObjByIndex(sourceIndex);
+
+		// integrated viewer: title of the viewer, marked when it has edits not saved
+		if (indexTabObj != null && indexTabObj.isEmbeddedViewer()) {
+			try {
+				JLabel viewerLabel = (JLabel) (getPanelFromTabHeader(indexChange)).getComponent(TabUtils.TAB_TITLE_ORDER);
+				viewerLabel.setText(StringWorker.fitToMaxLentgh(indexTabObj.viewer.getTitle(), TabUtils.MAX_TAB_LABELENGHT) + (indexTabObj.viewer.isModified() ? " *" : ""));
+				if (indexTabObj.loadedFile != null && newFileStringTarget != null && indexChange == mainTabList.getSelectedIndex()) {
+					newFileStringTarget.setText(indexTabObj.loadedFile.getName());
+					newFileStringTarget.setToolTipText(indexTabObj.loadedFile.getCanonicalPath());
+				}
+			} catch (Exception e) {
+				logger.warn("Cannot update the header of the viewer tab", e);
+			}
+			return;
+		}
 
 		try {
 			// reference to tabHeader title

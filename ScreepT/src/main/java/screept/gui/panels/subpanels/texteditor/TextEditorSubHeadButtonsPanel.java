@@ -1541,6 +1541,13 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	private void saveCurrentTabText() {
 		final TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
+		// integrated viewer (image...): it saves by itself, the empty text area must never be written over the file
+		if (loadedTabObj.isEmbeddedViewer()) {
+			loadedTabObj.viewer.save();
+			parent.getCurrentTabEditor().updateSavedLabelNTab(null);
+			return;
+		}
+
 		boolean done = false;
 		if (loadedTabObj.loadedFile == null || !loadedTabObj.loadedFile.exists()) {
 			saveCurrentFileAs(null);
@@ -1592,6 +1599,12 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 	public void saveCurrentFileAs(EOL lineSeparator) {
 		TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+
+		if (loadedTabObj.isEmbeddedViewer()) {
+			loadedTabObj.viewer.save();
+			parent.getCurrentTabEditor().updateSavedLabelNTab(null);
+			return;
+		}
 		boolean skipRefresh = true;
 
 		if (!parent.getCurrentTabEditor().alreadySaving) {

@@ -352,7 +352,7 @@ public class WindowCreator {
 							public void run() {
 								try {
 									NetInfoFrame panelNetInfo = NetInfoFrame.getInstance(netUtils);
-									panelNetInfo.setResizable(false);
+									panelNetInfo.setResizable(true);
 									commonGraphicInitAlwaysOnTop(panelNetInfo, "Network info - ", true);
 								} finally {
 									prog.forceClose();

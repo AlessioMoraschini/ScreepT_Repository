@@ -217,6 +217,76 @@ public class TabTextEditorObject {
 		});
 	}
 
+	/** Integrated viewer shown instead of the text area (image studio, LogSearch, HTML...), or null for a normal text tab */
+	public gui.commons.tabs.TabContent viewer;
+
+	public boolean isEmbeddedViewer() {
+		return viewer != null;
+	}
+
+	/**
+	 * Shows the viewer in place of the text area, keeping this object as the tab owner: the rest of the editor keeps
+	 * working with the same structure (the text area stays, empty and never saved over the file)
+	 */
+	public void embedViewer(gui.commons.tabs.TabContent content) {
+		this.viewer = content;
+		currentScrollPane.setLineNumbersEnabled(false);
+		currentScrollPane.setFoldIndicatorEnabled(false);
+		currentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		currentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		// RTextScrollPane.setViewportView accepts only text areas: the viewport itself has no such limit
+		currentScrollPane.getViewport().setView(new ViewerHolder(content.getComponent()));
+	}
+
+	/** Gives the tab back to the text editor (used when the last tab is closed: it stays as an empty text tab) */
+	public void releaseViewer() {
+		if (viewer == null) {
+			return;
+		}
+		viewer.dispose();
+		viewer = null;
+		currentScrollPane.getViewport().setView(textArea);
+		currentScrollPane.setLineNumbersEnabled(true);
+		currentScrollPane.setFoldIndicatorEnabled(true);
+		currentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		currentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	}
+
+	/** Viewport content that always takes the whole viewport (the viewer scrolls by itself if it needs to) */
+	private static class ViewerHolder extends javax.swing.JPanel implements javax.swing.Scrollable {
+		private static final long serialVersionUID = 1L;
+
+		ViewerHolder(java.awt.Component content) {
+			super(new java.awt.BorderLayout());
+			add(content, java.awt.BorderLayout.CENTER);
+		}
+
+		@Override
+		public Dimension getPreferredScrollableViewportSize() {
+			return getPreferredSize();
+		}
+
+		@Override
+		public int getScrollableUnitIncrement(java.awt.Rectangle r, int o, int d) {
+			return 16;
+		}
+
+		@Override
+		public int getScrollableBlockIncrement(java.awt.Rectangle r, int o, int d) {
+			return 64;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportWidth() {
+			return true;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportHeight() {
+			return true;
+		}
+	}
+
 	public File saveTempFile() throws IOException {
 		if(tempFile == null || !tempFile.exists() || !tempFile.canWrite())
 			tempFile = AbstractPluginApplicationApi.getAvailableProviders().get(0).saveTempFileInApplicationFolder("tempFile.txt", true, "COMMON_DATA/TXT/");

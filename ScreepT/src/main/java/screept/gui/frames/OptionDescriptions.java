@@ -45,6 +45,7 @@ final class OptionDescriptions {
 		m.put("Max file size (MB)", "Files bigger than this size are not loaded directly in the editor, because they could slow down or crash ScreepT.\n\n"
 				+ "When you open one, ScreepT proposes LogSearch: a read-only viewer that reads the file a portion at a time and searches it as text "
 				+ "or regular expression, so even files of many gigabytes open at once. You can still choose to load the file in the editor anyway.");
+		m.put("Viewers", "Chooses how each type of file opens: in the text editor, or in an integrated viewer tab (Image Studio for pictures, LogSearch for .log files, HTML viewer for web pages).\n\nOnly the choices that differ from the defaults are saved in the ini file.");
 		m.put("Spellchecker dictionary", "Dictionary used by the spellchecker of the text editor.\n\nThe spellchecker is switched on and off from the text editor toolbar.");
 
 		m.put("Auto-indentation", "When you press Enter, the new line starts with the same indentation as the previous one.");

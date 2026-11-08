@@ -886,6 +886,11 @@ public class TextEditor extends ModulePanel {
 		int askSave = JOptionHelperExtended.CANC;
 		TabTextEditorObject selected = getCurrentTabEditor().loadedList.getList().get(index);
 
+		// integrated viewer: it asks by itself about its own unsaved work
+		if (selected.isEmbeddedViewer()) {
+			return selected.viewer.confirmClose(getCurrentTabEditor().mainTabList);
+		}
+
 		if (selected.unsaved) {
 			askSave = dialogHelper.yesNoOrCanc("Do you want to save current file?",	"Save current file?");
 		} else {

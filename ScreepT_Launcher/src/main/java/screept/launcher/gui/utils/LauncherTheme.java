@@ -70,8 +70,28 @@ public final class LauncherTheme {
 			Container content = ((RootPaneContainer) root).getContentPane();
 			content.setBackground(null);
 			content.setForeground(null);
+			installEscapeToClose((RootPaneContainer) root);
 		}
 		walk(root);
+	}
+
+	/** Esc closes the window like its close button (the window keeps its own close logic) */
+	private static void installEscapeToClose(final RootPaneContainer window) {
+		if (!(window instanceof java.awt.Window)) {
+			return;
+		}
+		javax.swing.JRootPane rootPane = window.getRootPane();
+		rootPane.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0), "launcher.escapeClose");
+		rootPane.getActionMap().put("launcher.escapeClose", new javax.swing.AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				java.awt.Window w = (java.awt.Window) window;
+				w.dispatchEvent(new java.awt.event.WindowEvent(w, java.awt.event.WindowEvent.WINDOW_CLOSING));
+			}
+		});
 	}
 
 	/** Green main action button */

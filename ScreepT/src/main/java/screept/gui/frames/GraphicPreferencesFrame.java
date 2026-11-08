@@ -381,7 +381,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				.addRow("Font", comboEditorFontFamily, spinnerEditorFontSize)
 				.addRow("Margin and interline", panelSpacing)
 				.addRow("Max file size (MB)", spinnerMaxFileSize)
-				.addRow("Spellchecker dictionary", comboSpellcheckerDictionary);
+				.addRow("Spellchecker dictionary", comboSpellcheckerDictionary)
+				.addRow("Viewers", createViewerAssociationsButton());
 		textEditor.addSubsection("Editing", "Typing helpers, tabs and files")
 				.addCheckBoxes(chckbxAutoindentation, chckbxCloseCurlybraces, chckbxCloseMarkuptags, chckbxEmulatedTabsWith,
 						chckbxClearWhitespaceLines, checkBoxAutosaveTempFiles, chckbxAutoCheckFiles, chckbxSyncClipboardStyle);
@@ -401,6 +402,17 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		getContentPane().add(createHeader(), "growx, wrap");
 		getContentPane().add(scroller, "grow, wrap");
 		getContentPane().add(footerPanel, "growx");
+	}
+
+	/** Opens the dialog that chooses the viewer (text editor, image studio, LogSearch, HTML...) of each extension */
+	private javax.swing.JButton createViewerAssociationsButton() {
+		javax.swing.JButton button = new javax.swing.JButton("Viewer associations...");
+		button.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+		button.addActionListener(e -> new gui.commons.tabs.ViewerAssociationsDialog(this, serialized -> {
+			currentConfiguration.getTextEditorOpt().viewerAssociations = serialized;
+			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "viewerAssociations", serialized);
+		}).setVisible(true));
+		return button;
 	}
 
 	private JPanel createHeader() {

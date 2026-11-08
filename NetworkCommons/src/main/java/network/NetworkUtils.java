@@ -550,4 +550,21 @@ public class NetworkUtils {
 		return networkAdapters;
 	}
 
+	/**
+	 * @param deep false: only physical adapters with their IPv4 address; true: everything that is up (virtual, tunnels, IPv6, link-local)
+	 * If no physical adapter is found, falls back to all of them so the list is never empty by mistake.
+	 */
+	public Vector<NetworkAdapter> getAdapters(boolean deep) {
+		if (deep) {
+			return networkAdapters;
+		}
+		Vector<NetworkAdapter> real = new Vector<NetworkAdapter>();
+		for (NetworkAdapter adapter : networkAdapters) {
+			if (!adapter.isVirtual() && !adapter.isSecondaryAddress()) {
+				real.add(adapter);
+			}
+		}
+		return real.isEmpty() ? networkAdapters : real;
+	}
+
 }
