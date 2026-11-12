@@ -6,6 +6,41 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.78 - 2026-11-12
+> Image Studio goes pro (54 filters, crop, metadata cleaning, PSD and Camera Raw import), launcher settings from the app, 1.5 GB default memory
+
+### New
+- Image Studio filters: 54 in all, in six groups (Color, Looks, Tone, Detail, Art, Wild). New: Noir, Vivid, Cyanotype, Dusk, Infrared, Lomo, Bleach, Golden hour, Night, Film, Cross, Cinematic, Matte, Glow, Soft focus, Film grain, Sharpen +, Clarity, HDR, Denoise, Sketch, Cartoon, Oil paint, Solarize, Glitch. Each filter is a card with a preview of the filter applied to your own image.
+- Image Studio: a "Strength" slider lowers the effect of the filters (0 to 100%, the rest is the image before them).
+- Image Studio, Crop: cut the sides in percent and/or take the biggest centered area with a ratio (1:1, 4:3, 3:2, 16:9, 5:4, 4:5, 9:16, 2:1), with the resulting size shown.
+- Image Studio, Adjustments: exposure, shadows, highlights, vibrance and tint; "Auto enhance" button.
+- Image Studio, Effects: sharpness (unsharp mask), blur with radius, vignette and film grain with an amount each.
+- Image Studio, Rotate & flip: fine "Straighten" of -45 to 45 degrees that enlarges the image just enough to leave no empty corner.
+- Image Studio, Border & text (Nerd): frame with color, rounded corners, and a text watermark (position, size, opacity, color).
+- Image Studio, Resize: quick sizes (Full HD, 4K, square, story, icons...).
+- Image Studio: "Before" button (key B) shows the image without the pending edits. All the new options are saved in the presets and used by Batch.
+- The viewer in the editor tab asks, after "Edit in Image Studio", whether to close the tab (default: keep it).
+- Image Studio, metadata: remove EXIF, GPS location, XMP, IPTC, comments, thumbnails and data hidden after the image end from JPEG, PNG, WebP and GIF without re-encoding (no quality loss; the color profile and the orientation can be kept, or only the location removed). From the Metadata button of any image (save a clean copy, or clean the file itself after a confirmation) and from the new "Clean metadata..." tool of the Image Studio window: files and folders (with sub-folders and filters) by buttons or drag and drop, clean copies in a folder (default, with the folder structure and a name pattern) or replacing the originals (never the default, with confirmation and optional backup), keep the file date, progress, cancel and a result for each file.
+- Image Studio, import: Camera Raw / Lightroom presets (.xmp, .lrtemplate) are translated to Image Studio settings (exposure, contrast, highlights, shadows, whites, blacks, saturation, vibrance, temperature, tint, clarity, sharpening, vignette, grain, black and white, crop, straighten); what has no equivalent (curves, HSL, masks, lens corrections) is listed in a report. Available in the Presets section and in the Batch window; the accepted types are shown as hint.
+- Image Studio, Photoshop files: .psd (and .psb) open in the viewer, the editor tab and the Batch (merged picture, small preview when the merged picture is missing, or a clear "not supported" message for 32 bit files, damaged files or files too big for the memory), with their information in Metadata and a button to read the Camera Raw settings stored inside.
+- The image viewer is associated also to .jfif, .jpe, .dib, .tif, .tiff, .psd and .psb.
+- Batch: click an image of the list to preview the settings on it (the built-in sample is used when the list is empty), the first image added is shown, the list no longer overflows the sample panel, and "Import settings..." applies a Camera Raw / Lightroom preset to the whole batch.
+- New pencil icon next to the memory shown in the menu bar: change the maximum memory of ScreepT between the minimum set in the launcher and what the PC can give now; it is saved in the launcher settings and asks whether to restart now.
+
+### Improved
+- The default maximum memory of ScreepT is now 1.5 GB (it was 400 MB). At the first start after this update the launcher sets it once to 1.5 GB, or to the most the PC can give (80% of its memory) if that is less; a marker in the launcher settings makes sure later updates never reset it, so a value you choose afterwards (also with the new pencil in the menu bar) is kept.
+- Text editor file tree: it now shows its levels (a thin guide line runs along the children of each folder, the one of the folder that holds the selected row is lit), full row highlight on selection and hover, a wider indentation, and soft colors taken from the theme (its accent, tuned for the tree background) so every theme, light or dark, reads well; the rows of the level that holds the selection are barely tinted.
+- Feo and Nano on the home page never go over the text of the prompt or of the console: they stay beside it, and now and then one walks up, touches it with a paw and goes away. They also have new moves that happen at random: rolling, backflips, naps with a stretch when they wake up, zoomies, spinning, sitting.
+- Image Studio: 12 wild filters (Rainbow, Acid, Neon edges, Thermal, Pop art, Kaleido, Swirl, Ripple, Bulge, Melt, Mirror, Dream), 54 filters in all, in a new "Wild" group; a Metadata section in the side panel with the same tools as the header (see, save a clean copy, remove, cleaning tool); "Edit in Image Studio" brings the window to the front.
+- Windows now fit their content and have vertical and horizontal scroll bars when the content does not fit the screen (Clean metadata, Batch, memory); in the Batch window the border between the file list and the preview can be dragged and the two never overlap.
+- Launcher: "Hide launcher at start" is now also in the launcher window. If it was off when the launcher opened and you turn it on and press Start, it asks for confirmation and explains how to bring the launcher back (Preferences > Launcher Settings, Preferences > General Options, or Help > Restart).
+- New menu entry Preferences > Launcher Settings: opens the launcher in "settings only" mode, with the same options but no Start button (it only changes the settings, applied from the next start), so the launch options can be changed without leaving ScreepT.
+- Loading window: only Nano plays, and keeps moving while the application loads (the animation no longer runs on the thread that is busy loading).
+- Images opened in a text editor tab are now a read-only viewer (zoom, pan, details, histogram, view options, copy) with an "Edit in Image Studio" button. The full tool (edits, filters, resize, export, batch) is the Image Studio window.
+- Image Studio side panel redesigned: one section open at a time so everything fits without scroll bars, a badge on each header with what is set inside (format, resized size, adjustments, filters, rotation), compact sliders with the value on the same row, a full width Export button and Apply / Undo / Revert that turn on only when they have something to do.
+- Image Studio adapts to the window: nothing slips under the right edge, the toolbar gives way to the window size, the canvas shrinks freely.
+- Image Studio starts in Nerd mode (complete): all the extra tools above are in the window only, never in the editor tab.
+
 ## 0.9.77 - 2026-11-08
 > Animated guide header, quicker cats
 

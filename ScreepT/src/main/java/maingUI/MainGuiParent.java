@@ -158,6 +158,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmRestartAsAdmin;
 	CustomJmenuItem mntmUserDocumentation;
 	CustomJmenuItem mntmGenOpt;
+	CustomJmenuItem mntmLauncherSettings;
 	CustomJmenuItem mntmCustomizeUIView;
 	public CustomJmenuItem mntmFullScreenMode;
 	public CustomJmenuItem mntmImmersiveMode;
@@ -360,6 +361,8 @@ public class MainGuiParent {
 		// live CPU/RAM usage, next to the global toggles
 		menuBar.add(javaVersionLabel);
 		menuBar.add(resourceUsageLabel);
+		// pencil right next to the maximum memory of ScreepT (not of the PC): change it, saved in the launcher settings
+		resourceUsageLabel.setMemoryEditAction(() -> screept.gui.frames.MemorySettingsDialog.show(MainGUI.mainFrameScreept));
 
 		for(int i = mntmTopRightToggles.size() - 1; i >= 0; i--) {
 			menuBar.add(mntmTopRightToggles.get(i));
@@ -388,6 +391,7 @@ public class MainGuiParent {
 
 			mnPreferences.add(mntmCustomizeUIView);
 			mnPreferences.add(mntmGenOpt);
+			mnPreferences.add(mntmLauncherSettings);
 			mnPreferences.add(mntmFullScreenMode);
 			mnPreferences.add(mntmImmersiveMode);
 
@@ -551,6 +555,7 @@ public class MainGuiParent {
 		// PREFERENCES SECTION
 		mntmCustomizeUIView.setFont(menuItemFont);
 		mntmGenOpt.setFont(menuItemFont);
+		mntmLauncherSettings.setFont(menuItemFont);
 		mntmFullScreenMode.setFont(menuItemFont);
 		mntmImmersiveMode.setFont(menuItemFont);
 
@@ -648,6 +653,7 @@ public class MainGuiParent {
 		// preferences submenu
 		mntmCustomizeUIView.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GUI_OPT));
 		mntmGenOpt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_OPT));
+		mntmLauncherSettings.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_OPT));
 		mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPAND));
 		mntmImmersiveMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMMERSIVE));
 

@@ -266,7 +266,7 @@ public class TextEditor extends ModulePanel {
 		splitPaneTreeAndVerticalSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPaneTreeAndVerticalSplit.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 
-		leftFileTree = new JTree(new FileTreeModel(new File(currentConf.getTextEditorOpt().defaultWorkspacePath)));
+		leftFileTree = new gui.commons.treeutils.LevelsTree(new FileTreeModel(new File(currentConf.getTextEditorOpt().defaultWorkspacePath)));
 		leftFileTree.setDragEnabled(true);
 		leftFileTree.setTransferHandler(new FileNamedTreeTransferHandler(MainGUI.dialogHelper, () -> {
 			textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);

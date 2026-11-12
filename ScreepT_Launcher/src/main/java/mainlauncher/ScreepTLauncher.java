@@ -104,6 +104,11 @@ public class ScreepTLauncher {
 
 	public static boolean ignoreWarnings = false;
 
+	/** First argument that opens the launcher only to change its settings (from the application): no start of ScreepT */
+	public static final String ARG_SETTINGS_ONLY = "--settings-only";
+	/** True in "settings only" mode: the launcher cannot start ScreepT and leaves the running application alone */
+	public static boolean settingsOnly = false;
+
 	public static final String END_ARGS_SECTION = "###_END_SECTION";
 	private final static String arch32OR64 = String.valueOf(SysUtils.findIf32or64());
 	public static final Dimension screenSize = GuiUtils.getScreenSize();
@@ -141,6 +146,11 @@ public class ScreepTLauncher {
 			System.exit(1);
 		}
 
+		if (args.length > 0 && ARG_SETTINGS_ONLY.equals(args[0])) {
+			settingsOnly = true;
+			args = new String[0];
+		}
+
 		logger.setLoggerAvailable(false);
 		WindowIcons.install(() -> ImagesPathConfigurator.MAIN_APP_ICON);
 		ARGS = args;
@@ -153,13 +163,15 @@ public class ScreepTLauncher {
 
 		checkIfStandaloneCommand();
 
-		checkAlreadyRunning();
+		if (!settingsOnly) {
+			checkAlreadyRunning();
+		}
 
 		GeneralConfig.initLazyGeneralConfig();
 
 		// FAST START: with "hide launcher at start" the starter written by the last clean launch is reused, without building the launcher.
 		// The full launcher (below) runs when the starter is missing or outdated, or the application does not come up.
-		if (ARGS.length == 0 && GeneralConfig.LICENSE_ACCEPTED) {
+		if (!settingsOnly && ARGS.length == 0 && GeneralConfig.LICENSE_ACCEPTED) {
 			iniFileManager.initFromINIFile();
 			if (iniFileManager.isHiddenForThisStart()) {
 				try {
@@ -217,7 +229,9 @@ public class ScreepTLauncher {
 
 		loaderGraphics.setVisible(true);
 		loaderGraphics.indeterminate(false, "Deleting pending updates/plugins files to remove... ");
-		startPendingPluginsCleanerThread();
+		if (!settingsOnly) {
+			startPendingPluginsCleanerThread();
+		}
 
 		JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR + "lib;\"";
 
@@ -286,7 +300,7 @@ public class ScreepTLauncher {
 		// present -> launch directly
 		// NB incompatible jvm is potential blocking cause for medium user, so by
 		// default when jvm is "warning" launcher panel will be prompted
-		if (!JvmHelper.warningJVM && criticalDependenciesOK && !ExistingStarterReuse.fastStartFailed
+		if (!settingsOnly && !JvmHelper.warningJVM && criticalDependenciesOK && !ExistingStarterReuse.fastStartFailed
 				&& (iniFileManager.isHiddenForThisStart() || ARGS.length != 0)) {
 
 			appLogEnd();
@@ -312,7 +326,7 @@ public class ScreepTLauncher {
 		// GUI launcher initialization
 		launcherMainFrame = new LauncherMainPanel("ScreepT Launcher", this);
 
-		if (JvmHelper.warningJVM) {
+		if (JvmHelper.warningJVM && !settingsOnly) {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
@@ -335,7 +349,7 @@ public class ScreepTLauncher {
 			}
 		});
 		// IF PROBLEMS WITH DEPENDENCIES LIST CONTAINS SOME ELEMENTS
-		if (missingDependenciesList.size() != 0 && (iniFileManager.showInstallOptions && !criticalDependenciesOK)) {
+		if (!settingsOnly && missingDependenciesList.size() != 0 && (iniFileManager.showInstallOptions && !criticalDependenciesOK)) {
 			launcherMainFrame.missingDependenciesPanel = new DependenciesManagerPanel("Check missing dependencies", launcherMainFrame);
 			launcherMainFrame.missingDependenciesPanel.setVisible(true);
 			launcherMainFrame.missingDependenciesPanel.requestFocus();

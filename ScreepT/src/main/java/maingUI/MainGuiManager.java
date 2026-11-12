@@ -506,6 +506,44 @@ public class MainGuiManager {
 		}
 	}
 
+	private static Process launcherSettingsProcess;
+
+	/**
+	 * Opens the launcher in "settings only" mode (it cannot start ScreepT): the launch options can be changed from the
+	 * application, and apply from the next start. Only one such window at a time.
+	 */
+	public static void openLauncherSettings() {
+		try {
+			if (launcherSettingsProcess != null && launcherSettingsProcess.isAlive()) {
+				MainGuiUtils.logger.info("Launcher settings already open");
+				return;
+			}
+			File launcherJar = new File("ScreepT_Launcher.jar");
+			if (!launcherJar.isFile()) {
+				javax.swing.JOptionPane.showMessageDialog(MainGUI.mainFrameScreept, "ScreepT_Launcher.jar was not found in the application folder.",
+						"Launcher Settings", javax.swing.JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			boolean windows = File.separatorChar == '\\';
+			String java = System.getProperty("java.home") + File.separator + "bin" + File.separator + (windows ? "javaw.exe" : "java");
+			if (!new File(java).isFile()) {
+				java = "java";
+			}
+			MainGuiUtils.logger.info("Opening the launcher in settings-only mode ...");
+			// the output of the launcher goes to a file: nobody reads the pipes of the child, and when they fill up (the launcher
+			// writes a lot while it lists the Javas) the launcher freezes
+			File log = new File(System.getProperty("java.io.tmpdir"), "screept_launcher_settings.log");
+			ProcessBuilder builder = new ProcessBuilder(java, "-Dsun.java2d.ddscale=false", "-Dsun.java2d.noddraw=true", "-Dsun.java2d.uiScale=1",
+					"-Dfile.encoding=utf8", "-Xmx256m", "-Xms128m", "-jar", launcherJar.getName(), "--settings-only");
+			builder.redirectErrorStream(true);
+			builder.redirectOutput(ProcessBuilder.Redirect.to(log));
+			builder.redirectInput(ProcessBuilder.Redirect.from(new File(windows ? "NUL" : "/dev/null")));
+			launcherSettingsProcess = builder.start();
+		} catch (Exception e) {
+			MainGuiUtils.logger.error("Cannot open the launcher settings, an error occurred!", e);
+		}
+	}
+
 	public static void checkUpdatesWaitingForInstall() {
 		try {
 			if (MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.get()) {

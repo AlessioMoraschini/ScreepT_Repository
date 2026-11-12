@@ -82,6 +82,9 @@ public final class HomeTerminalView {
 	private long lastInteraction;
 	private int scroll;
 	private boolean attached;
+	/** Where the console box and the one line hint were last painted: the cats must never cover them */
+	private volatile java.awt.Rectangle consoleRect;
+	private volatile java.awt.Rectangle hintRect;
 
 	private List<Row> historyRows = new ArrayList<>();
 	private int rowsVersion = -1;
@@ -156,6 +159,12 @@ public final class HomeTerminalView {
 	}
 
 	/** True when the console hides part of the home image (the home panel may dim its glyphs accordingly) */
+	/** Rectangle with the text the user types (the console while it is open, the hint line otherwise), in the coordinates of the panel */
+	public java.awt.Rectangle promptBounds() {
+		java.awt.Rectangle r = overlay > 0.05f ? consoleRect : hintRect;
+		return r == null ? null : new java.awt.Rectangle(r);
+	}
+
 	public float overlayAmount() {
 		return overlay;
 	}
@@ -199,6 +208,7 @@ public final class HomeTerminalView {
 		int x = margin + fm.stringWidth(HomeTerminalSession.PROMPT);
 		g.setColor(SYSTEM);
 		g.drawString((blink ? "_ " : "  ") + "type a question, or \"help\"", x, y);
+		hintRect = new java.awt.Rectangle(margin, y - fm.getAscent(), x - margin + fm.stringWidth("_ type a question, or \"help\""), fm.getHeight());
 	}
 
 	private void paintConsole(Graphics2D g, int width, int height, boolean blink) {
@@ -244,6 +254,7 @@ public final class HomeTerminalView {
 		int boxHeight = visible * lineHeight + 2 * pad;
 		int boxX = margin;
 		int boxY = height - margin - boxHeight;
+		consoleRect = new java.awt.Rectangle(boxX, boxY, boxWidth, boxHeight);
 
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, overlay));
 		g.setColor(new Color(4, 12, 12, BOX_ALPHA));

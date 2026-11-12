@@ -596,6 +596,7 @@ public class CustomTabbedEditor implements ITabsManager {
 			mainTabList.setSelectedIndex(newIndex);
 			newTabNode.unsaved = false;
 			content.setChangeListener(() -> SwingUtilities.invokeLater(() -> updateSavedLabelNTab(geIndexOfTabObj(newTabNode))));
+			content.setCloseHandler(() -> SwingUtilities.invokeLater(() -> removeTab(geIndexOfTabObj(newTabNode))));
 			addToHystory(loadedTabObj);
 			updateSavedLabelNTab(newIndex);
 			content.onSelected();

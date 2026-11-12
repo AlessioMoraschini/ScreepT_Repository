@@ -1101,6 +1101,14 @@ public class MainGUI extends MainGuiParent {
 			}
 		});
 
+		// the launcher in "settings only" mode: its options (Java, memory, log level, hide at start...) without leaving ScreepT
+		mntmLauncherSettings = new CustomJmenuItem(new AbstractAction("Launcher Settings") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainGuiManager.openLauncherSettings();
+			}
+		});
+
 		// open in a new window - KEYGEN
 		mntmgenerateKeyImageSub = new CustomJmenuItem(new AbstractAction("Generate Key Image") {
 			@Override

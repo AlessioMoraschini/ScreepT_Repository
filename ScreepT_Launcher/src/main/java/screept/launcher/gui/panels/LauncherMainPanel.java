@@ -39,6 +39,8 @@ import javax.swing.JLabel;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,6 +53,7 @@ import java.awt.Dialog.ModalityType;
 import java.awt.Image;
 import javax.swing.BorderFactory;
 import screept.launcher.gui.utils.LauncherTheme;
+import screept.launcher.utils.IniFileManager;
 import screept.launcher.gui.utils.LauncherBackdropPanel;
 
 public class LauncherMainPanel extends JFrame{
@@ -85,6 +88,9 @@ public class LauncherMainPanel extends JFrame{
 	private static final int HEADER_HEIGHT = 74;
 	private static final int CONTROLS_HEIGHT = 176;
 	private JButton btnNetworkConfig;
+	private JCheckBox chkHideLauncher;
+	/** "Hide launcher at start" as it was when the launcher opened */
+	private boolean initialHide;
 	
 	public LauncherMainPanel(String frameTitle, ScreepTLauncher launcher) {
 		
@@ -99,7 +105,7 @@ public class LauncherMainPanel extends JFrame{
 
 		GuiUtils.centerFrame(this, W, H);
 		this.setResizable(false);
-		this.setAlwaysOnTop(true);
+		this.setAlwaysOnTop(!ScreepTLauncher.settingsOnly);
 		
 		// animated pixel art background (teal code rain drawing the ScreepT icon, like the home page)
 		mainPanel = new LauncherBackdropPanel(HEADER_HEIGHT, CONTROLS_HEIGHT);
@@ -115,7 +121,7 @@ public class LauncherMainPanel extends JFrame{
 		lblScreeptLauncher.setForeground(new Color(0xE8FFFC));
 		header.add(lblScreeptLauncher, "cell 0 0");
 
-		JLabel lblWelcomeToScreept = new JLabel("Choose your preferences, or just start :)");
+		JLabel lblWelcomeToScreept = new JLabel(ScreepTLauncher.settingsOnly ? "Launcher settings: they apply from the next start of ScreepT" : "Choose your preferences, or just start :)");
 		lblWelcomeToScreept.setForeground(new Color(0x7FBFB8));
 		header.add(lblWelcomeToScreept, "cell 0 1");
 
@@ -149,8 +155,8 @@ public class LauncherMainPanel extends JFrame{
 		btnNetworkConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
 		controls.add(btnNetworkConfig, "cell 2 0,h 36!,w 48!");
 
-		btnStartScreept = new JButton("Start ScreepT");
-		btnStartScreept.setToolTipText("Start ScreepT with the current options");
+		btnStartScreept = new JButton(ScreepTLauncher.settingsOnly ? "Close" : "Start ScreepT");
+		btnStartScreept.setToolTipText(ScreepTLauncher.settingsOnly ? "Close the launcher settings (nothing is started)" : "Start ScreepT with the current options");
 		btnStartScreept.setFont(btnStartScreept.getFont().deriveFont(Font.BOLD, 24f));
 		btnStartScreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		controls.add(btnStartScreept, "cell 0 1 3 1,grow,h 66!");
@@ -158,7 +164,22 @@ public class LauncherMainPanel extends JFrame{
 		lblAmDesign = new JLabel("A.M. Design & Development");
 		lblAmDesign.setForeground(new Color(0x6C8F8B));
 		lblAmDesign.setFont(lblAmDesign.getFont().deriveFont(11f));
-		controls.add(lblAmDesign, "cell 0 2 3 1,alignx left,aligny bottom");
+		initialHide = ScreepTLauncher.iniFileManager.hideNStartDirect;
+		chkHideLauncher = new JCheckBox("Hide launcher at start");
+		chkHideLauncher.setOpaque(false);
+		chkHideLauncher.setForeground(new Color(0xBFE8E3));
+		chkHideLauncher.setSelected(initialHide);
+		chkHideLauncher.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chkHideLauncher.setToolTipText("<html>ScreepT starts directly, without showing this window.<br>"
+				+ "To bring the launcher back: in ScreepT, Preferences &gt; Launcher Settings.</html>");
+		// in the settings-only window nothing is started, so the choice is saved right away
+		chkHideLauncher.addActionListener(e -> {
+			if (ScreepTLauncher.settingsOnly) {
+				writeHideFlag(chkHideLauncher.isSelected());
+			}
+		});
+		controls.add(chkHideLauncher, "cell 0 2,alignx left,aligny bottom");
+		controls.add(lblAmDesign, "cell 1 2 2 1,alignx right,aligny bottom");
 		mainPanel.add(controls, "cell 0 2,growx");
 
 		addHandlers();
@@ -185,6 +206,13 @@ public class LauncherMainPanel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				if (ScreepTLauncher.settingsOnly) {
+					LAUNCHER_GUI.dispatchEvent(new WindowEvent(LAUNCHER_GUI, WindowEvent.WINDOW_CLOSING));
+					return;
+				}
+				if (!confirmHideChoice()) {
+					return;
+				}
 				SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 				try {
 					Thread.sleep(400);
@@ -231,6 +259,46 @@ public class LauncherMainPanel extends JFrame{
 		});
 	}
 	
+	private void writeHideFlag(boolean hide) {
+		ScreepTLauncher.iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "flagHideNStartDirect", String.valueOf(hide));
+		ScreepTLauncher.iniFileManager.hideNStartDirect = hide;
+		initialHide = hide;
+	}
+
+	/**
+	 * Applies the "Hide launcher at start" choice when Start is pressed. Turning it on (it was off when the launcher opened)
+	 * asks for confirmation and explains how to bring the launcher back.
+	 *
+	 * @return false if the user cancelled the start
+	 */
+	private boolean confirmHideChoice() {
+		boolean wantHide = chkHideLauncher.isSelected();
+		if (wantHide == initialHide) {
+			return true;
+		}
+		if (!wantHide) {
+			writeHideFlag(false);
+			return true;
+		}
+		String text = "<html><b>Hide the launcher from now on?</b><br><br>"
+				+ "ScreepT will start directly, without showing this window.<br><br>"
+				+ "To bring the launcher back:<br>"
+				+ "&bull; in ScreepT open <b>Preferences &gt; Launcher Settings</b> and untick <i>Hide launcher at start</i>;<br>"
+				+ "&bull; or open <b>Preferences &gt; General Options</b> and untick <i>Hide launcher at start</i>;<br>"
+				+ "&bull; or use <b>Help &gt; Restart</b>: it asks if the launcher must open this time.</html>";
+		Object[] options = {"Hide and start", "Start, keep showing", "Cancel"};
+		int choice = JOptionPane.showOptionDialog(this, text, "Hide launcher at start", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		if (choice == 0) {
+			writeHideFlag(true);
+			return true;
+		}
+		if (choice == 1) {
+			chkHideLauncher.setSelected(false);
+			return true;
+		}
+		return false;
+	}
+
 	private void setGraphics(){
 		// SW window icon
 		try {

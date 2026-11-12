@@ -44,7 +44,9 @@ public class IniFileManager {
 	public static String MAX_JRE_VERSION = "22"; // default excluded MAX
 	public static String MAX_JRE_VERSION_FULL_COMPATIBILITY = "22"; // default excluded MAX
 	public String GUI_SCALE_ARG_VALUE = "1";
-	public String JVM_MEMORY_OPTIONS = "-Xmx2048m -Xms512m"; // default memory options
+	/** Default maximum memory of ScreepT, in MB (1.5 GB) */
+	public static final long DEFAULT_MAX_MEMORY_MB = 1536;
+	public String JVM_MEMORY_OPTIONS = "-Xmx" + DEFAULT_MAX_MEMORY_MB + "m -Xms512m"; // default memory options
 	public String JVM_STACK_SIZE = "-Xss128m"; // default stack size
 	// main application path default
 	public String MAIN_JAR_FILE = "MainAppToLaunch.jar";
@@ -90,6 +92,7 @@ public class IniFileManager {
 			MIN_JRE_VERSION = (MIN_JVERSION_INI != null)? MIN_JVERSION_INI : MIN_JRE_VERSION;
 			String MEM_JOPTIONS_INI = iniConfigFile.get(INI_JVM_OPT, "memoryArgs");
 			JVM_MEMORY_OPTIONS = (MEM_JOPTIONS_INI != null)? MEM_JOPTIONS_INI : JVM_MEMORY_OPTIONS;
+			migrateMemoryDefault();
 			String MEM_STACK_INI = " -Xss" + iniConfigFile.get(INI_JVM_OPT, "stackSizeArgs")+"m";
 			JVM_STACK_SIZE = (MEM_STACK_INI != null)? MEM_STACK_INI : JVM_STACK_SIZE;
 			
@@ -126,6 +129,45 @@ public class IniFileManager {
 		}
 	}
 	
+	/**
+	 * One time only, at the first start after the update that made 1.5 GB the default: the maximum memory becomes 1.5 GB, or
+	 * the most the PC can give (80% of its memory) if that is less. A marker in the launcher settings makes sure the following
+	 * updates never reset it again, so a value chosen afterwards (for instance with the pencil in the menu bar) is kept.
+	 */
+	private void migrateMemoryDefault() {
+		try {
+			String done = iniConfigFile.get(INI_JVM_OPT, "memoryDefaultMigrated");
+			if (done != null && done.trim().equalsIgnoreCase("true")) {
+				return;
+			}
+			long targetMb = DEFAULT_MAX_MEMORY_MB;
+			java.lang.management.OperatingSystemMXBean os = java.lang.management.ManagementFactory.getOperatingSystemMXBean();
+			if (os instanceof com.sun.management.OperatingSystemMXBean) {
+				long totalMb = ((com.sun.management.OperatingSystemMXBean) os).getTotalPhysicalMemorySize() / (1024L * 1024L);
+				if (totalMb > 0) {
+					targetMb = Math.min(targetMb, Math.max(256, totalMb * 80 / 100));
+				}
+			}
+			String args = JVM_MEMORY_OPTIONS == null ? "" : JVM_MEMORY_OPTIONS;
+			java.util.regex.Matcher max = java.util.regex.Pattern.compile("-Xmx\\d+[mMgG]").matcher(args);
+			args = max.find() ? max.replaceFirst("-Xmx" + targetMb + "m") : ("-Xmx" + targetMb + "m " + args).trim();
+			java.util.regex.Matcher initial = java.util.regex.Pattern.compile("-Xms(\\d+)([mMgG])").matcher(args);
+			if (initial.find()) {
+				long initialMb = Long.parseLong(initial.group(1)) * (initial.group(2).equalsIgnoreCase("g") ? 1024 : 1);
+				if (initialMb > targetMb) {
+					args = initial.replaceFirst("-Xms" + targetMb + "m");
+				}
+			}
+			JVM_MEMORY_OPTIONS = args;
+			iniConfigFile.put(INI_JVM_OPT, "memoryArgs", args);
+			iniConfigFile.put(INI_JVM_OPT, "memoryDefaultMigrated", "true");
+			iniConfigFile.store();
+			logger.info("Maximum memory set once to " + targetMb + " MB: " + args);
+		} catch (Exception e) {
+			logger.error("Cannot apply the default memory", e);
+		}
+	}
+
 	/** True when the launcher must not be shown at this start: hidden by configuration and not asked once by the application */
 	public boolean isHiddenForThisStart() {
 		return hideNStartDirect && !showLauncherOnce;

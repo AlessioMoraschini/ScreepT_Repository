@@ -19,12 +19,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.awt.geom.RoundRectangle2D;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.Timer;
 
 import org.apache.log4j.Logger;
 
@@ -35,7 +35,9 @@ import various.common.light.utility.string.StringWorker;
 /**
  * Loading panel of the launcher and of the application: the ScreepT image, Feo and Nano playing on the floor with a ball
  * of yarn (the pixel-art cats of the easter egg, with elastic physics), the status text and a smooth animated progress
- * bar. Everything is painted here and animated by one timer that stops when the window closes.
+ * bar. Everything is painted here. The animation does NOT run on the Swing thread: a dedicated thread renders every
+ * frame in a back buffer and draws it on the window directly, so Feo and Nano keep moving also while the event
+ * thread is busy loading the application. The thread stops when the window closes.
  * The {@link #progressBar} stays as the model of the progress (value, indeterminate) for the callers.
  */
 public class LauncherLoaderPanel extends JPanel{
@@ -52,7 +54,10 @@ public class LauncherLoaderPanel extends JPanel{
 	public JProgressBar progressBar;
 	private final LauncherLoaderFrame parentFrame;
 	private final CatsPlayground cats;
-	private final Timer animation;
+	private volatile boolean running = true;
+	private final BufferedImage[] buffers = new BufferedImage[2];
+	private volatile BufferedImage front;
+	private int nextBuffer;
 	private final Font textFont = new Font("Segoe UI", Font.BOLD, 12);
 
 	private volatile String statusText = "Loading...";
@@ -75,19 +80,31 @@ public class LauncherLoaderPanel extends JPanel{
 		progressBar = new JProgressBar();
 		int scale = LauncherLoaderFrame.W >= 500 ? 3 : 2;
 		cats = new CatsPlayground(scale);
+		cats.setFeoVisible(false); // in the loading window only Nano plays
 		cats.setArea(26, Math.max(200, LauncherLoaderFrame.W - 52), Math.max(14, LauncherLoaderFrame.H / 12));
 
-		animation = new Timer(33, e -> {
-			cats.tick();
-			float target = progressBar.getValue() / 100f;
-			shownProgress += (target - shownProgress) * 0.12f;
-			if (Math.abs(target - shownProgress) < 0.002f) {
-				shownProgress = target;
+		Thread animation = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (running) {
+					long start = System.nanoTime();
+					try {
+						stepAndRender();
+					} catch (Throwable t) {
+						// a failed frame never stops the loader
+					}
+					long pause = 33 - (System.nanoTime() - start) / 1000000L;
+					if (pause > 0) {
+						try {
+							Thread.sleep(pause);
+						} catch (InterruptedException e) {
+							return;
+						}
+					}
+				}
 			}
-			shine = (shine + 0.018f) % 1.6f;
-			bounce = (bounce + 0.014f) % 2f;
-			repaint();
-		});
+		}, "launcher-loader-animation");
+		animation.setDaemon(true);
 		animation.start();
 
 		logger.info(this.getClass().getName() + " Started");
@@ -95,16 +112,63 @@ public class LauncherLoaderPanel extends JPanel{
 
 	@Override
 	public void removeNotify() {
-		animation.stop();
+		running = false;
 		super.removeNotify();
+	}
+
+	/** One animation step and one frame: runs on the animation thread, never on the Swing thread */
+	private void stepAndRender() {
+		cats.tick();
+		float target = progressBar.getValue() / 100f;
+		shownProgress += (target - shownProgress) * 0.12f;
+		if (Math.abs(target - shownProgress) < 0.002f) {
+			shownProgress = target;
+		}
+		shine = (shine + 0.018f) % 1.6f;
+		bounce = (bounce + 0.014f) % 2f;
+
+		int w = getWidth();
+		int h = getHeight();
+		if (w <= 0 || h <= 0) {
+			return;
+		}
+		BufferedImage buffer = buffers[nextBuffer];
+		if (buffer == null || buffer.getWidth() != w || buffer.getHeight() != h) {
+			buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+			buffers[nextBuffer] = buffer;
+		}
+		Graphics2D g = buffer.createGraphics();
+		try {
+			renderFrame(g, w, h);
+		} finally {
+			g.dispose();
+		}
+		front = buffer;
+		nextBuffer ^= 1;
+		// straight on the window: it shows also while the Swing thread is blocked
+		Graphics screen = getGraphics();
+		if (screen != null) {
+			try {
+				screen.drawImage(buffer, 0, 0, null);
+			} finally {
+				screen.dispose();
+			}
+		}
+		repaint();
 	}
 
 	@Override
 	protected void paintComponent(Graphics g0) {
 		super.paintComponent(g0);
-		Graphics2D g = (Graphics2D) g0.create();
-		int w = getWidth();
-		int h = getHeight();
+		BufferedImage frame = front;
+		if (frame != null) {
+			g0.drawImage(frame, 0, 0, null);
+		} else if (backgroundImage != null) {
+			g0.drawImage(backgroundImage, 0, 0, null);
+		}
+	}
+
+	private void renderFrame(Graphics2D g, int w, int h) {
 		g.drawImage(backgroundImage, 0, 0, null);
 
 		// darkens the lower part, so cats and text read well on top of the image
@@ -175,7 +239,6 @@ public class LauncherLoaderPanel extends JPanel{
 		// thin border of the window
 		g.setColor(new Color(255, 255, 255, 40));
 		g.drawRect(0, 0, w - 1, h - 1);
-		g.dispose();
 	}
 
 	private static Color lighter(Color c) {
@@ -217,7 +280,7 @@ public class LauncherLoaderPanel extends JPanel{
 				} catch (InterruptedException e) {
 					logger.warn("Cannot wait at end of loading");
 				}
-				animation.stop();
+				running = false;
 				parentFrame.dispose();
 			}
 			repaint();

@@ -63,6 +63,38 @@ public final class LauncherIniOptions {
 		return write(KEY_SHOW_LAUNCHER_ONCE, once);
 	}
 
+	/** Memory options of the launcher (like "-Xmx2048m -Xms512m"), or null when the launcher configuration cannot be read */
+	public static String getMemoryArgs() {
+		try {
+			File iniFile = new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH);
+			if (!iniFile.isFile()) {
+				return null;
+			}
+			String value = new Wini(iniFile).get(IniFileManager.INI_JVM_OPT, "memoryArgs");
+			return value == null ? "" : value.trim();
+		} catch (Exception e) {
+			logger.error("Cannot read the launcher configuration", e);
+			return null;
+		}
+	}
+
+	/** Saves the memory options of the launcher: they apply from the next start */
+	public static boolean setMemoryArgs(String args) {
+		try {
+			File iniFile = new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH);
+			if (!iniFile.isFile()) {
+				return false;
+			}
+			Wini ini = new Wini(iniFile);
+			ini.put(IniFileManager.INI_JVM_OPT, "memoryArgs", args);
+			ini.store();
+			return true;
+		} catch (IOException e) {
+			logger.error("Exception happened writing launcher configuration!", e);
+			return false;
+		}
+	}
+
 	private static boolean write(String key, boolean value) {
 		try {
 			File iniFile = new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH);
