@@ -120,6 +120,13 @@ public class LogSearchFrame extends JFrame {
 
 	private final JLabel lblName = new JLabel("LogSearch");
 	private final JLabel lblPath = new JLabel(" ");
+	private final JLabel lblDetails = new JLabel(" ");
+	private final javax.swing.JButton btnOpenFile = new javax.swing.JButton("Open file...");
+	/** The only LogSearch window: opening a file again reuses it */
+	private static LogSearchFrame current;
+	private File loadedFile;
+	private String lastDetails = "";
+	private boolean detailsDone;
 	private final Pill pillSize = new Pill();
 	private final Pill pillLines = new Pill();
 	private final SearchField txtSearch = new SearchField(30);
@@ -156,18 +163,39 @@ public class LogSearchFrame extends JFrame {
 		}
 	};
 
-	/** Opens a LogSearch window on the file, or asks for one when {@code file} is null */
+	/**
+	 * Opens the LogSearch window. With a file it is loaded at once (text editor); without one the window opens empty and the Open
+	 * file button at the top chooses it. There is one window only: when it is already open it is reused and brought to the front.
+	 */
 	public static void open(Component parent, File file) {
-		File target = file;
-		if (target == null) {
-			target = new GenericFileChooserDialog(null).fileRead(parent);
-			if (target == null) { // cancelled by user
-				return;
-			}
+		LogSearchFrame frame = current;
+		if (frame == null || !frame.isDisplayable()) {
+			frame = new LogSearchFrame(parent);
+			current = frame;
+			frame.showEmptyState();
+			frame.setVisible(true);
 		}
-		LogSearchFrame frame = new LogSearchFrame(parent);
-		frame.load(target);
-		frame.setVisible(true);
+		if (file != null) {
+			frame.load(file);
+		}
+		frame.setState(java.awt.Frame.NORMAL);
+		frame.toFront();
+		frame.requestFocus();
+	}
+
+	private void showEmptyState() {
+		lblName.setText("LogSearch");
+		lblPath.setText("No file loaded: use Open file... (or drop a file here)");
+		lblDetails.setText(" ");
+		pillSize.setText("");
+		pillLines.setText("");
+	}
+
+	private void chooseFile() {
+		File chosen = new GenericFileChooserDialog(null).fileRead(this);
+		if (chosen != null) { // else cancelled by user
+			load(chosen);
+		}
 	}
 
 	/** Viewer for an editor tab: the same LogSearch panel, without a window (the frame is never shown) */
@@ -380,6 +408,9 @@ public class LogSearchFrame extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
+				if (current == LogSearchFrame.this) {
+					current = null;
+				}
 				release();
 			}
 		});
@@ -395,12 +426,23 @@ public class LogSearchFrame extends JFrame {
 		JPanel names = new JPanel(new BorderLayout());
 		names.setOpaque(false);
 		names.add(lblName, BorderLayout.NORTH);
-		names.add(lblPath, BorderLayout.SOUTH);
+		JPanel paths = new JPanel(new BorderLayout());
+		paths.setOpaque(false);
+		lblDetails.setFont(lblDetails.getFont().deriveFont(Font.PLAIN, 12f));
+		lblDetails.setForeground(muted());
+		paths.add(lblPath, BorderLayout.NORTH);
+		paths.add(lblDetails, BorderLayout.SOUTH);
+		names.add(paths, BorderLayout.SOUTH);
+		btnOpenFile.setToolTipText("Choose the file to load (LogSearch shows one file at a time)");
+		btnOpenFile.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+		btnOpenFile.setFocusable(false);
+		btnOpenFile.addActionListener(e -> chooseFile());
 		JPanel pills = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 6, 2));
 		pills.setOpaque(false);
 		pills.add(pillSize);
 		pills.add(pillLines);
 		pills.add(new Pill("read-only"));
+		pills.add(btnOpenFile);
 		header.add(names, BorderLayout.CENTER);
 		header.add(pills, BorderLayout.EAST);
 		return header;
@@ -420,8 +462,7 @@ public class LogSearchFrame extends JFrame {
 		c.gridy = 0;
 		c.insets = new Insets(0, 0, 0, 4);
 		c.fill = GridBagConstraints.NONE;
-		bar.add(btnOpen, c);
-		c.insets = new Insets(0, 4, 0, 6);
+		c.insets = new Insets(0, 0, 0, 6);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
 		bar.add(txtSearch, c);
@@ -477,12 +518,7 @@ public class LogSearchFrame extends JFrame {
 	////////// ACTIONS ////////////////
 
 	private void wireActions() {
-		btnOpen.onClick(() -> {
-			File chosen = new GenericFileChooserDialog(null).fileRead(this);
-			if (chosen != null) { // else cancelled by user
-				load(chosen);
-			}
-		});
+		btnOpen.onClick(this::chooseFile);
 		txtSearch.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void insertUpdate(DocumentEvent e) {
@@ -659,10 +695,55 @@ public class LogSearchFrame extends JFrame {
 		grepModel.reset();
 		index.startIndexing();
 		setTitle("LogSearch - " + file.getName());
+		loadedFile = file;
+		lastDetails = "";
+		detailsDone = false;
 		lblName.setText(file.getName());
 		lblPath.setText(file.getAbsolutePath());
 		pillSize.setText(humanSize(file.length()));
+		updateDetails();
 		refresh();
+	}
+
+	private static String hex(Color color) {
+		return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+	}
+
+	/** Size, dates, lines and attributes of the loaded file under its path; the line count follows the indexing */
+	private void updateDetails() {
+		File file = loadedFile;
+		LogFileIndex idx = index;
+		if (file == null || idx == null) {
+			return;
+		}
+		String name = "<span style='color:" + hex(muted()) + "'>";
+		String created = "";
+		String modified = "";
+		try {
+			java.nio.file.attribute.BasicFileAttributes attributes = java.nio.file.Files.readAttributes(file.toPath(), java.nio.file.attribute.BasicFileAttributes.class);
+			java.text.DateFormat format = java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT);
+			modified = format.format(new java.util.Date(attributes.lastModifiedTime().toMillis()));
+			created = format.format(new java.util.Date(attributes.creationTime().toMillis()));
+		} catch (IOException | RuntimeException e) {
+			modified = file.lastModified() > 0 ? java.text.DateFormat.getDateTimeInstance().format(new java.util.Date(file.lastModified())) : "?";
+		}
+		String lines = idx.isComplete() ? String.format("%,d", idx.lineCount()) : String.format("%,d ...", idx.lineCount());
+		StringBuilder html = new StringBuilder("<html>");
+		html.append(name).append("Size</span> ").append(humanSize(file.length())).append(" (").append(String.format("%,d", file.length())).append(" bytes)");
+		html.append("  &nbsp;|&nbsp;  ").append(name).append("Modified</span> ").append(modified);
+		if (!created.isEmpty()) {
+			html.append("  &nbsp;|&nbsp;  ").append(name).append("Created</span> ").append(created);
+		}
+		html.append("  &nbsp;|&nbsp;  ").append(name).append("Lines</span> ").append(lines);
+		if (!file.canWrite()) {
+			html.append("  &nbsp;|&nbsp;  ").append(name).append("Attributes</span> read-only file");
+		}
+		html.append("</html>");
+		String text = html.toString();
+		if (!text.equals(lastDetails)) {
+			lastDetails = text;
+			lblDetails.setText(text);
+		}
 	}
 
 	private void rerunIfActive() {
@@ -781,6 +862,10 @@ public class LogSearchFrame extends JFrame {
 		btnGoto.setEnabled(idx != null && idx.lineCount() > 0);
 
 		pillLines.setText(idx == null ? "" : String.format("%,d lines%s", idx.lineCount(), indexing ? " …" : ""));
+		if (indexing || !detailsDone) {
+			updateDetails();
+			detailsDone = !indexing;
+		}
 		boolean levels = idx != null && idx.hasLevels();
 		for (LevelChip chip : chips) {
 			chip.setVisible(levels);
@@ -919,7 +1004,7 @@ public class LogSearchFrame extends JFrame {
 	}
 
 	private void jumpToMatch(boolean forward) {
-		IntList lines = grepModel.matchLines;
+		LineSet lines = grepModel.matchLines;
 		if (lines.size() == 0) {
 			return;
 		}
@@ -1056,15 +1141,16 @@ public class LogSearchFrame extends JFrame {
 		if (target == null) { // cancelled by user
 			return;
 		}
-		final int[] lines = grepModel.matchLines.snapshot();
+		final LineSet lines = grepModel.matchLines;
+		final int lineTotal = lines.size();
 		final LogFileIndex source = index;
-		lblStatus.setText("Exporting " + String.format("%,d", lines.length) + " lines...");
+		lblStatus.setText("Exporting " + String.format("%,d", lineTotal) + " lines...");
 		new SwingWorker<Void, Void>() {
 			@Override
 			protected Void doInBackground() throws Exception {
 				try (BufferedWriter out = Files.newBufferedWriter(target.toPath(), StandardCharsets.UTF_8)) {
-					for (int line : lines) {
-						out.write(source.lineFull(line));
+					for (int i = 0; i < lineTotal; i++) {
+						out.write(source.lineFull(lines.get(i)));
 						out.newLine();
 					}
 				}
@@ -1075,7 +1161,7 @@ public class LogSearchFrame extends JFrame {
 			protected void done() {
 				try {
 					get();
-					lblStatus.setText(String.format("Saved %,d lines to %s", lines.length, target.getName()));
+					lblStatus.setText(String.format("Saved %,d lines to %s", lineTotal, target.getName()));
 				} catch (Exception e) {
 					lblStatus.setText("Cannot save the file: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
 				}
@@ -1227,7 +1313,9 @@ public class LogSearchFrame extends JFrame {
 		private static final long serialVersionUID = 1L;
 		private final IntList entries = new IntList();
 		/** Only the matching lines (no context), in order: what F3 and the export use */
-		final IntList matchLines = new IntList();
+		final LineSet matchLines = new LineSet();
+		/** No context lines: the list is the match list itself, nothing is duplicated */
+		private boolean direct;
 		int matchCount;
 		private int consumed;
 		private int lastAdded = -1;
@@ -1240,6 +1328,9 @@ public class LogSearchFrame extends JFrame {
 
 		@Override
 		public Integer getElementAt(int i) {
+			if (direct) {
+				return i < matchLines.size() ? matchLines.get(i) : -1;
+			}
 			return i < entries.size() ? entries.get(i) : -1;
 		}
 
@@ -1268,7 +1359,10 @@ public class LogSearchFrame extends JFrame {
 			int lines = idx.lineCount();
 			int ctx = current != null ? context : 0;
 			int budget = SYNC_BUDGET;
-			int before = entries.size();
+			if (consumed == 0 && matchCount == 0) {
+				direct = ctx == 0;
+			}
+			int before = direct ? size : entries.size();
 			while (consumed < sourceSize && budget-- > 0) {
 				int line = current != null ? current.results.get(consumed) : consumed;
 				consumed++;
@@ -1277,6 +1371,9 @@ public class LogSearchFrame extends JFrame {
 				}
 				matchCount++;
 				matchLines.add(line);
+				if (direct) {
+					continue;
+				}
 				int from = Math.max(lastAdded + 1, line - ctx);
 				if (ctx > 0 && lastAdded >= 0 && from > lastAdded + 1) {
 					entries.add(-1);
@@ -1287,7 +1384,7 @@ public class LogSearchFrame extends JFrame {
 				}
 				lastAdded = Math.max(lastAdded, to);
 			}
-			int now = entries.size();
+			int now = direct ? matchLines.size() : entries.size();
 			if (now > before) {
 				size = now;
 				fireIntervalAdded(this, before, now - 1);
@@ -1506,13 +1603,16 @@ public class LogSearchFrame extends JFrame {
 			flags = new boolean[Math.max(0, height)];
 			if (height > 0 && total > 0) {
 				if (current != null) {
-					for (int line : current.results.snapshot()) {
-						int y = (int) ((long) line * height / total);
-						if (y >= 0 && y < height && passes(line)) {
-							marks[y]++;
-							maxMark = Math.max(maxMark, marks[y]);
+					final int[] markRows = marks;
+					final int markHeight = height;
+					final int markTotal = total;
+					current.results.forEach(line -> {
+						int y = (int) ((long) line * markHeight / markTotal);
+						if (y >= 0 && y < markHeight && passes(line)) {
+							markRows[y]++;
+							maxMark = Math.max(maxMark, markRows[y]);
 						}
-					}
+					});
 				}
 				for (int line : bookmarks) {
 					int y = (int) ((long) line * height / total);

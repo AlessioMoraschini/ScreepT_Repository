@@ -14,8 +14,12 @@
 - Theme Editor, completely redesigned: searchable list of 60+ elements in groups (editor, highlights, gutter and folding, options, embedded languages, syntax tokens), color chips (click to change, right click to copy / paste a hex color or remove it), bold / italic, click on the code of the preview to jump to its element, unsaved changes marker, Ctrl+S, default themes can be edited too (Save as keeps your version).
 - Image Studio, Crop: with the Crop section open the whole image is shown with the crop on it; drag the corners, the sides or the whole rectangle (thirds and size shown) and the sliders follow in real time.
 - Search files by name: the files of the folder are read once in the background and kept for 5 minutes, so typing is instant; names are matched ignoring case, with * and ? wildcards, and the ones that start with the text come first.
+- Quick notes backup: the new menu button of the drawer saves or updates a backup of all the notes in a folder you choose, and imports them back from a backup file; before replacing the current notes it warns you and offers to back them up first.
+- Text editor footer: the information is grouped in blocks on one row (file, text, caret, selection), names are darker than values, and it shows the size of the file on disk in readable units (KB, MB, GB).
+- LogSearch opened from the Various menu now starts empty: the Open file... button at the top chooses the file, and once loaded the header shows its details (path, size, modified and created dates, lines, read-only). There is only one LogSearch window and one file at a time; opening a file from the text editor still loads it directly.
 
 ### Improved
+- LogSearch is much faster: a 2 GB log (24 million lines) is indexed in about 1.5 seconds and a search takes about 1.5 seconds, plain text and regular expressions alike (they used to take 10 to 35 seconds). The file is read in big pieces by several threads, text searches run directly on the bytes, regular expressions look for their fixed parts first, and memory no longer grows with the number of matches.
 - Switching text editor tab is immediate: theme, options, folding and file checks run when you stop switching. A new tab or a file opened in a new tab already has the theme of the editor (no more white flash).
 - "Show Tabs" explains what it does and now really draws the tab guide lines.
 - The tab size field is wider.

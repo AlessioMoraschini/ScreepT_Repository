@@ -48,7 +48,11 @@ final class LogFileIndex implements Closeable {
 	private int blockCount;
 
 	private volatile int lineCount;
-	private volatile byte[] levels = new byte[1 << 16];
+	/** Two lines per byte (4 bits each): see {@link #encode} */
+	private volatile byte[] levels = new byte[1 << 15];
+	private final java.util.concurrent.atomic.AtomicBoolean stopIndexing = new java.util.concurrent.atomic.AtomicBoolean();
+	private int indexedLines;
+	private int previousLevelCommitted = LogLevel.NONE;
 	private final int[] levelCounts = new int[LogLevel.COUNT];
 	private volatile boolean anyLevel;
 	private volatile long indexedBytes;
@@ -87,7 +91,27 @@ final class LogFileIndex implements Closeable {
 	/** Stored level of the line (see {@link LogLevel}), {@link LogLevel#NONE} when unknown */
 	byte levelByte(int line) {
 		byte[] current = levels;
-		return line >= 0 && line < current.length && line < lineCount ? current[line] : (byte) LogLevel.NONE;
+		int slot = line >> 1;
+		if (line < 0 || slot >= current.length || line >= lineCount) {
+			return (byte) LogLevel.NONE;
+		}
+		return decode((current[slot] >> ((line & 1) << 2)) & 0x0F);
+	}
+
+	/** Nibble: 0-4 level, 5 no level, 6-10 level inherited by a continuation line */
+	private static int encode(byte stored) {
+		int level = LogLevel.level(stored);
+		if (level == LogLevel.NONE) {
+			return 5;
+		}
+		return LogLevel.isContinuation(stored) ? 6 + level : level;
+	}
+
+	private static byte decode(int nibble) {
+		if (nibble == 5 || nibble > 10) {
+			return (byte) LogLevel.NONE;
+		}
+		return nibble > 5 ? (byte) ((nibble - 6) | LogLevel.CONTINUATION) : (byte) nibble;
 	}
 
 	int level(int line) {
@@ -116,41 +140,28 @@ final class LogFileIndex implements Closeable {
 		thread.start();
 	}
 
+	/** Raw verdict of one line, before the inheritance of the stack trace levels is applied */
+	private static final byte RAW_NONE = 0x30;
+	private static final byte RAW_CONTINUATION = 0x20;
+
+	/** One piece of the file: a verdict for each line and where each line starts */
+	private static final class Part {
+		int lines;
+		byte[] raw = new byte[256];
+		int[] starts = new int[256];
+		long offset;
+	}
+
 	private void buildIndex() {
-		try (InputStream in = new FileInputStream(file)) {
-			byte[] buffer = new byte[1 << 20];
-			byte[] head = new byte[HEAD];
-			int headLength = 0;
-			int previousLevel = LogLevel.NONE;
-			long position = 0;
-			long lines = 0;
-			boolean lineStart = true;
-			int read;
-			while (!closed && lines < Integer.MAX_VALUE && (read = in.read(buffer)) > 0) {
-				for (int i = 0; i < read; i++) {
-					if (lineStart) {
-						if (lines % BLOCK == 0) {
-							addBlockOffset(position + i);
-						}
-						lines++;
-						lineStart = false;
-						headLength = 0;
-					}
-					byte current = buffer[i];
-					if (current == '\n') {
-						lineStart = true;
-						previousLevel = finishLine(head, headLength, (int) (lines - 1), previousLevel);
-					} else if (headLength < HEAD) {
-						head[headLength++] = current;
-					}
+		try {
+			ChunkScan.run(file, () -> new ChunkScan.Task() {
+				private final byte[] head = new byte[HEAD];
+
+				@Override
+				public Object process(byte[] data, int len, long offset, boolean unterminated) {
+					return analyse(data, len, offset, head);
 				}
-				position += read;
-				indexedBytes = position;
-				lineCount = (int) Math.min(lines, Integer.MAX_VALUE);
-			}
-			if (!lineStart && lines > 0) {
-				finishLine(head, headLength, (int) (lines - 1), previousLevel);
-			}
+			}, (partial, end) -> commit((Part) partial, end), stopIndexing);
 		} catch (IOException e) {
 			// a file that cannot be read further just stays as indexed so far
 		} finally {
@@ -159,26 +170,70 @@ final class LogFileIndex implements Closeable {
 		}
 	}
 
-	/** Stores the level of the line that just ended; returns the level that its continuation lines will inherit */
-	private int finishLine(byte[] head, int length, int line, int previousLevel) {
-		int level = LogLevel.detect(head, length);
-		byte stored;
-		if (level >= 0) {
-			stored = (byte) level;
-			levelCounts[level]++;
-			anyLevel = true;
-		} else if (previousLevel != LogLevel.NONE && LogLevel.looksLikeContinuation(head, length)) {
-			stored = (byte) (previousLevel | LogLevel.CONTINUATION);
-		} else {
-			stored = (byte) LogLevel.NONE;
+	private static Part analyse(byte[] data, int len, long offset, byte[] head) {
+		Part part = new Part();
+		part.offset = offset;
+		int line = 0;
+		int start = 0;
+		while (start < len) {
+			int end = start;
+			while (end < len && data[end] != '\n') {
+				end++;
+			}
+			if (line == part.raw.length) {
+				part.raw = Arrays.copyOf(part.raw, line * 2);
+				part.starts = Arrays.copyOf(part.starts, line * 2);
+			}
+			part.starts[line] = start;
+			int headLength = Math.min(end - start, HEAD);
+			System.arraycopy(data, start, head, 0, headLength);
+			int level = LogLevel.detect(head, headLength);
+			part.raw[line++] = level >= 0 ? (byte) level : LogLevel.looksLikeContinuation(head, headLength) ? RAW_CONTINUATION : RAW_NONE;
+			start = end + 1;
+		}
+		part.lines = line;
+		return part;
+	}
+
+	/** Runs in file order, one piece at a time: applies the stack trace inheritance, stores levels and offsets */
+	private void commit(Part part, long end) {
+		int base = indexedLines;
+		if ((long) base + part.lines >= Integer.MAX_VALUE) {
+			stopIndexing.set(true);
+			return;
 		}
 		byte[] current = levels;
-		if (line >= current.length) {
-			current = Arrays.copyOf(current, Math.max(current.length * 2, line + 1));
-			levels = current;
+		int needed = ((base + part.lines) >> 1) + 1;
+		if (needed > current.length) {
+			current = Arrays.copyOf(current, Math.max(current.length * 2, needed));
 		}
-		current[line] = stored;
-		return LogLevel.level(stored);
+		int previousLevel = previousLevelCommitted;
+		for (int r = 0; r < part.lines; r++) {
+			int line = base + r;
+			if (line % BLOCK == 0) {
+				addBlockOffset(part.offset + part.starts[r]);
+			}
+			byte raw = part.raw[r];
+			byte stored;
+			if (raw >= 0 && raw < LogLevel.COUNT) {
+				stored = raw;
+				levelCounts[raw]++;
+				anyLevel = true;
+			} else if (raw == RAW_CONTINUATION && previousLevel != LogLevel.NONE) {
+				stored = (byte) (previousLevel | LogLevel.CONTINUATION);
+			} else {
+				stored = (byte) LogLevel.NONE;
+			}
+			previousLevel = LogLevel.level(stored);
+			int shift = (line & 1) << 2;
+			int slot = line >> 1;
+			current[slot] = (byte) ((current[slot] & ~(0x0F << shift)) | (encode(stored) << shift));
+		}
+		previousLevelCommitted = previousLevel;
+		indexedLines = base + part.lines;
+		levels = current;
+		indexedBytes = end;
+		lineCount = indexedLines;
 	}
 
 	private void addBlockOffset(long offset) {
@@ -307,6 +362,7 @@ final class LogFileIndex implements Closeable {
 	@Override
 	public void close() {
 		closed = true;
+		stopIndexing.set(true);
 		try {
 			synchronized (reader) {
 				reader.close();

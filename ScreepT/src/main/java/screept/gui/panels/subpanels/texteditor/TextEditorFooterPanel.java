@@ -1,7 +1,7 @@
 /**
  *
  * =========================================================================================
- *  Copyright (C) 2019-2020
+ *  Copyright (C) 2019-2026
  *
  *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
  * =========================================================================================
@@ -12,9 +12,11 @@
 package screept.gui.panels.subpanels.texteditor;
 
 import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,13 +31,23 @@ import javax.swing.border.LineBorder;
 
 import initializer.configs.impl.INItializer;
 import net.miginfocom.swing.MigLayout;
-import resources.GeneralConfig;
 import screept.gui.panels.TextEditor;
 import screept.gui.utils.texteditor.TextEditorUtils;
 import various.common.light.gui.GuiUtils;
 
+/**
+ * Bottom bar of the text editor, always on one row: the current file (it takes the space that is left), then framed blocks
+ * that group the information (file: charset, EOL, size on disk; text: lines, length; caret: line, column, position;
+ * selection), then the messages. Names are darker than values, so a value stands out at a glance.
+ */
 public class TextEditorFooterPanel extends JPanel{
 	private static final long serialVersionUID = 6053593284206473287L;
+
+	/** Names are a softer gray than the values (the bar is gray) */
+	private static final Color NAME_COLOR = new Color(185, 185, 185);
+	private static final Color VALUE_COLOR = Color.WHITE;
+	private static final Font NAME_FONT = new Font("Segoe UI", Font.PLAIN, 11);
+	private static final Font VALUE_FONT = new Font("Segoe UI", Font.BOLD, 12);
 
 	public TextEditor parent;
 	public TextEditorUtils parentUtils;
@@ -47,10 +59,12 @@ public class TextEditorFooterPanel extends JPanel{
 	public JLabel lblCurrentFileLBL;
 	public JLabel labelTotLines;
 	public JLabel labelTotalChars;
+	public JLabel labelFileSize;
 	public JLabel labelSelectionLength;
 	public JLabel labelCharset;
 	public JLabel dynLblTotLines;
 	public JLabel dynLblTotChars;
+	public JLabel dynLblFileSize;
 	public JLabel dynLblSelLength;
 	public JLabel dynLabelCharset;
 	public JLabel lblColumn;
@@ -74,12 +88,12 @@ public class TextEditorFooterPanel extends JPanel{
 
 		setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		setBackground(Color.GRAY);
-		setLayout(new MigLayout("fill,insets 3, hidemode 3", "[][50px,grow][50px][][::40px][:50px:120px][][:30px:30px][][:45px:90px][][:50px:120px][][:20px:120px][:60px:120px][][:60px:110px][][:20px:120px][][:50px:120px][grow][70px:n][]", "[fill]"));
+		setLayout(new MigLayout("fill,insets 3, hidemode 3, gapx 4", "[][40:200:,grow,fill][][][][][][grow][]", "[fill]"));
 
 		lblCurrentFileLBL = new JLabel(" Current file:");
 		add(lblCurrentFileLBL, "cell 0 0,growy");
-		lblCurrentFileLBL.setForeground(SystemColor.controlHighlight);
-		lblCurrentFileLBL.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
+		lblCurrentFileLBL.setForeground(NAME_COLOR);
+		lblCurrentFileLBL.setFont(NAME_FONT);
 
 		lblCurrentFile = new JTextField("\\*.txt");
 		lblCurrentFile.setMinimumSize(new Dimension(40, 22));
@@ -97,101 +111,59 @@ public class TextEditorFooterPanel extends JPanel{
 		rdbtnShowCompletePath.setSelected(true);
 		rdbtnShowCompletePath.setForeground(Color.WHITE);
 
-		labelCharset = new JLabel("Charset:");
-		labelCharset.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		labelCharset.setHorizontalTextPosition(SwingConstants.RIGHT);
-		labelCharset.setHorizontalAlignment(SwingConstants.RIGHT);
-		labelCharset.setForeground(SystemColor.controlHighlight);
-		labelCharset.setFont(new Font("Segoe UI", Font.BOLD, 11));
-		add(labelCharset, "cell 3 0 2 1,alignx right,growy");
+		// block: file
+		Block file = new Block();
+		labelCharset = name("Charset:");
+		dynLabelCharset = value(4);
+		file.pair(labelCharset, dynLabelCharset);
+		lblEol = name("EOL:");
+		dynLblEol = value(4);
+		file.pair(lblEol, dynLblEol);
+		labelFileSize = name("Size:");
+		dynLblFileSize = value(6);
+		file.pair(labelFileSize, dynLblFileSize);
+		add(file, "cell 3 0,growy");
 
-		dynLabelCharset = new JLabel("");
-		dynLabelCharset.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLabelCharset.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		add(dynLabelCharset, "cell 5 0");
+		// block: text
+		Block text = new Block();
+		labelTotLines = name("Lines:");
+		dynLblTotLines = value(7);
+		text.pair(labelTotLines, dynLblTotLines);
+		labelTotalChars = name("Length:");
+		dynLblTotChars = value(8);
+		text.pair(labelTotalChars, dynLblTotChars);
+		add(text, "cell 4 0,growy");
 
-		lblEol = new JLabel("EOL:");
-		lblEol.setHorizontalTextPosition(SwingConstants.RIGHT);
-		lblEol.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblEol.setForeground(SystemColor.controlHighlight);
-		lblEol.setFont(new Font("Segoe UI", Font.BOLD, 11));
-		add(lblEol, "cell 6 0");
+		// block: caret
+		Block caret = new Block();
+		lblLine = name("Sel. line:");
+		dynLblCurrLine = value(4);
+		caret.pair(lblLine, dynLblCurrLine);
+		lblColumn = name("Sel. Column:");
+		dynLblColumn = value(3);
+		caret.pair(lblColumn, dynLblColumn);
+		labelCurrPos = name("Position:");
+		dynLblCurrPos = value(7);
+		caret.pair(labelCurrPos, dynLblCurrPos);
+		add(caret, "cell 5 0,growy");
 
-		dynLblEol = new JLabel("");
-		dynLblEol.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblEol.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		add(dynLblEol, "cell 7 0");
-
-		labelTotLines = new JLabel("Lines:");
-		labelTotLines.setForeground(SystemColor.controlHighlight);
-		labelTotLines.setFont(new Font("Segoe UI", Font.BOLD, 11));
-		add(labelTotLines, "cell 8 0,alignx right,aligny center");
-
-		dynLblTotLines = new JLabel("");
-		dynLblTotLines.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblTotLines.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		add(dynLblTotLines, "cell 9 0");
-
-		labelTotalChars = new JLabel("Length:");
-		labelTotalChars.setForeground(SystemColor.controlHighlight);
-		labelTotalChars.setFont(new Font("Segoe UI", Font.BOLD, 11));
-		add(labelTotalChars, "cell 10 0,alignx right");
-
-		dynLblTotChars = new JLabel("");
-		dynLblTotChars.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblTotChars.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		add(dynLblTotChars, "cell 11 0");
-
-		lblLine = new JLabel("Sel. line:");
-		lblLine.setForeground(SystemColor.controlHighlight);
-		lblLine.setFont(new Font("Segoe UI", Font.BOLD, 11));
-		add(lblLine, "cell 12 0");
-
-		dynLblCurrLine = new JLabel("");
-		dynLblCurrLine.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblCurrLine.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		add(dynLblCurrLine, "cell 13 0");
-
-		labelCurrPos = new JLabel("Position:");
-		labelCurrPos.setForeground(SystemColor.controlHighlight);
-		labelCurrPos.setFont(new Font("Segoe UI", Font.BOLD, 11));
-		add(labelCurrPos, "cell 14 0,alignx right");
-
-		dynLblCurrPos = new JLabel("");
-		dynLblCurrPos.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblCurrPos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		add(dynLblCurrPos, "cell 15 0");
-
-		lblColumn = new JLabel("Sel. Column:");
-		lblColumn.setForeground(SystemColor.controlHighlight);
-		lblColumn.setFont(new Font("Segoe UI", Font.BOLD, 11));
-		add(lblColumn, "cell 16 0");
-
-		dynLblColumn = new JLabel("");
-		dynLblColumn.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblColumn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		add(dynLblColumn, "cell 17 0");
-
-		labelSelectionLength = new JLabel("Sel. length:");
-		labelSelectionLength.setForeground(SystemColor.controlHighlight);
-		labelSelectionLength.setFont(new Font("Segoe UI", Font.BOLD, 11));
-		add(labelSelectionLength, "cell 18 0,alignx right");
-
-		dynLblSelLength = new JLabel("");
-		dynLblSelLength.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblSelLength.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		add(dynLblSelLength, "cell 19 0");
+		// block: selection
+		Block selection = new Block();
+		labelSelectionLength = name("Sel. length:");
+		dynLblSelLength = value(4);
+		selection.pair(labelSelectionLength, dynLblSelLength);
+		add(selection, "cell 6 0,growy");
 
 		dynLblSearchEsit = new JLabel("");
 		dynLblSearchEsit.setHorizontalAlignment(SwingConstants.CENTER);
 		dynLblSearchEsit.setForeground(new Color(255, 222, 173));
 		dynLblSearchEsit.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		dynLblSearchEsit.setBackground(Color.WHITE);
-		add(dynLblSearchEsit, "cell 20 0,alignx center");
+		add(dynLblSearchEsit, "cell 7 0,alignx center");
 
 		lblAdvice = new JLabel("");
 		lblAdvice.setAlignmentX(0.9f);
-		add(lblAdvice, "cell 21 0,alignx right,aligny center");
+		add(lblAdvice, "cell 8 0,alignx right,aligny center");
 		lblAdvice.setBackground(SystemColor.info);
 		lblAdvice.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		lblAdvice.setForeground(Color.LIGHT_GRAY);
@@ -199,7 +171,48 @@ public class TextEditorFooterPanel extends JPanel{
 		lblAdvice.setText("[Type: .txt]");
 
 		addHandlers();
+	}
 
+	private static JLabel name(String text) {
+		JLabel label = new JLabel(text);
+		label.setForeground(NAME_COLOR);
+		label.setFont(NAME_FONT);
+		return label;
+	}
+
+	/** Value label: never narrower than the given number of digits, so the bar does not jump while the numbers change */
+	private static JLabel value(final int minChars) {
+		JLabel label = new JLabel("") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Dimension getPreferredSize() {
+				Dimension size = super.getPreferredSize();
+				size.width = Math.max(size.width, getFontMetrics(getFont()).charWidth('0') * minChars);
+				return size;
+			}
+		};
+		label.setForeground(VALUE_COLOR);
+		label.setFont(VALUE_FONT);
+		return label;
+	}
+
+	/** File size as people read it: 512 B, 1.5 KB, 12.3 MB, 2.0 GB (1 KB = 1024 bytes); empty for a negative size */
+	public static String humanReadableSize(long bytes) {
+		if (bytes < 0) {
+			return "";
+		}
+		if (bytes < 1024) {
+			return bytes + " B";
+		}
+		String[] units = { "KB", "MB", "GB", "TB" };
+		double value = bytes;
+		int unit = -1;
+		while (value >= 1024 && unit < units.length - 1) {
+			value /= 1024;
+			unit++;
+		}
+		return String.format(java.util.Locale.ROOT, "%.1f %s", value, units[unit]);
 	}
 
 	private void addHandlers() {
@@ -222,5 +235,30 @@ public class TextEditorFooterPanel extends JPanel{
 				});
 			}
 		});
+	}
+
+	/** A group of name/value pairs on one row, on a slightly darker rounded background */
+	private static final class Block extends JPanel {
+		private static final long serialVersionUID = 1L;
+
+		Block() {
+			super(new MigLayout("insets 1 6 1 2, gap 0, hidemode 3", "", "[fill]"));
+			setOpaque(false);
+		}
+
+		void pair(JLabel name, JLabel value) {
+			add(name, "gapright 3,aligny center");
+			add(value, "gapright 8,aligny center");
+		}
+
+		@Override
+		protected void paintComponent(Graphics graphics) {
+			Graphics2D g = (Graphics2D) graphics.create();
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setColor(new Color(0, 0, 0, 55));
+			g.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 10, 10);
+			g.dispose();
+			super.paintComponent(graphics);
+		}
 	}
 }

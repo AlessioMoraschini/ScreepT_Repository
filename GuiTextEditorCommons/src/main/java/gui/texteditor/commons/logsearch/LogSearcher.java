@@ -12,27 +12,28 @@
 package gui.texteditor.commons.logsearch;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * One search over the file, streamed from the disk on a daemon thread: only the current line is in memory.
- * Matching lines are appended to {@link #results} while the search runs; {@link #cancel()} stops it.
+ * One search over the file, streamed from the disk: the file is cut in big pieces that several threads scan at once, and the
+ * matches come back in file order. Plain-text queries are matched on the raw bytes (no decoding, no allocation per line);
+ * regular expressions run on the decoded line. Memory is a few MB of buffers plus the match bitmap, whatever the file size.
+ * Matching lines are added to {@link #results} while the search runs; {@link #cancel()} stops it.
  */
 final class LogSearcher {
 
-	/** Bytes of a line that are matched (the displayed text is cut a lot earlier anyway) */
+	/** Bytes of a line that are matched by a regular expression (the displayed text is cut a lot earlier anyway) */
 	private static final int MAX_MATCHED_BYTES = 1 << 20;
 
-	final IntList results = new IntList();
+	final LineSet results = new LineSet();
 	final LogQuery query;
 
 	private final File file;
 	private final long length;
-	private volatile boolean cancelled;
+	private final AtomicBoolean cancelled = new AtomicBoolean();
 	private volatile boolean finished;
 	private volatile long bytesRead;
 	private volatile int linesScanned;
@@ -50,7 +51,7 @@ final class LogSearcher {
 	}
 
 	void cancel() {
-		cancelled = true;
+		cancelled.set(true);
 	}
 
 	boolean isFinished() {
@@ -58,7 +59,7 @@ final class LogSearcher {
 	}
 
 	boolean isCancelled() {
-		return cancelled;
+		return cancelled.get();
 	}
 
 	double progress() {
@@ -69,49 +70,113 @@ final class LogSearcher {
 		return linesScanned;
 	}
 
+	/** Result of one piece: the matching lines, numbered from the first line of the piece */
+	private static final class Part {
+		int lines;
+		int[] matches = new int[64];
+		int count;
+
+		void add(int line) {
+			if (count == matches.length) {
+				matches = Arrays.copyOf(matches, count * 2);
+			}
+			matches[count++] = line;
+		}
+	}
+
 	private void run() {
-		try (InputStream in = new FileInputStream(file)) {
-			byte[] buffer = new byte[1 << 20];
-			byte[] line = new byte[8192];
-			int lineLength = 0;
-			boolean pending = false;
-			int lineNumber = 0;
-			int read;
-			while (!cancelled && (read = in.read(buffer)) > 0) {
-				for (int i = 0; i < read; i++) {
-					byte current = buffer[i];
-					if (current == '\n') {
-						scan(line, lineLength, lineNumber++);
-						lineLength = 0;
-						pending = false;
-						continue;
-					}
-					pending = true;
-					if (lineLength < MAX_MATCHED_BYTES) {
-						if (lineLength == line.length) {
-							line = Arrays.copyOf(line, line.length * 2);
-						}
-						line[lineLength++] = current;
-					}
+		try {
+			final boolean bytes = query.bytesCapable();
+			final boolean prefiltered = query.hasPrefilter();
+			ChunkScan.run(file, () -> {
+				final LogQuery.Tester tester = bytes ? null : query.tester();
+				final AsciiChars ascii = new AsciiChars();
+				return (data, len, offset, unterminated) -> scan(data, len, unterminated, bytes, prefiltered, tester, ascii);
+			}, (partial, end) -> {
+				Part part = (Part) partial;
+				int base = linesScanned;
+				for (int i = 0; i < part.count; i++) {
+					results.add(base + part.matches[i]);
 				}
-				bytesRead += read;
-				linesScanned = lineNumber;
-			}
-			if (!cancelled && pending) {
-				scan(line, lineLength, lineNumber++);
-			}
-			linesScanned = lineNumber;
+				linesScanned = base + part.lines;
+				bytesRead = end;
+			}, cancelled);
 		} catch (IOException e) {
 			// what was found so far stays valid
 		} finally {
+			if (!cancelled.get()) {
+				bytesRead = length;
+			}
 			finished = true;
 		}
 	}
 
-	private void scan(byte[] line, int length, int lineNumber) {
-		int end = length > 0 && line[length - 1] == '\r' ? length - 1 : length;
-		if (query.test(new String(line, 0, end, StandardCharsets.UTF_8))) {
-			results.add(lineNumber);
+	private Part scan(byte[] data, int len, boolean unterminated, boolean bytes, boolean prefiltered, LogQuery.Tester tester, AsciiChars ascii) {
+		Part part = new Part();
+		int line = 0;
+		int start = 0;
+		while (start < len) {
+			int end = start;
+			int seen = 0;
+			while (end < len && data[end] != '\n') {
+				seen |= data[end];
+				end++;
+			}
+			int contentEnd = end > start && data[end - 1] == '\r' ? end - 1 : end;
+			boolean hit;
+			if (bytes) {
+				hit = query.testBytes(data, start, contentEnd);
+			} else {
+				int size = Math.min(contentEnd - start, MAX_MATCHED_BYTES);
+				if (prefiltered && !query.passesPrefilter(data, start, contentEnd)) {
+					hit = false;
+				} else if (seen >= 0) { // pure ASCII: no decoding, no allocation
+					hit = tester.test(ascii.wrap(data, start, size));
+				} else {
+					hit = tester.test(new String(data, start, size, StandardCharsets.UTF_8));
+				}
+			}
+			if (hit) {
+				part.add(line);
+			}
+			line++;
+			start = end + 1;
+		}
+		part.lines = line;
+		return part;
+	}
+
+	/** The bytes of an ASCII line seen as characters, reused from one line to the next */
+	private static final class AsciiChars implements CharSequence {
+		private byte[] data;
+		private int from;
+		private int size;
+
+		AsciiChars wrap(byte[] data, int from, int size) {
+			this.data = data;
+			this.from = from;
+			this.size = size;
+			return this;
+		}
+
+		@Override
+		public int length() {
+			return size;
+		}
+
+		@Override
+		public char charAt(int index) {
+			return (char) data[from + index];
+		}
+
+		@Override
+		public CharSequence subSequence(int start, int end) {
+			return new String(data, from + start, end - start, StandardCharsets.ISO_8859_1);
+		}
+
+		@Override
+		public String toString() {
+			return new String(data, from, size, StandardCharsets.ISO_8859_1);
 		}
 	}
 }

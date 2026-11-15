@@ -29,6 +29,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.awt.geom.Path2D;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -45,8 +46,12 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -59,6 +64,10 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import gui.commons.dialogutils.NativeFileChooser;
+import various.common.light.i18n.I18n;
 
 import net.miginfocom.swing.MigLayout;
 import screept.gui.style.CardPalette;
@@ -89,7 +98,8 @@ public class QuickNotesPanel extends JPanel {
 
 	private final JLabel titleLbl = new JLabel("Quick notes");
 	private final JLabel counterLbl = new JLabel();
-	private final FlatButton closeBtn = new FlatButton("\u00D7");
+	private final FlatButton menuBtn = new FlatButton("\u2261", false);
+	private final FlatButton closeBtn = new FlatButton("\u00D7", true);
 	private final RoundTextField searchField = new RoundTextField("Search notes", true, () -> palette);
 	private final RoundTextField addField = new RoundTextField("Add a note and press Enter", false, () -> palette);
 	private final ScrollableListPanel listPanel = new ScrollableListPanel("4 12 14 12", 6);
@@ -106,7 +116,8 @@ public class QuickNotesPanel extends JPanel {
 		header.setOpaque(false);
 		header.add(titleLbl, "split 2, gapright 8");
 		header.add(counterLbl, "aligny baseline");
-		header.add(closeBtn, "skip 1, wrap");
+		header.add(menuBtn);
+		header.add(closeBtn, "wrap");
 		header.add(searchField, "span 3, growx, wrap");
 		header.add(addField, "span 3, growx");
 		add(header, BorderLayout.NORTH);
@@ -118,6 +129,8 @@ public class QuickNotesPanel extends JPanel {
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
 		add(scroll, BorderLayout.CENTER);
 
+		menuBtn.setToolTipText("Backup and import");
+		menuBtn.addActionListener(e -> showBackupMenu());
 		closeBtn.setToolTipText("Close (Esc)");
 		closeBtn.addActionListener(e -> closeAction.run());
 
@@ -154,6 +167,107 @@ public class QuickNotesPanel extends JPanel {
 		applyPalette();
 	}
 
+	// ---- backup / import ----
+
+	private void showBackupMenu() {
+		JPopupMenu menu = new JPopupMenu();
+		File folder = store.getBackupFolder();
+		JMenuItem backupAs = new JMenuItem("Back up notes to...");
+		backupAs.addActionListener(e -> backupNotes(true));
+		JMenuItem update = new JMenuItem("Update backup");
+		update.setEnabled(folder != null);
+		update.setToolTipText(folder == null ? "Choose a backup folder first" : folder.getAbsolutePath());
+		update.addActionListener(e -> backupNotes(false));
+		JMenuItem restore = new JMenuItem("Import notes from backup...");
+		restore.addActionListener(e -> importNotes());
+		menu.add(backupAs);
+		menu.add(update);
+		menu.addSeparator();
+		menu.add(restore);
+		menu.show(menuBtn, 0, menuBtn.getHeight());
+	}
+
+	/** Asks for a folder (null if cancelled) */
+	private File chooseFolder(String title, File start) {
+		JFileChooser chooser = new NativeFileChooser();
+		chooser.setDialogTitle(title);
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		if (start != null && start.exists()) {
+			chooser.setCurrentDirectory(start);
+		}
+		if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION || chooser.getSelectedFile() == null) {
+			return null; // cancelled by user
+		}
+		return chooser.getSelectedFile();
+	}
+
+	/** Writes the backup file in the remembered folder (or asks for one) and tells where it went */
+	private void backupNotes(boolean askFolder) {
+		File folder = askFolder ? null : store.getBackupFolder();
+		if (folder == null) {
+			folder = chooseFolder("Choose the backup folder", store.getBackupFolder());
+			if (folder == null) {
+				return;
+			}
+		}
+		try {
+			store.flush();
+			File written = store.backupTo(folder, QuickNotesStore.BACKUP_FILE_NAME);
+			store.setBackupFolder(folder);
+			JOptionPane.showMessageDialog(this, I18n.fmt("Quick notes saved to {0}", written.getAbsolutePath()), "Backup saved", JOptionPane.INFORMATION_MESSAGE);
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(this, I18n.fmt("Cannot save the backup: {0}", String.valueOf(ex.getMessage())), "Backup failed", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	/** Replaces the current notes with the ones of a backup file, after a clear warning */
+	private void importNotes() {
+		File folder = store.getBackupFolder();
+		JFileChooser chooser = new NativeFileChooser();
+		chooser.setDialogTitle("Choose a quick notes backup");
+		chooser.setFileFilter(new FileNameExtensionFilter("Markdown (*.md)", "md"));
+		if (folder != null && folder.exists()) {
+			chooser.setCurrentDirectory(folder);
+			File last = new File(folder, QuickNotesStore.BACKUP_FILE_NAME);
+			if (last.exists()) {
+				chooser.setSelectedFile(last);
+			}
+		}
+		if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION || chooser.getSelectedFile() == null) {
+			return; // cancelled by user
+		}
+		File backup = chooser.getSelectedFile();
+		int incoming = QuickNotesStore.countNotesIn(backup);
+		if (incoming < 0) {
+			JOptionPane.showMessageDialog(this, "This file is not a ScreepT quick notes backup.", "Import failed", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		store.flush();
+		String message = I18n.fmt("Importing replaces your {0} current notes with the {1} notes of the backup. The current notes will be lost.", String.valueOf(store.getNotes().size()), String.valueOf(incoming));
+		String backupFirst = "Back up current notes first";
+		String replace = "Replace";
+		int choice = JOptionPane.showOptionDialog(this, message, "Import notes", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
+				new Object[] { I18n.tr(backupFirst), I18n.tr(replace), I18n.tr("Cancel") }, I18n.tr("Cancel"));
+		if (choice != 0 && choice != 1) {
+			return; // cancelled by user
+		}
+		try {
+			if (choice == 0) {
+				File target = chooseFolder("Choose where to back up the current notes", folder);
+				if (target == null) {
+					return; // cancelled by user: nothing was changed
+				}
+				String name = "quick_notes_before_import_" + java.time.LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".md";
+				store.backupTo(target, name);
+			}
+			store.importFrom(backup);
+			rebuild(null);
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(this, I18n.fmt("Cannot import the notes: {0}", String.valueOf(ex.getMessage())), "Import failed", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
 	/** Re-reads the current look and feel colors (dark or light) */
 	public void applyPalette() {
 		palette = CardPalette.current();
@@ -167,6 +281,7 @@ public class QuickNotesPanel extends JPanel {
 		counterLbl.setFont(base.deriveFont(base.getSize2D() - 1f));
 		counterLbl.setForeground(palette.muted);
 		closeBtn.setFont(base.deriveFont(Font.PLAIN, base.getSize2D() + 8f));
+		menuBtn.setFont(base.deriveFont(Font.PLAIN, base.getSize2D() + 6f));
 		for (RoundTextField field : new RoundTextField[] { searchField, addField }) {
 			field.setFont(base.deriveFont(base.getSize2D() + 1f));
 			field.applyPalette();
@@ -322,7 +437,7 @@ public class QuickNotesPanel extends JPanel {
 		private final JCheckBox check = new JCheckBox();
 		private final JTextArea area = new JTextArea();
 		private final JLabel dateLbl = new JLabel();
-		private final FlatButton deleteBtn = new FlatButton("\u00D7");
+		private final FlatButton deleteBtn = new FlatButton("\u00D7", true);
 		private boolean hover;
 
 		NoteCard(QuickNote note, String[] terms) {
@@ -517,8 +632,11 @@ public class QuickNotesPanel extends JPanel {
 	private final class FlatButton extends JButton {
 		private static final long serialVersionUID = 1L;
 
-		FlatButton(String text) {
+		private final boolean danger;
+
+		FlatButton(String text, boolean danger) {
 			super(text);
+			this.danger = danger;
 			setContentAreaFilled(false);
 			setBorderPainted(false);
 			setFocusPainted(false);
@@ -532,7 +650,7 @@ public class QuickNotesPanel extends JPanel {
 
 		@Override
 		protected void paintComponent(Graphics g) {
-			setForeground(getModel().isRollover() ? palette.danger : palette.muted);
+			setForeground(getModel().isRollover() ? (danger ? palette.danger : palette.text) : palette.muted);
 			super.paintComponent(g);
 		}
 	}

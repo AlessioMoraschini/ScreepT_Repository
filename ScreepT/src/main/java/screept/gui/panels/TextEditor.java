@@ -1357,6 +1357,7 @@ public class TextEditor extends ModulePanel {
 						footerPanel.dynLblSelLength.setText(String.valueOf(selectionLength));
 						footerPanel.dynLblTotChars.setText(String.valueOf(charTotNum));
 						footerPanel.dynLblTotLines.setText(String.valueOf(textLines));
+						footerPanel.dynLblFileSize.setText(loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.isFile() ? TextEditorFooterPanel.humanReadableSize(loadedTabObj.loadedFile.length()) : "");
 						footerPanel.dynLblColumn.setText(String.valueOf(column));
 						footerPanel.dynLabelCharset.setText(System.getProperty("file.encoding"));
 
