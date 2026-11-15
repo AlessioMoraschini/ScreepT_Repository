@@ -6,6 +6,24 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.79 - 2026-11-15
+> The whole application speaks 7 languages, a new Theme Editor, live crop in Image Studio and a faster text editor
+
+### New
+- Languages: English, Italian, Spanish, French, German, Portuguese and Chinese (Simplified). New world icon in the top bar (between the cleanup and the pin): choose the language and the whole interface changes at once; it is also remembered in General Options. The packs are embedded in the application (about 50 KB); a text that is not translated yet stays in English.
+- Theme Editor, completely redesigned: searchable list of 60+ elements in groups (editor, highlights, gutter and folding, options, embedded languages, syntax tokens), color chips (click to change, right click to copy / paste a hex color or remove it), bold / italic, click on the code of the preview to jump to its element, unsaved changes marker, Ctrl+S, default themes can be edited too (Save as keeps your version).
+- Image Studio, Crop: with the Crop section open the whole image is shown with the crop on it; drag the corners, the sides or the whole rectangle (thirds and size shown) and the sliders follow in real time.
+- Search files by name: the files of the folder are read once in the background and kept for 5 minutes, so typing is instant; names are matched ignoring case, with * and ? wildcards, and the ones that start with the text come first.
+
+### Improved
+- Switching text editor tab is immediate: theme, options, folding and file checks run when you stop switching. A new tab or a file opened in a new tab already has the theme of the editor (no more white flash).
+- "Show Tabs" explains what it does and now really draws the tab guide lines.
+- The tab size field is wider.
+
+### Fixed
+- Copy and cut in the text editor no longer scroll to the line and no longer leave characters selected after a cut.
+- The dark / light switch button of the text editor (Ctrl+B) is removed.
+
 ## 0.9.78 - 2026-11-12
 > Image Studio goes pro (54 filters, crop, metadata cleaning, PSD and Camera Raw import), launcher settings from the app, 1.5 GB default memory
 

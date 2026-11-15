@@ -527,6 +527,14 @@ public class MainGUI extends MainGuiParent {
 
 		//////////////////////////// DEFINE HANDLERS //////////////////////////////////
 
+		// LANGUAGE OF THE WHOLE APPLICATION (see various.common.light.i18n.I18n)
+		mntmLanguage = new CustomJmenuItem(new AbstractAction("") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				screept.gui.frames.LanguageDialog.open(mainAPP.getMainFrame(), currentConfiguration);
+			}
+		});
+
 		mntmPinApplicationOnTop = new CustomJmenuItem(new AbstractAction("") {
 			@Override
 			public void actionPerformed(ActionEvent e) {

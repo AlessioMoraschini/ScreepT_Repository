@@ -199,7 +199,16 @@ public class GeneralOptionsFrame extends ParentFrame{
 		textFieldUname.setToolTipText("Choose name used to customize messages and various dialogs and advices");
 
 		comboLocale = new JComboBox<Locale>(getSupportedLocales());
-		comboLocale.setToolTipText("Choose general language used (not yet implemented)");
+		comboLocale.setToolTipText("Choose the language of the application");
+		comboLocale.setRenderer(new javax.swing.DefaultListCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> list, Object value, int index, boolean selected, boolean focus) {
+				Object shown = value instanceof Locale ? various.common.light.i18n.I18n.getLanguageInfo(((Locale) value).getLanguage()).nativeName : value;
+				return super.getListCellRendererComponent(list, shown, index, selected, focus);
+			}
+		});
 
 		sliderVolume = new JSlider(0, 100);
 		sliderVolume.setOpaque(false);
@@ -442,6 +451,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 				try {
 					Locale locale = (Locale) comboLocale.getSelectedItem();
 					currentConfiguration.getGenOpt().setLocale(locale);
+					various.common.light.i18n.I18n.setLanguage(locale.getLanguage());
 				} catch (Exception e1) {
 					logger.error("Error setting locale", e1);
 				}
@@ -594,7 +604,7 @@ public class GeneralOptionsFrame extends ParentFrame{
     	System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
     	comboSecurityLevels.setSelectedItem(currentConfiguration.getAesOpt().getSecurityLevel());
     	comboBoxDefEOL.setSelectedItem(currentConfiguration.getTextEditorOpt().getEol());
-    	comboLocale.setSelectedItem(currentConfiguration.getGenOpt().getLocale());
+    	comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(currentConfiguration.getGenOpt().getLocale().getLanguage())));
     	updateComboLocale();
     	Locale.setDefault(currentConfiguration.getGenOpt().getLocale());
     	chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
@@ -604,9 +614,10 @@ public class GeneralOptionsFrame extends ParentFrame{
 	}
 
 	public static Locale[] getSupportedLocales(){
-		Locale[] supportedLocales = new Locale[2];
-		supportedLocales[0] = Locale.ENGLISH;
-		supportedLocales[1] = Locale.ITALIAN;
+		Locale[] supportedLocales = new Locale[various.common.light.i18n.I18n.LANGUAGES.size()];
+		for (int i = 0; i < supportedLocales.length; i++) {
+			supportedLocales[i] = new Locale(various.common.light.i18n.I18n.LANGUAGES.get(i).code);
+		}
 
 		return supportedLocales;
 	}

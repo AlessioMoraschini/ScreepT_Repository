@@ -144,6 +144,7 @@ public class MainGuiParent {
 			JMenuItem mntmpadding2 = new JMenuItem();
 			JMenuItem mntmOptimizeResourcesUsage;
 			JMenuItem mntmPinApplicationOnTop;
+			JMenuItem mntmLanguage;
 
 	static CustomJmenuItem mntmInspectCurrentConfiguration;
 	CustomJmenuItem mntmloadPrjSub;
@@ -338,6 +339,7 @@ public class MainGuiParent {
 			sizeTopRightElement(toggle, new Dimension(40, 25));
 
 		sizeTopRightElement(mntmOptimizeResourcesUsage, new Dimension(40, 25));
+		sizeTopRightElement(mntmLanguage, new Dimension(40, 25));
 		sizeTopRightElement(mntmPinApplicationOnTop, new Dimension(40, 25));
 
 
@@ -373,6 +375,8 @@ public class MainGuiParent {
 
 		menuBar.add(mntmOptimizeResourcesUsage);
 		mntmOptimizeResourcesUsage.setMargin(menuEntryMargin);
+		menuBar.add(mntmLanguage);
+		mntmLanguage.setMargin(menuEntryMargin);
 		menuBar.add(mntmPinApplicationOnTop);
 		mntmPinApplicationOnTop.setMargin(menuEntryMargin);
 
@@ -535,6 +539,7 @@ public class MainGuiParent {
 
 		// ICON ON RIGHT OF BAR
 		styleTopRightElement(mntmOptimizeResourcesUsage);
+		styleTopRightElement(mntmLanguage);
 		styleTopRightElement(mntmPinApplicationOnTop);
 		for(JMenuItem toggle : mntmTopRightToggles)
 			styleTopRightElement(toggle);
@@ -636,6 +641,9 @@ public class MainGuiParent {
 						"Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)"
 						+ "<br><b>NB:</b> remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors."
 						+ "<br><u>If you want to modify the memory used by ScreepT</u> you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well)."));
+
+		mntmLanguage.setIcon(new gui.commons.frameutils.frame.arch.GlobeIcon(20, new java.awt.Color(86, 160, 240)));
+		mntmLanguage.setToolTipText("Select language");
 
 		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 		mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");
