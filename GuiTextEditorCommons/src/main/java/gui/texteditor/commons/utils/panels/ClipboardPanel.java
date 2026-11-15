@@ -432,9 +432,9 @@ public class ClipboardPanel  extends TogglePanelTextArea implements IParentPanel
 			
 			if(FileWorker.writeStringToFile(txtAreaClipboard.getText(), selected, true)) {
 				logger.debug("Current clipboard written: " + selected);
-				dialogHelper.info("Current clipboard written: " + selected.getAbsolutePath(), " saved!");
+				dialogHelper.info(various.common.light.i18n.I18n.fmt("Current clipboard written: {0}", selected.getAbsolutePath()), " saved!");
 			}else {
-				dialogHelper.error("There was an error writing to "+ selected, "Error during file write");
+				dialogHelper.error(various.common.light.i18n.I18n.fmt("There was an error writing to {0}", selected), "Error during file write");
 				logger.error("There was an error writing to " + selected);
 			}
 		}else {

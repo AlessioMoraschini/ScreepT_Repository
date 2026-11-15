@@ -676,11 +676,11 @@ public class SchemeManagerGui extends JFrame {
 			}
 
 			loadedSchemeObj.theme.save(outStream);
-			dialogHelper.info(outFile.getName() + " saved!");
+			dialogHelper.info(various.common.light.i18n.I18n.fmt("{0} saved!", outFile.getName()));
 
 		} catch (Exception e) {
 			dialogHelper.info(GuiUtils.encapsulateInHtml(
-					"An error occurred: cannot save theme to file.<br>" + loadedSchemeObj));
+					various.common.light.i18n.I18n.fmt("An error occurred: cannot save theme to file.<br>{0}", loadedSchemeObj)));
 			logger.error("Cannot save theme: " + loadedSchemeObj.schemeSource, e);
 
 		} finally {

@@ -1590,8 +1590,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), lineSeparator == null ? EOL.defaultEol : lineSeparator);
 
 					if (selectedFile.exists()) {
-						if (dialogHelper.yesOrNo("File " + selectedFile.getName()
-								+ " exists, overwrite it?", "Overwrite?")) {
+						if (dialogHelper.yesOrNo(various.common.light.i18n.I18n.fmt("File {0} exists, overwrite it?", selectedFile.getName()), "Overwrite?")) {
 							done = FileWorker.writeStringToFile(outString, selectedFile, true);
 						}
 					} else {

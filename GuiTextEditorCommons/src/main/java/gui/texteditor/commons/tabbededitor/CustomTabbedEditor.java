@@ -331,7 +331,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 	private boolean standardSupportedFileLoad(File fileToOpen, boolean checkOnly) {
 		if (!SupportedFileTextEditor.isSupported(fileToOpen)) {
-			boolean userAcceptance = dialogHelper.yesOrNo("This type of file is not fully supported [" + fileToOpen.getName() + "] : Load anyway?");
+			boolean userAcceptance = dialogHelper.yesOrNo(various.common.light.i18n.I18n.fmt("This type of file is not fully supported [{0}] : Load anyway?", fileToOpen.getName()));
 			if (!checkOnly && userAcceptance) {
 				tabEditorManager.forceUnrecognizedFileType();
 			}

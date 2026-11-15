@@ -329,7 +329,7 @@ public class TextEditorUtils {
 		if (loadedTabObj.unsaved) {
 			String currFileName = (loadedTabObj.loadedFile != null) ? loadedTabObj.loadedFile.getName()
 					: currentTextEditor.footerPanel.lblCurrentFile.getText();
-			int choice = dialogHelper.yesNoOrCanc( currFileName + " is not saved, do you want to save it before to crypt?", null);
+			int choice = dialogHelper.yesNoOrCanc(various.common.light.i18n.I18n.fmt("{0} is not saved, do you want to save it before to crypt?", currFileName), null);
 			if (choice == JOptionHelperExtended.OK) {
 				currentTextEditor.subHeaderPanel.btnSaveTextFile.doClick();
 			} else if (choice == JOptionHelperExtended.CANC) {

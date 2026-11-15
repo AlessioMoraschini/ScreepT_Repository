@@ -236,7 +236,7 @@ public class FileContentSearch {
 
 		resultViewer.setCursor(GuiUtils.CURSOR_DEFAULT);
 		logger.debug("Advising user!");
-		dialogHelper.info(GuiUtils.encapsulateInHtml("Search completed with <b>" + occurrencesFound + "</b> results! </br><u>" + limitedAdvice + "</u>"), occurrencesFound + " results found!");
+		dialogHelper.info(GuiUtils.encapsulateInHtml(various.common.light.i18n.I18n.fmt("Search completed with <b>{0}</b> results! </br><u>{1}</u>", occurrencesFound, limitedAdvice)), various.common.light.i18n.I18n.fmt("{0} results found!", occurrencesFound));
 
 		resultViewer.setTitle("Completed with " + occurrencesFound + " results in " + sourceFiles.size() + " files - ", false, true);
 //			resultViewer.resultsTree.revalidate();
