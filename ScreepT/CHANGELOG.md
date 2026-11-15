@@ -7,7 +7,7 @@
 -->
 
 ## 0.9.79 - 2026-11-15
-> The whole application speaks 7 languages, a new Theme Editor, live crop in Image Studio and a faster text editor
+> The whole application speaks 7 languages, a new Theme Editor, live crop in Image Studio, a much faster LogSearch and a clearer text editor footer
 
 ### New
 - Languages: English, Italian, Spanish, French, German, Portuguese and Chinese (Simplified). New world icon in the top bar (between the cleanup and the pin): choose the language and the whole interface changes at once; it is also remembered in General Options. The packs are embedded in the application (about 50 KB); a text that is not translated yet stays in English.
@@ -25,6 +25,7 @@
 - The tab size field is wider.
 
 ### Fixed
+- Configuration manager: the text of the buttons is always fully visible, whatever the font and the interface size.
 - Copy and cut in the text editor no longer scroll to the line and no longer leave characters selected after a cut.
 - The dark / light switch button of the text editor (Ctrl+B) is removed.
 
