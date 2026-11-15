@@ -6,6 +6,12 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.80 - (in development)
+> Markdown Viewer plugin 1.2.0: smart editing like VS Code "Markdown All in One"
+
+### New
+- Markdown Viewer plugin 1.2.0 (update it from Install plugins): Enter continues lists, task lists and quotes and an empty item ends the list; Tab / Shift+Tab indent list items and number them again; Backspace after a marker goes up one level; Ctrl+B / Ctrl+I / Alt+S / Ctrl+M toggle bold, italic, strikethrough and math on the selection or the word at the caret; Ctrl+Shift+] / [ heading level; Alt+C task boxes; Shift+Alt+F table formatter (alignment kept); Ctrl+Shift+T table of contents between <!-- TOC --> markers, updated on every save (<!-- omit in toc --> leaves a heading out, GitHub anchors with -1, -2 for duplicates); suggestions of headings and files after "](#" and "]("; a url pasted on a selection makes a link; $math$ and $$blocks$$ in the preview; HTML export with images embedded, links fixed and formulas rendered by KaTeX; F1 lists every shortcut.
+
 ## 0.9.79 - 2026-11-15
 > The whole application speaks 7 languages, a new Theme Editor, live crop in Image Studio, a much faster LogSearch and a clearer text editor footer
 
