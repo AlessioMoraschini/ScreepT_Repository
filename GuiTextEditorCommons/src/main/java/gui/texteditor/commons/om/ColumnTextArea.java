@@ -34,6 +34,7 @@ import java.util.function.IntFunction;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
@@ -388,6 +389,144 @@ public class ColumnTextArea extends RSyntaxTextArea {
 		}
     }
 
+    /**
+     * Tab guides drawn here: the ones of the text area are painted only when the text starts exactly at the margin, which
+     * never happens with the border of the look and feel, so with it "Show tabs" showed nothing
+     */
+    @Override
+    protected void paintComponent(java.awt.Graphics g) {
+    	super.paintComponent(g);
+    	if (getPaintTabLines()) {
+    		paintTabGuides((java.awt.Graphics2D) g.create());
+    	}
+    }
+
+    private void paintTabGuides(java.awt.Graphics2D g) {
+    	try {
+    		java.awt.Rectangle clip = g.getClipBounds() != null ? g.getClipBounds() : getVisibleRect();
+    		int firstLine = getLineOfOffset(viewToModel(new Point(0, clip.y)));
+    		int lastLine = getLineOfOffset(viewToModel(new Point(0, clip.y + clip.height)));
+    		int tabWidth = getFontMetrics(getFont()).charWidth(' ') * getTabSize();
+    		int left = getInsets().left;
+    		if (tabWidth <= 0) {
+    			return;
+    		}
+    		g.setColor(getTabLineColor());
+    		for (int line = firstLine; line <= lastLine; line++) {
+    			int start = getLineStartOffset(line);
+    			int length = getLineEndOffset(line) - start;
+    			String text = getText(start, length);
+    			int leading = 0;
+    			while (leading < text.length() && (text.charAt(leading) == ' ' || text.charAt(leading) == '	')) {
+    				leading++;
+    			}
+    			if (leading == 0) {
+    				continue;
+    			}
+    			java.awt.Rectangle end = modelToView(start + leading);
+    			if (end == null) {
+    				continue;
+    			}
+    			for (int x = left + tabWidth; x < end.x - 1; x += tabWidth) {
+    				g.drawLine(x, end.y, x, end.y + end.height - 1);
+    			}
+    		}
+    	} catch (Exception e) {
+    		// nothing to paint
+    	} finally {
+    		g.dispose();
+    	}
+    }
+
+    /** Tab guide lines must always be visible: a theme without color (or equal to the background) would draw nothing */
+    @Override
+    public java.awt.Color getTabLineColor() {
+    	java.awt.Color color = super.getTabLineColor();
+    	java.awt.Color back = getBackground();
+    	java.awt.Color fore = getForeground();
+    	if (back == null || fore == null) {
+    		return color;
+    	}
+    	boolean tooClose = color == null
+    			|| Math.abs(color.getRed() - back.getRed()) + Math.abs(color.getGreen() - back.getGreen()) + Math.abs(color.getBlue() - back.getBlue()) < 60;
+    	if (tooClose) {
+    		return new java.awt.Color((back.getRed() * 65 + fore.getRed() * 35) / 100, (back.getGreen() * 65 + fore.getGreen() * 35) / 100, (back.getBlue() * 65 + fore.getBlue() * 35) / 100);
+    	}
+    	return color;
+    }
+
+    /** Copy and cut never scroll nor change the selection by themselves: for a short time after them, programmatic scrolls and selection changes are ignored */
+    private static final int CLIPBOARD_GUARD_MS = 700;
+    private volatile long clipboardGuardUntil = 0;
+    private volatile boolean insideClipboardAction = false;
+
+    private boolean blockedByClipboardGuard(String what) {
+    	if (!insideClipboardAction && System.currentTimeMillis() < clipboardGuardUntil) {
+    		logger.warn("Ignored " + what + " right after copy/cut", new Throwable("clipboard guard"));
+    		return true;
+    	}
+    	return false;
+    }
+
+    @Override
+    public void setSelectionStart(int selectionStart) {
+    	if (!blockedByClipboardGuard("setSelectionStart")) {
+    		super.setSelectionStart(selectionStart);
+    	}
+    }
+
+    @Override
+    public void setSelectionEnd(int selectionEnd) {
+    	if (!blockedByClipboardGuard("setSelectionEnd")) {
+    		super.setSelectionEnd(selectionEnd);
+    	}
+    }
+
+    @Override
+    public void select(int selectionStart, int selectionEnd) {
+    	if (!blockedByClipboardGuard("select")) {
+    		super.select(selectionStart, selectionEnd);
+    	}
+    }
+
+    @Override
+    public void setCaretPosition(int position) {
+    	if (!blockedByClipboardGuard("setCaretPosition")) {
+    		super.setCaretPosition(position);
+    	}
+    }
+
+    /** Runs copy / cut and keeps the viewport where the user left it, also against scrolls queued after the action */
+    private void runWithoutScroll(Runnable action) {
+    	JViewport viewport = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, this);
+    	final Point before = viewport != null ? viewport.getViewPosition() : null;
+    	final boolean wasInside = insideClipboardAction;
+    	insideClipboardAction = true;
+    	try {
+    		action.run();
+    	} finally {
+    		insideClipboardAction = wasInside;
+    	}
+    	if (viewport == null) {
+    		return;
+    	}
+    	final long until = System.currentTimeMillis() + CLIPBOARD_GUARD_MS;
+    	clipboardGuardUntil = until;
+    	final javax.swing.Timer keeper = new javax.swing.Timer(30, null);
+    	keeper.addActionListener(e -> {
+    		Dimension view = viewport.getViewSize();
+    		Dimension extent = viewport.getExtentSize();
+    		Point target = new Point(Math.max(0, Math.min(before.x, view.width - extent.width)), Math.max(0, Math.min(before.y, view.height - extent.height)));
+    		if (!target.equals(viewport.getViewPosition())) {
+    			viewport.setViewPosition(target);
+    		}
+    		if (System.currentTimeMillis() > until) {
+    			keeper.stop();
+    		}
+    	});
+    	keeper.start();
+    }
+
     @Override
     public void paste() {
 
@@ -410,15 +549,21 @@ public class ColumnTextArea extends RSyntaxTextArea {
 
     @Override
     public void cut() {
-    	if (isRectangularModeOn.get() && hasRectangle()) {
-    		rectangularCut();
-		}else {
-			super.cut();
-		}
+    	runWithoutScroll(() -> {
+    		if (isRectangularModeOn.get() && hasRectangle()) {
+    			rectangularCut();
+    		}else {
+    			super.cut();
+    		}
+    	});
     }
 
     @Override
     public void copy(){
+    	runWithoutScroll(this::copyKeepingScroll);
+    }
+
+    private void copyKeepingScroll() {
         if (isRectangularModeOn.get() && hasRectangle()) {
         	if (rectX2 <= rectX1) {
         		return; // caret column: nothing selected
@@ -552,11 +697,19 @@ public class ColumnTextArea extends RSyntaxTextArea {
 
     @Override
     public void copyAsStyledText() {
-    	SelectionDtoFull dto = new SelectionDtoFull(this);
+    	// Also the normal copy / cut of the editor pass from here: no scroll, no selection brought back after a cut
+    	final int start = getSelectionStart();
+    	final int end = getSelectionEnd();
+    	final int length = getDocument().getLength();
 
-    	super.copyAsStyledText();
-
-    	dto.applySelectionDTO(false, this);
+    	runWithoutScroll(() -> {
+    		super.copyAsStyledText();
+    		if (getDocument().getLength() == length && (getSelectionStart() != start || getSelectionEnd() != end)) {
+    			// plain copy: the text is still there, keep the selection of the user
+    			super.setSelectionStart(start);
+    			super.setSelectionEnd(end);
+    		}
+    	});
     }
 
 class ColumnSelectionCaret extends DefaultCaret {

@@ -179,8 +179,7 @@ public class CustomTabbedEditor implements ITabsManager {
 						});
 					}
 
-					revalidateFoldingPainted(loadedTabObj.textArea);
-					changeMonManager.checkChanges();
+					// folding re-parse and file change check are heavy: they run once the user stops switching (see scheduleAfterTabRefresh)
 					alreadyrefreshing = false;
 
 					try {
@@ -1041,6 +1040,42 @@ public class CustomTabbedEditor implements ITabsManager {
 		return done;
 	}
 
+	/** Tab switch must be instant: heavy work (theme, options, folding, file check) is coalesced and runs when the user stops switching */
+	private javax.swing.Timer afterTabRefreshTimer;
+	private static final int AFTER_TAB_REFRESH_DELAY_MS = 120;
+	/** A tab just created gets theme and options at once (no flash of the wrong theme): the deferred work must not repeat it */
+	private boolean ownerRefreshDone = false;
+
+	private void scheduleAfterTabRefresh() {
+		if (afterTabRefreshTimer == null) {
+			afterTabRefreshTimer = new javax.swing.Timer(AFTER_TAB_REFRESH_DELAY_MS, e -> runAfterTabRefresh());
+			afterTabRefreshTimer.setRepeats(false);
+		}
+		afterTabRefreshTimer.restart();
+	}
+
+	private void runAfterTabRefresh() {
+		if (alreadyrefreshing) {
+			scheduleAfterTabRefresh();
+			return;
+		}
+		alreadyrefreshing = true;
+		try {
+			if (!ownerRefreshDone) {
+				tabEditorManager.doAfterTabRefresh();
+			}
+			ownerRefreshDone = false;
+			if (loadedTabObj != null && loadedTabObj.textArea != null) {
+				revalidateFoldingPainted(loadedTabObj.textArea);
+			}
+			changeMonManager.checkChanges();
+		} catch (Exception e) {
+			logger.error("An error occurred in the deferred work after the tab switch", e);
+		} finally {
+			alreadyrefreshing = false;
+		}
+	}
+
 	public void tabRefreshAfterUpdate() {
 		JTextArea originalTxtArea = loadedTabObj.textArea;
 		try {
@@ -1057,7 +1092,13 @@ public class CustomTabbedEditor implements ITabsManager {
 			updateSavedLabelNTab(null);
 			tabJustSwitched = false;
 			loadedTabObj.textArea.requestFocus();
-			tabEditorManager.doAfterTabRefresh();
+			if (isAddingTab) {
+				tabEditorManager.doAfterTabRefresh();
+				ownerRefreshDone = true;
+			} else {
+				ownerRefreshDone = false;
+			}
+			scheduleAfterTabRefresh();
 		} catch(Exception e){
 			logger.error("An error occurred while refreshing current tab", e);
 		} finally {

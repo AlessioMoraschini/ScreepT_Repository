@@ -3,13 +3,19 @@ package gui.texteditor.commons;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,18 +24,26 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
+import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Theme;
+import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import gui.commons.dialogutils.ExtensionFileFilter;
 import gui.commons.dialogutils.GenericFileChooserDialog;
 import gui.commons.dialogutils.JOptionHelperExtended;
+import gui.commons.frameutils.frame.arch.ToolStyle;
 import gui.texteditor.commons.om.SupportedFileTextEditor;
 import gui.texteditor.commons.utils.RsyntaxUtils;
 import net.miginfocom.swing.MigLayout;
@@ -38,7 +52,6 @@ import various.common.light.files.CustomFileFilters;
 import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.gui.GuiUtils;
-import various.common.light.gui.dialogs.color.ColorSelector;
 import various.common.light.gui.dialogs.color.om.ColorSelectionElement;
 import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.string.StringWorker;
@@ -47,6 +60,10 @@ import various.common.light.validation.arch.DynaObjectValidator;
 import various.common.light.validation.arch.DynaValidatorException;
 import various.common.light.validation.arch.model.DynaChecker;
 
+/**
+ * Theme editor: every color and style of an editor theme with a live preview.
+ * Left the list of elements (searchable, grouped), right the preview; click a piece of code in the preview to jump to its element.
+ */
 public class SchemeManagerGui extends JFrame {
 	private static final long serialVersionUID = 510759366291391824L;
 
@@ -61,7 +78,7 @@ public class SchemeManagerGui extends JFrame {
 	public static Color defaultElementsBackground = Color.WHITE;
 	public static Font DEFAULT_BUTTON_FONT = new Font("Tahoma", Font.PLAIN, 16);
 
-	public Dimension defaultDimension = new Dimension(1400, 800);
+	public Dimension defaultDimension = new Dimension(1300, 780);
 
 	private JOptionHelperExtended dialogHelper;
 	private GenericFileChooserDialog fileChooserHelper;
@@ -74,23 +91,31 @@ public class SchemeManagerGui extends JFrame {
 	public RTextScrollPane scrollPane;
 	public RSyntaxTextArea testTextArea;
 
-	private JLabel lblSyntax;
-	private JLabel lblStyle;
-
 	private JComboBox<SupportedFileTextEditor> comboSyntax;
 	private JComboBox<ColorStyleScheme> comboScheme;
 
+	private JPanel listPanel;
 	private JScrollPane scrollPaneElements;
-	private JPanel panelElements;
-	private ColorSelector[] tokenSelectors;
-	private JPanel panel;
+	private JTextField txtFilter;
+	private JLabel lblStatus;
+	private JLabel lblCount;
+	private final List<ThemeRow> rows = new ArrayList<ThemeRow>();
+	private final List<JLabel> sectionHeaders = new ArrayList<JLabel>();
+	private final Map<Integer, ThemeRow> tokenRows = new LinkedHashMap<Integer, ThemeRow>();
+	private ThemeRow selectedRow;
+
 	private JButton btnReloadFromFile;
 	private JButton btnImportTheme;
-
 	private JButton btnSaveAs;
 	private JButton btnSaveTheme;
 	private JButton btnExportTheme;
 	private JButton btnOpenThemeFolder;
+
+	/** Colors or styles changed and not saved yet */
+	private boolean modified = false;
+	/** true while the editor itself changes the combos (no questions, no reload) */
+	private boolean adjusting = false;
+	private int lastSchemeIndex = 0;
 
 	private Runnable closeAction = () -> {};
 
@@ -106,132 +131,183 @@ public class SchemeManagerGui extends JFrame {
 
 		schemes = retrieveXmlSchemes();
 
-		getContentPane().setBackground(Color.LIGHT_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[220px:n:250px,grow][550px:n:550px][grow][59.00][grow]", "[35px:n:35px][5px:n][:83%:85%,grow][-112.00px:n][8%,grow]"));
+		getContentPane().setLayout(new MigLayout("insets 0, gap 0, fill", "[grow,fill]", "[][grow,fill][]"));
 
-		lblStyle = new JLabel("Style");
-		lblStyle.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		getContentPane().add(lblStyle, "cell 0 0,alignx center");
+		// ---- top bar: theme, buttons
+		JPanel top = new JPanel(new MigLayout("insets 10 12 8 12, gapx 8, fillx", "[][grow,fill,200:350:600][][][]push[][][]", "[]"));
+		JLabel lblStyle = new JLabel("Theme");
+		lblStyle.setFont(lblStyle.getFont().deriveFont(Font.BOLD));
+		top.add(lblStyle);
 
 		comboScheme = new JComboBox<ColorStyleScheme>();
-		comboScheme.setCursor(GuiUtils.CURSOR_HAND);
-		comboScheme.setFont(DEFAULT_BUTTON_FONT);
-		getContentPane().add(comboScheme, "cell 1 0 2 1,grow");
+		ToolStyle.hand(comboScheme);
+		comboScheme.setToolTipText("Theme being edited. Default themes can be edited too: use Save as... to keep your version");
+		top.add(comboScheme, "wmin 0");
 
-		lblSyntax = new JLabel("Syntax");
-		lblSyntax.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		getContentPane().add(lblSyntax, "cell 3 0,alignx center");
+		btnReloadFromFile = ToolStyle.button("Reload", null, "Discard the changes and read the theme from file again");
+		top.add(btnReloadFromFile);
+		btnImportTheme = ToolStyle.button("Import", null, "Copy a theme .xml file into your themes");
+		top.add(btnImportTheme);
+		btnOpenThemeFolder = ToolStyle.button("Folder", null, "Open the folder of your themes");
+		top.add(btnOpenThemeFolder);
 
+		btnSaveTheme = ToolStyle.button("Save", null, "Overwrite the current custom theme (Ctrl+S)");
+		top.add(btnSaveTheme);
+		btnSaveAs = ToolStyle.button("Save as...", null, "Save a copy as a new theme");
+		top.add(btnSaveAs);
+		btnExportTheme = ToolStyle.button("Export", null, "Save a copy anywhere on disk");
+		top.add(btnExportTheme);
+		getContentPane().add(top, "growx, wrap");
+
+		// ---- left: filter + elements
+		JPanel left = new JPanel(new MigLayout("insets 8 12 8 6, gap 0, fill", "[grow,fill]", "[][][grow,fill]"));
+		txtFilter = new JTextField();
+		txtFilter.putClientProperty("JTextField.placeholderText", "Search an element (comment, caret, gutter...)");
+		txtFilter.setToolTipText("Filters the list below. Tip: click a piece of code in the preview to jump to its color");
+		left.add(txtFilter, "growx, gapbottom 6, wrap");
+
+		JPanel header = new JPanel(new MigLayout("insets 0 10 4 8, gap 6", "[grow,fill][46!,center][46!,center][56!,center]", "[]"));
+		header.setOpaque(false);
+		header.add(ToolStyle.mutedLabel("Element"));
+		header.add(ToolStyle.mutedLabel("Text"));
+		header.add(ToolStyle.mutedLabel("Fill"));
+		header.add(ToolStyle.mutedLabel("Style"));
+		left.add(header, "growx, wrap");
+
+		listPanel = new JPanel(new MigLayout("insets 0, wrap 1, gap 0, hidemode 3", "[grow,fill]", ""));
+		scrollPaneElements = new JScrollPane(listPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPaneElements.getVerticalScrollBar().setUnitIncrement(24);
+		scrollPaneElements.setBorder(BorderFactory.createLineBorder(borderColor()));
+		left.add(scrollPaneElements, "grow");
+
+		// ---- right: syntax + size + preview
+		JPanel right = new JPanel(new MigLayout("insets 8 6 8 12, gap 6, fill", "[][grow,fill,120:200:260][]push[][]", "[][grow,fill]"));
+		right.add(new JLabel("Preview"));
 		comboSyntax = new JComboBox<SupportedFileTextEditor>();
-		comboSyntax.setCursor(GuiUtils.CURSOR_HAND);
-		comboSyntax.setFont(DEFAULT_BUTTON_FONT);
-		getContentPane().add(comboSyntax, "cell 4 0,grow");
-
-		JSeparator separator = new JSeparator();
-		separator.setBackground(Color.DARK_GRAY);
-		getContentPane().add(separator, "cell 0 1 5 1,growx");
-
-		scrollPaneElements = new JScrollPane();
-		scrollPaneElements.getVerticalScrollBar().setUnitIncrement(25);
-		scrollPaneElements.getHorizontalScrollBar().setUnitIncrement(25);
-		scrollPaneElements.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		scrollPaneElements.setBackground(defaultElementsBackground);
-		getContentPane().add(scrollPaneElements, "cell 0 2 2 1,grow");
-
-		panelElements = new JPanel(new GridLayout(TokensStyleHelp.schemeTokensNumber, 1));
-		panelElements.setBackground(defaultElementsBackground);
-		scrollPaneElements.setViewportView(panelElements);
+		ToolStyle.hand(comboSyntax);
+		comboSyntax.setToolTipText("Language of the sample text");
+		right.add(comboSyntax, "wmin 0");
+		right.add(ToolStyle.mutedLabel("Size"), "gapleft 8");
+		JSpinner spinSize = new JSpinner(new SpinnerNumberModel(defaultTextFont.getSize(), 8, 40, 1));
+		spinSize.setToolTipText("Size of the sample text (only the preview)");
+		right.add(spinSize, "w 60!, wrap");
 
 		testTextArea = new RSyntaxTextArea();
 		testTextArea.setEditable(true);
-		scrollPane = new RTextScrollPane();
-		scrollPane.setViewportView(testTextArea);
-		getContentPane().add(scrollPane, "cell 2 2 3 1,grow");
+		testTextArea.setFont(defaultTextFont.deriveFont(Font.PLAIN, defaultTextFont.getSize2D()));
+		scrollPane = new RTextScrollPane(testTextArea, true);
+		scrollPane.setFoldIndicatorEnabled(true);
+		testTextArea.setCodeFoldingEnabled(true);
+		scrollPane.setBorder(BorderFactory.createLineBorder(borderColor()));
+		right.add(scrollPane, "span 5, grow");
+		spinSize.addChangeListener(e -> testTextArea.setFont(testTextArea.getFont().deriveFont(((Number) spinSize.getValue()).floatValue())));
 
-		JSeparator separator_1 = new JSeparator();
-		separator_1.setBackground(Color.DARK_GRAY);
-		getContentPane().add(separator_1, "cell 0 3 5 1,growx");
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, left, right);
+		split.setResizeWeight(0.0);
+		split.setDividerLocation(500);
+		split.setContinuousLayout(true);
+		split.setBorder(null);
+		split.setOneTouchExpandable(false);
+		getContentPane().add(split, "grow, wrap");
 
-		panel = new JPanel();
-		panel.setBackground(Color.GRAY);
-		getContentPane().add(panel, "cell 0 4 5 1,grow");
-		panel.setLayout(new MigLayout("", "[][][grow][][][]", "[grow]"));
-
-		btnReloadFromFile = new JButton("Reload From File");
-		btnReloadFromFile.setCursor(GuiUtils.CURSOR_HAND);
-		btnReloadFromFile.setFont(DEFAULT_BUTTON_FONT);
-		panel.add(btnReloadFromFile, "cell 0 0");
-
-		btnImportTheme = new JButton("Import Theme");
-		btnImportTheme.setCursor(GuiUtils.CURSOR_HAND);
-		btnImportTheme.setFont(DEFAULT_BUTTON_FONT);
-		panel.add(btnImportTheme, "cell 1 0");
-
-		btnOpenThemeFolder = new JButton("Open theme folder");
-		btnOpenThemeFolder.setCursor(GuiUtils.CURSOR_HAND);
-		btnOpenThemeFolder.setFont(DEFAULT_BUTTON_FONT);
-		panel.add(btnOpenThemeFolder, "cell 2 0,alignx left");
-
-		btnSaveTheme = new JButton("Save current");
-		btnSaveTheme.setCursor(GuiUtils.CURSOR_HAND);
-		btnSaveTheme.setFont(DEFAULT_BUTTON_FONT);
-		panel.add(btnSaveTheme, "cell 3 0");
-
-		btnSaveAs = new JButton("Save as...");
-		btnSaveAs.setCursor(GuiUtils.CURSOR_HAND);
-		btnSaveAs.setFont(DEFAULT_BUTTON_FONT);
-		panel.add(btnSaveAs, "cell 4 0");
-
-		// TODO: btnImportTheme
-
-		btnExportTheme = new JButton("Export Theme");
-		btnExportTheme.setCursor(GuiUtils.CURSOR_HAND);
-		btnExportTheme.setFont(DEFAULT_BUTTON_FONT);
-		panel.add(btnExportTheme, "cell 5 0");
+		// ---- status bar
+		JPanel status = new JPanel(new MigLayout("insets 6 12 8 12, fillx", "[grow,fill][]", "[]"));
+		lblStatus = new JLabel(" ");
+		lblCount = ToolStyle.mutedLabel(" ");
+		status.add(lblStatus, "wmin 0");
+		status.add(lblCount);
+		getContentPane().add(status, "growx");
 
 		addHandlers();
 
 		SwingUtilities.invokeLater(() -> {
+			adjusting = true;
 			initComboScheme();
 			initComboSyntax();
+			adjusting = false;
 
 			try {
+				getSelectedTheme(false).apply(testTextArea);
+				testTextArea.setSyntaxEditingStyle(((SupportedFileTextEditor) comboSyntax.getSelectedItem()).syntax);
+				testTextArea.setText(SampleFileReader.getFileTextFromSyntax((SupportedFileTextEditor) comboSyntax.getSelectedItem(), SampleFileReader.defaultSamplesFolder));
+				testTextArea.setCaretPosition(0);
 				initGuiFromTheme();
 			} catch (Exception e) {
 				logger.error("Cannot initialize gui from selected scheme", e);
 			}
 		});
 
-		setTitle("Scheme Manager");
-		setMinimumSize(defaultDimension);
-		setPreferredSize(defaultDimension);
+		setTitle("Theme Editor");
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension size = new Dimension(Math.min(defaultDimension.width, (int) (screen.width * 0.92)), Math.min(defaultDimension.height, (int) (screen.height * 0.88)));
+		setMinimumSize(new Dimension(Math.min(820, size.width), Math.min(520, size.height)));
+		setPreferredSize(size);
+		pack();
+		setSize(size);
 
 		GuiUtils.centerComponent(this);
 
 		setVisible(true);
 	}
 
+	private static Color borderColor() {
+		Color c = UIManager.getColor("Component.borderColor");
+		return c != null ? c : Color.GRAY;
+	}
+
 	private void addHandlers() {
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-
-		    	String message = "All unsaved modifications will be lost, are you sure to close theme manager?";
-
-		    	if (dialogHelper.yesOrNo(message, "Close theme manager?")) {
-		    		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					singletonInstance = null;
-					closeAction.run();
-					dispose();
-
-		    	} else {
-		    		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-				}
+		    	if (!modified || dialogHelper.yesOrNo("There are changes not saved: close the theme editor and lose them?", "Close theme editor?")) {
+		    		singletonInstance = null;
+		    		closeAction.run();
+		    		dispose();
+		    	}
 		    }
 		});
 
+		ToolStyle.bindKey(this, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, various.common.light.gui.ShortcutKeys.MENU_DOWN_MASK), "saveTheme", () -> {
+			if (btnSaveTheme.isEnabled()) {
+				btnSaveTheme.doClick();
+			}
+		});
+
+		txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				applyFilter();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				applyFilter();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				applyFilter();
+			}
+		});
+
 		comboScheme.addActionListener((e) -> {
+			if (adjusting) {
+				return;
+			}
+			int newIndex = comboScheme.getSelectedIndex();
+			if (modified && !dialogHelper.yesOrNo("The changes of the current theme are not saved: switch theme and lose them?", "Unsaved changes")) {
+				adjusting = true;
+				comboScheme.setSelectedIndex(lastSchemeIndex);
+				adjusting = false;
+				return;
+			}
 			try {
+				if (modified) {
+					// discard: the cached theme still holds the edits
+					schemes.get(lastSchemeIndex).theme = schemes.get(lastSchemeIndex).loadThemeFromFile();
+				}
+				lastSchemeIndex = newIndex;
 				testTextArea.setCursor(GuiUtils.CURSOR_WAIT);
 				getSelectedTheme(false).apply(testTextArea);
 				initGuiFromTheme();
@@ -245,12 +321,15 @@ public class SchemeManagerGui extends JFrame {
 		});
 
 		comboSyntax.addActionListener((e) -> {
+			if (adjusting) {
+				return;
+			}
 			try {
 				testTextArea.setCursor(GuiUtils.CURSOR_WAIT);
 				SupportedFileTextEditor selected = (SupportedFileTextEditor)comboSyntax.getSelectedItem();
 				testTextArea.setSyntaxEditingStyle(selected.syntax);
-				initGuiFromTheme();
 				testTextArea.setText(SampleFileReader.getFileTextFromSyntax(selected, SampleFileReader.defaultSamplesFolder));
+				testTextArea.setCaretPosition(0);
 			} catch (Exception e1) {
 				dialogHelper.error("Cannot load syntax scheme, an error occurred");
 				logger.error("Cannot load syntax into text area!", e1);
@@ -260,18 +339,30 @@ public class SchemeManagerGui extends JFrame {
 			}
 		});
 
+		// click a piece of code: select the element that colors it
+		testTextArea.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getButton() == MouseEvent.BUTTON1) {
+					selectRowOfTokenAt(testTextArea.viewToModel(e.getPoint()));
+				}
+			}
+		});
+
 		btnReloadFromFile.addActionListener((e) -> {
-			if(!getSelectedColorSchemeObj().modifiable ||
-					dialogHelper.yesOrNo("Are you sure to reload current theme? all unsaved changes will be lost")) {
+			if(!modified || dialogHelper.yesOrNo("Are you sure to reload current theme? all unsaved changes will be lost")) {
 				try {
 					int previousIndex = comboScheme.getSelectedIndex();
 					schemes = retrieveXmlSchemes();
+					adjusting = true;
 					initComboScheme();
+					comboScheme.setSelectedIndex(Math.max(0, Math.min(previousIndex, schemes.size() - 1)));
+					adjusting = false;
+					lastSchemeIndex = comboScheme.getSelectedIndex();
 					getSelectedTheme(true).apply(testTextArea);
 					initGuiFromTheme();
-
-					comboScheme.setSelectedIndex(previousIndex);
-				} catch (IllegalArgumentException | IllegalAccessException e1) {
+				} catch (Exception e1) {
+					adjusting = false;
 					dialogHelper.error("Cannot load theme, an error occurred");
 				}
 			}
@@ -279,6 +370,9 @@ public class SchemeManagerGui extends JFrame {
 
 		btnImportTheme.addActionListener((e)-> {
 			File toImport = fileChooserHelper.fileRead(this.getContentPane(), new FileNameExtensionFilter("Configuration file (.xml)", "xml"));
+			if (toImport == null) {
+				return; // cancelled by user
+			}
 			try {
 				validate(toImport);
 				File destFile = new File(styleFilesFolder.getAbsolutePath() + File.separator + toImport.getName());
@@ -289,12 +383,15 @@ public class SchemeManagerGui extends JFrame {
 					try {
 						int previousIndex = comboScheme.getSelectedIndex();
 						schemes = retrieveXmlSchemes();
+						adjusting = true;
 						initComboScheme();
+						comboScheme.setSelectedIndex(Math.max(0, Math.min(previousIndex, schemes.size() - 1)));
+						adjusting = false;
+						lastSchemeIndex = comboScheme.getSelectedIndex();
 						getSelectedTheme(true).apply(testTextArea);
 						initGuiFromTheme();
-
-						comboScheme.setSelectedIndex(previousIndex);
-					} catch (IllegalArgumentException | IllegalAccessException e1) {
+					} catch (Exception e1) {
+						adjusting = false;
 						dialogHelper.error("Cannot load theme, an error occurred");
 					}
 				} else {
@@ -313,6 +410,7 @@ public class SchemeManagerGui extends JFrame {
 		btnSaveTheme.addActionListener((e) -> {
 			if (dialogHelper.yesOrNo("Overwrite " + getSelectedColorSchemeObj() + " ?")) {
 				saveCurrentTheme(true, styleFilesFolder);
+				setModified(false);
 			}
 		});
 
@@ -322,6 +420,7 @@ public class SchemeManagerGui extends JFrame {
 
 		btnSaveAs.addActionListener((e) -> {
 			saveCurrentThemeAs(getSelectedColorSchemeObj().modifiable);
+			setModified(false);
 		});
 	}
 
@@ -342,7 +441,9 @@ public class SchemeManagerGui extends JFrame {
 
 	public Theme getSelectedTheme(boolean loadFromFile) {
 		if (loadFromFile) {
-			return getSelectedColorSchemeObj().loadThemeFromFile();
+			ColorStyleScheme current = getSelectedColorSchemeObj();
+			current.theme = current.loadThemeFromFile();
+			return current.theme;
 		} else {
 			return getSelectedColorSchemeObj().theme;
 		}
@@ -364,29 +465,126 @@ public class SchemeManagerGui extends JFrame {
 		comboSyntax.setSelectedItem(SupportedFileTextEditor.JAVA);
 	}
 
-	private void initGuiFromTheme() throws IllegalArgumentException, IllegalAccessException {
+	private void setModified(boolean value) {
+		modified = value;
+		updateStatus();
+	}
 
-		panelElements.removeAll();
-		tokenSelectors = TokensStyleHelp.getColorSelectors(getSelectedTheme(false), testTextArea, defaultElementsBackground);
+	private void updateStatus() {
+		boolean custom = comboScheme.getSelectedIndex() >= 0 && schemes != null && !schemes.isEmpty() && getSelectedColorSchemeObj().modifiable;
+		btnSaveTheme.setEnabled(custom && modified);
+		String state = custom ? "Custom theme" : "Default theme (read-only: Save as... keeps your version)";
+		lblStatus.setText(state + (modified ? "   -   unsaved changes" : ""));
+		lblStatus.setForeground(modified ? ToolStyle.ORANGE : ToolStyle.muted());
+		setTitle("Theme Editor" + (modified ? " *" : ""));
+	}
 
-		SwingUtilities.invokeLater(()->{
+	private void initGuiFromTheme() {
+		Theme theme = getSelectedTheme(false);
+		List<ThemeEntry> entries = ThemeEntries.build(theme, testTextArea);
 
-			boolean currentModifiable = getSelectedColorSchemeObj().modifiable;
-			btnSaveTheme.setEnabled(currentModifiable);
+		listPanel.removeAll();
+		rows.clear();
+		sectionHeaders.clear();
+		tokenRows.clear();
+		selectedRow = null;
 
-			for(ColorSelector selector : tokenSelectors) {
-				panelElements.add(selector);
-				selector.setEnabled(currentModifiable);
+		String currentSection = null;
+		for (ThemeEntry entry : entries) {
+			if (!entry.section.equals(currentSection)) {
+				currentSection = entry.section;
+				JLabel header = new JLabel(currentSection.toUpperCase());
+				header.setFont(header.getFont().deriveFont(Font.BOLD, header.getFont().getSize2D() - 1f));
+				header.setForeground(ToolStyle.muted());
+				header.setBorder(BorderFactory.createEmptyBorder(12, 10, 4, 8));
+				header.putClientProperty("section", currentSection);
+				sectionHeaders.add(header);
+				listPanel.add(header, "growx");
 			}
+			final Runnable push = entry.onChange;
+			entry.onChange = () -> {
+				push.run();
+				setModified(true);
+			};
+			ThemeRow row = new ThemeRow(entry);
+			rows.add(row);
+			if (entry.tokenType >= 0) {
+				tokenRows.put(entry.tokenType, row);
+			}
+			listPanel.add(row, "growx");
+		}
 
+		setModified(false);
+		applyFilter();
+
+		SwingUtilities.invokeLater(() -> {
+			testTextArea.setMargin(new Insets(8,8,8,8));
+			listPanel.revalidate();
+			listPanel.repaint();
 			scrollPane.revalidate();
 			scrollPane.repaint();
-			panelElements.revalidate();
-			panelElements.repaint();
 			testTextArea.repaint();
+			scrollPaneElements.getVerticalScrollBar().setValue(0);
+		});
+	}
 
+	private void applyFilter() {
+		String filter = txtFilter.getText() == null ? "" : txtFilter.getText().trim().toLowerCase();
+		int visible = 0;
+		Map<String, Boolean> sectionHasVisible = new LinkedHashMap<String, Boolean>();
+		for (ThemeRow row : rows) {
+			boolean show = row.matches(filter);
+			row.setVisible(show);
+			if (show) {
+				visible++;
+				sectionHasVisible.put(row.entry.section, true);
+			}
+		}
+		for (JLabel header : sectionHeaders) {
+			header.setVisible(Boolean.TRUE.equals(sectionHasVisible.get((String) header.getClientProperty("section"))));
+		}
+		lblCount.setText(visible + " of " + rows.size() + " elements");
+		listPanel.revalidate();
+		listPanel.repaint();
+	}
 
-			testTextArea.setMargin(new Insets(8,8,8,8));
+	/** Finds the syntax token under the offset of the preview and brings its row in view */
+	private void selectRowOfTokenAt(int offset) {
+		try {
+			if (offset < 0 || !(testTextArea.getDocument() instanceof RSyntaxDocument)) {
+				return;
+			}
+			int line = testTextArea.getLineOfOffset(offset);
+			Token token = ((RSyntaxDocument) testTextArea.getDocument()).getTokenListForLine(line);
+			while (token != null && token.isPaintable()) {
+				if (token.containsPosition(offset)) {
+					ThemeRow row = tokenRows.get(token.getType());
+					if (row != null) {
+						revealRow(row);
+					}
+					return;
+				}
+				token = token.getNextToken();
+			}
+		} catch (Exception e) {
+			logger.warn("Cannot find the token under the click", e);
+		}
+	}
+
+	private void revealRow(ThemeRow row) {
+		if (!row.isVisible()) {
+			txtFilter.setText("");
+			applyFilter();
+		}
+		if (selectedRow != null) {
+			selectedRow.setRowSelected(false);
+		}
+		selectedRow = row;
+		row.setRowSelected(true);
+		SwingUtilities.invokeLater(() -> {
+			Rectangle bounds = SwingUtilities.convertRectangle(row.getParent(), row.getBounds(), listPanel);
+			bounds.grow(0, 40);
+			listPanel.scrollRectToVisible(bounds);
 		});
 	}
 

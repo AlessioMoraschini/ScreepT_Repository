@@ -288,12 +288,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					subHeaderPanel.btnBase64Conversion.doClick();
 				}
 
-				/*
-				 * 	DARK/LIGHT VIEW -> CTRL+B
-				 */
-				else if (e.getKeyCode() == 66 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {
-					subHeaderPanel.btnDark.doClick();
-				}
+
 				/*
 				 * 	UPPERCASE AFTER DOTS-SEPARATOR -> CTRL+Shift+[.]
 				 */

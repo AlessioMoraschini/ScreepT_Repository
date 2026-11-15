@@ -44,7 +44,6 @@ public class TextEditTooltips {
 	public static final String tooltipTailMode = "Turn tail -f modality ON/OFF for current tab. When active text will be automatically refreshed from file, but cannot be edited.";
 	public static final String tooltipForegroundTxt = "Change text color (works only with TEXT syntax and deactivated theme)";
 	public static final String tooltipImpExpCryptedWorkspace = "Import/export crypted workspace using Creept";
-	public static final String tooltipDarkSwitch = "[Ctrl + B] Switch upon dark and light text combination";
 	public static final String tooltipUpperPostDots = "Makes text uppercase after dots, or a significat line broker";
 	public static final String tooltipLowerPostDots = "Makes text lowerCase after dots, or a significat line broker";
 	public static final String tooltipTT = "[Ctrl + Shift + UP] Makes selected/all text uppercase or lowercase";
@@ -71,7 +70,7 @@ public class TextEditTooltips {
 	public static final String tooltipCutWordsTo = "When selected, the text will be cropped to adapt the size of the text area";
 	public static final String tooltipFitMaintainWords = "When selected, the text will be cropped to adapt the size of the text area (without breaking words into fragments)";
 	public static final String tooltipInlineTabs = "[Ctrl + Shift + I] If selected tabs will be o one line, else they will be always visible organized in rows";
-	public static final String tooltipShowTabGrid = "[Ctrl + G] If selected tabs will be highlighted.";
+	public static final String tooltipShowTabGrid = "[Ctrl + G] Draws a vertical guide line at every tab stop in the indentation of each line (only for indentation made of tab characters, not spaces). Color: 'Tab lines' in the theme editor.";
 	public static final String tooltipTabSize = "This number will be used as number of spaces for each tab pressed.";
 	public static final String tooltipTemplatesPanel = "[Ctrl + T] Open templates manager";
 	public static final String tooltipFileViewBtn = "[Alt + Q] Show/hide file explorer panel";

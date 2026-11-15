@@ -61,6 +61,16 @@ public class FileNameSearchDialog extends ParentDialog {
 	private File rootDir;
 
 	private AmAsyncAction keyTimer;
+	/** Names of the files under the root, read once in background: typing only filters it */
+	private volatile FileNameIndex index;
+	private static final java.util.Map<String, FileNameIndex> INDEX_CACHE = new java.util.concurrent.ConcurrentHashMap<String, FileNameIndex>();
+	private static final long INDEX_MAX_AGE_MS = 5 * 60 * 1000L;
+	private final java.util.concurrent.atomic.AtomicInteger searchSequence = new java.util.concurrent.atomic.AtomicInteger();
+	private final java.util.concurrent.ExecutorService searchExecutor = java.util.concurrent.Executors.newSingleThreadExecutor(r -> {
+		Thread t = new Thread(r, "file-name-search");
+		t.setDaemon(true);
+		return t;
+	});
 
 	public FileNameSearchDialog() {
 		this(null, null);
@@ -104,7 +114,7 @@ public class FileNameSearchDialog extends ParentDialog {
 			keyTimer.abort();
 		}
 
-		keyTimer = new AmAsyncAction(action, 300);
+		keyTimer = new AmAsyncAction(action, 120);
 		if(startTimer)
 			keyTimer.executeDelayedAsync();
 	}
@@ -201,13 +211,7 @@ public class FileNameSearchDialog extends ParentDialog {
 		else
 			radioUseWorkspace.setText("Use custom folder: ");
 
-		new Thread(()-> {
-			if(FileVarious.checkIfContainsMoreFilesThanMax(this.rootDir, true, MAX_FILE_NUMBER_ALERT)) {
-				setPopUpWarning("This root directory seems to be huge, searching here can be very slow! Try to use a subfolder as root");
-			} else {
-				setPopUpWarning("");
-			}
-		}).start();
+		rebuildIndex();
 
 	}
 
@@ -346,23 +350,69 @@ public class FileNameSearchDialog extends ParentDialog {
 		return new FileSearchDTO(rootDir, searchString, false, SearchType.FILE_ONLY, true, false, true);
 	}
 
+	/** Reads the names of the files under the root in background (the previous reading is abandoned) */
+	private void rebuildIndex() {
+		final FileNameIndex previous = index;
+		if (previous != null) {
+			previous.cancel();
+		}
+		final String key = FileVarious.getCanonicalPathSafe(rootDir);
+		final FileNameIndex cached = INDEX_CACHE.get(key);
+		if (cached != null && cached.isReady() && System.currentTimeMillis() - cached.builtAt < INDEX_MAX_AGE_MS) {
+			index = cached; // the same folder was read a moment ago
+			setPopUpWarning(cached.isTruncated() ? "Huge folder: only the first " + cached.size() + " files are searched" : "");
+			searchCurrent();
+			return;
+		}
+		final FileNameIndex fresh = new FileNameIndex(rootDir);
+		index = fresh;
+		setPopUpWarning("Reading the files of the folder (the first time it can take a while)...");
+		searchExecutor.execute(() -> {
+			fresh.build();
+			if (fresh.isReady()) {
+				INDEX_CACHE.put(key, fresh);
+			}
+			if (index != fresh) {
+				return; // root changed meanwhile
+			}
+			SwingUtilities.invokeLater(() -> {
+				setPopUpWarning(fresh.isTruncated() ? "This folder has a huge number of files: only the first " + fresh.size() + " are searched. Use a subfolder as root" : "");
+				searchCurrent();
+			});
+		});
+	}
+
 	private void searchCurrent() {
-		GuiUtils.launchThreadSafeSwingV2(() -> {
-			String searchString = textField.getText();
-			if(StringWorker.isEmpty(searchString))
+		final String searchString = textField.getText();
+		if(StringWorker.isEmpty(searchString))
+			return;
+
+		final FileNameIndex current = index;
+		if (current == null || (!current.isReady() && current.size() == 0)) {
+			return; // the search runs again when the reading ends (a partial reading is already searched)
+		}
+
+		final int sequence = searchSequence.incrementAndGet();
+		final int limit = (int) Math.min(Integer.MAX_VALUE, fileDropList.getFileViewLimit());
+		searchExecutor.execute(() -> {
+			if (sequence != searchSequence.get()) {
 				return;
+			}
+			final List<File> matches = current.search(searchString, limit, () -> sequence != searchSequence.get());
+			if (matches == null) {
+				return; // a newer search is on its way
+			}
+			SwingUtilities.invokeLater(() -> {
+				if (sequence != searchSequence.get()) {
+					return;
+				}
+				if (matches.size() >= limit)
+					setPopUpWarning("Result number limited to " + matches.size() + " results");
+				else
+					setPopUpWarning(current.isTruncated() ? "Huge folder: only the first " + current.size() + " files are searched" : null);
 
-			// Match everything that starts with current string entered
-			searchString = "*".equals(searchString.trim()) ? "*" : (searchString.trim() + "*");
-
-			List<File> matches = FileNameSearchAdvanced.findByMatch(getDto(searchString), fileDropList.getFileViewLimit());
-
-			if(matches != null && matches.size() >= fileDropList.getFileViewLimit())
-				setPopUpWarning("Result number limited to " + matches.size() + " results");
-			else
-				setPopUpWarning(null);
-
-			fileDropList.setFiles(matches);
+				fileDropList.setFiles(matches);
+			});
 		});
 	}
 
