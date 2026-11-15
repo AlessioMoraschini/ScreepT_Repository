@@ -120,6 +120,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 
 	// default values
 	private Locale BACKUP_LOCALE;
+	private String BACKUP_LANGUAGE = "en";
 	private int BACKUP_AUTOSAVE_INTERVAL;
 	private boolean BACKUP_AUTOSAVE_FLAG;
 	private boolean BACKUP_EXCEPTION_ADVICES;
@@ -450,8 +451,9 @@ public class GeneralOptionsFrame extends ParentFrame{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Locale locale = (Locale) comboLocale.getSelectedItem();
-					currentConfiguration.getGenOpt().setLocale(locale);
+					currentConfiguration.getGenOpt().setLanguage(locale.getLanguage());
 					various.common.light.i18n.I18n.setLanguage(locale.getLanguage());
+					currentConfiguration.writeCurrentConfigIniFile(); // the language is remembered at once
 				} catch (Exception e1) {
 					logger.error("Error setting locale", e1);
 				}
@@ -585,6 +587,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		BACKUP_LOCALE = currentConfiguration.getGenOpt().getLocale();
+		BACKUP_LANGUAGE = currentConfiguration.getGenOpt().getLanguage();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
 	}
 
@@ -604,7 +607,7 @@ public class GeneralOptionsFrame extends ParentFrame{
     	System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
     	comboSecurityLevels.setSelectedItem(currentConfiguration.getAesOpt().getSecurityLevel());
     	comboBoxDefEOL.setSelectedItem(currentConfiguration.getTextEditorOpt().getEol());
-    	comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(currentConfiguration.getGenOpt().getLocale().getLanguage())));
+comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(currentConfiguration.getGenOpt().getLanguage())));
     	updateComboLocale();
     	Locale.setDefault(currentConfiguration.getGenOpt().getLocale());
     	chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
@@ -639,7 +642,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private void updateComboLocale() {
 		for (int i = 0; i < comboLocale.getItemCount(); i++) {
 			Locale currentScanLocale = (comboLocale.getItemAt(i));
-			if (currentScanLocale.equals(currentConfiguration.getGenOpt().getLocale())) {
+			if (currentScanLocale.getLanguage().equals(various.common.light.i18n.I18n.normalize(currentConfiguration.getGenOpt().getLanguage()))) {
 				comboLocale.setSelectedIndex(i);
 				break;
 			}
@@ -661,6 +664,8 @@ public class GeneralOptionsFrame extends ParentFrame{
 		currentConfiguration.getGenOpt().setExceptionAdvicesEnabled(BACKUP_EXCEPTION_ADVICES);
 		currentConfiguration.getGenOpt().setAutomaticUpdateOn(BACKUP_AUTOCHECK_UPDATES);
 		currentConfiguration.getGenOpt().setLocale(BACKUP_LOCALE);
+		currentConfiguration.getGenOpt().setLanguage(BACKUP_LANGUAGE);
+		various.common.light.i18n.I18n.setLanguage(BACKUP_LANGUAGE);
 
 		// reset INItializer reference currentConfiguration too
 		System.setProperty("file.encoding", BACKUP_CHARSET);
@@ -716,6 +721,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
 		BACKUP_LOCALE = currentConfiguration.getGenOpt().getLocale();
+		BACKUP_LANGUAGE = currentConfiguration.getGenOpt().getLanguage();
 
 		// write launcher configuration
 		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());
@@ -726,6 +732,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private void writeValues() {
 		// write single values to file ini associated to currentConf
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "locale", currentConfiguration.getGenOpt().getLocale().toString());
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "language", currentConfiguration.getGenOpt().getLanguage());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", currentConfiguration.getGenOpt().getUserName());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "charset", currentConfiguration.getGenOpt().getCharset());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "generalVolume", currentConfiguration.getGenOpt().getGeneralVolume());

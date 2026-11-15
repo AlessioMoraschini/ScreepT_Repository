@@ -74,7 +74,7 @@ public class LanguageDialog extends JDialog {
 		I18n.setLanguage(chosen);
 		if (configuration != null) {
 			try {
-				configuration.getGenOpt().setLocale(new Locale(chosen));
+				configuration.getGenOpt().setLanguage(chosen);
 				configuration.writeCurrentConfigIniFile();
 			} catch (Exception e) {
 				logger.warn("Cannot remember the language", e);

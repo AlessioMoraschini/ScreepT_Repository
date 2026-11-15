@@ -147,7 +147,7 @@ public class MainGuiGeneralAppStarter {
 				currentConfiguration = new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 				currentConfiguration.readConfigIniFile();
 				// language of the interface (packs embedded in the application)
-				various.common.light.i18n.I18n.setLanguage(currentConfiguration.getGenOpt().getLocale().getLanguage());
+				various.common.light.i18n.I18n.setLanguage(currentConfiguration.getGenOpt().getLanguage());
 				// the first update to a version with the dark theme as default moves the user to it, once (see DarkThemeMigration)
 				DarkThemeMigration.applyOnce(currentConfiguration);
 				// the ScreepT Dark editor theme must exist for everyone (see EditorThemeInstaller)
