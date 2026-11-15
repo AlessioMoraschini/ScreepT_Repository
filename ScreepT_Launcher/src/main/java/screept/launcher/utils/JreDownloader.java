@@ -11,6 +11,7 @@
 */
 package screept.launcher.utils;
 
+import various.common.light.i18n.I18n;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,7 +66,7 @@ public final class JreDownloader {
 	public static File download(File targetDir, Progress progress) throws IOException {
 		String os = osName();
 		String arch = archName();
-		progress.update("Looking for the latest Java " + FEATURE_VERSION + " for " + os + " " + arch + "...", -1);
+		progress.update(I18n.t("launcher.looking_for_the_latest_java") + FEATURE_VERSION + I18n.t("launcher.for") + os + " " + arch + "...", -1);
 
 		String assets = readText(String.format(ASSETS_URL, FEATURE_VERSION, arch, os));
 		Matcher matcher = PACKAGE_PATTERN.matcher(assets);
@@ -130,7 +131,7 @@ public final class JreDownloader {
 			return "x64";
 		}
 		throw new IOException("Java " + FEATURE_VERSION + " is not available for the architecture " + arch
-				+ " (32 bit systems are not supported by Java " + FEATURE_VERSION + ")");
+				+ I18n.t("launcher.32_bit_systems_are_not_supported") + FEATURE_VERSION + ")");
 	}
 
 	private static HttpURLConnection open(String address) throws IOException {

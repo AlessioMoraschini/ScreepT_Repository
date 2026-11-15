@@ -11,6 +11,7 @@
  */
 package maingUI;
 
+import various.common.light.i18n.I18n;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.KeyboardFocusManager;
@@ -86,12 +87,12 @@ public class MainGuiUtils {
 			MainGUI.updatesDownloaded = MainGuiGeneralAppStarter.updatesManager.downloadAndExtractUpdates();
 			MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(true);
 			boolean restartNow = dialogHelper.yesOrNo(
-					"ScreepT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
+					I18n.t("app.screept_must_be_restarted_to_begin"), "Restart required");
 
 			if (restartNow) {
 				MainGuiManager.closeApplication(0);
 			} else {
-				dialogHelper.info("Updates will be installed when you'll close current session", "Update will start at close");
+				dialogHelper.info(I18n.t("app.updates_will_be_installed_when_you"), "Update will start at close");
 			}
 
 		} catch (Exception e1) {
@@ -161,7 +162,7 @@ public class MainGuiUtils {
 								}
 							}else {
 								logger.error("Cannot retrieve remote update data, server is unreachable.");
-								dialogHelper.error("Cannot retrieve remote update data, server is unreachable.", "Connection error");
+								dialogHelper.error(I18n.t("app.cannot_retrieve_remote_update_data_server"), "Connection error");
 							}
 						}
 					} catch (Exception e2) {
@@ -180,7 +181,7 @@ public class MainGuiUtils {
 							logger.error(e2.getMessage(), e2);
 
 						} else {
-							dialogHelper.error("Cannot read updates, an error occurred :(", "An error occurred!");
+							dialogHelper.error(I18n.t("app.cannot_read_updates_an_error_occurred"), "An error occurred!");
 							logger.error("Cannot read updates, an error occurred :(", e2);
 						}
 					} finally {
@@ -814,7 +815,7 @@ public class MainGuiUtils {
 			input = new JOptionHelperExtended(parent).askForStringNullable("Please insert your name:", "Hi, what's your name? :)", "", new Object[]{"Confirm"});
 
 			if (input != null && (input.equals("") || input.length() > 26)) {
-				MainGUI.dialogHelper.warn("Username must be between 1-26 characters!", "UserName length Error");
+				MainGUI.dialogHelper.warn(I18n.t("app.username_must_be_between_1_26"), "UserName length Error");
 				logger.error("Error in user input, redo.");
 			} else {
 				input = (input == null) ? "U-Sir" : input;
@@ -962,8 +963,8 @@ public class MainGuiUtils {
 				currentTabEditor.saveAllUnsavedExisting();
 			} catch (IOException e) {
 				logger.error("", e);
-				if(!MainGUI.dialogHelper.yesOrNo("Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?")) {
-					MainGUI.dialogHelper.error("Procedure aborted", "Procedure aborted");
+				if(!MainGUI.dialogHelper.yesOrNo(I18n.t("app.oooops_an_error_occurred_continue_anyway"))) {
+					MainGUI.dialogHelper.error(I18n.t("app.procedure_aborted"), I18n.t("app.procedure_aborted"));
 					MainGUI.mntmTextEditor.doClick();
 					return false; // no -> don't exit after error
 				}

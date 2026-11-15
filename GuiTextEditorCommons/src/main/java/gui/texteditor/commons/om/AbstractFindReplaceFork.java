@@ -8,6 +8,7 @@ package gui.texteditor.commons.om;
  * This library is distributed under a modified BSD license.  See the included
  * RSTAUI.License.txt file for details.
  */
+import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Frame;

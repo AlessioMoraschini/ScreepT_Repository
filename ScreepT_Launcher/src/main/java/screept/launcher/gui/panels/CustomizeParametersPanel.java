@@ -11,6 +11,7 @@
  */
 package screept.launcher.gui.panels;
 
+import various.common.light.i18n.I18n;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
@@ -70,9 +71,9 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final String TOOLTIP_LAUNCH_AS_JAR_WARN = "Works only with centralized build, pugins might not work with this configuration, use this only if you know what you're doing!)";
 	private static final String TOOLTIP_LAUNCH_AS_JAR = "ScreepT will be launched as Jar (works only with centralized build, pugins might not work with this configuration!)";
 	private static final String TOOLTIP_LAUNCH_AS_CLASS = "ScreepT will be launched as .Class (works with centralized build and even with multimodule)";
-	private final String TOOLTIP_INFO_JVM = "Select your preferred, but remember that this software is fully supported only for JVMs between version "
+	private final String TOOLTIP_INFO_JVM = I18n.t("launcher.select_your_preferred_but_remember_that")
 			+ IniFileManager.MIN_JRE_VERSION + " <- And -> " + IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY;
-	private final String TOOLTIP_WARN_JVM = "It seems that chosen version is not the best match, full software compatibility is granted for JVM versions between "
+	private final String TOOLTIP_WARN_JVM = I18n.t("launcher.it_seems_that_chosen_version_is")
 			+ IniFileManager.MIN_JRE_VERSION + " <- And -> " + IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY;
 	
 	private static final String TITLE_LAUNCH_AS_JAR = "Launch as .Jar:";
@@ -161,14 +162,14 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][20px:n][80px,grow]", "[grow][grow][grow][150:150:,grow][][grow]"));
 		
-		lblMaxMemory = new JLabel("Max memory(MB):");
+		lblMaxMemory = new JLabel(I18n.t("launcher.max_memory_mb"));
 		lblMaxMemory.setForeground(new Color(220, 220, 220));
 		getContentPane().add(lblMaxMemory, "cell 0 0 2 1,alignx center");
 		
 		lblMaxWarninig = new JLabel("");
 		getContentPane().add(lblMaxWarninig, "cell 2 0");
 		
-		lblMinMemory = new JLabel("Min memory (MB):");
+		lblMinMemory = new JLabel(I18n.t("launcher.min_memory_mb"));
 		lblMinMemory.setForeground(new Color(220, 220, 220));
 		getContentPane().add(lblMinMemory, "cell 0 1 2 1,alignx center");
 		
@@ -181,7 +182,7 @@ public class CustomizeParametersPanel extends JFrame{
 		spinnerMaxMemoryMB.setModel(new SpinnerNumberModel(defaultMaxMemXmx, 128, SysUtils.getMaxMemoryAdmitted(), 20));
 		getContentPane().add(spinnerMaxMemoryMB, "cell 3 0,growx");
 		
-		lblLogLevel = new JLabel("Log level:");
+		lblLogLevel = new JLabel(I18n.t("launcher.log_level"));
 		lblLogLevel.setForeground(new Color(220, 220, 220));
 		getContentPane().add(lblLogLevel, "cell 5 0,alignx right");
 		
@@ -199,7 +200,7 @@ public class CustomizeParametersPanel extends JFrame{
 		lblLogLevelInfo = new JLabel("");
 		getContentPane().add(lblLogLevelInfo, "cell 6 0,alignx right");
 		
-		labelGuiScale = new JLabel("Graphics Scale:");
+		labelGuiScale = new JLabel(I18n.t("launcher.graphics_scale"));
 		labelGuiScale.setToolTipText(TOOLTIP_GRAPHICS_SCALE);
 		labelGuiScale.setForeground(new Color(220, 220, 220));
 		getContentPane().add(labelGuiScale, "cell 5 1,alignx right");
@@ -220,7 +221,7 @@ public class CustomizeParametersPanel extends JFrame{
 		sliderGuiScale.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(sliderGuiScale, "cell 8 1");
 		
-		lblStackSize = new JLabel("Stack Size(MB)");
+		lblStackSize = new JLabel(I18n.t("launcher.stack_size_mb"));
 		lblStackSize.setForeground(new Color(220, 220, 220));
 		getContentPane().add(lblStackSize, "cell 0 2 2 1,alignx center");
 		
@@ -236,7 +237,7 @@ public class CustomizeParametersPanel extends JFrame{
 		lblLaunchJarIconWarn = new JLabel("");
 		getContentPane().add(lblLaunchJarIconWarn, "cell 4 2,alignx right");
 		
-		chckBoxLaunchAsJar = new JCheckBox("Launch as .Jar");
+		chckBoxLaunchAsJar = new JCheckBox(I18n.t("launcher.launch_as_jar"));
 		chckBoxLaunchAsJar.setOpaque(false);
 		chckBoxLaunchAsJar.setForeground(new Color(220, 220, 220));
 		chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_JAR);
@@ -245,7 +246,7 @@ public class CustomizeParametersPanel extends JFrame{
 		chckBoxLaunchAsJar.setFont(new Font("SansSerif", Font.BOLD, 12));
 		getContentPane().add(chckBoxLaunchAsJar, "cell 5 2 2 1,alignx center,aligny center");
 		
-		chckbxActiveShell = new JCheckBox("Display Shell");
+		chckbxActiveShell = new JCheckBox(I18n.t("launcher.display_shell"));
 		chckbxActiveShell.setOpaque(false);
 		chckbxActiveShell.setForeground(new Color(220, 220, 220));
 		chckbxActiveShell.setToolTipText(TOOLTIP_DISPLAY_SHELL);
@@ -253,7 +254,7 @@ public class CustomizeParametersPanel extends JFrame{
 		chckbxActiveShell.setFont(new Font("SansSerif", Font.BOLD, 12));
 		getContentPane().add(chckbxActiveShell, "cell 7 2 2 1,alignx center");
 		
-		lblPreferredJvm = new JLabel("Preferred JVM");
+		lblPreferredJvm = new JLabel(I18n.t("launcher.preferred_jvm"));
 		lblPreferredJvm.setForeground(new Color(220, 220, 220));
 		getContentPane().add(lblPreferredJvm, "cell 0 3 2 1,alignx center");
 		
@@ -312,22 +313,22 @@ public class CustomizeParametersPanel extends JFrame{
 		jvmBox.add(jvmInfoPane, "grow");
 		getContentPane().add(jvmBox, "cell 3 3 5 1,grow");
 		
-		btnDownloadJava = new JButton("Get Java " + JreDownloader.FEATURE_VERSION);
-		btnDownloadJava.setToolTipText("<html>Downloads the latest Java " + JreDownloader.FEATURE_VERSION + " (Eclipse Temurin JRE, checksum verified)<br/>into the \"jre\" folder of this ScreepT installation.<br/>Nothing is installed system wide.</html>");
+		btnDownloadJava = new JButton(I18n.t("launcher.get_java") + JreDownloader.FEATURE_VERSION);
+		btnDownloadJava.setToolTipText(I18n.t("launcher.downloads_the_latest_java") + JreDownloader.FEATURE_VERSION + I18n.t("launcher.eclipse_temurin_jre_checksum_verified_into"));
 		btnDownloadJava.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnDownloadJava, "cell 8 3");
 		
 		separator = new JSeparator();
 		getContentPane().add(separator, "cell 0 4 9 1,growx");
 		
-		btnExitConfiguration = new JButton("Discard");
+		btnExitConfiguration = new JButton(I18n.t("common.discard"));
 		btnExitConfiguration.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		btnExitConfiguration.setBackground(new Color(207, 77, 70));
 		btnExitConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
 		btnExitConfiguration.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnExitConfiguration, "cell 0 5,growx");
 		
-		btnReloadInitialConfig = new JButton("Reset to Initial Values");
+		btnReloadInitialConfig = new JButton(I18n.t("launcher.reset_to_initial_values"));
 		btnReloadInitialConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		btnReloadInitialConfig.setForeground(Color.WHITE);
 		btnReloadInitialConfig.setEnabled(true);
@@ -339,14 +340,14 @@ public class CustomizeParametersPanel extends JFrame{
 		btnLoadScreeptDefault = new JButton();
 		btnLoadScreeptDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		btnLoadScreeptDefault.setForeground(Color.WHITE);
-		btnLoadScreeptDefault.setText("Use Defaults");
+		btnLoadScreeptDefault.setText(I18n.t("launcher.use_defaults"));
 		btnLoadScreeptDefault.setEnabled(true);
 		btnLoadScreeptDefault.setBackground(Color.DARK_GRAY);
 		btnLoadScreeptDefault.setIcon(new ImageIcon(IconsPathConfigurator.iconRootPath));
 		btnLoadScreeptDefault.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnLoadScreeptDefault, "cell 4 5 3 1,growx,aligny center");
 
-		btnSaveConfig = new JButton("Save Launch Options");
+		btnSaveConfig = new JButton(I18n.t("launcher.save_launch_options"));
 		btnSaveConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		btnSaveConfig.setBackground(new Color(85, 166, 66));
 		btnSaveConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
@@ -502,7 +503,7 @@ public class CustomizeParametersPanel extends JFrame{
 				
 				// regenerate command list with new args
 				parentStarterPanel.LAUNCHER.analyzeBeforeLauncher();
-				new JOptionHelper(thisPanel).info("Settings saved :)", "Settings saved");
+				new JOptionHelper(thisPanel).info(I18n.t("launcher.settings_saved"), I18n.t("launcher.settings_saved_2"));
 				active = false;
 				dispose();
 				
@@ -585,25 +586,25 @@ public class CustomizeParametersPanel extends JFrame{
 		boolean supported = ScreepTLauncher.jvmHelper != null
 				&& ScreepTLauncher.jvmHelper.checkSingleJavaVersionOK(JvmHelper.versionOfHome(home), IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, IniFileManager.MIN_JRE_VERSION);
 		IniFileManager ini = ScreepTLauncher.iniFileManager;
-		String params = ini == null ? "-" : (ini.JVM_MEMORY_OPTIONS + " " + ini.JVM_STACK_SIZE + " (UI scale " + ini.GUI_SCALE_ARG_VALUE + ")");
+		String params = ini == null ? "-" : (ini.JVM_MEMORY_OPTIONS + " " + ini.JVM_STACK_SIZE + I18n.t("launcher.ui_scale") + ini.GUI_SCALE_ARG_VALUE + ")");
 		Color fg = javax.swing.UIManager.getColor("Label.foreground");
 		Color muted = javax.swing.UIManager.getColor("Label.disabledForeground");
 		String fgHex = String.format("#%06x", (fg == null ? new Color(220, 220, 220) : fg).getRGB() & 0xFFFFFF);
 		String mutedHex = String.format("#%06x", (muted == null ? Color.GRAY : muted).getRGB() & 0xFFFFFF);
 		StringBuilder html = new StringBuilder("<html><body style='font-family:SansSerif; font-size:11px; color:").append(fgHex).append(";'>");
 		html.append("<b>").append(escape(label)).append("</b> &nbsp;<span style='color:").append(supported ? "#3d9b5c" : "#d68c26").append(";'>")
-				.append(supported ? "compatible with ScreepT" : "outside the range supported by ScreepT (Java 8 to 21)").append("</span><br>");
-		html.append("<span style='color:").append(mutedHex).append(";'>Path</span> ").append(escape(home)).append("<br>");
-		html.append("<span style='color:").append(mutedHex).append(";'>Version</span> ").append(escape(info.version))
-				.append(" &nbsp; <span style='color:").append(mutedHex).append(";'>Vendor</span> ").append(escape(info.vendor))
-				.append(" &nbsp; <span style='color:").append(mutedHex).append(";'>Type</span> ").append(info.jdk ? "JDK (with compiler)" : "JRE (run only)")
+				.append(supported ? I18n.t("launcher.compatible_with_screept") : I18n.t("launcher.outside_the_range_supported_by_screept")).append("</span><br>");
+		html.append("<span style='color:").append(mutedHex).append(I18n.t("launcher.path")).append(escape(home)).append("<br>");
+		html.append("<span style='color:").append(mutedHex).append(I18n.t("launcher.version_2")).append(escape(info.version))
+				.append(" &nbsp; <span style='color:").append(mutedHex).append(I18n.t("launcher.vendor")).append(escape(info.vendor))
+				.append(" &nbsp; <span style='color:").append(mutedHex).append(I18n.t("launcher.type")).append(info.jdk ? I18n.t("launcher.jdk_with_compiler") : I18n.t("launcher.jre_run_only"))
 				.append(info.architecture.isEmpty() ? "" : " &nbsp; " + escape(info.architecture)).append("<br>");
-		html.append("<span style='color:").append(mutedHex).append(";'>Launch parameters</span> ").append(escape(params)).append("<br>");
+		html.append("<span style='color:").append(mutedHex).append(I18n.t("launcher.launch_parameters")).append(escape(params)).append("<br>");
 		if (!info.hasJavaExecutable) {
-			html.append("<span style='color:#c94842;'>No java executable found in this folder.</span><br>");
+			html.append(I18n.t("launcher.no_java_executable_found_in_this"));
 		}
-		html.append("<span style='color:").append(mutedHex).append(";'>Documentation</span> <a href='").append(info.documentationUrl()).append("'>Java ")
-				.append(info.major > 0 ? info.major : "").append(" docs</a>");
+		html.append("<span style='color:").append(mutedHex).append(I18n.t("launcher.documentation_a_href")).append(info.documentationUrl()).append("'>Java ")
+				.append(info.major > 0 ? info.major : "").append(I18n.t("launcher.docs"));
 		if (info.vendorUrl() != null) {
 			html.append(" &nbsp;|&nbsp; <a href='").append(info.vendorUrl()).append("'>").append(escape(info.vendor)).append("</a>");
 		}
@@ -780,12 +781,12 @@ public class CustomizeParametersPanel extends JFrame{
 					}
 					comboPrefJvm.setSelectedItem(home);
 					updateJvmIcon();
-					javax.swing.JOptionPane.showMessageDialog(thisPanel, "Java " + JreDownloader.FEATURE_VERSION + " is ready in:\n" + home
-							+ "\n\nIt is selected: save the options to use it.", "Java " + JreDownloader.FEATURE_VERSION, javax.swing.JOptionPane.INFORMATION_MESSAGE);
+					javax.swing.JOptionPane.showMessageDialog(thisPanel, "Java " + JreDownloader.FEATURE_VERSION + I18n.t("launcher.is_ready_in") + home
+							+ I18n.t("launcher.it_is_selected_save_the_options"), "Java " + JreDownloader.FEATURE_VERSION, javax.swing.JOptionPane.INFORMATION_MESSAGE);
 				} catch (Exception e) {
 					logger.error("Cannot download Java", e);
 					Throwable cause = e.getCause() != null ? e.getCause() : e;
-					javax.swing.JOptionPane.showMessageDialog(thisPanel, "Java " + JreDownloader.FEATURE_VERSION + " could not be downloaded:\n" + cause.getMessage(),
+					javax.swing.JOptionPane.showMessageDialog(thisPanel, "Java " + JreDownloader.FEATURE_VERSION + I18n.t("launcher.could_not_be_downloaded") + cause.getMessage(),
 							"Java " + JreDownloader.FEATURE_VERSION, javax.swing.JOptionPane.ERROR_MESSAGE);
 				}
 			}

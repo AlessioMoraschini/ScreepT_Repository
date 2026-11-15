@@ -11,6 +11,7 @@
  */
 package maingUI;
 
+import various.common.light.i18n.I18n;
 import static java.awt.Event.ALT_MASK;
 import static various.common.light.gui.ShortcutKeys.MENU_MASK;
 import static java.awt.Event.SHIFT_MASK;
@@ -220,13 +221,13 @@ public class MainGuiParent {
         menuBar = new JMenuBar();
 		menuBar.setOpaque(true);
 
-		mnFile = new JMenu("File");
-		mnPreferences = new JMenu("Preferences");
+		mnFile = new JMenu(I18n.t("common.file"));
+		mnPreferences = new JMenu(I18n.t("app.preferences"));
 		mnCryptoSteg = new JMenu("CreepT");
-		mnTextEditor = new JMenu("Text-Editor");
-			mnLastWorkspaces = new JMenu("Last selected workspaces");
-			mnLastOpenedFile = new JMenu("Last opened files");
-			menuStringActions = new JMenu("Text transformation");
+		mnTextEditor = new JMenu(I18n.t("app.text_editor"));
+			mnLastWorkspaces = new JMenu(I18n.t("app.last_selected_workspaces"));
+			mnLastOpenedFile = new JMenu(I18n.t("app.last_opened_files"));
+			menuStringActions = new JMenu(I18n.t("common.text_transformation"));
 			menuBrowserOpenerActions = new BrowserOpenerMenu("Open with browser", (Insets)null, (Font)null, () -> {
 				try {
 					return getSafeTextEditorCurrentTabObject().loadedFile.getCanonicalPath();
@@ -235,12 +236,12 @@ public class MainGuiParent {
 				}
 			});
 
-		mnVarious = new JMenu("Various");
-			mnFilesAndDirectories = new JMenu("Files And Directories");
-		mnPlugins = new JMenu("Plugins");
-		mnHelp = new JMenu("Help");
-			mnrestartPanel = new JMenu("Reset panels...");
-			mnWindowsRegistry = new JMenu("Windows contextual menu management");
+		mnVarious = new JMenu(I18n.t("app.various"));
+			mnFilesAndDirectories = new JMenu(I18n.t("app.files_and_directories"));
+		mnPlugins = new JMenu(I18n.t("common.plugins"));
+		mnHelp = new JMenu(I18n.t("app.help"));
+			mnrestartPanel = new JMenu(I18n.t("app.reset_panels"));
+			mnWindowsRegistry = new JMenu(I18n.t("app.windows_contextual_menu_management"));
 
 		// JMenuItems are initialized inside MainGUI Constructor, where they are linked to actions - See MainGUIParent for further details on items
 	}
@@ -643,10 +644,10 @@ public class MainGuiParent {
 						+ "<br><u>If you want to modify the memory used by ScreepT</u> you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well)."));
 
 		mntmLanguage.setIcon(new gui.commons.frameutils.frame.arch.GlobeIcon(20, new java.awt.Color(86, 160, 240)));
-		mntmLanguage.setToolTipText("Select language");
+		mntmLanguage.setToolTipText(I18n.t("app.select_language"));
 
 		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
-		mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");
+		mntmPinApplicationOnTop.setToolTipText(I18n.t("common.enable_always_on_top_over_other"));
 
 		// file submenu
 		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
@@ -988,7 +989,7 @@ public class MainGuiParent {
 							if (toLoad.exists()) {
 								textEditorPanel.getCurrentTabEditor().loadFile(toLoad);
 							} else {
-								textEditorPanel.dialogHelper.error("File does not exist anymore!", "File does not exist");
+								textEditorPanel.dialogHelper.error(I18n.t("app.file_does_not_exist_anymore"), I18n.t("common.file_does_not_exist"));
 								removeFromLastOpened(toLoad);
 							}
 						}
@@ -1018,7 +1019,7 @@ public class MainGuiParent {
 							if (toLoad.exists() && toLoad.isDirectory()) {
 								textEditorPanel.setWorkspace(toLoad);
 							} else {
-								textEditorPanel.dialogHelper.error("File does not exist anymore!", "File does not exist");
+								textEditorPanel.dialogHelper.error(I18n.t("app.file_does_not_exist_anymore"), I18n.t("common.file_does_not_exist"));
 								removeFromLastWorkspaces(toLoad);
 							}
 						}
@@ -1038,10 +1039,10 @@ public class MainGuiParent {
 			@Override
 			public void run() {
 				if (!folder.exists()){
-					textEditorPanel.dialogHelper.error("Folder does not exist anymore!", "Folder does not exist");
+					textEditorPanel.dialogHelper.error(I18n.t("app.folder_does_not_exist_anymore"), "Folder does not exist");
 
 				} else if (!folder.isDirectory()){
-					textEditorPanel.dialogHelper.error("Selection is not a folder!", "Selection is not a folder!");
+					textEditorPanel.dialogHelper.error(I18n.t("app.selection_is_not_a_folder"), I18n.t("app.selection_is_not_a_folder"));
 
 				} else {
 					textEditorPanel.setWorkspace(folder);

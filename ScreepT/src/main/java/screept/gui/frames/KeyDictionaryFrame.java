@@ -11,6 +11,7 @@
  */
 package screept.gui.frames;
 
+import various.common.light.i18n.I18n;
 import resources.GeneralConfig;
 import javax.swing.JFrame;
 
@@ -391,7 +392,7 @@ public class KeyDictionaryFrame extends ParentFrame{
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null||!givenExtension.equalsIgnoreCase("png")) {
-        		dialogHelper.error("Please select a valid '.png' file!", "Wrong File format");
+        		dialogHelper.error(I18n.t("app.please_select_a_valid_png_file"), "Wrong File format");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
@@ -419,7 +420,7 @@ public class KeyDictionaryFrame extends ParentFrame{
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		dialogHelper.error("Please select a directory!", "Select a directory, please");
+        		dialogHelper.error(I18n.t("common.please_select_a_directory"), "Select a directory, please");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
@@ -447,7 +448,7 @@ public class KeyDictionaryFrame extends ParentFrame{
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		dialogHelper.error("Please select a directory!", "Select a directory, please");
+        		dialogHelper.error(I18n.t("common.please_select_a_directory"), "Select a directory, please");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());

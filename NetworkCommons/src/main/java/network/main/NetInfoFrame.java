@@ -11,6 +11,10 @@
  */
 package network.main;
 
+import javax.swing.JScrollPane;
+import javax.swing.JComponent;
+import javax.swing.ScrollPaneConstants;
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -118,7 +122,7 @@ public class NetInfoFrame extends ParentFrame{
 
 		logger.info(this.getClass().getName() + " Starting...");
 
-		setTitle("Network Info");
+		setTitle(I18n.t("common.network_info"));
 
 		isActive.set(true);
 		singletonInstance = this;
@@ -145,7 +149,7 @@ public class NetInfoFrame extends ParentFrame{
 
 		getContentPane().setLayout(new MigLayout("fill, insets 16, gapy 12", "[grow,fill]", "[][][grow,fill]"));
 
-		getContentPane().add(ToolStyle.header("Network Info", "Addresses, gateway, DNS and speed of your network adapters"), "growx, wrap");
+		getContentPane().add(ToolStyle.header(I18n.t("common.network_info"), I18n.t("net.addresses_gateway_dns_and_speed_of")), "growx, wrap");
 
 		// toolbar: adapter selection
 		JPanel toolbar = ToolStyle.card(new MigLayout("insets 10 12 10 12, gapx 8", "[][grow,fill][][]", "[]"));
@@ -154,11 +158,11 @@ public class NetInfoFrame extends ParentFrame{
 		comboAdapters.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 		comboAdapters.setRenderer(new AdapterRenderer());
 		toolbar.add(comboAdapters, "growx, wmin 200");
-		chkDeepSearch = new JCheckBox("Deep search");
-		chkDeepSearch.setToolTipText("<html>Off: only physical adapters (Ethernet, Wi-Fi) with their IPv4 address.<br>On: also virtual machines, VPNs, containers, tunnels, IPv6 and link-local addresses.</html>");
+		chkDeepSearch = new JCheckBox(I18n.t("net.deep_search"));
+		chkDeepSearch.setToolTipText(I18n.t("net.off_only_physical_adapters_ethernet_wi"));
 		ToolStyle.hand(chkDeepSearch);
 		toolbar.add(chkDeepSearch);
-		JButton btnRefresh = ToolStyle.iconButton(ToolIcons.Kind.REFRESH, "Reload the adapters list (F5)");
+		JButton btnRefresh = ToolStyle.iconButton(ToolIcons.Kind.REFRESH, I18n.t("net.reload_the_adapters_list_f5"));
 		btnRefresh.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -177,6 +181,14 @@ public class NetInfoFrame extends ParentFrame{
 
 		lblAdaptersInfo = ToolStyle.mutedLabel(" ");
 		getContentPane().add(lblAdaptersInfo, "growx");
+
+		// when the content does not fit the window (long texts of other languages, small screens) it scrolls instead of being cut
+		JComponent content = (JComponent) getContentPane();
+		JScrollPane scroll = new JScrollPane(content, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scroll.setBorder(null);
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		scroll.getHorizontalScrollBar().setUnitIncrement(16);
+		setContentPane(scroll);
 
 		ToolStyle.bindKey(this, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0), "reloadAdapters", new Runnable() {
 			@Override
@@ -212,21 +224,21 @@ public class NetInfoFrame extends ParentFrame{
 		JPanel card = ToolStyle.card(new MigLayout("insets 14 16 14 16, wrap 3, gapy 6", "[right][grow,fill][]", ""));
 		card.add(ToolStyle.caption("Interface"), "span 3, left, wrap 6");
 
-		dynLblAdapterName = infoRow(card, "Adapter name");
-		dynLblHostName = infoRow(card, "Host name");
-		dynLblMacAddress = infoRow(card, "MAC address");
+		dynLblAdapterName = infoRow(card, I18n.t("net.adapter_name"));
+		dynLblHostName = infoRow(card, I18n.t("net.host_name"));
+		dynLblMacAddress = infoRow(card, I18n.t("net.mac_address"));
 		dynLblMTU = infoRow(card, "MTU");
 		card.add(ToolStyle.caption("Addressing"), "span 3, left, gaptop 10, wrap 6");
-		dynLblLocalIP = infoRow(card, "Local IP");
-		dynLblPublicIP = infoRow(card, "Public IP");
-		dynLblSubnetMask = infoRow(card, "Subnet mask");
+		dynLblLocalIP = infoRow(card, I18n.t("net.local_ip"));
+		dynLblPublicIP = infoRow(card, I18n.t("net.public_ip"));
+		dynLblSubnetMask = infoRow(card, I18n.t("net.subnet_mask"));
 		dynLblBroadcastAddr = infoRow(card, "Broadcast");
-		dynLblDefGateway = infoRow(card, "Default gateway");
-		card.add(ToolStyle.caption("Name servers"), "span 3, left, gaptop 10, wrap 6");
-		dynLblDNS1 = infoRow(card, "DNS 1");
-		dynLblDNS2 = infoRow(card, "DNS 2");
+		dynLblDefGateway = infoRow(card, I18n.t("net.default_gateway"));
+		card.add(ToolStyle.caption(I18n.t("net.name_servers")), "span 3, left, gaptop 10, wrap 6");
+		dynLblDNS1 = infoRow(card, I18n.t("net.dns_1"));
+		dynLblDNS2 = infoRow(card, I18n.t("net.dns_2"));
 
-		JButton btnCopyAll = ToolStyle.button("Copy all", ToolIcons.Kind.COPY, "Copy every value of this adapter as text (Ctrl+Shift+C)");
+		JButton btnCopyAll = ToolStyle.button(I18n.t("common.copy_all"), ToolIcons.Kind.COPY, I18n.t("net.copy_every_value_of_this_adapter"));
 		btnCopyAll.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -256,7 +268,7 @@ public class NetInfoFrame extends ParentFrame{
 		field.setBorder(BorderFactory.createEmptyBorder(4, 6, 4, 6));
 		field.setOpaque(false);
 		card.add(field);
-		JButton copy = ToolStyle.iconButton(ToolIcons.Kind.COPY, "Copy " + caption);
+		JButton copy = ToolStyle.iconButton(ToolIcons.Kind.COPY, I18n.t("net.copy") + caption);
 		copy.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -270,7 +282,7 @@ public class NetInfoFrame extends ParentFrame{
 
 	private JPanel buildSpeedCard() {
 		JPanel card = ToolStyle.card(new MigLayout("insets 14 16 14 16, wrap 1, gapy 4", "[grow,fill]", ""));
-		card.add(ToolStyle.caption("Connection speed"), "wrap 6");
+		card.add(ToolStyle.caption(I18n.t("net.connection_speed")), "wrap 6");
 
 		dynLblLatency = bigValue();
 		progressBarLatency = progress();
@@ -282,12 +294,12 @@ public class NetInfoFrame extends ParentFrame{
 		progressBarUp = progress();
 		metric(card, "Upload", dynLblUPspeed, progressBarUp);
 
-		card.add(ToolStyle.mutedLabel("Test size"), "gaptop 8");
+		card.add(ToolStyle.mutedLabel(I18n.t("net.test_size")), "gaptop 8");
 		comboSpeedTestOpt = new JComboBox<FtpSpeedTestOptions>(FtpSpeedTestOptions.values());
 		ToolStyle.hand(comboSpeedTestOpt);
 		card.add(comboSpeedTestOpt, "growx");
 
-		btnCalculateConnSpeed = ToolStyle.accent(ToolStyle.button("Start speed test", null, SPEED_TEST_TOOLTIP), ToolStyle.GREEN);
+		btnCalculateConnSpeed = ToolStyle.accent(ToolStyle.button(I18n.t("net.start_speed_test"), null, SPEED_TEST_TOOLTIP), ToolStyle.GREEN);
 		btnCalculateConnSpeed.setPreferredSize(new Dimension(160, 34));
 		card.add(btnCalculateConnSpeed, "growx, gaptop 6");
 		return card;
@@ -320,7 +332,7 @@ public class NetInfoFrame extends ParentFrame{
 			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			if (value instanceof NetworkAdapter) {
 				NetworkAdapter adapter = (NetworkAdapter) value;
-				setText(adapter.name + "   " + adapter.locIP + (adapter.isVirtual() ? "   (virtual)" : ""));
+				setText(adapter.name + "   " + adapter.locIP + (adapter.isVirtual() ? I18n.t("net.virtual") : ""));
 			}
 			return this;
 		}
@@ -375,7 +387,7 @@ public class NetInfoFrame extends ParentFrame{
 					@Override
 					public void run() {
 						setEnabledSafe(btnCalculateConnSpeed, false);
-						btnCalculateConnSpeed.setToolTipText("A test is already running: wait for the results");
+						btnCalculateConnSpeed.setToolTipText(I18n.t("net.a_test_is_already_running_wait"));
 						resetSpeedTestValues(true, true, true);
 
 						setText(dynLblUPspeed, CALCULATING);
@@ -442,12 +454,12 @@ public class NetInfoFrame extends ParentFrame{
 					setProgress(progressBarLatency, 100, ToolStyle.GREEN);
 
 				} catch (UnknownHostException e) {
-					String msg = "Host "+GeneralConfig.testAddress+" not recognized";
+					String msg = I18n.t("net.host")+GeneralConfig.testAddress+I18n.t("net.not_recognized");
 					setText(dynLblLatency, msg);
 					logger.error(msg, e);
 					setProgress(progressBarLatency, 0, ToolStyle.RED);
 				} catch (Exception e) {
-					String msg = "Error occurred";
+					String msg = I18n.t("net.error_occurred");
 					setText(dynLblLatency, msg);
 					logger.error(msg, e);
 					setProgress(progressBarLatency, 0, ToolStyle.RED);
@@ -461,7 +473,7 @@ public class NetInfoFrame extends ParentFrame{
 		try {
 			setText(dynLblUPspeed, NetworkUtils.retrieveUpSpeedV2(()->!this.isActive.get(), currentSelAdapter.getInetAddr(), options, progressBarUp));
 		} catch (Exception e) {
-			String msg = "An error occcurred";
+			String msg = I18n.t("net.an_error_occcurred");
 			setText(dynLblUPspeed, msg);
 			progressBarUp.setIndeterminate(false);
 			progressBarUp.setValue(0);
@@ -474,7 +486,7 @@ public class NetInfoFrame extends ParentFrame{
 		try {
 			setText(dynLblDOWNspeed, NetworkUtils.retrieveDownSpeedV2(()->!this.isActive.get(), currentSelAdapter.getInetAddr(), options, progressBarDown));
 		} catch (Exception e) {
-			String msg = "An error occcurred";
+			String msg = I18n.t("net.an_error_occcurred");
 			setText(dynLblDOWNspeed, msg);
 			progressBarDown.setIndeterminate(false);
 			progressBarDown.setValue(0);
@@ -543,7 +555,7 @@ public class NetInfoFrame extends ParentFrame{
 		try {
 			setText(dynLblPublicIP, netUtils.retrieveAdapterPublicIP(currentSelAdapter));
 		} catch (IOException e1) {
-			String msg = "Connection Error";
+			String msg = I18n.t("net.connection_error");
 			setText(dynLblPublicIP, msg);
 			handleException(msg, e1);
 		}
@@ -581,7 +593,7 @@ public class NetInfoFrame extends ParentFrame{
 		try {
 			setText(dynLblDefGateway, NetworkUtils.getIpNetstatGateway());
 		} catch (Exception e) {
-			String msg = "Error retrieving network Informations";
+			String msg = I18n.t("net.error_retrieving_network_informations");
 			setText(dynLblDefGateway, errMSG);
 			handleException(msg, e);
 		}
@@ -610,8 +622,8 @@ public class NetInfoFrame extends ParentFrame{
 		int shown = netUtils.getAdapters(deep).size();
 		int total = netUtils.getAdapters(true).size();
 		lblAdaptersInfo.setText(deep || shown >= total
-				? shown + " adapter(s) found"
-				: shown + " physical adapter(s) shown, " + (total - shown) + " virtual or secondary hidden (enable Deep search to see them)");
+				? shown + I18n.t("net.adapter_s_found")
+				: shown + I18n.t("net.physical_adapter_s_shown") + (total - shown) + I18n.t("net.virtual_or_secondary_hidden_enable_deep"));
 	}
 
 	private void resetSpeedTestValues(boolean latency, boolean upload, boolean download) {
@@ -635,7 +647,9 @@ public class NetInfoFrame extends ParentFrame{
 
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(940, 760);
+		// 10% bigger than before, never more than the screen allows
+		java.awt.Rectangle screen = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+		return new Dimension(Math.min(1034, (int) (screen.width * 0.95)), Math.min(836, (int) (screen.height * 0.95)));
 	}
 
 	public static NetInfoFrame getInstance() {

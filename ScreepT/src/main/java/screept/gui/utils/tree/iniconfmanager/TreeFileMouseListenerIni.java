@@ -11,6 +11,7 @@
  */
 package screept.gui.utils.tree.iniconfmanager;
 
+import various.common.light.i18n.I18n;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -95,58 +96,58 @@ public class TreeFileMouseListenerIni extends gui.commons.mouseutils.TreeFileMou
 	public JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 	    
-	    JMenuItem previewFileItem = new JMenuItem("Preview selected configuration");
+	    JMenuItem previewFileItem = new JMenuItem(I18n.t("app.preview_selected_configuration"));
 	    previewFileItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    previewFileItem.addActionListener(previewSelected());
 	    menu.add(previewFileItem);
 	    
-	    JMenuItem loadItem = new JMenuItem("Load Selected configuration");
+	    JMenuItem loadItem = new JMenuItem(I18n.t("app.load_selected_configuration"));
 	    loadItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    loadItem.addActionListener(loadSelectedConfiguration());
 	    menu.add(loadItem);
 	    
-	    JMenuItem sysExplorerItem = new JMenuItem("View in system explorer");
+	    JMenuItem sysExplorerItem = new JMenuItem(I18n.t("common.view_in_system_explorer"));
 	    sysExplorerItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 	    menu.add(sysExplorerItem);
 	    
 	    // Implementation inherited From parent
-	    JMenuItem addCurrentItem = new JMenuItem("Add current configuration to this list");
+	    JMenuItem addCurrentItem = new JMenuItem(I18n.t("app.add_current_configuration_to_this_list"));
 	    addCurrentItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    addCurrentItem.addActionListener(addCurrentConfig());
 	    menu.add(addCurrentItem);
 	    
-	    JMenuItem importItem = new JMenuItem("Import configuration file or directory content");
+	    JMenuItem importItem = new JMenuItem(I18n.t("app.import_configuration_file_or_directory_conte"));
 	    importItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    importItem.addActionListener(importFilesConfig());
 	    menu.add(importItem);
 
-	    JMenuItem importFromScreepTItem = new JMenuItem("Import configuration from other installation");
+	    JMenuItem importFromScreepTItem = new JMenuItem(I18n.t("app.import_configuration_from_other_installation"));
 	    importFromScreepTItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    importFromScreepTItem.addActionListener((e) -> {
 	    	INIfileChoosER.loadDefaultsFromOtherInstallation(true);
 	    });
 	    menu.add(importFromScreepTItem);
 	    
-	    JMenuItem exportItem = new JMenuItem("Export selected configurations");
+	    JMenuItem exportItem = new JMenuItem(I18n.t("app.export_selected_configurations"));
 	    exportItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    exportItem.addActionListener(exportSelected());
 	    menu.add(exportItem);
 	    
 	    // Implementation inherited From parent
-	    JMenuItem deleteItem = new JMenuItem("Delete selected Configuration files");
+	    JMenuItem deleteItem = new JMenuItem(I18n.t("common.delete_selected_configuration_files"));
 	    deleteItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    deleteItem.addActionListener(getDeleteActionListener());
 	    menu.add(deleteItem);
 	    
 	    // Implementation inherited From parent
-	    JMenuItem refreshItem = new JMenuItem("Refresh tree");
+	    JMenuItem refreshItem = new JMenuItem(I18n.t("common.refresh_tree"));
 	    refreshItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    refreshItem.addActionListener(refreshListener());
 	    menu.add(refreshItem);
 	    
 	    // Implementation inherited From parent
-	    JMenuItem propertiesItem = new JMenuItem("File Properties");
+	    JMenuItem propertiesItem = new JMenuItem(I18n.t("common.file_properties"));
 	    propertiesItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    propertiesItem.addActionListener(propertiesListener());
 	    menu.add(propertiesItem);

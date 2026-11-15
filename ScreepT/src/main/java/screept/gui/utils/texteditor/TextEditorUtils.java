@@ -11,6 +11,7 @@
  */
 package screept.gui.utils.texteditor;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -329,7 +330,7 @@ public class TextEditorUtils {
 		if (loadedTabObj.unsaved) {
 			String currFileName = (loadedTabObj.loadedFile != null) ? loadedTabObj.loadedFile.getName()
 					: currentTextEditor.footerPanel.lblCurrentFile.getText();
-			int choice = dialogHelper.yesNoOrCanc(various.common.light.i18n.I18n.fmt("{0} is not saved, do you want to save it before to crypt?", currFileName), null);
+			int choice = dialogHelper.yesNoOrCanc(various.common.light.i18n.I18n.fmt("app.x_is_not_saved_do_you", currFileName), null);
 			if (choice == JOptionHelperExtended.OK) {
 				currentTextEditor.subHeaderPanel.btnSaveTextFile.doClick();
 			} else if (choice == JOptionHelperExtended.CANC) {
@@ -548,7 +549,7 @@ public class TextEditorUtils {
 
 			TabTextEditorObject tabObj = currentTextEditor.getCurrentTabEditor().getAlreadyLoaded(toRename);
 			if(tabObj != null && tabObj.unsaved) {
-				int choice = dialogHelper.yesNoOrCanc("File is not saved, do you want to save it?", "File changed");
+				int choice = dialogHelper.yesNoOrCanc(I18n.t("app.file_is_not_saved_do_you"), "File changed");
 				if (choice == JOptionHelper.OK) {
 					currentTextEditor.subHeaderPanel.btnSaveTextFile.doClick();
 				} else if(choice == JOptionHelper.CANC) {
@@ -582,7 +583,7 @@ public class TextEditorUtils {
 				}
 				logger.info("File renamed to: " + newFile);
 			} else {
-				dialogHelper.warn("Cannot rename!");
+				dialogHelper.warn(I18n.t("app.cannot_rename"));
 				return false;
 			}
 

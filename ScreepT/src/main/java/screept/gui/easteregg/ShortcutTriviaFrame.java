@@ -11,6 +11,7 @@
  */
 package screept.gui.easteregg;
 
+import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -57,7 +58,7 @@ public final class ShortcutTriviaFrame extends EggFrame {
 	private final JLabel questionLabel = new JLabel(" ", SwingConstants.CENTER);
 	private final JLabel statusLabel = new JLabel(" ", SwingConstants.CENTER);
 	private final JButton[] answerButtons = new JButton[4];
-	private final JButton nextButton = new JButton("Start");
+	private final JButton nextButton = new JButton(I18n.t("common.start"));
 
 	/** function name -> keys, from the guide */
 	private final Map<String, String> shortcuts = new LinkedHashMap<>();
@@ -149,7 +150,7 @@ public final class ShortcutTriviaFrame extends EggFrame {
 		}
 		questionLabel.setText("Do you really know your ScreepT shortcuts?");
 		statusLabel.setText(QUESTIONS + " questions from the guide. Best: " + best + "/" + QUESTIONS);
-		nextButton.setText("Start");
+		nextButton.setText(I18n.t("common.start"));
 	}
 
 	private void startQuiz() {

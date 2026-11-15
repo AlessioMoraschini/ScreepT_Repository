@@ -11,6 +11,7 @@
  */
 package screept.gui.frames;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -264,9 +265,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		comboTheme.setMaximumRowCount(10);
 
 		comboUiSize = new JComboBox<UiSizePreset>(UiSizePreset.values());
-		comboUiSize.setToolTipText("Fonts and graphic elements size; Custom keeps your own values");
-		btnUiSizeCustomize = new JButton("Customize...");
-		btnUiSizeCustomize.setToolTipText("Show or set font family and sizes of general text, menus, toolbars and graphic elements");
+		comboUiSize.setToolTipText(I18n.t("app.fonts_and_graphic_elements_size_custom"));
+		btnUiSizeCustomize = new JButton(I18n.t("app.customize"));
+		btnUiSizeCustomize.setToolTipText(I18n.t("gp.show_or_set_font_family_and"));
 
 		spinnerMenuSize = new JSpinner(new SpinnerNumberModel(12, 5, 24, 1));
 		sliderMenuSize = new JSlider(5, 24);
@@ -275,53 +276,53 @@ public class GraphicPreferencesFrame extends ParentFrame {
 
 		spinnerNimbusSize = new JSpinner(new SpinnerNumberModel(0, 0, 2, 1));
 		spinnerNimbusSize.setValue(currentConfiguration.getGuiOpt().nimbusSize);
-		chckbxDarklight = newCheckBox("Nimbus dark theme");
+		chckbxDarklight = newCheckBox(I18n.t("app.nimbus_dark_theme"));
 
 		comboEditorFontFamily = new JComboBox<String>(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
 		comboEditorFontFamily.setMaximumRowCount(20);
-		comboEditorFontFamily.setToolTipText("Text editor font: a monospaced one (e.g. Consolas) keeps rectangular selections aligned");
+		comboEditorFontFamily.setToolTipText(I18n.t("app.text_editor_font_a_monospaced_one"));
 		spinnerEditorFontSize = new JSpinner(new SpinnerNumberModel(16, 4, 100, 1));
 
 		spinnerInterline = new JSpinner(new SpinnerNumberModel(0, 0, 20, 1));
 		spinnerMaxFileSize = new JSpinner(new SpinnerNumberModel(100, 1, 100000, 10));
-		spinnerMaxFileSize.setToolTipText("Files bigger than this (MB) are not opened in the editor: ScreepT proposes LogSearch, a read-only viewer for huge files");
+		spinnerMaxFileSize.setToolTipText(I18n.t("gp.files_bigger_than_this_mb_are"));
 		spinnerEditorMargin = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
-		spinnerEditorMargin.setToolTipText("Space between the border of the text editor and the text");
+		spinnerEditorMargin.setToolTipText(I18n.t("app.space_between_the_border_of_the"));
 		sliderEditorMargin = new JSlider(0, 100, 0);
 		sliderInterline = new JSlider(0, 20, 0);
 		panelSpacing = createSpacingPanel();
-		chckbxInlineTabs = newCheckBox("Inline tabs (one scrolling line)");
-		chckbxAdaptTextWidth = newCheckBox("Adapt text width (word wrap)");
+		chckbxInlineTabs = newCheckBox(I18n.t("app.inline_tabs_one_scrolling_line"));
+		chckbxAdaptTextWidth = newCheckBox(I18n.t("app.adapt_text_width_word_wrap"));
 		chckbxAdaptTextWidth.setToolTipText(TextEditTooltips.tooltipCutWordsTo);
 		chckbxInlineTabs.setToolTipText("[Ctrl + Shift + I] If selected the tabs of the text editor are on one line, else they are organized in rows and always visible");
 		comboSpellcheckerDictionary = new JComboBox<FileNamed>(RsyntaxUtils.getSpellCheckerDIctionaries());
 
-		chckbxAutoindentation = newCheckBox("Auto-indentation");
-		chckbxCloseCurlybraces = newCheckBox("Close curly braces");
-		chckbxCloseMarkuptags = newCheckBox("Close markup tags");
-		chckbxEmulatedTabsWith = newCheckBox("Emulated tabs with spaces");
-		chckbxClearWhitespaceLines = newCheckBox("Clear whitespace lines");
-		checkBoxAutosaveTempFiles = newCheckBox("Autosave temp files");
-		chckbxAutoCheckFiles = newCheckBox("Auto check for file changes");
-		chckbxSyncClipboardStyle = newCheckBox("Sync clipboard style");
+		chckbxAutoindentation = newCheckBox(I18n.t("app.auto_indentation"));
+		chckbxCloseCurlybraces = newCheckBox(I18n.t("app.close_curly_braces"));
+		chckbxCloseMarkuptags = newCheckBox(I18n.t("app.close_markup_tags"));
+		chckbxEmulatedTabsWith = newCheckBox(I18n.t("app.emulated_tabs_with_spaces"));
+		chckbxClearWhitespaceLines = newCheckBox(I18n.t("app.clear_whitespace_lines"));
+		checkBoxAutosaveTempFiles = newCheckBox(I18n.t("app.autosave_temp_files"));
+		chckbxAutoCheckFiles = newCheckBox(I18n.t("app.auto_check_for_file_changes"));
+		chckbxSyncClipboardStyle = newCheckBox(I18n.t("app.sync_clipboard_style"));
 
-		chckBoxAntiAliasingON = newCheckBox("Antialiasing enabled");
-		chckbxAllowFractionalFonts = newCheckBox("Allow fractional fonts");
-		chckbxCodeFolding = newCheckBox("Code folding");
-		chckbxFadeHighlight = newCheckBox("Fade highlight");
-		chckbxHighlightndLanguages = newCheckBox("Highlight 2nd languages");
-		chckbxShowWhitespaces = newCheckBox("Show whitespaces and empty lines");
-		chckbxMarkEOL = newCheckBox("Mark end of line");
-		chckbxRoundSelectionEdges = newCheckBox("Round selection edges");
-		chckbxHyperlinksEnabled = newCheckBox("Hyperlinks enabled");
-		chckbxFocusableTips = newCheckBox("Focusable tips");
+		chckBoxAntiAliasingON = newCheckBox(I18n.t("app.antialiasing_enabled"));
+		chckbxAllowFractionalFonts = newCheckBox(I18n.t("app.allow_fractional_fonts"));
+		chckbxCodeFolding = newCheckBox(I18n.t("app.code_folding"));
+		chckbxFadeHighlight = newCheckBox(I18n.t("app.fade_highlight"));
+		chckbxHighlightndLanguages = newCheckBox(I18n.t("app.highlight_2nd_languages"));
+		chckbxShowWhitespaces = newCheckBox(I18n.t("app.show_whitespaces_and_empty_lines"));
+		chckbxMarkEOL = newCheckBox(I18n.t("app.mark_end_of_line"));
+		chckbxRoundSelectionEdges = newCheckBox(I18n.t("app.round_selection_edges"));
+		chckbxHyperlinksEnabled = newCheckBox(I18n.t("app.hyperlinks_enabled"));
+		chckbxFocusableTips = newCheckBox(I18n.t("app.focusable_tips"));
 
-		chckbxBracketsMatching = newCheckBox("Brackets matching");
-		chckbxAnimateBrackets = newCheckBox("Animate brackets");
-		chckbxHightlightBracketPairs = newCheckBox("Paint matched bracket pairs");
-		chckbxShowBracket = newCheckBox("Show bracket popup");
-		checkBoxMarkOccurrences = newCheckBox("Mark occurrences");
-		chckbxMarkOccurrencesPaintBorder = newCheckBox("Paint occurrences border");
+		chckbxBracketsMatching = newCheckBox(I18n.t("app.brackets_matching"));
+		chckbxAnimateBrackets = newCheckBox(I18n.t("app.animate_brackets"));
+		chckbxHightlightBracketPairs = newCheckBox(I18n.t("app.paint_matched_bracket_pairs"));
+		chckbxShowBracket = newCheckBox(I18n.t("app.show_bracket_popup"));
+		checkBoxMarkOccurrences = newCheckBox(I18n.t("app.mark_occurrences"));
+		chckbxMarkOccurrencesPaintBorder = newCheckBox(I18n.t("app.paint_occurrences_border"));
 
 		for (JComponent control : new JComponent[] { comboStyleLaF, comboTheme, comboUiSize, btnUiSizeCustomize,
 				comboEditorFontFamily, comboSpellcheckerDictionary, sliderMenuSize, sliderLogSize }) {
@@ -337,10 +338,10 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	}
 
 	private void createFooter() {
-		btnResetValues = newFooterButton("Reset initial values", new Color(240, 230, 140));
-		btnSaveConf = newFooterButton("Save Values", new Color(169, 169, 169));
+		btnResetValues = newFooterButton(I18n.t("app.reset_initial_values"), new Color(240, 230, 140));
+		btnSaveConf = newFooterButton(I18n.t("app.save_values"), new Color(169, 169, 169));
 		btnUseSettings = newFooterButton("Use", new Color(169, 169, 169));
-		btnDiscard = newFooterButton("Discard", new Color(205, 92, 92));
+		btnDiscard = newFooterButton(I18n.t("common.discard"), new Color(205, 92, 92));
 
 		footerPanel = new JPanel(new MigLayout("insets 10 18 12 18", "[][grow][][][]"));
 		footerPanel.add(btnResetValues, "cell 0 0");
@@ -348,10 +349,10 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		footerPanel.add(btnUseSettings, "cell 3 0");
 		footerPanel.add(btnDiscard, "cell 4 0");
 
-		OptionHelp.attach("Reset initial values", "Brings every option of this window back to the value it had when the window was opened.", btnResetValues);
-		OptionHelp.attach("Save Values", "Closes the window, keeps the current settings and writes them to the configuration file.", btnSaveConf);
-		OptionHelp.attach("Use", "Closes the window and uses the current settings for this session. They are written to the configuration file only when it is saved (autosave or on exit).", btnUseSettings);
-		OptionHelp.attach("Discard", "Closes the window and drops every change made here: the previous settings are restored.", btnDiscard);
+		OptionHelp.attach(I18n.t("app.reset_initial_values"), I18n.t("app.brings_every_option_of_this_window"), btnResetValues);
+		OptionHelp.attach(I18n.t("app.save_values"), I18n.t("app.closes_the_window_keeps_the_current"), btnSaveConf);
+		OptionHelp.attach("Use", I18n.t("app.closes_the_window_and_uses_the"), btnUseSettings);
+		OptionHelp.attach(I18n.t("common.discard"), I18n.t("app.closes_the_window_and_drops_every"), btnDiscard);
 	}
 
 	private JButton newFooterButton(String text, Color background) {
@@ -369,28 +370,28 @@ public class GraphicPreferencesFrame extends ParentFrame {
 
 		optionsPanel = new OptionsPanel();
 		optionsPanel.setHelpTexts(OptionDescriptions.graphic());
-		optionsPanel.addSection("Appearance", "Look and feel, theme and interface size")
-				.addRow("GUI style", comboStyleLaF)
-				.addRow("Theme", comboTheme)
-				.addRow("Interface size", comboUiSize, btnUiSizeCustomize)
-				.addRow("Menu font size", spinnerMenuSize, sliderMenuSize)
-				.addRow("Log font size", spinnerLogSize, sliderLogSize)
-				.addRow("Nimbus size variant", spinnerNimbusSize)
+		optionsPanel.addSection(I18n.t("app.appearance"), I18n.t("app.look_and_feel_theme_and_interface"))
+				.addRow(I18n.t("app.gui_style"), comboStyleLaF)
+				.addRow(I18n.t("common.theme"), comboTheme)
+				.addRow(I18n.t("app.interface_size"), comboUiSize, btnUiSizeCustomize)
+				.addRow(I18n.t("app.menu_font_size"), spinnerMenuSize, sliderMenuSize)
+				.addRow(I18n.t("app.log_font_size"), spinnerLogSize, sliderLogSize)
+				.addRow(I18n.t("app.nimbus_size_variant"), spinnerNimbusSize)
 				.addCheckBoxes(chckbxDarklight);
-		OptionSection textEditor = optionsPanel.addSection("Text editor", "Font, line spacing and spellchecker")
-				.addRow("Font", comboEditorFontFamily, spinnerEditorFontSize)
-				.addRow("Margin and interline", panelSpacing)
-				.addRow("Max file size (MB)", spinnerMaxFileSize)
-				.addRow("Spellchecker dictionary", comboSpellcheckerDictionary)
-				.addRow("Viewers", createViewerAssociationsButton());
-		textEditor.addSubsection("Editing", "Typing helpers, tabs and files")
+		OptionSection textEditor = optionsPanel.addSection(I18n.t("common.text_editor"), I18n.t("app.font_line_spacing_and_spellchecker"))
+				.addRow(I18n.t("common.font"), comboEditorFontFamily, spinnerEditorFontSize)
+				.addRow(I18n.t("app.margin_and_interline"), panelSpacing)
+				.addRow(I18n.t("app.max_file_size_mb"), spinnerMaxFileSize)
+				.addRow(I18n.t("app.spellchecker_dictionary"), comboSpellcheckerDictionary)
+				.addRow(I18n.t("app.viewers"), createViewerAssociationsButton());
+		textEditor.addSubsection(I18n.t("common.editing"), I18n.t("app.typing_helpers_tabs_and_files"))
 				.addCheckBoxes(chckbxAutoindentation, chckbxCloseCurlybraces, chckbxCloseMarkuptags, chckbxEmulatedTabsWith,
 						chckbxClearWhitespaceLines, checkBoxAutosaveTempFiles, chckbxAutoCheckFiles, chckbxSyncClipboardStyle);
-		textEditor.addSubsection("Display", "How text is rendered and highlighted")
+		textEditor.addSubsection(I18n.t("app.display"), I18n.t("app.how_text_is_rendered_and_highlighted"))
 				.addCheckBoxes(chckBoxAntiAliasingON, chckbxAllowFractionalFonts, chckbxCodeFolding, chckbxFadeHighlight,
 						chckbxHighlightndLanguages, chckbxShowWhitespaces, chckbxMarkEOL, chckbxRoundSelectionEdges,
 						chckbxHyperlinksEnabled, chckbxFocusableTips, chckbxInlineTabs, chckbxAdaptTextWidth);
-		textEditor.addSubsection("Brackets and occurrences", null)
+		textEditor.addSubsection(I18n.t("app.brackets_and_occurrences"), null)
 				.addCheckBoxes(chckbxBracketsMatching, chckbxAnimateBrackets, chckbxHightlightBracketPairs, chckbxShowBracket,
 						checkBoxMarkOccurrences, chckbxMarkOccurrencesPaintBorder);
 
@@ -406,7 +407,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 
 	/** Opens the dialog that chooses the viewer (text editor, image studio, LogSearch, HTML...) of each extension */
 	private javax.swing.JButton createViewerAssociationsButton() {
-		javax.swing.JButton button = new javax.swing.JButton("Viewer associations...");
+		javax.swing.JButton button = new javax.swing.JButton(I18n.t("app.viewer_associations"));
 		button.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 		button.addActionListener(e -> new gui.commons.tabs.ViewerAssociationsDialog(this, serialized -> {
 			currentConfiguration.getTextEditorOpt().viewerAssociations = serialized;
@@ -416,7 +417,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	}
 
 	private JPanel createHeader() {
-		return new OptionsHeader("Graphic preferences", optionsPanel, this);
+		return new OptionsHeader(I18n.t("app.graphic_preferences"), optionsPanel, this);
 	}
 
 	/** Builds the editor font from the controls and applies it live (backup/restore handle discard) */
@@ -433,13 +434,13 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		panel.setOpaque(false);
 		sliderEditorMargin.setOpaque(false);
 		sliderInterline.setOpaque(false);
-		sliderEditorMargin.setToolTipText("Space between the border of the text editor and the text");
-		sliderInterline.setToolTipText("Extra space between the lines of the text editor");
+		sliderEditorMargin.setToolTipText(I18n.t("app.space_between_the_border_of_the"));
+		sliderInterline.setToolTipText(I18n.t("app.extra_space_between_the_lines_of"));
 
-		panel.add(new JLabel("Margin"));
+		panel.add(new JLabel(I18n.t("app.margin")));
 		panel.add(sliderEditorMargin);
 		panel.add(spinnerEditorMargin);
-		panel.add(new JLabel("Interline"));
+		panel.add(new JLabel(I18n.t("app.interline")));
 		panel.add(sliderInterline);
 		panel.add(spinnerInterline);
 
@@ -543,7 +544,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 							GUIStyelSettingsExtended.setStyle(BACKUP_PREFERRED_STYLE, currentConfiguration.getGuiOpt().nimbusSize);
 							currentConfiguration.getGuiOpt().setPreferredStyle(BACKUP_PREFERRED_STYLE);
 							currentConfiguration.getGuiOpt().setPreferredThemeName(BACKUP_PREFERRED_THEME_NAME);
-							dialogHelper.error("Sorry, something went wrong :(", e1.getClass().getName());
+							dialogHelper.error(I18n.t("app.sorry_something_went_wrong"), e1.getClass().getName());
 							logger.error("Exception happened!", e1);
 						} finally {
 							GUIStyelSettingsExtended.updateAllWindowsLaf();
@@ -861,9 +862,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				boolean chosenOption = dialogHelper.yesOrNo(
-						"Are you sure you want to overwrite " + currentConfiguration.getIniFile().getFile().getPath()
-								+ "(ONLY GUI_OPTIONS)?",
-						"overwrite configuration");
+						I18n.t("gp.are_you_sure_you_want_to") + currentConfiguration.getIniFile().getFile().getPath()
+								+ I18n.t("gp.only_gui_options"),
+						I18n.t("gp.overwrite_configuration"));
 				if (chosenOption) {
 
 					// write single values to file ini associated to currentConf
@@ -874,7 +875,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 
 					updateGUI(true);
 
-					dialogHelper.info( "Graphic Interface settings Saved :)\n -> Changes will be visible after next restart.", "Saved!");
+					dialogHelper.info( I18n.t("gp.graphic_interface_settings_saved_changes_wil"), "Saved!");
 					if (currentEditor != null) {
 						currentEditor.textEditorUtils.resetDividerColor();
 						currentEditor.getCurrentTabEditor().applyStyleToTabs();
@@ -1313,7 +1314,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 					GUIStyelSettingsExtended.setStyle(BACKUP_PREFERRED_STYLE, currentConfiguration.getGuiOpt().nimbusSize);
 					currentConfiguration.getGuiOpt().setPreferredStyle(BACKUP_PREFERRED_STYLE);
 					currentConfiguration.getGuiOpt().setPreferredThemeName(BACKUP_PREFERRED_THEME_NAME);
-					dialogHelper.error("Sorry, something went wrong :(", e1.getClass().getName());
+					dialogHelper.error(I18n.t("app.sorry_something_went_wrong"), e1.getClass().getName());
 					logger.error("Exception happened!", e1);
 				} finally {
 					GUIStyelSettingsExtended.updateAllWindowsLaf();

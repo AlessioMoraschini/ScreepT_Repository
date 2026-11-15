@@ -11,6 +11,7 @@
  */
 package screept.gui.utils.tree.texteditor;
 
+import various.common.light.i18n.I18n;
 import various.common.light.gui.ShortcutKeys;
 import static java.awt.Event.ALT_MASK;
 import static java.awt.Event.SHIFT_MASK;
@@ -246,24 +247,24 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    JPopupMenu menu = new JPopupMenu();
 	    Font font = GeneralConfig.DEFAULT_POP_UP_MENUS_FONT;
 
-	    subMenuNew = new JMenu("New...");
+	    subMenuNew = new JMenu(I18n.t("app.new"));
 	    subMenuNew.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    menu.add(subMenuNew);
 	    menu.add(new JSeparator());
 
-	    itemNewFolder = addMenuItem(subMenuNew, "Add new folder", font, false, false);
+	    itemNewFolder = addMenuItem(subMenuNew, I18n.t("app.add_new_folder"), font, false, false);
 	    itemNewFolder.addActionListener(getNewFolderActionListener());
 
-	    itemNewFile = addMenuItem(subMenuNew, "Add new file", font, false, false);
+	    itemNewFile = addMenuItem(subMenuNew, I18n.t("app.add_new_file"), font, false, false);
 	    itemNewFile.addActionListener(getNewFileActionListener());
 
-	    itemLoadFile = addMenuItem(menu, "Open File", font, false, false);
+	    itemLoadFile = addMenuItem(menu, I18n.t("common.open_file"), font, false, false);
 	    itemLoadFile.addActionListener(getLoadActionListener());
 
-	    itemRename = addMenuItem(menu, "Rename selected (files only)", font, false, false);
+	    itemRename = addMenuItem(menu, I18n.t("app.rename_selected_files_only"), font, false, false);
 	    itemRename.addActionListener(getRenameActionListener());
 
-	    workspaceItem = addMenuItem(menu, "Use as workspace", font, false, false);
+	    workspaceItem = addMenuItem(menu, I18n.t("app.use_as_workspace"), font, false, false);
 	    workspaceItem.addActionListener((e) -> {
 	    	List<File> selected = getSelectedFiles();
 	    	if(!selected.isEmpty())
@@ -271,29 +272,29 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    });
 
 
-	    refreshItem = addMenuItem(menu, "Refresh tree", font, true, false);
+	    refreshItem = addMenuItem(menu, I18n.t("common.refresh_tree"), font, true, false);
 	    refreshItem.addActionListener(refreshListener());
 
-	    selectAllItem = addMenuItem(menu, "Select all nodes", font, false, false);
+	    selectAllItem = addMenuItem(menu, I18n.t("app.select_all_nodes"), font, false, false);
 	    selectAllItem.addActionListener(selectAllListener());
 
-	    collapseItem = addMenuItem(menu, "Collapse children nodes", font, false, false);
+	    collapseItem = addMenuItem(menu, I18n.t("app.collapse_children_nodes"), font, false, false);
 	    collapseItem.addActionListener(collapseChildren());
 
-	    expandItem = addMenuItem(menu, "Expand children nodes", font, false, false);
+	    expandItem = addMenuItem(menu, I18n.t("app.expand_children_nodes"), font, false, false);
 	    expandItem.addActionListener(expandChildren());
 
-	    copyPathsItem = addMenuItem(menu, "Copy selected file paths", font, true, false);
+	    copyPathsItem = addMenuItem(menu, I18n.t("app.copy_selected_file_paths"), font, true, false);
 	    copyPathsItem.addActionListener((e) -> {
 	    	writeSelectedFilesPathIntoClipboard();
 	    });
 
-	    copyItem = addMenuItem(menu, "Copy", font, false, false);
+	    copyItem = addMenuItem(menu, I18n.t("common.copy"), font, false, false);
 	    copyItem.addActionListener((e) -> {
 	    	copySelectedFilesToClipboard();
 	    });
 
-	    pasteItem = addMenuItem(menu, "Paste", font, false, false);
+	    pasteItem = addMenuItem(menu, I18n.t("common.paste"), font, false, false);
 	    pasteItem.addActionListener((e) -> {
 	    	try {
 				pasteFromClipboard();
@@ -302,34 +303,34 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			}
 	    });
 
-	    copyHereCurrentItem = addMenuItem(menu, "Copy current file here", font, false, false);
+	    copyHereCurrentItem = addMenuItem(menu, I18n.t("app.copy_current_file_here"), font, false, false);
 	    copyHereCurrentItem.addActionListener(getCopyHereCurrentFileIfExists());
 
-	    moveHereCurrentItem = addMenuItem(menu, "Move current file here", font, false, false);
+	    moveHereCurrentItem = addMenuItem(menu, I18n.t("app.move_current_file_here"), font, false, false);
 	    moveHereCurrentItem.addActionListener(getMoveHereCurrentFileIfExists());
 
-	    deleteItem = addMenuItem(menu, "Delete selected files", font, false, false);
+	    deleteItem = addMenuItem(menu, I18n.t("common.delete_selected_files"), font, false, false);
 	    deleteItem.addActionListener(getDeleteActionListener());
 
 	    menu.add(new JSeparator());
-	    pluginsMenuItem = new JMenu("Plugins");
+	    pluginsMenuItem = new JMenu(I18n.t("common.plugins"));
 	    pluginsMenuItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    menu.add(pluginsMenuItem);
 
-	    searchContentItem = addMenuItem(menu, "Search for text in selected files content", font, true, false);
+	    searchContentItem = addMenuItem(menu, I18n.t("app.search_for_text_in_selected_files"), font, true, false);
 	    searchContentItem.addActionListener(searchContentInSelection());
 
-	    sysExplorerItem = addMenuItem(menu, "View in system explorer", font, true, false);
+	    sysExplorerItem = addMenuItem(menu, I18n.t("common.view_in_system_explorer"), font, true, false);
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 
-	    hashingItem = addMenuItem(menu, "Check File hash...", font, false, false);
+	    hashingItem = addMenuItem(menu, I18n.t("app.check_file_hash"), font, false, false);
 	    hashingItem.addActionListener(hashingListener());
 
-	    propertiesItem = addMenuItem(menu, "File Properties", font, false, false);
+	    propertiesItem = addMenuItem(menu, I18n.t("common.file_properties"), font, false, false);
 	    propertiesItem.addActionListener(propertiesListener());
 
 	    // DEACTIVATED, see javadoc
-//	    changeBckgItem = addMenuItem(menu, "Change file Panel background", font, false, false);
+//	    changeBckgItem = addMenuItem(menu, I18n.t("app.change_file_panel_background"), font, false, false);
 	    changeBckgItem = new JMenuItem();
 	    changeBckgItem.addActionListener(ChangeBckgNewFileActionListener());
 
@@ -455,14 +456,14 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			}
 
 			File targetParentDir = (selectedNode.mFile.isDirectory())? selectedNode.mFile : selectedNode.mFile.getParentFile();
-			if(!dialogHelper.yesOrNo("Are you sure to move current file into [" + targetParentDir.getAbsolutePath()+"] ?", "Move current file?")) {
+			if(!dialogHelper.yesOrNo("Are you sure to move current file into [" + targetParentDir.getAbsolutePath()+"] ?", I18n.t("app.move_current_file"))) {
 				return;
 			}
 
 			currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 
 			File outputFilePrevision = new File(targetParentDir.getAbsolutePath() + File.separator + currentTabEditor.loadedTabObj.loadedFile.getName());
-			boolean overwrite = (outputFilePrevision.exists())? dialogHelper.yesOrNo("File exists, wanna overwrite?", "File exists") : true;
+			boolean overwrite = (outputFilePrevision.exists())? dialogHelper.yesOrNo(I18n.t("app.file_exists_wanna_overwrite"), I18n.t("common.file_exists")) : true;
 			File result = FileWorker.copyFileIntoDir(currentTabEditor.loadedTabObj.loadedFile, targetParentDir, overwrite, GeneralConfig.TEMP_DIRECTORY);
 			logger.debug("Copy of "+currentTabEditor.loadedTabObj.loadedFile+" created into target directory: " + targetParentDir.getAbsolutePath());
 
@@ -476,7 +477,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				textEditor.textEditorUtils.refreshMessageAndTabTooltip("File Moved");
 			}else {
 				textEditor.textEditorUtils.errorAdvice("Cannot Move!");
-				dialogHelper.error("An error occurred moving file, so file is still to its original position", "Cannot Move!");
+				dialogHelper.error(I18n.t("app.an_error_occurred_moving_file_so"), I18n.t("app.cannot_move"));
 			}
 
 			refreshItem.doClick();
@@ -518,14 +519,14 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 
 				File targetParentDir = (selectedNode.mFile.isDirectory())? selectedNode.mFile : selectedNode.mFile.getParentFile();
 				File outputFilePrevision = new File(targetParentDir.getAbsolutePath() + File.separator + currentTabEditor.loadedTabObj.loadedFile.getName());
-				boolean overwrite = (outputFilePrevision.exists())? dialogHelper.yesOrNo("File exists, wanna overwrite?", "File exists") : true;
+				boolean overwrite = (outputFilePrevision.exists())? dialogHelper.yesOrNo(I18n.t("app.file_exists_wanna_overwrite"), I18n.t("common.file_exists")) : true;
 				File result = FileWorker.copyFileIntoDir(currentTabEditor.loadedTabObj.loadedFile, targetParentDir, overwrite, GeneralConfig.TEMP_DIRECTORY);
 
 				if(result != null) {
 					textEditor.textEditorUtils.successAdvice("Copied");
 				}else {
 					textEditor.textEditorUtils.errorAdvice("Cannot Copy!");
-					dialogHelper.error("An error occurred copying file, so file is still to its original position", "Cannot Copy!");
+					dialogHelper.error(I18n.t("app.an_error_occurred_copying_file_so"), I18n.t("app.cannot_copy"));
 				}
 
 				refreshItem.doClick();
@@ -545,7 +546,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					File selectedFile = node.mFile;
 
 					if(selectedFile != null && selectedFile.isFile()) {
-						String newName = dialogHelper.askForStringNullable("Specify new name for " + selectedFile.getName(), "Specify new name", selectedFile.getName());
+						String newName = dialogHelper.askForStringNullable("Specify new name for " + selectedFile.getName(), I18n.t("app.specify_new_name"), selectedFile.getName());
 						if(newName != null) {
 							textEditor.textEditorUtils.renameFile(selectedFile, newName, false);
 						} else {

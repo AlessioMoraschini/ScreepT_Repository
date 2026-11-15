@@ -11,6 +11,7 @@
 */
 package screept.gui.frames;
 
+import various.common.light.i18n.I18n;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Window;
@@ -69,7 +70,7 @@ public final class RestartLauncherDialog extends JDialog {
 	}
 
 	private RestartLauncherDialog(Window owner, boolean asAdmin) {
-		super(owner, "Restart " + GeneralConfig.APPLICATION_SHORT_NAME, ModalityType.APPLICATION_MODAL);
+		super(owner, I18n.t("launcher.restart") + GeneralConfig.APPLICATION_SHORT_NAME, ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		getContentPane().setLayout(new MigLayout("insets 18 22 14 22, gapy 10", "[]18[grow]", "[]6[]10[]20[]"));
@@ -78,23 +79,21 @@ public final class RestartLauncherDialog extends JDialog {
 		icon.setVerticalAlignment(SwingConstants.TOP);
 		getContentPane().add(icon, "cell 0 0 1 3, aligny top");
 
-		JLabel title = new JLabel("Restart " + GeneralConfig.APPLICATION_SHORT_NAME + (asAdmin ? " as administrator" : "") + "?");
+		JLabel title = new JLabel(I18n.t("launcher.restart") + GeneralConfig.APPLICATION_SHORT_NAME + (asAdmin ? I18n.t("launcher.as_administrator") : "") + "?");
 		title.setFont(title.getFont().deriveFont(Font.BOLD, title.getFont().getSize2D() + 4f));
 		getContentPane().add(title, "cell 1 0");
 
-		JLabel text = new JLabel("<html>The launcher is hidden at start (<i>Hide launcher at start</i> is on).<br>"
-				+ "Do you want to open it on this restart, to check the Java version and the start options?</html>");
+		JLabel text = new JLabel(I18n.t("launcher.the_launcher_is_hidden_at_start"));
 		getContentPane().add(text, "cell 1 1");
 
-		chckbxKeepDefault = new JCheckBox("Keep as default: always show the launcher at start");
-		chckbxKeepDefault.setToolTipText("<html>Turns off <i>Hide launcher at start</i> in the launcher configuration, like in Generic Options.<br>"
-				+ "Only used with \"Open launcher\"; without it the launcher is shown just this time.</html>");
+		chckbxKeepDefault = new JCheckBox(I18n.t("launcher.keep_as_default_always_show_the"));
+		chckbxKeepDefault.setToolTipText(I18n.t("launcher.turns_off_hide_launcher_at_start"));
 		chckbxKeepDefault.setFocusable(false);
 		getContentPane().add(chckbxKeepDefault, "cell 1 2");
 
-		JButton btnLauncher = newButton("Open launcher", "Restart and show the launcher (just this time, unless \"Keep as default\" is checked)", Choice.LAUNCHER);
-		JButton btnDirect = newButton("Restart directly", "Restart without the launcher, as usual", Choice.DIRECT);
-		JButton btnCancel = newButton("Cancel", "Do not restart (Esc)", Choice.CANCEL);
+		JButton btnLauncher = newButton(I18n.t("launcher.open_launcher"), I18n.t("launcher.restart_and_show_the_launcher_just"), Choice.LAUNCHER);
+		JButton btnDirect = newButton(I18n.t("launcher.restart_directly"), I18n.t("launcher.restart_without_the_launcher_as_usual"), Choice.DIRECT);
+		JButton btnCancel = newButton(I18n.t("common.cancel"), I18n.t("launcher.do_not_restart_esc"), Choice.CANCEL);
 		getContentPane().add(btnLauncher, "cell 0 3 2 1, split 3, align right, gapx 8");
 		getContentPane().add(btnDirect, "gapx 8");
 		getContentPane().add(btnCancel);

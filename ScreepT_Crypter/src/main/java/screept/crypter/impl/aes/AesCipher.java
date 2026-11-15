@@ -11,6 +11,7 @@
  */
 package screept.crypter.impl.aes;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -296,7 +297,7 @@ public class AesCipher {
 		}
 	    if(aesKey.getPassword().length==0) {
         	aesKey.setBackground(new Color(209, 73, 73));
-			aesKey.setToolTipText("Password is empty...Fill password text-field!");
+			aesKey.setToolTipText(I18n.t("crypter.password_is_empty_fill_password_text"));
 		}
 		if(aesKey.getPassword().length==16) {
         	aesKey.setBackground(new Color(107, 219, 105));

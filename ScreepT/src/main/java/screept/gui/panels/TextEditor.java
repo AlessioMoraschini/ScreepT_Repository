@@ -11,6 +11,7 @@
  */
 package screept.gui.panels;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -617,7 +618,7 @@ public class TextEditor extends ModulePanel {
 								textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
 							} catch (Exception e2) {
 								SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
-								dialogHelper.warn("Error trying to set upper ancestor in file tree :(", null);
+								dialogHelper.warn(I18n.t("app.error_trying_to_set_upper_ancestor"), null);
 								logger.error("Error trying to set upper ancestor in file tree :(", e2);
 							}
 						}
@@ -892,7 +893,7 @@ public class TextEditor extends ModulePanel {
 		}
 
 		if (selected.unsaved) {
-			askSave = dialogHelper.yesNoOrCanc("Do you want to save current file?",	"Save current file?");
+			askSave = dialogHelper.yesNoOrCanc(I18n.t("app.do_you_want_to_save_current"),	"Save current file?");
 		} else {
 			return true;
 		}

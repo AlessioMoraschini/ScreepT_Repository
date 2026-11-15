@@ -1,5 +1,6 @@
 package guiTEST;
 
+import various.common.light.i18n.I18n;
 import java.awt.EventQueue;
 import java.awt.Font;
 import javax.swing.JFrame;
@@ -198,13 +199,13 @@ public class CryptoStegTest_Gui_V2_0 extends JDialog{
 		btnNewButton.setBounds(850, 304, 123, 72);
 		frame.getContentPane().add(btnNewButton);
 		
-		JLabel lblText = new JLabel("Text");
+		JLabel lblText = new JLabel(I18n.t("common.text"));
 		lblText.setFont(new Font("Dialog", Font.BOLD, 16));
 		lblText.setHorizontalAlignment(SwingConstants.CENTER);
 		lblText.setBounds(15, 548, 104, 20);
 		frame.getContentPane().add(lblText);
 		
-		JLabel lblText_1 = new JLabel("Text");
+		JLabel lblText_1 = new JLabel(I18n.t("common.text"));
 		lblText_1.setFont(new Font("Dialog", Font.BOLD, 16));
 		lblText_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblText_1.setBounds(15, 177, 104, 20);

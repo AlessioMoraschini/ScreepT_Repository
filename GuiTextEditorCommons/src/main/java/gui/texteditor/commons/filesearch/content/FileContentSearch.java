@@ -1,5 +1,6 @@
 package gui.texteditor.commons.filesearch.content;
 
+import various.common.light.i18n.I18n;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -178,7 +179,7 @@ public class FileContentSearch {
 		} catch (Throwable e) {
 			if(e instanceof ProgressBarInterruptedException) {
 				logger.info("Interrupted by user");
-				dialogHelper.info("Search interrupted by user!");
+				dialogHelper.info(I18n.t("editor.search_interrupted_by_user"));
 
 			} else {
 				logger.error("An error occurred during search!", e);
@@ -186,7 +187,7 @@ public class FileContentSearch {
 
 		}
 
-		updateProgPanel.update(99, "Loading results...", false);
+		updateProgPanel.update(99, I18n.t("fsearch.loading_results"), false);
 		try {
 			Thread.sleep(400);
 		} catch (InterruptedException e) {
@@ -226,7 +227,7 @@ public class FileContentSearch {
 				}
 
 				if(occurrencesFound > GeneralConfig.MAX_RESULT_FILE_CONTENT_SEARCH) {
-					limitedAdvice = "There are more results than the max admitted displayable! Restrict the search to view everithing ;)";
+					limitedAdvice = I18n.t("fsearch.there_are_more_results_than_the");
 					break;
 				}
 
@@ -236,9 +237,9 @@ public class FileContentSearch {
 
 		resultViewer.setCursor(GuiUtils.CURSOR_DEFAULT);
 		logger.debug("Advising user!");
-		dialogHelper.info(GuiUtils.encapsulateInHtml(various.common.light.i18n.I18n.fmt("Search completed with <b>{0}</b> results! </br><u>{1}</u>", occurrencesFound, limitedAdvice)), various.common.light.i18n.I18n.fmt("{0} results found!", occurrencesFound));
+		dialogHelper.info(GuiUtils.encapsulateInHtml(various.common.light.i18n.I18n.fmt("editor.search_completed_with_b_x_b", occurrencesFound, limitedAdvice)), various.common.light.i18n.I18n.fmt("editor.x_results_found", occurrencesFound));
 
-		resultViewer.setTitle("Completed with " + occurrencesFound + " results in " + sourceFiles.size() + " files - ", false, true);
+		resultViewer.setTitle(I18n.t("fsearch.completed_with") + occurrencesFound + I18n.t("fsearch.results_in") + sourceFiles.size() + I18n.t("fsearch.files"), false, true);
 //			resultViewer.resultsTree.revalidate();
 //			resultViewer.resultsTree.repaint();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode)resultViewer.resultsTree.getModel().getRoot();
@@ -272,7 +273,7 @@ public class FileContentSearch {
 		for(File tempSource : tempSources) {
 			logger.debug("Analyzing " + tempSource);
 			if(!updateProgPanel.stopProcess.get() && tempSource.isDirectory()) {
-				updateProgPanel.update(i * 50 / (tot+10), "Scanning folder: " + tempSource);
+				updateProgPanel.update(i * 50 / (tot+10), I18n.t("fsearch.scanning_folder") + tempSource);
 				updateProgPanel.adaptWidthToCurrentText(true);
 				elaboredSources.addAll(FileWorker.getAllContent(tempSource, CustomFileFilters.FILE_ONLY));
 			} else {
@@ -283,19 +284,19 @@ public class FileContentSearch {
 		}
 
 		if(!updateProgPanel.stopProcess.get() && !searchDTO.binariesIncluded) {
-			updateProgPanel.update(55, "Filtering binaries...", false);
+			updateProgPanel.update(55, I18n.t("fsearch.filtering_binaries"), false);
 			logger.debug("Filtering binaries");
 			elaboredSources = removeBinaries(elaboredSources);
 		}
 
 		if(!updateProgPanel.stopProcess.get() && hasFileFilters()) {
-			updateProgPanel.update(70, "Applying file filters...", false);
+			updateProgPanel.update(70, I18n.t("fsearch.applying_file_filters"), false);
 			logger.debug("Applying file filters...");
 			elaboredSources = applyFilters(elaboredSources, searchDTO);
 		}
 
 		logger.debug("Closing updater...");
-		updateProgPanel.update(100, "Closing updater...", false);
+		updateProgPanel.update(100, I18n.t("fsearch.closing_updater"), false);
 
 		if(updateProgPanel.stopProcess.get()) {
 			logger.info("Search interrupted by user");

@@ -11,6 +11,7 @@
  */
 package gui.texteditor.commons.logsearch;
 
+import various.common.light.i18n.I18n;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -118,10 +119,10 @@ public class LogSearchFrame extends JFrame {
 	private int fontSize = 13;
 	private String monoFamily;
 
-	private final JLabel lblName = new JLabel("LogSearch");
+	private final JLabel lblName = new JLabel(I18n.t("common.logsearch"));
 	private final JLabel lblPath = new JLabel(" ");
 	private final JLabel lblDetails = new JLabel(" ");
-	private final javax.swing.JButton btnOpenFile = new javax.swing.JButton("Open file...");
+	private final javax.swing.JButton btnOpenFile = new javax.swing.JButton(I18n.t("log.open_file"));
 	/** The only LogSearch window: opening a file again reuses it */
 	private static LogSearchFrame current;
 	private File loadedFile;
@@ -130,16 +131,16 @@ public class LogSearchFrame extends JFrame {
 	private final Pill pillSize = new Pill();
 	private final Pill pillLines = new Pill();
 	private final SearchField txtSearch = new SearchField(30);
-	private final IconButton btnOpen = new IconButton(IconButton.Kind.OPEN, false, "Open another file in this window (or drop a file here)");
-	private final IconButton btnCase = new IconButton(IconButton.Kind.CASE, true, "Match case");
-	private final IconButton btnWord = new IconButton(IconButton.Kind.WORD, true, "Whole word");
-	private final IconButton btnRegex = new IconButton(IconButton.Kind.REGEX, true, "Regular expression (the text is the expression)");
-	private final IconButton btnPrev = new IconButton(IconButton.Kind.PREV, false, "Previous match  (Shift+F3)");
-	private final IconButton btnNext = new IconButton(IconButton.Kind.NEXT, false, "Next match  (F3 / Enter)");
-	private final IconButton btnStop = new IconButton(IconButton.Kind.STOP, false, "Stop the search");
-	private final IconButton btnMarks = new IconButton(IconButton.Kind.MARKS, false, "Bookmarks  (Ctrl+B adds or removes one, F2 / Shift+F2 move between them)");
-	private final IconButton btnGoto = new IconButton(IconButton.Kind.GOTO, false, "Go to line  (Ctrl+G)");
-	private final IconButton btnExport = new IconButton(IconButton.Kind.EXPORT, false, "Save the matching lines to a file");
+	private final IconButton btnOpen = new IconButton(IconButton.Kind.OPEN, false, I18n.t("log.open_another_file_in_this_window"));
+	private final IconButton btnCase = new IconButton(IconButton.Kind.CASE, true, I18n.t("log.match_case"));
+	private final IconButton btnWord = new IconButton(IconButton.Kind.WORD, true, I18n.t("log.whole_word"));
+	private final IconButton btnRegex = new IconButton(IconButton.Kind.REGEX, true, I18n.t("log.regular_expression_the_text_is_the"));
+	private final IconButton btnPrev = new IconButton(IconButton.Kind.PREV, false, I18n.t("log.previous_match_shift_f3"));
+	private final IconButton btnNext = new IconButton(IconButton.Kind.NEXT, false, I18n.t("log.next_match_f3_enter"));
+	private final IconButton btnStop = new IconButton(IconButton.Kind.STOP, false, I18n.t("log.stop_the_search"));
+	private final IconButton btnMarks = new IconButton(IconButton.Kind.MARKS, false, I18n.t("log.bookmarks_ctrl_b_adds_or_removes"));
+	private final IconButton btnGoto = new IconButton(IconButton.Kind.GOTO, false, I18n.t("log.go_to_line_ctrl_g"));
+	private final IconButton btnExport = new IconButton(IconButton.Kind.EXPORT, false, I18n.t("log.save_the_matching_lines_to_a"));
 	private final LevelChip[] chips = new LevelChip[LogLevel.COUNT];
 	private final Strip strip = new Strip();
 	private final Pill pillMatches = new Pill();
@@ -184,8 +185,8 @@ public class LogSearchFrame extends JFrame {
 	}
 
 	private void showEmptyState() {
-		lblName.setText("LogSearch");
-		lblPath.setText("No file loaded: use Open file... (or drop a file here)");
+		lblName.setText(I18n.t("common.logsearch"));
+		lblPath.setText(I18n.t("log.no_file_loaded_use_open_file"));
 		lblDetails.setText(" ");
 		pillSize.setText("");
 		pillLines.setText("");
@@ -433,7 +434,7 @@ public class LogSearchFrame extends JFrame {
 		paths.add(lblPath, BorderLayout.NORTH);
 		paths.add(lblDetails, BorderLayout.SOUTH);
 		names.add(paths, BorderLayout.SOUTH);
-		btnOpenFile.setToolTipText("Choose the file to load (LogSearch shows one file at a time)");
+		btnOpenFile.setToolTipText(I18n.t("log.choose_the_file_to_load_logsearch"));
 		btnOpenFile.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 		btnOpenFile.setFocusable(false);
 		btnOpenFile.addActionListener(e -> chooseFile());
@@ -453,8 +454,7 @@ public class LogSearchFrame extends JFrame {
 		bar.setOpaque(false);
 		bar.setBorder(BorderFactory.createEmptyBorder(4, 12, 8, 12));
 
-		txtSearch.setToolTipText("<html><b>Search while you type.</b><br>Words: all of them in the line, in any order<br>\"two words\": the exact phrase<br>-word: lines without it<br>"
-				+ "With Regex on, the text is a regular expression.<br>Enter or F3: next match</html>");
+		txtSearch.setToolTipText(I18n.t("log.search_while_you_type_words_all"));
 		txtSearch.setPreferredSize(new Dimension(320, 32));
 		txtSearch.setMinimumSize(new Dimension(140, 32));
 
@@ -493,7 +493,7 @@ public class LogSearchFrame extends JFrame {
 	private JPanel buildMatchesHeader() {
 		JPanel header = new Surface(new BorderLayout(), false);
 		header.setBorder(BorderFactory.createEmptyBorder(6, 14, 6, 12));
-		JLabel title = new JLabel("Matches");
+		JLabel title = new JLabel(I18n.t("log.matches"));
 		title.setFont(title.getFont().deriveFont(Font.BOLD, 13f));
 		if (Theme.dark) {
 			title.setForeground(Theme.text);
@@ -505,9 +505,9 @@ public class LogSearchFrame extends JFrame {
 		left.add(pillMatches);
 		JPanel right = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 6, 0));
 		right.setOpaque(false);
-		JLabel ctx = new JLabel("Context");
+		JLabel ctx = new JLabel(I18n.t("log.context"));
 		ctx.setForeground(muted());
-		cmbContext.setToolTipText("Lines around every match, shown in the list below");
+		cmbContext.setToolTipText(I18n.t("log.lines_around_every_match_shown_in"));
 		right.add(ctx);
 		right.add(cmbContext);
 		header.add(left, BorderLayout.WEST);
@@ -659,12 +659,12 @@ public class LogSearchFrame extends JFrame {
 					list.setSelectedIndex(row);
 				}
 				JPopupMenu menu = new JPopupMenu();
-				JMenuItem copy = new JMenuItem("Copy lines");
+				JMenuItem copy = new JMenuItem(I18n.t("log.copy_lines"));
 				copy.addActionListener(a -> copySelection(list));
 				menu.add(copy);
 				int line = row < 0 ? -1 : list.getModel().getElementAt(row);
 				if (line >= 0) {
-					JMenuItem mark = new JMenuItem(bookmarks.contains(line) ? "Remove bookmark" : "Add bookmark");
+					JMenuItem mark = new JMenuItem(bookmarks.contains(line) ? I18n.t("log.remove_bookmark") : I18n.t("log.add_bookmark"));
 					mark.addActionListener(a -> toggleBookmark(line));
 					menu.add(mark);
 				}
@@ -681,7 +681,7 @@ public class LogSearchFrame extends JFrame {
 		try {
 			index = new LogFileIndex(file);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this, "Cannot open the file:\n" + e.getMessage(), "LogSearch", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, I18n.t("log.cannot_open_the_file") + e.getMessage(), I18n.t("common.logsearch"), JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		if (previous != null) {
@@ -694,7 +694,7 @@ public class LogSearchFrame extends JFrame {
 		Arrays.fill(levelOn, true);
 		grepModel.reset();
 		index.startIndexing();
-		setTitle("LogSearch - " + file.getName());
+		setTitle(I18n.t("log.logsearch") + file.getName());
 		loadedFile = file;
 		lastDetails = "";
 		detailsDone = false;
@@ -729,14 +729,14 @@ public class LogSearchFrame extends JFrame {
 		}
 		String lines = idx.isComplete() ? String.format("%,d", idx.lineCount()) : String.format("%,d ...", idx.lineCount());
 		StringBuilder html = new StringBuilder("<html>");
-		html.append(name).append("Size</span> ").append(humanSize(file.length())).append(" (").append(String.format("%,d", file.length())).append(" bytes)");
-		html.append("  &nbsp;|&nbsp;  ").append(name).append("Modified</span> ").append(modified);
+		html.append(name).append(I18n.t("log.size")).append(humanSize(file.length())).append(" (").append(String.format("%,d", file.length())).append(I18n.t("log.bytes"));
+		html.append("  &nbsp;|&nbsp;  ").append(name).append(I18n.t("log.modified")).append(modified);
 		if (!created.isEmpty()) {
-			html.append("  &nbsp;|&nbsp;  ").append(name).append("Created</span> ").append(created);
+			html.append("  &nbsp;|&nbsp;  ").append(name).append(I18n.t("log.created")).append(created);
 		}
-		html.append("  &nbsp;|&nbsp;  ").append(name).append("Lines</span> ").append(lines);
+		html.append("  &nbsp;|&nbsp;  ").append(name).append(I18n.t("log.lines")).append(lines);
 		if (!file.canWrite()) {
-			html.append("  &nbsp;|&nbsp;  ").append(name).append("Attributes</span> read-only file");
+			html.append("  &nbsp;|&nbsp;  ").append(name).append(I18n.t("log.attributes_read_only_file"));
 		}
 		html.append("</html>");
 		String text = html.toString();
@@ -773,7 +773,7 @@ public class LogSearchFrame extends JFrame {
 			} catch (PatternSyntaxException e) {
 				txtSearch.putClientProperty("JComponent.outline", "error");
 				lblStatus.setForeground(LogLevel.COLORS[LogLevel.ERROR]);
-				lblStatus.setText("Invalid expression: " + e.getDescription());
+				lblStatus.setText(I18n.t("log.invalid_expression") + e.getDescription());
 			}
 		}
 		if (query != null) {
@@ -880,22 +880,22 @@ public class LogSearchFrame extends JFrame {
 		} else if (levelFilterActive()) {
 			pillMatches.setText(String.format("%,d line%s", grepModel.matchCount, grepModel.matchCount == 1 ? "" : "s"));
 		} else {
-			pillMatches.setText("type to search");
+			pillMatches.setText(I18n.t("log.type_to_search"));
 		}
 
 		if (txtSearch.getClientProperty("JComponent.outline") == null) {
 			String state;
 			double active = 0;
 			if (searching) {
-				state = "Searching " + percent(current.progress());
+				state = I18n.t("log.searching") + percent(current.progress());
 				active = current.progress();
 			} else if (indexing) {
-				state = "Indexing " + percent(idx.progress());
+				state = I18n.t("log.indexing") + percent(idx.progress());
 				active = idx.progress();
 			} else if (current != null) {
-				state = current.isCancelled() ? "Search stopped" : String.format("Searched %,d lines", current.linesScanned());
+				state = current.isCancelled() ? I18n.t("log.search_stopped") : String.format("Searched %,d lines", current.linesScanned());
 			} else {
-				state = idx == null ? "No file" : "Ready";
+				state = idx == null ? I18n.t("log.no_file") : "Ready";
 			}
 			lblStatus.setText(state);
 			strip.set(active, searching || indexing);
@@ -1035,7 +1035,7 @@ public class LogSearchFrame extends JFrame {
 				return;
 			}
 		}
-		lblStatus.setText("No " + LogLevel.NAMES[level] + " line found");
+		lblStatus.setText("No " + LogLevel.NAMES[level] + I18n.t("log.line_found"));
 	}
 
 	private void toggleBookmark(int line) {
@@ -1053,7 +1053,7 @@ public class LogSearchFrame extends JFrame {
 
 	private void jumpToBookmark(boolean forward) {
 		if (bookmarks.isEmpty()) {
-			lblStatus.setText("No bookmarks: Ctrl+B or a click on the gutter adds one");
+			lblStatus.setText(I18n.t("log.no_bookmarks_ctrl_b_or_a"));
 			return;
 		}
 		int current = currentLine();
@@ -1067,7 +1067,7 @@ public class LogSearchFrame extends JFrame {
 	private void showBookmarksMenu(Component anchor) {
 		JPopupMenu menu = new JPopupMenu();
 		if (bookmarks.isEmpty()) {
-			JMenuItem none = new JMenuItem("No bookmarks yet");
+			JMenuItem none = new JMenuItem(I18n.t("log.no_bookmarks_yet"));
 			none.setEnabled(false);
 			menu.add(none);
 		} else {
@@ -1082,7 +1082,7 @@ public class LogSearchFrame extends JFrame {
 				menu.add(item);
 			}
 			menu.addSeparator();
-			JMenuItem clear = new JMenuItem("Remove all bookmarks");
+			JMenuItem clear = new JMenuItem(I18n.t("log.remove_all_bookmarks"));
 			clear.addActionListener(e -> {
 				bookmarks.clear();
 				bookmarkVersion++;
@@ -1099,7 +1099,7 @@ public class LogSearchFrame extends JFrame {
 		if (index == null || index.lineCount() == 0) {
 			return;
 		}
-		String answer = JOptionPane.showInputDialog(this, String.format("Line number (1 - %,d):", index.lineCount()), "Go to line", JOptionPane.PLAIN_MESSAGE);
+		String answer = JOptionPane.showInputDialog(this, String.format("Line number (1 - %,d):", index.lineCount()), I18n.t("log.go_to_line"), JOptionPane.PLAIN_MESSAGE);
 		if (answer == null) { // cancelled by user
 			return;
 		}
@@ -1108,7 +1108,7 @@ public class LogSearchFrame extends JFrame {
 			showLine(Math.max(0, Math.min(index.lineCount() - 1, line - 1)), true);
 			mainList.requestFocusInWindow();
 		} catch (NumberFormatException e) {
-			lblStatus.setText("Not a line number: " + answer);
+			lblStatus.setText(I18n.t("log.not_a_line_number") + answer);
 		}
 	}
 
@@ -1144,7 +1144,7 @@ public class LogSearchFrame extends JFrame {
 		final LineSet lines = grepModel.matchLines;
 		final int lineTotal = lines.size();
 		final LogFileIndex source = index;
-		lblStatus.setText("Exporting " + String.format("%,d", lineTotal) + " lines...");
+		lblStatus.setText(I18n.t("log.exporting") + String.format("%,d", lineTotal) + I18n.t("log.lines_2"));
 		new SwingWorker<Void, Void>() {
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -1163,7 +1163,7 @@ public class LogSearchFrame extends JFrame {
 					get();
 					lblStatus.setText(String.format("Saved %,d lines to %s", lineTotal, target.getName()));
 				} catch (Exception e) {
-					lblStatus.setText("Cannot save the file: " + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
+					lblStatus.setText(I18n.t("log.cannot_save_the_file") + (e.getCause() != null ? e.getCause().getMessage() : e.getMessage()));
 				}
 			}
 		}.execute();
@@ -1559,14 +1559,14 @@ public class LogSearchFrame extends JFrame {
 			};
 			addMouseListener(mouse);
 			addMouseMotionListener(mouse);
-			setToolTipText("Map of the file");
+			setToolTipText(I18n.t("log.map_of_the_file"));
 		}
 
 		@Override
 		public String getToolTipText(MouseEvent e) {
 			int total = fileModel.getSize();
 			if (total <= 0 || getHeight() <= 0) {
-				return "Map of the file: red = errors, orange = warnings or matches, blue = bookmarks. Click or drag to move around.";
+				return I18n.t("log.map_of_the_file_red_errors");
 			}
 			int line = (int) Math.max(0, Math.min(total - 1, (long) e.getY() * total / getHeight()));
 			return String.format("Line %,d", line + 1);
@@ -1819,7 +1819,7 @@ public class LogSearchFrame extends JFrame {
 		ContextChooser(String[] labels) {
 			this.labels = labels;
 			setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
-			setToolTipText("Lines around every match, shown in the list below");
+			setToolTipText(I18n.t("log.lines_around_every_match_shown_in"));
 			addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseEntered(MouseEvent e) {

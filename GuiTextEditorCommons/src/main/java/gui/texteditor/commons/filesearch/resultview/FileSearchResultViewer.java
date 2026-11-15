@@ -1,5 +1,6 @@
 package gui.texteditor.commons.filesearch.resultview;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -40,7 +41,7 @@ public class FileSearchResultViewer extends ParentFrame {
 		if(date == null || refreshDate)
 			date = DATE_FORMATTER.format(new Date());
 
-		setTitle(StringWorker.trimToEmpty(preamble) + (shortTitle ? "" : "File Search Results Viewer - ") + date);
+		setTitle(StringWorker.trimToEmpty(preamble) + (shortTitle ? "" : I18n.t("fsearch.file_search_results_viewer")) + date);
 	}
 
 	public FileSearchResultViewer(FileSearchActions searchActions, JFrame parentFrame, FileContentSearchDTO searchDTO) {
@@ -53,7 +54,7 @@ public class FileSearchResultViewer extends ParentFrame {
 		this.sourceFilesTotal = 0;
 		this.searchDTO = searchDTO;
 		setTitle("", true, false);
-		setTitle("File Search Results Viewer - " + DATE_FORMATTER.format(new Date()));
+		setTitle(I18n.t("fsearch.file_search_results_viewer") + DATE_FORMATTER.format(new Date()));
 
 		this.searchActions = searchActions != null ? searchActions : new FileSearchActions() {};
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -199,16 +200,16 @@ public class FileSearchResultViewer extends ParentFrame {
 		public String toString() {
 			occurrences = result.getOccurrencesFound();
 			String viewedString = root
-					? "Search Results: " + getSearchDTOString()
+					? I18n.t("fsearch.search_results") + getSearchDTOString()
 					: fileHead
-						? result.ownerFile.getAbsolutePath() + " - Occurrences: " + occurrences + getCheckedOutRatioString()
-						: "(Line: " + line + ") - \"" + result.getLineMatchText(line) + "\"";
+						? result.ownerFile.getAbsolutePath() + I18n.t("fsearch.occurrences") + occurrences + getCheckedOutRatioString()
+						: I18n.t("fsearch.line") + line + ") - \"" + result.getLineMatchText(line) + "\"";
 			return viewedString;
 		}
 
 		public String getCheckedOutRatioString() {
-			String files = result.fileScannedTilNow > 1 ? " files " : " file ";
-			return "  -  (Checked " + result.fileScannedTilNow + files + "out of " + sourceFilesTotal + ")";
+			String files = result.fileScannedTilNow > 1 ? I18n.t("fsearch.files_2") : I18n.t("fsearch.file");
+			return I18n.t("fsearch.checked") + result.fileScannedTilNow + files + I18n.t("fsearch.out_of") + sourceFilesTotal + ")";
 		}
 
 	}

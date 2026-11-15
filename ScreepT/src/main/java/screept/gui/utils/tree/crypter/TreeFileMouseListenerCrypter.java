@@ -11,6 +11,7 @@
  */
 package screept.gui.utils.tree.crypter;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.SystemColor;
@@ -115,37 +116,37 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 	public JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 	    
-	    JMenuItem itemReadKey = new JMenuItem("Load Image & Details");
+	    JMenuItem itemReadKey = new JMenuItem(I18n.t("app.load_image_details"));
 	    itemReadKey.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemReadKey.addActionListener(getInfoActionListener());
 	    menu.add(itemReadKey);
 	    
-	    JMenuItem itemUseKey = new JMenuItem("Use as Key");
+	    JMenuItem itemUseKey = new JMenuItem(I18n.t("app.use_as_key"));
 	    itemUseKey.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemUseKey.addActionListener(getSelectKeyImgListener());
 	    menu.add(itemUseKey);
 	    
-	    JMenuItem itemAddKey = new JMenuItem("Add key Image to Dictionary");
+	    JMenuItem itemAddKey = new JMenuItem(I18n.t("app.add_key_image_to_dictionary"));
 	    itemAddKey.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemAddKey.addActionListener(addKeyActionListener());
 	    menu.add(itemAddKey);
 	    
-	    JMenuItem itemExportKeys = new JMenuItem("Export selected key Images");
+	    JMenuItem itemExportKeys = new JMenuItem(I18n.t("app.export_selected_key_images"));
 	    itemExportKeys.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemExportKeys.addActionListener(exportKeyActionListener());
 	    menu.add(itemExportKeys);
 	    
-	    JMenuItem itemDelete = new JMenuItem("Delete selected Key Images");
+	    JMenuItem itemDelete = new JMenuItem(I18n.t("app.delete_selected_key_images"));
 	    itemDelete.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemDelete.addActionListener(getDeleteActionListener());
 	    menu.add(itemDelete);
 	    
-	    JMenuItem sysExplorerItem = new JMenuItem("View in system explorer");
+	    JMenuItem sysExplorerItem = new JMenuItem(I18n.t("common.view_in_system_explorer"));
 	    sysExplorerItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 	    menu.add(sysExplorerItem);
 	    
-	    JMenuItem propertiesItem = new JMenuItem("File Properties");
+	    JMenuItem propertiesItem = new JMenuItem(I18n.t("common.file_properties"));
 	    propertiesItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    propertiesItem.addActionListener(propertiesListener());
 	    menu.add(propertiesItem);
@@ -210,7 +211,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 	            if (!cryptoPanel.isCoderUsed()) {
 					TreePath[] treeSelArr = tree.getSelectionPaths();
 
-					if (treeSelArr.length != 0 && dialogHelper.yesOrNo("Are you sure to delete?")) {
+					if (treeSelArr.length != 0 && dialogHelper.yesOrNo(I18n.t("common.are_you_sure_to_delete"))) {
 						for (TreePath tp : treeSelArr) {
 							//		            	String path = tp.toString().replaceAll("\\]| |\\[|", "").replaceAll(",", File.separator);
 							String path = tp.getLastPathComponent().toString();
@@ -218,12 +219,12 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 							//		        	File selectedFile = (File)tree.getLastSelectedPathComponent(); // only for one file
 							logger.debug(path + " Deleted: " + selectedFile.delete());
 						}
-						String msg = "Files deleted!";
+						String msg = I18n.t("crypter.files_deleted");
 						logger.debug(msg + Arrays.toString(treeSelArr));
 						TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
 
 					} else {
-						String msg = "Skipped after user request!";
+						String msg = I18n.t("crypter.skipped_after_user_request");
 						// cancelled by user: no message needed
 						logger.debug(msg);
 					} 
@@ -255,11 +256,11 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 							BufferedImage image = worker.getImage();
 							progUpdater = new UpdateProgressPanel(false);
 							progUpdater.setUndefinedDuration();
-							progUpdater.update("Format not supported as key, Converting image to png...", 10);
+							progUpdater.update(I18n.t("crypter.format_not_supported_as_key_converting"), 10);
 							ImageWorkerExtended.convertAndWrite(image, "png", selected);
 						} catch (Exception e) {
 							logger.error("An error occurred when trying to convert "+selected+" to png", e);
-							dialogHelper.error("An error occurred when trying to convert "+selected+" to png", "An error occurred :(");
+							dialogHelper.error(I18n.t("crypter.an_error_occurred_when_trying_to")+selected+I18n.t("crypter.to_png"), I18n.t("app.an_error_occurred"));
 							return;
 						} finally {
 							UpdateProgressPanel.forceDisposeSafe(progUpdater);
@@ -267,10 +268,10 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 					}
 					
 					if (FileWorker.copyFile(selected, new File(KeyGenFrame.KEY_DICTIONARY + selected.getName()),currentConfig.getFileOpt().isFlagOverwrite()) != null) {
-						dialogHelper.info("File correctly saved in " + KeyGenFrame.KEY_DICTIONARY, "File added to dictionary :)");
+						dialogHelper.info(I18n.t("crypter.file_correctly_saved_in") + KeyGenFrame.KEY_DICTIONARY, I18n.t("crypter.file_added_to_dictionary"));
 						logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KeyGenFrame.KEY_DICTIONARY);
 					} else {
-						dialogHelper.error("File not saved in " + KeyGenFrame.KEY_DICTIONARY, "An error occurred :(");
+						dialogHelper.error(I18n.t("crypter.file_not_saved_in") + KeyGenFrame.KEY_DICTIONARY, I18n.t("app.an_error_occurred"));
 						logger.error("File not saved, some error occurred :( ");
 					}
 				}
@@ -299,7 +300,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 							if (selected != null) {
 								progUpdater = new UpdateProgressPanel(false);
 								progUpdater.getPb().setValue(5);
-								progUpdater.getLabel().setText("Exporting files...");
+								progUpdater.getLabel().setText(I18n.t("crypter.exporting_files"));
 
 								if (!selected.exists()) {
 									selected.mkdirs();
@@ -317,17 +318,17 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 												new File(selected.getAbsolutePath() + "\\" + selectedFile.getName()),
 												false);
 										logger.debug(
-												selectedFile.getName() + " exported to " + selected.getAbsolutePath());
+												selectedFile.getName() + I18n.t("crypter.exported_to") + selected.getAbsolutePath());
 									}
-									String msg = "Files exported!";
+									String msg = I18n.t("crypter.files_exported");
 									logger.debug(msg + Arrays.toString(treeSelArr));
 									TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
 									progUpdater.getPb().setValue(100);
-									dialogHelper.info(msg, "Files exported!");
+									dialogHelper.info(msg, I18n.t("crypter.files_exported"));
 
 								} else {
 									progUpdater.getPb().setValue(100);
-									String msg = "Skipped after user request!";
+									String msg = I18n.t("crypter.skipped_after_user_request");
 									// cancelled by user: no message needed
 									logger.debug(msg);
 								}
@@ -356,9 +357,9 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 				if(img == null ) {
 					throw new IOException();
 				}
-				String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+ConversionUtils.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getPath()
-							+"\n\n### Image values ###\n\n Width: "+img.getWidth()+" Px\n Height: "+img.getHeight()+" Px\n\n=> File Size: "
-							+ConversionUtils.coolFileSize(thisFile)+"\n\n => ImgType: "+img.toString();
+				String msg = I18n.t("crypter.png_key_recognized") + thisFile.getName()+I18n.t("crypter.size")+ConversionUtils.coolFileSize(thisFile)+I18n.t("crypter.path")+thisFile.getPath()
+							+I18n.t("crypter.image_values_width")+img.getWidth()+I18n.t("crypter.px_height")+img.getHeight()+I18n.t("crypter.px_file_size")
+							+ConversionUtils.coolFileSize(thisFile)+I18n.t("crypter.imgtype")+img.toString();
 				logger.debug(msg);
 				TEXT_LOG.setText(msg);
 				
@@ -375,19 +376,19 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 				
 				String newdisplayed = StringWorker.fitToMaxLentgh(thisFile.getAbsolutePath(), CrypterPanel.labelLengthLimit);
 
-				lblKeyDisp.setText("Displayed: " + newdisplayed);
+				lblKeyDisp.setText(I18n.t("crypter.displayed") + newdisplayed);
 				
 				cryptoPanel.getTabbedPane().setSelectedIndex(1);
 
 				
 			} catch (IOException e1) {
-				String msg = "Error reading the image, something went wrong :(";
+				String msg = I18n.t("crypter.error_reading_the_image_something_went");
 				logger.debug(msg);
 				TEXT_LOG.setText(msg);
 				if (cryptoPanel.getSrcKeyImageFile() == null) {
 					lblKeyDisp.setText(msg);
 					imgKeyPanel.removeAll();
-					JLabel errorMsg = new JLabel("Error opening file :(");
+					JLabel errorMsg = new JLabel(I18n.t("app.error_opening_file"));
 					errorMsg.setForeground(Color.white);
 					errorMsg.setHorizontalAlignment(JLabel.CENTER);
 					errorMsg.setVerticalAlignment(JLabel.CENTER);
@@ -409,7 +410,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 		if (tree.getLastSelectedPathComponent()!=null && !cryptoPanel.isCoderUsed()) {
 			try {
 				if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equalsIgnoreCase("png")&&ImageIO.read(thisFile)!=null) {
-					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+ConversionUtils.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
+					String msg = I18n.t("crypter.png_key_recognized") + thisFile.getName()+I18n.t("crypter.size")+ConversionUtils.coolFileSize(thisFile)+I18n.t("crypter.path")+thisFile.getAbsolutePath();
 					TEXT_LOG.setText(msg);	
 					imgKeySelected.setForeground(SystemColor.GREEN);
 					
@@ -417,14 +418,14 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 
 					imgKeySelected.setText(newdisplayed);
 					cryptoPanel.setSrcKeyImageFile(thisFile);
-					dialogHelper.info("Key Image file correctly loaded and selected :)", "Key Image Selected :)");
+					dialogHelper.info(I18n.t("crypter.key_image_file_correctly_loaded_and"), I18n.t("crypter.key_image_selected"));
 				}else {
-					String msg = "File not recognized as Key: \n\n => "+thisFile.getName();
+					String msg = I18n.t("crypter.file_not_recognized_as_key")+thisFile.getName();
 					TEXT_LOG.append(msg);
 					cryptoPanel.showMessageImageNotSupported();
 				}
 			} catch (IOException e) {
-				String msg = "Some Error Occurred... please reload key image!";
+				String msg = I18n.t("crypter.some_error_occurred_please_reload_key");
 				TEXT_LOG.append(msg);
 				imgKeySelected.setForeground(Color.RED);
 				imgKeySelected.setText(msg);
@@ -455,7 +456,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
 
 		
 		JFileChooser fileChooser = new NativeFileChooser();		
-		fileChooser.setDialogTitle("Load .png File");
+		fileChooser.setDialogTitle(I18n.t("crypter.load_png_file"));
 		File correctFile = null;
 
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -464,7 +465,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null||!givenExtension.equalsIgnoreCase("png")) {
-        		dialogHelper.error("Please select a valid '.png' file!", "Wrong File format");
+        		dialogHelper.error(I18n.t("app.please_select_a_valid_png_file"), I18n.t("crypter.wrong_file_format"));
         	}else {
         		correctFile = selectedFile;
         	}
@@ -490,7 +491,7 @@ public class TreeFileMouseListenerCrypter extends gui.commons.mouseutils.TreeFil
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		dialogHelper.error("Please select a directory!", "Select a directory, please");
+        		dialogHelper.error(I18n.t("common.please_select_a_directory"), I18n.t("crypter.select_a_directory_please"));
         	}else {
         		correctFile = selectedFile;
         		currentConfig.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());

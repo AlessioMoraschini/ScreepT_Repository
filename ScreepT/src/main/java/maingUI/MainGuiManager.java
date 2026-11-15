@@ -1,5 +1,6 @@
 package maingUI;
 
+import various.common.light.i18n.I18n;
 import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class MainGuiManager {
 
 	public static void restartApplication(boolean asAdmin) {
 
-		String adminFlag = asAdmin ? " as administrator" : "";
+		String adminFlag = asAdmin ? I18n.t("launcher.as_administrator") : "";
 
 		// Updates or plugins waiting for a restart keep their own procedure: no question about the launcher in that case
 		boolean pendingChanges = hasPendingUpdatesOrPlugins();
@@ -80,7 +81,7 @@ public class MainGuiManager {
 				}
 			}
 		} else {
-			if(!MainGUI.dialogHelper.yesOrNo("Restart " + GeneralConfig.APPLICATION_SHORT_NAME + adminFlag + " ?")) {
+			if(!MainGUI.dialogHelper.yesOrNo(I18n.t("launcher.restart") + GeneralConfig.APPLICATION_SHORT_NAME + adminFlag + " ?")) {
 				return;
 			}
 			// launcher not hidden by configuration: the restart goes through it, without further questions
@@ -94,7 +95,7 @@ public class MainGuiManager {
 				// as administrator: ScreepT.bat if present (the exe can be blocked on company PCs); checked before closing anything
 				File adminStarter = asAdmin ? AdminStarter.chooseStarter() : null;
 				if (asAdmin && adminStarter == null) {
-					String errorMsg = "Cannot restart as administrator: neither ScreepT.bat nor ScreepT.exe found";
+					String errorMsg = I18n.t("app.cannot_restart_as_administrator_neither_scre");
 					MainGUI.dialogHelper.error(errorMsg);
 					logger.error(errorMsg);
 					return;
@@ -121,7 +122,7 @@ public class MainGuiManager {
 				System.exit(0);
 
 			} else {
-				String errorMsg = "Cannot restart " + GeneralConfig.APPLICATION_NAME + " : native launcher not found";
+				String errorMsg = I18n.t("mgr.cannot_restart") + GeneralConfig.APPLICATION_NAME + I18n.t("mgr.native_launcher_not_found");
 				MainGUI.dialogHelper.error(errorMsg);
 				logger.error(errorMsg);
 			}
@@ -170,8 +171,8 @@ public class MainGuiManager {
 		logger.debug(" => User started logs exporting procedure.");
 		boolean choice = true;
 		if(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START.equals(Level.OFF)) {
-			String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScreepT_launcher's customize options at start)";
-			choice = MainGUI.dialogHelper.yesOrNo(msg, "Export logs even if disabled?");
+			String msg =  I18n.t("mgr.logger_is_disabled_you_won_t");
+			choice = MainGUI.dialogHelper.yesOrNo(msg, I18n.t("mgr.export_logs_even_if_disabled"));
 		}
 
 		if (choice) {
@@ -199,10 +200,10 @@ public class MainGuiManager {
 				File zipped = ZipWorker.zipFolderToFile(tempFolder.getAbsolutePath(), selected, true, true);
 				boolean copied = copiedMainLog != null && copiedLauncherLog != null;
 				if (copied && zipped != null && zipped.exists()) {
-					MainGUI.dialogHelper.info("File correctly saved in " + zipped, "Log File Exported :)");
+					MainGUI.dialogHelper.info(I18n.t("crypter.file_correctly_saved_in") + zipped, I18n.t("mgr.log_file_exported"));
 					logger.info("File :" + GeneralConfig.LOG_PATH + " Exported, exportFile: " + zipped);
 				} else {
-					MainGUI.dialogHelper.error("File not saved [" + zipped +"], Some error occurred :(", (String)null);
+					MainGUI.dialogHelper.error(I18n.t("mgr.file_not_saved") + zipped +I18n.t("mgr.some_error_occurred"), (String)null);
 					logger.error("File not saved, some error occurred :( ");
 				}
 
@@ -357,7 +358,7 @@ public class MainGuiManager {
 	  	Thread tempCreeptEraser = new Thread(MainGuiUtils.tempDecryptedEraser());
 	  	tempCreeptEraser.start();
 
-		String msg = "Deleting temp files and folders...";
+		String msg = I18n.t("mgr.deleting_temp_files_and_folders");
 
 		try {
 			MainGuiUtils.logger.info(msg + "please wait!");
@@ -421,7 +422,7 @@ public class MainGuiManager {
 
 				ChangeDTO changesTempDecrypted = panelCrypter.fileMonitor.checkForEverithing();
 				if (changesTempDecrypted.changedFiles.size() != 0) {
-					if(MainGUI.dialogHelper.yesOrNo("There are Files changed after decrypt.. do you want to return to ScreepT view? "+changesTempDecrypted.changedFiles)) {
+					if(MainGUI.dialogHelper.yesOrNo(I18n.t("mgr.there_are_files_changed_after_decrypt")+changesTempDecrypted.changedFiles)) {
 						result = false;
 						MainGUI.mntmCreepter.doClick();
 						// add unsaved as source for crypterPanel
@@ -473,7 +474,7 @@ public class MainGuiManager {
 
 		MainGUI.mainAPP.getMainFrame().setVisible(true);
 		MainGUI.dialogHelper.setParentComponent(MainGUI.mainAPP.getMainFrame());
-		if (MainGUI.dialogHelper.showYNDialog("Really want to exit?", "Exit Program", JOptionHelperExtended.YES_OR_NO)) {
+		if (MainGUI.dialogHelper.showYNDialog(I18n.t("mgr.really_want_to_exit"), I18n.t("mgr.exit_program"), JOptionHelperExtended.YES_OR_NO)) {
 			MainGUI.mainAPP.getMainFrame().setAlwaysOnTop(true);
 			closeApplication(0);
 		}else {
@@ -521,7 +522,7 @@ public class MainGuiManager {
 			File launcherJar = new File("ScreepT_Launcher.jar");
 			if (!launcherJar.isFile()) {
 				javax.swing.JOptionPane.showMessageDialog(MainGUI.mainFrameScreept, "ScreepT_Launcher.jar was not found in the application folder.",
-						"Launcher Settings", javax.swing.JOptionPane.WARNING_MESSAGE);
+						I18n.t("app.launcher_settings"), javax.swing.JOptionPane.WARNING_MESSAGE);
 				return;
 			}
 			boolean windows = File.separatorChar == '\\';

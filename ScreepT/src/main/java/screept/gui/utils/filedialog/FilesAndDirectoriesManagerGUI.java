@@ -11,6 +11,7 @@
  */
 package screept.gui.utils.filedialog;
 
+import various.common.light.i18n.I18n;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
@@ -223,7 +224,7 @@ public class FilesAndDirectoriesManagerGUI {
 
 	private static void noSelectionAdvice(String title) {
 		title = title == null || title.isEmpty() ? "Empty selection" : title;
-		MainGUI.dialogHelper.warn("Nothing selected, exiting.", title);
+		MainGUI.dialogHelper.warn(I18n.t("app.nothing_selected_exiting"), title);
 	}
 	
 	private static boolean askConfirmation(String msg, String title) {

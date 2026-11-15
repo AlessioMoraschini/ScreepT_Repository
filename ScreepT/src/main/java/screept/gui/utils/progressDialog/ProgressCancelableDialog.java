@@ -11,6 +11,7 @@
  */
 package screept.gui.utils.progressDialog;
 
+import various.common.light.i18n.I18n;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
@@ -71,7 +72,7 @@ public class ProgressCancelableDialog extends JDialog{
 		}
 				
 		// manage cancelableTask
-		btnCancelTask = new JButton("Cancel");
+		btnCancelTask = new JButton(I18n.t("common.cancel"));
 		btnCancelTask.setBackground(new Color(169, 169, 169));
 		GridBagConstraints gcCancelButton = new GridBagConstraints();
 		gcCancelButton.gridwidth = 2;

@@ -11,6 +11,7 @@
  */
 package maingUI;
 
+import various.common.light.i18n.I18n;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -542,21 +543,21 @@ public class MainGUI extends MainGuiParent {
 
 					if (!mainAPP.getMainFrame().isAlwaysOnTopSupported()) {
 						logger.warn("User tried to set Always on top, but it seems it's not supported in this device!");
-						dialogHelper.warn("It seems that \"Always on top\" is not supported on this system :(",
+						dialogHelper.warn(I18n.t("common.it_seems_that_always_on_top"),
 								"\"Always on top\" not supported");
 					}
 
 					getMainFrame().setAlwaysOnTop(true);
 					AlwaysOnTopManager.setPinned(true);
 					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_GREEN));
-					mntmPinApplicationOnTop.setToolTipText("Disable \"always on top\" over other windows");
+					mntmPinApplicationOnTop.setToolTipText(I18n.t("common.disable_always_on_top_over_other"));
 
 				} else {
 					getMainFrame().setAlwaysOnTop(false);
 					AlwaysOnTopManager.setPinned(false);
 					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 					mntmPinApplicationOnTop
-							.setToolTipText("Enable \"always on top\" over other windows (if supported)");
+							.setToolTipText(I18n.t("common.enable_always_on_top_over_other"));
 				}
 			}
 		});
@@ -606,7 +607,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - RESTART SCREEPT
-		mntmRestart = new CustomJmenuItem(new AbstractAction("Restart") {
+		mntmRestart = new CustomJmenuItem(new AbstractAction(I18n.t("app.restart")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmRestart) {
@@ -620,7 +621,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - RESTART SCREEPT
-		mntmRestartAsAdmin = new CustomJmenuItem(new AbstractAction("Restart as administrator") {
+		mntmRestartAsAdmin = new CustomJmenuItem(new AbstractAction(I18n.t("app.restart_as_administrator")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmRestart) {
@@ -634,13 +635,13 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		mntmAddToWindowsContextmenu = new CustomJmenuItem(
-				new AbstractAction("Add to Windows context menu after right click on file") {
+				new AbstractAction(I18n.t("app.add_to_windows_context_menu_after")) {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 
 												File[] starters = OpenWithContextMenu.availableStarters();
 						if (starters.length == 0) {
-							dialogHelper.error("Neither ScreepT.exe nor ScreepT.bat found in the installation folder.");
+							dialogHelper.error(I18n.t("app.neither_screept_exe_nor_screept_bat"));
 							return;
 						}
 						// starters = [exe, bat] when both exist
@@ -668,7 +669,7 @@ public class MainGUI extends MainGuiParent {
 				});
 
 		mntmRemoveFromWindowsContextmenu = new CustomJmenuItem(
-				new AbstractAction("Remove from Windows file right click context menu") {
+				new AbstractAction(I18n.t("app.remove_from_windows_file_right_click")) {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 
@@ -683,7 +684,7 @@ public class MainGUI extends MainGuiParent {
 				});
 
 		// NOT OPENING VIEW - EXIT AND CLOSE SCREEPT
-		mntmExit = new CustomJmenuItem(new AbstractAction("Exit") {
+		mntmExit = new CustomJmenuItem(new AbstractAction(I18n.t("common.exit")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmExit) {
@@ -697,7 +698,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - LOAD CUSTOM CONFIGURATION
-		mntmloadPrjSub = new CustomJmenuItem(new AbstractAction("Load Custom Configuration") {
+		mntmloadPrjSub = new CustomJmenuItem(new AbstractAction(I18n.t("app.load_custom_configuration")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 
@@ -713,7 +714,7 @@ public class MainGUI extends MainGuiParent {
 
 		// NOT OPENING VIEW - IMPORT CONFIGURATION FROM OTHER SCREEPT
 		mntmImportFromOtherScreepTPrjSub = new CustomJmenuItem(
-				new AbstractAction("Load configuration from other installation") {
+				new AbstractAction(I18n.t("app.load_configuration_from_other_installation")) {
 					@Override
 					public void actionPerformed(ActionEvent ae) {
 
@@ -730,7 +731,7 @@ public class MainGUI extends MainGuiParent {
 		String msg2 = "? All unsaved work will be lost.";
 
 		// NOT OPENING VIEW - RESET ALL PANELS
-		mntmResetAllPanels = new CustomJmenuItem(new AbstractAction("Reset all Panels") {
+		mntmResetAllPanels = new CustomJmenuItem(new AbstractAction(I18n.t("app.reset_all_panels")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				if (dialogHelper.yesOrNo(msg1 + "all panels" + msg2, "Reset all panels?")) {
@@ -741,7 +742,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - RESET TEXT EDITOR
-		mntmResetTextEditor = new CustomJmenuItem(new AbstractAction("Reset Text Editor") {
+		mntmResetTextEditor = new CustomJmenuItem(new AbstractAction(I18n.t("app.reset_text_editor")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				if (dialogHelper.yesOrNo(msg1 + "Text Editor" + msg2, "Reset TextEditor?")) {
@@ -752,7 +753,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - RESET CRYPTER
-		mntmResetCrypterPanel = new CustomJmenuItem(new AbstractAction("Reset CreepT") {
+		mntmResetCrypterPanel = new CustomJmenuItem(new AbstractAction(I18n.t("app.reset_creept")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				if (dialogHelper.yesOrNo(msg1 + "Crypter" + msg2, "Reset Crypter?")) {
@@ -763,7 +764,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - RESET CONFIG MANAGER
-		mntmResetConfigManager = new CustomJmenuItem(new AbstractAction("Reset Configuration manager") {
+		mntmResetConfigManager = new CustomJmenuItem(new AbstractAction(I18n.t("app.reset_configuration_manager")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				if (dialogHelper.yesOrNo(msg1 + "Configuration Manager" + msg2, "Reset Conf. Manager?")) {
@@ -774,7 +775,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - SAVE CUSTOM CONFIGURATION
-		mntmSaveCurrent = new CustomJmenuItem(new AbstractAction("Save Current Configuration") {
+		mntmSaveCurrent = new CustomJmenuItem(new AbstractAction(I18n.t("app.save_current_configuration")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				if (!FLAG_savePrjSub) {
@@ -787,7 +788,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - SAVE CUSTOM CONFIGURATION
-		mntmExportPrjSub = new CustomJmenuItem(new AbstractAction("Export Current Configuration") {
+		mntmExportPrjSub = new CustomJmenuItem(new AbstractAction(I18n.t("app.export_current_configuration")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				if (!FLAG_savePrjSubAs) {
@@ -800,7 +801,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - RELOAD CONFIGURATION
-		mntmReloadPrjSub = new CustomJmenuItem(new AbstractAction("Reload Configuration") {
+		mntmReloadPrjSub = new CustomJmenuItem(new AbstractAction(I18n.t("app.reload_configuration")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 
@@ -812,7 +813,7 @@ public class MainGUI extends MainGuiParent {
 						try {
 							currentConfiguration.setIniReadFile(new Ini(new File(GeneralConfig.DEFAULT_INI)));
 							currentConfiguration.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
-							dialogHelper.info("Configuration reloaded!", "Configuration reloaded!");
+							dialogHelper.info(I18n.t("app.configuration_reloaded"), I18n.t("app.configuration_reloaded"));
 						} catch (IOException e) {
 							dialogHelper.error(
 									"Error opening: " + GeneralConfig.DEFAULT_INI + " -> maybe it does not exist?",
@@ -833,7 +834,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - SAVE DEFAULT CONFIGURATION
-		mntmSaveCurrentAs = new CustomJmenuItem(new AbstractAction("Save Current Configuration as Default") {
+		mntmSaveCurrentAs = new CustomJmenuItem(new AbstractAction(I18n.t("app.save_current_configuration_as_default")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmSaveCurrentAs) {
@@ -846,7 +847,7 @@ public class MainGUI extends MainGuiParent {
 					} catch (IOException e1) {
 						logger.error("Exception happened!", e1);
 					}
-					if (dialogHelper.yesOrNo("Really want to overwrite default configuration?",
+					if (dialogHelper.yesOrNo(I18n.t("app.really_want_to_overwrite_default_configurati"),
 							"Warning - Overwrite default configuration?")) {
 						currentConfiguration.writeCurrentConfigIniFile();
 						dialogHelper.info(
@@ -861,7 +862,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - RELOAD STANDARD SCREEPT CONFIGURATION
-		mntmloadSrcrYptDefaultConf = new CustomJmenuItem(new AbstractAction("Reset Original Configuration") {
+		mntmloadSrcrYptDefaultConf = new CustomJmenuItem(new AbstractAction(I18n.t("app.reset_original_configuration")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 
@@ -896,7 +897,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - LOG EXPORT
-		mntmExportLog = new CustomJmenuItem(new AbstractAction("Export Event Log") {
+		mntmExportLog = new CustomJmenuItem(new AbstractAction(I18n.t("app.export_event_log")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmExportLog) {
@@ -911,7 +912,7 @@ public class MainGUI extends MainGuiParent {
 			}
 		});
 
-		mntmViewTempFolder = new CustomJmenuItem(new AbstractAction("Open ScreepT temp folder") {
+		mntmViewTempFolder = new CustomJmenuItem(new AbstractAction(I18n.t("app.open_screept_temp_folder")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
@@ -920,7 +921,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// installation root: the folder containing the Application one
-		mntmOpenInstallationFolder = new CustomJmenuItem(new AbstractAction("Open current installation folder") {
+		mntmOpenInstallationFolder = new CustomJmenuItem(new AbstractAction(I18n.t("app.open_current_installation_folder")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
@@ -932,7 +933,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// NOT OPENING VIEW - LOG ERASE
-		mntmEraseLogs = new CustomJmenuItem(new AbstractAction("Erase Logs") {
+		mntmEraseLogs = new CustomJmenuItem(new AbstractAction(I18n.t("app.erase_logs")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				logger.debug(" => User started logs erasing procedure.");
@@ -948,15 +949,15 @@ public class MainGUI extends MainGuiParent {
 						if (FileVarious.clearFileContent(GeneralConfig.LOG_PATH)
 								&& FileVarious.clearFileContent(GeneralConfig.LOG_LAUNCHER_PATH)) {
 							logger.debug("Files deleted");
-							dialogHelper.info("Logs deleted - as you asked ;)", "Logs deleted");
+							dialogHelper.info(I18n.t("app.logs_deleted_as_you_asked"), "Logs deleted");
 						} else {
 							logger.error("Files not deleted :: An error occurred :(");
-							dialogHelper.error("Something went wrong :( Some files may still contain stuff.",
+							dialogHelper.error(I18n.t("app.something_went_wrong_some_files_may"),
 									(String) null);
 						}
 					} else {
 						logger.debug("Logs not deleted :: skipped by user.");
-						dialogHelper.info("Logs not deleted - as you asked ;)", "Logs not deleted");
+						dialogHelper.info(I18n.t("app.logs_not_deleted_as_you_asked"), "Logs not deleted");
 					}
 				}
 
@@ -968,7 +969,7 @@ public class MainGUI extends MainGuiParent {
 
 		// NOT OPENING VIEW - UPPERCASE DIRECTORY'S NAMES FIRST LETTER
 		mntmTouppercaseDirectory = new CustomJmenuItem(
-				new AbstractAction("Uppercase First letter - Files&Directories") {
+				new AbstractAction(I18n.t("app.uppercase_first_letter_files_directories")) {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						if (!FLAG_mntmTouppercaseDirectory) {
@@ -983,7 +984,7 @@ public class MainGUI extends MainGuiParent {
 
 		// NOT OPENING VIEW - DELETE RECURSIVELY DIRECTORY'S CONTENT BY EXTENSION
 		mntmDeleteDirectoryContentByExtension = new CustomJmenuItem(
-				new AbstractAction("Delete Directory's content by extension") {
+				new AbstractAction(I18n.t("app.delete_directory_s_content_by_extension")) {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						if (!FLAG_mntmDeleteDirectoryContentByExtension) {
@@ -998,7 +999,7 @@ public class MainGUI extends MainGuiParent {
 
 		// NOT OPENING VIEW - DELETE RECURSIVELY DIRECTORY'S CONTENT
 		mntmDeleteDirectoryAllContentRecursive = new CustomJmenuItem(
-				new AbstractAction("Delete Directory's content (All except selected)") {
+				new AbstractAction(I18n.t("app.delete_directory_s_content_all_except")) {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						if (!FLAG_mntmDeleteDirectoryContentRecursive) {
@@ -1012,7 +1013,7 @@ public class MainGUI extends MainGuiParent {
 
 		// NOT OPENING VIEW - DELETE DIRECTORY'S CONTENT
 		mntmEmptyDirectoryRecursive = new CustomJmenuItem(
-				new AbstractAction("Empty all content (doesn't delete folders)") {
+				new AbstractAction(I18n.t("app.empty_all_content_doesn_t_delete")) {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						if (!FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive) {
@@ -1026,7 +1027,7 @@ public class MainGUI extends MainGuiParent {
 				});
 
 		// NOT OPENING VIEW - MAKE DIRS FROM STRING PATH
-		mntmMakeDirsFromPath = new CustomJmenuItem(new AbstractAction("Create directory from String path") {
+		mntmMakeDirsFromPath = new CustomJmenuItem(new AbstractAction(I18n.t("app.create_directory_from_string_path")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmMakeDirsFromPath) {
@@ -1040,7 +1041,7 @@ public class MainGUI extends MainGuiParent {
 
 		// NOT OPENING VIEW - COPY DIRECTORY STRUCTURE
 		mntmCopyDirStructure = new CustomJmenuItem(
-				new AbstractAction("Copy directory structure (Copy folders, not files)") {
+				new AbstractAction(I18n.t("app.copy_directory_structure_copy_folders_not")) {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						if (!FLAG_mntmCopyDirStructure) {
@@ -1055,7 +1056,7 @@ public class MainGUI extends MainGuiParent {
 		///////////////// HANDLERS THAT OPEN A NEW WINDOW ////////////////////////
 
 		// open in a new window - CUSTOMIZE GRAPHICS
-		mntmCustomizeUIView = new CustomJmenuItem(new AbstractAction("Customize Graphics") {
+		mntmCustomizeUIView = new CustomJmenuItem(new AbstractAction(I18n.t("app.customize_graphics")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1064,7 +1065,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// fullScreen mode toggle
-		mntmFullScreenMode = new CustomJmenuItem(new AbstractAction("Full Screen Mode") {
+		mntmFullScreenMode = new CustomJmenuItem(new AbstractAction(I18n.t("app.full_screen_mode")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
@@ -1093,7 +1094,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// IMMERSIVE MODE ON/OFF
-		mntmImmersiveMode = new CustomJmenuItem(new AbstractAction("Switch Immersive Mode ON/OFF (Press ESC to exit)") {
+		mntmImmersiveMode = new CustomJmenuItem(new AbstractAction(I18n.t("app.switch_immersive_mode_on_off_press")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mainGuiUtils.immersiveModeToggle();
@@ -1101,7 +1102,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - GENERAL OPTIONS
-		mntmGenOpt = new CustomJmenuItem(new AbstractAction("General Options") {
+		mntmGenOpt = new CustomJmenuItem(new AbstractAction(I18n.t("app.general_options")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1110,7 +1111,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// the launcher in "settings only" mode: its options (Java, memory, log level, hide at start...) without leaving ScreepT
-		mntmLauncherSettings = new CustomJmenuItem(new AbstractAction("Launcher Settings") {
+		mntmLauncherSettings = new CustomJmenuItem(new AbstractAction(I18n.t("app.launcher_settings")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainGuiManager.openLauncherSettings();
@@ -1118,7 +1119,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - KEYGEN
-		mntmgenerateKeyImageSub = new CustomJmenuItem(new AbstractAction("Generate Key Image") {
+		mntmgenerateKeyImageSub = new CustomJmenuItem(new AbstractAction(I18n.t("app.generate_key_image")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 
@@ -1127,7 +1128,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - PSW_KEYGEN
-		mntmgenerateKeyPswSub = new CustomJmenuItem(new AbstractAction("Generate Password") {
+		mntmgenerateKeyPswSub = new CustomJmenuItem(new AbstractAction(I18n.t("app.generate_password")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 
@@ -1136,7 +1137,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - File content search - Text Editor
-		mntmFileSearch = new CustomJmenuItem(new AbstractAction("Search text into files") {
+		mntmFileSearch = new CustomJmenuItem(new AbstractAction(I18n.t("app.search_text_into_files")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 
@@ -1145,7 +1146,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - Quick file search - Text Editor
-		mntmFileQuickSearch = new CustomJmenuItem(new AbstractAction("File name quick search") {
+		mntmFileQuickSearch = new CustomJmenuItem(new AbstractAction(I18n.t("app.file_name_quick_search")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				mainGuiUtils.openQuickSearchIntoWorkspace();
@@ -1153,7 +1154,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - IMPORT/EXPORT WORKSPACE - Text Editor
-		mntmTxtEditorImpExpCryptedWkspc = new CustomJmenuItem(new AbstractAction("Import/Export crypted workspace") {
+		mntmTxtEditorImpExpCryptedWkspc = new CustomJmenuItem(new AbstractAction(I18n.t("app.import_export_crypted_workspace")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 
@@ -1162,7 +1163,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - Theme Editor
-		mntmThemeEditor = new CustomJmenuItem(new AbstractAction("Color Theme editor") {
+		mntmThemeEditor = new CustomJmenuItem(new AbstractAction(I18n.t("app.color_theme_editor")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				windowCreator.newSchemeManager();
@@ -1170,7 +1171,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - NET INFO
-		mntmnetInfo = new CustomJmenuItem(new AbstractAction("Network Info") {
+		mntmnetInfo = new CustomJmenuItem(new AbstractAction(I18n.t("common.network_info")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 
@@ -1179,7 +1180,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - NET INFO
-		mntmhwInfo = new CustomJmenuItem(new AbstractAction("System Info") {
+		mntmhwInfo = new CustomJmenuItem(new AbstractAction(I18n.t("app.system_info")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 
@@ -1188,7 +1189,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - File Hash checker
-		mntmHashChecker = new CustomJmenuItem(new AbstractAction("File Hash checker") {
+		mntmHashChecker = new CustomJmenuItem(new AbstractAction(I18n.t("app.file_hash_checker")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1197,7 +1198,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - File Hash checker
-		mntmClipboardStandalone = new CustomJmenuItem(new AbstractAction("Clipboard tool") {
+		mntmClipboardStandalone = new CustomJmenuItem(new AbstractAction(I18n.t("app.clipboard_tool")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1206,7 +1207,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - Built-in Calculator
-		mntmCalculator = new CustomJmenuItem(new AbstractAction("Calculator") {
+		mntmCalculator = new CustomJmenuItem(new AbstractAction(I18n.t("app.calculator")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1215,7 +1216,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// right-side drawer - Quick notes (to-do list with autosave)
-		mntmQuickNotes = new CustomJmenuItem(new AbstractAction("Quick notes") {
+		mntmQuickNotes = new CustomJmenuItem(new AbstractAction(I18n.t("app.quick_notes")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1224,7 +1225,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - Built-in Shell
-		mntmShellStandalone = new CustomJmenuItem(new AbstractAction("System Console") {
+		mntmShellStandalone = new CustomJmenuItem(new AbstractAction(I18n.t("app.system_console")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1233,7 +1234,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - LogSearch (read-only viewer and search for huge files)
-		mntmLogSearch = new CustomJmenuItem(new AbstractAction("LogSearch") {
+		mntmLogSearch = new CustomJmenuItem(new AbstractAction(I18n.t("common.logsearch")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1242,7 +1243,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - Built-in Shell
-		mntmFileContentSearch = new CustomJmenuItem(new AbstractAction("File content search") {
+		mntmFileContentSearch = new CustomJmenuItem(new AbstractAction(I18n.t("app.file_content_search")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1251,7 +1252,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - File Hash checker
-		mntmColorPicker = new CustomJmenuItem(new AbstractAction("Color picker") {
+		mntmColorPicker = new CustomJmenuItem(new AbstractAction(I18n.t("app.color_picker")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				windowCreator.newColorPickerFrame();
@@ -1259,7 +1260,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - DICTIONARY (KEY IMG)
-		mntmViewKeyDictionary = new CustomJmenuItem(new AbstractAction("View Key Dictionary") {
+		mntmViewKeyDictionary = new CustomJmenuItem(new AbstractAction(I18n.t("app.view_key_dictionary")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1268,7 +1269,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open Image Studio (viewer and converter in one tool)
-		mntmImageViewer = new CustomJmenuItem(new AbstractAction("Image Studio") {
+		mntmImageViewer = new CustomJmenuItem(new AbstractAction(I18n.t("common.image_studio")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (ImageViewerFrame.history.isEmpty()) {
@@ -1280,7 +1281,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - ABOUT ScreepT
-		mntmAboutScreept = new CustomJmenuItem(new AbstractAction("About - ScreepT") {
+		mntmAboutScreept = new CustomJmenuItem(new AbstractAction(I18n.t("app.about_screept")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1289,7 +1290,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - ABOUT ScreepT
-		mntmLicenseScreept = new CustomJmenuItem(new AbstractAction("License - ScreepT") {
+		mntmLicenseScreept = new CustomJmenuItem(new AbstractAction(I18n.t("app.license_screept")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1298,7 +1299,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in a new window - ChangeLog view
-		mntmChangeLog = new CustomJmenuItem(new AbstractAction("What's new (changelog)") {
+		mntmChangeLog = new CustomJmenuItem(new AbstractAction(I18n.t("app.what_s_new_changelog")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1314,7 +1315,7 @@ public class MainGUI extends MainGuiParent {
 			}
 		});
 
-		mntmUserDocumentation = new CustomJmenuItem(new AbstractAction("User Guide") {
+		mntmUserDocumentation = new CustomJmenuItem(new AbstractAction(I18n.t("app.user_guide")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				windowCreator.newTutorialFrame(true);
@@ -1322,7 +1323,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// View Website
-		mntmViewWebsite = new CustomJmenuItem(new AbstractAction("Visit Website") {
+		mntmViewWebsite = new CustomJmenuItem(new AbstractAction(I18n.t("app.visit_website")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
@@ -1332,7 +1333,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// Check and download/install updates
-		mntmLookForUpdates = new CustomJmenuItem(new AbstractAction("Check for software updates...") {
+		mntmLookForUpdates = new CustomJmenuItem(new AbstractAction(I18n.t("app.check_for_software_updates")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Thread updatesTHread = MainGuiUtils.lookForUpdates(false);
@@ -1341,7 +1342,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// Check and download/install Plugins
-		mntmLookForPlugins = new CustomJmenuItem(new AbstractAction("Install plugins...") {
+		mntmLookForPlugins = new CustomJmenuItem(new AbstractAction(I18n.t("app.install_plugins")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new Thread(new Runnable() {
@@ -1389,7 +1390,7 @@ public class MainGUI extends MainGuiParent {
 		//////////////// ////////////////////////
 
 		// open in main frame - FILE CRYPTER
-		mntmCreepter = new CustomJmenuItem(new AbstractAction("Creepter Module - Crypt and Decrypt files") {
+		mntmCreepter = new CustomJmenuItem(new AbstractAction(I18n.t("app.creepter_module_crypt_and_decrypt_files")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				mainGuiUtils.startCrypterPanel(false);
@@ -1397,7 +1398,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in main frame - CONFIGURATION MANAGER
-		mntmInspectCurrentConfiguration = new CustomJmenuItem(new AbstractAction("Configuration Manager Module") {
+		mntmInspectCurrentConfiguration = new CustomJmenuItem(new AbstractAction(I18n.t("app.configuration_manager_module")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				mainGuiUtils.startConfigManagerPanel(false);
@@ -1405,7 +1406,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in main frame - TEXT EDITOR
-		mntmTextEditor = new CustomJmenuItem(new AbstractAction("Text Editor Module") {
+		mntmTextEditor = new CustomJmenuItem(new AbstractAction(I18n.t("app.text_editor_module")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mainGuiUtils.startTextEditor(false);
@@ -1413,7 +1414,7 @@ public class MainGUI extends MainGuiParent {
 		});
 
 		// open in main frame - RETURN TO WELCOME PAGE
-		mntmReturnToWelcome = new CustomJmenuItem(new AbstractAction("Return to Welcome Page") {
+		mntmReturnToWelcome = new CustomJmenuItem(new AbstractAction(I18n.t("app.return_to_welcome_page")) {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				isOnHomePage.set(true);
@@ -1606,7 +1607,7 @@ public class MainGUI extends MainGuiParent {
 			String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
 
 			if (selectedFile == null || !givenExtension.equalsIgnoreCase("zip")) {
-				dialogHelper.error("Please specify a valid 'zip' file!", "Wrong File format");
+				dialogHelper.error(I18n.t("app.please_specify_a_valid_zip_file"), "Wrong File format");
 			} else {
 				correctFile = selectedFile;
 				currentConfiguration.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
@@ -1634,7 +1635,7 @@ public class MainGUI extends MainGuiParent {
 			if (!MainGuiGeneralAppStarter.hwInfoAvailable) {
 				mntmhwInfo.setEnabled(false);
 				mntmhwInfo.setToolTipText(
-						"Hardware info tool not found in this installation, download plugin and restart in order to use it");
+						I18n.t("app.hardware_info_tool_not_found_in"));
 			}
 
 		}

@@ -11,6 +11,7 @@
  */
 package screept.launcher.gui.panels;
 
+import various.common.light.i18n.I18n;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -99,7 +100,7 @@ public class DependenciesManagerPanel extends JFrame{
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow][50%,grow]", "[50px:80px][grow][40px:n][40px:n]"));
 		
-		lblTitleHeaderMessage = new JLabel("If some dependencies are missing and they're critical, you have to solve them before starting ScreepT!");
+		lblTitleHeaderMessage = new JLabel(I18n.t("launcher.if_some_dependencies_are_missing_and"));
 		lblTitleHeaderMessage.setForeground(new Color(211, 211, 211));
 		lblTitleHeaderMessage.setBackground(Color.BLACK);
 		lblTitleHeaderMessage.setBorder(new LineBorder(new Color(0, 0, 0), 2));
@@ -128,31 +129,31 @@ public class DependenciesManagerPanel extends JFrame{
 		table.setRowHeight(30);
 		getContentPane().add(tableContainer, "cell 0 1 3 1,grow");
 		
-		btnRefreshNCheck = new JButton("Refresh and check again for dependencies");
+		btnRefreshNCheck = new JButton(I18n.t("launcher.refresh_and_check_again_for_dependencies"));
 		btnRefreshNCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		btnRefreshNCheck.setBackground(Color.GRAY);
 		btnRefreshNCheck.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnRefreshNCheck, "cell 0 2,grow");
 		
-		btnInstallDependency = new JButton("Install Selected");
+		btnInstallDependency = new JButton(I18n.t("launcher.install_selected"));
 		btnInstallDependency.setFont(new Font("SansSerif", Font.BOLD, 14));
 		btnInstallDependency.setCursor(GuiUtils.CURSOR_HAND);
 		btnInstallDependency.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnInstallDependency, "cell 1 2,grow");
 		
-		btnDownloadDependency = new JButton("Download Selected");
+		btnDownloadDependency = new JButton(I18n.t("launcher.download_selected"));
 		btnDownloadDependency.setFont(new Font("SansSerif", Font.BOLD, 14));
 		btnDownloadDependency.setCursor(GuiUtils.CURSOR_HAND);
 		btnDownloadDependency.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnDownloadDependency, "cell 2 2,grow");
 		
-		btnIgnoreWarnings = new JButton("Ignore warnings (some functions will be disabled)");
+		btnIgnoreWarnings = new JButton(I18n.t("launcher.ignore_warnings_some_functions_will_be"));
 		btnIgnoreWarnings.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		btnIgnoreWarnings.setBackground(new Color(255, 250, 205));
 		btnIgnoreWarnings.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnIgnoreWarnings, "cell 0 3,grow");
 		
-		btnLocateManually = new JButton("Add installation path manually");
+		btnLocateManually = new JButton(I18n.t("launcher.add_installation_path_manually"));
 		btnLocateManually.setFont(new Font("SansSerif", Font.BOLD, 14));
 		btnLocateManually.setBackground(new Color(169, 169, 169));
 		btnLocateManually.setCursor(GuiUtils.CURSOR_HAND);
@@ -209,7 +210,7 @@ public class DependenciesManagerPanel extends JFrame{
 				checkCriticalMissingDependencies();
 				dependeciesMissing = ScreepTLauncher.missingDependenciesList;
 				if(dependeciesMissing.size() == 0) {
-					dialogHelper.info("All dependencies are OK, you're ready to use all ScreepT functions :)", "No missing dependencies found!");
+					dialogHelper.info(I18n.t("launcher.all_dependencies_are_ok_you_re"), I18n.t("launcher.no_missing_dependencies_found"));
 					parentStarterFrame.setEnabled(true);
 					active = false;
 					dispose();
@@ -272,23 +273,23 @@ public class DependenciesManagerPanel extends JFrame{
 						if (!localInstaller.exists()) {
 							btnInstallDependency.setEnabled(false);
 							btnInstallDependency
-									.setToolTipText("There is no installer in current version of ScreepT for "
+									.setToolTipText(I18n.t("launcher.there_is_no_installer_in_current")
 											+ selectedDependency.dependencyName);
 						} else {
 							btnInstallDependency.setEnabled(true);
 							btnInstallDependency.setToolTipText(
-									"Click to install using local installer " + selectedDependency.dependencyName);
+									I18n.t("launcher.click_to_install_using_local_installer") + selectedDependency.dependencyName);
 						}
 						// check remote URL for download
 						if (selectedDependency.URL == null || selectedDependency.URL.equals("")) {
 							btnDownloadDependency.setEnabled(false);
 							btnDownloadDependency
-									.setToolTipText("There is no URL specified in current version of ScreepT for "
+									.setToolTipText(I18n.t("launcher.there_is_no_url_specified_in")
 											+ selectedDependency.dependencyName);
 						} else {
 							btnDownloadDependency.setEnabled(true);
 							btnDownloadDependency.setToolTipText(
-									"Click to open download page for " + selectedDependency.dependencyName);
+									I18n.t("launcher.click_to_open_download_page_for") + selectedDependency.dependencyName);
 						} 
 					}catch(ArrayIndexOutOfBoundsException ex) {
 						logger.warn("Table selection listener triggered, but no rows selected ", ex);
@@ -380,12 +381,12 @@ public class DependenciesManagerPanel extends JFrame{
 	}
 	
 	private void askIfSureToCloseIgnoring() {
-		String msg = "Are you sure to continue anyway? Some ScreepT functions will be disabled by default.";
-		JCheckBox checkbox = new JCheckBox("Do not show this section next Time");
+		String msg = I18n.t("launcher.are_you_sure_to_continue_anyway");
+		JCheckBox checkbox = new JCheckBox(I18n.t("launcher.do_not_show_this_section_next"));
 		checkbox.setOpaque(false);
 		Object[] params = {msg, checkbox};
 		if (dependeciesMissing.size() != 0) {
-			int response = JOptionPane.showConfirmDialog(parentStarterFrame, params, "Confirm before continue", JOptionPane.WARNING_MESSAGE);
+			int response = JOptionPane.showConfirmDialog(parentStarterFrame, params, I18n.t("launcher.confirm_before_continue"), JOptionPane.WARNING_MESSAGE);
 			if (response == JOptionPane.OK_OPTION) {
 				if (checkbox.isSelected()) {
 					IniFileManager iniFileManager = ScreepTLauncher.iniFileManager;
@@ -406,9 +407,9 @@ public class DependenciesManagerPanel extends JFrame{
 	}
 	
 	private void askIfSureToExit() {
-		String msg = "Are you sure to close? ScreepT cannot be launched without required dependencies, launcher will close if continue";
+		String msg = I18n.t("launcher.are_you_sure_to_close_screept");
 		
-		if (dialogHelper.yesOrNo(msg, "Confirm before continue")) {
+		if (dialogHelper.yesOrNo(msg, I18n.t("launcher.confirm_before_continue"))) {
 			System.exit(1);
     		logger.warn("Critical dependencies missing: Launcher closed by user");
 		}else {
@@ -441,7 +442,7 @@ public class DependenciesManagerPanel extends JFrame{
 			if (localInstaller.exists()) {
 				launchInstaller(currentDependency.relativePathToInstaller.getCurrentOSPath());
 			}else {
-				dialogHelper.error("There is no installer for "+currentDependency.dependencyName, "Installer missing");
+				dialogHelper.error(I18n.t("launcher.there_is_no_installer_for")+currentDependency.dependencyName, I18n.t("launcher.installer_missing"));
 			}
 		}
 		
@@ -453,7 +454,7 @@ public class DependenciesManagerPanel extends JFrame{
 			if(currentDependency.URL != null && !currentDependency.URL.equals("")){
 				SysUtils.openUrlInBrowser(currentDependency.URL);
 			}else {
-				dialogHelper.error("Error opening URL for "+currentDependency.dependencyName, "URL missing");
+				dialogHelper.error(I18n.t("launcher.error_opening_url_for")+currentDependency.dependencyName, I18n.t("launcher.url_missing"));
 			}
 		}
 	}

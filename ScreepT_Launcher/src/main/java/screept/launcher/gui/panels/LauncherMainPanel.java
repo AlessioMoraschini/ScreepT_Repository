@@ -11,6 +11,7 @@
  */
 package screept.launcher.gui.panels;
 
+import various.common.light.i18n.I18n;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
@@ -121,7 +122,7 @@ public class LauncherMainPanel extends JFrame{
 		lblScreeptLauncher.setForeground(new Color(0xE8FFFC));
 		header.add(lblScreeptLauncher, "cell 0 0");
 
-		JLabel lblWelcomeToScreept = new JLabel(ScreepTLauncher.settingsOnly ? "Launcher settings: they apply from the next start of ScreepT" : "Choose your preferences, or just start :)");
+		JLabel lblWelcomeToScreept = new JLabel(ScreepTLauncher.settingsOnly ? I18n.t("launcher.launcher_settings_they_apply_from_the") : I18n.t("launcher.choose_your_preferences_or_just_start"));
 		lblWelcomeToScreept.setForeground(new Color(0x7FBFB8));
 		header.add(lblWelcomeToScreept, "cell 0 1");
 
@@ -139,24 +140,24 @@ public class LauncherMainPanel extends JFrame{
 		// controls: always visible at the bottom, Start is big
 		JPanel controls = new LauncherBackdropPanel.Glass(new MigLayout("insets 16 26 10 26, fillx", "[grow][grow][]", "[]12[]6[]"));
 
-		btnCustomizeParameters = new JButton("Customize launch parameters");
-		btnCustomizeParameters.setToolTipText("Memory, Java version, log level and the other start options");
+		btnCustomizeParameters = new JButton(I18n.t("launcher.customize_launch_parameters"));
+		btnCustomizeParameters.setToolTipText(I18n.t("launcher.memory_java_version_log_level_and"));
 		btnCustomizeParameters.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		controls.add(btnCustomizeParameters, "cell 0 0,grow,h 36!");
 
-		btnDependencyManager = new JButton("Open Dependency Manager");
-		btnDependencyManager.setToolTipText("Check and install what ScreepT needs (Java and libraries)");
+		btnDependencyManager = new JButton(I18n.t("launcher.open_dependency_manager"));
+		btnDependencyManager.setToolTipText(I18n.t("launcher.check_and_install_what_screept_needs"));
 		btnDependencyManager.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		controls.add(btnDependencyManager, "cell 1 0,grow,h 36!");
 
 		btnNetworkConfig = new JButton("");
-		btnNetworkConfig.setToolTipText("Network and proxy settings");
+		btnNetworkConfig.setToolTipText(I18n.t("launcher.network_and_proxy_settings"));
 		btnNetworkConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnNetworkConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
 		controls.add(btnNetworkConfig, "cell 2 0,h 36!,w 48!");
 
-		btnStartScreept = new JButton(ScreepTLauncher.settingsOnly ? "Close" : "Start ScreepT");
-		btnStartScreept.setToolTipText(ScreepTLauncher.settingsOnly ? "Close the launcher settings (nothing is started)" : "Start ScreepT with the current options");
+		btnStartScreept = new JButton(ScreepTLauncher.settingsOnly ? "Close" : I18n.t("launcher.start_screept"));
+		btnStartScreept.setToolTipText(ScreepTLauncher.settingsOnly ? I18n.t("launcher.close_the_launcher_settings_nothing_is") : I18n.t("launcher.start_screept_with_the_current_options"));
 		btnStartScreept.setFont(btnStartScreept.getFont().deriveFont(Font.BOLD, 24f));
 		btnStartScreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		controls.add(btnStartScreept, "cell 0 1 3 1,grow,h 66!");
@@ -165,13 +166,12 @@ public class LauncherMainPanel extends JFrame{
 		lblAmDesign.setForeground(new Color(0x6C8F8B));
 		lblAmDesign.setFont(lblAmDesign.getFont().deriveFont(11f));
 		initialHide = ScreepTLauncher.iniFileManager.hideNStartDirect;
-		chkHideLauncher = new JCheckBox("Hide launcher at start");
+		chkHideLauncher = new JCheckBox(I18n.t("common.hide_launcher_at_start"));
 		chkHideLauncher.setOpaque(false);
 		chkHideLauncher.setForeground(new Color(0xBFE8E3));
 		chkHideLauncher.setSelected(initialHide);
 		chkHideLauncher.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		chkHideLauncher.setToolTipText("<html>ScreepT starts directly, without showing this window.<br>"
-				+ "To bring the launcher back: in ScreepT, Preferences &gt; Launcher Settings.</html>");
+		chkHideLauncher.setToolTipText(I18n.t("launcher.screept_starts_directly_without_showing_this"));
 		// in the settings-only window nothing is started, so the choice is saved right away
 		chkHideLauncher.addActionListener(e -> {
 			if (ScreepTLauncher.settingsOnly) {
@@ -228,7 +228,7 @@ public class LauncherMainPanel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(customizerPanel == null || !CustomizeParametersPanel.active) {
-					customizerPanel = new CustomizeParametersPanel("Customize start options", LAUNCHER_GUI);
+					customizerPanel = new CustomizeParametersPanel(I18n.t("launcher.customize_start_options"), LAUNCHER_GUI);
 					customizerPanel.setVisible(true);
 					customizerPanel.setAlwaysOnTop(true);
 				}else {
@@ -243,7 +243,7 @@ public class LauncherMainPanel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (DependenciesManagerPanel.active == false) {
-					missingDependenciesPanel = new DependenciesManagerPanel("Dependency Manager", LAUNCHER_GUI);
+					missingDependenciesPanel = new DependenciesManagerPanel(I18n.t("launcher.dependency_manager"), LAUNCHER_GUI);
 					missingDependenciesPanel.setVisible(true);
 					missingDependenciesPanel.requestFocus();
 				} else {
@@ -280,14 +280,9 @@ public class LauncherMainPanel extends JFrame{
 			writeHideFlag(false);
 			return true;
 		}
-		String text = "<html><b>Hide the launcher from now on?</b><br><br>"
-				+ "ScreepT will start directly, without showing this window.<br><br>"
-				+ "To bring the launcher back:<br>"
-				+ "&bull; in ScreepT open <b>Preferences &gt; Launcher Settings</b> and untick <i>Hide launcher at start</i>;<br>"
-				+ "&bull; or open <b>Preferences &gt; General Options</b> and untick <i>Hide launcher at start</i>;<br>"
-				+ "&bull; or use <b>Help &gt; Restart</b>: it asks if the launcher must open this time.</html>";
-		Object[] options = {"Hide and start", "Start, keep showing", "Cancel"};
-		int choice = JOptionPane.showOptionDialog(this, text, "Hide launcher at start", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		String text = I18n.t("launcher.hide_the_launcher_from_now_on");
+		Object[] options = {I18n.t("launcher.hide_and_start"), I18n.t("launcher.start_keep_showing"), "Cancel"};
+		int choice = JOptionPane.showOptionDialog(this, text, I18n.t("common.hide_launcher_at_start"), JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 		if (choice == 0) {
 			writeHideFlag(true);
 			return true;

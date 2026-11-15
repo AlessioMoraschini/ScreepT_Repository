@@ -11,6 +11,7 @@
  */
 package screept.crypter.impl.aes;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -183,7 +184,7 @@ public class AesCipher256 {
 		}
 	    if(actkey.length()==0) {
         	aesKey.setBackground(Color.red);
-			aesKey.setToolTipText("Password is empty...Fill password text-field!");
+			aesKey.setToolTipText(I18n.t("crypter.password_is_empty_fill_password_text"));
 		}
 		if(actkey.length()==16) {
         	aesKey.setBackground(Color.green);

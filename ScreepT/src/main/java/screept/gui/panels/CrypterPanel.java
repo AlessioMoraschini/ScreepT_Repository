@@ -11,6 +11,7 @@
  */
 package screept.gui.panels;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -126,31 +127,19 @@ public class CrypterPanel extends ModulePanel {
 	private static final String unSelectedTooltip = "<b>Currently deactivated</b> - Activate to improve security (only if supported for current algorithm)<br/><br/>";
 
 	private static final String shuffleTooltip =
-			"When this mode is active, an additional phase will reorder bytes based on given key values, in order to increase algorithm security and maximize entrophy diffusion. "
-			+ "<br/> <b>NB: </b> <u>When decrypting there's no need to choose the right option</u>, this will be recognized automatically from encoded image file name.";
+			I18n.t("crypter.when_this_mode_is_active_an");
 
 	private static final String hashedTooltip =
-			"When this mode is active, the given password will be hashed to avoid original password decription even if the data is compromised. "
-			+ "<br/> <b>NB:</b> <u>When decrypting there's no need to choose the right option</u>, this will be recognized automatically from encoded file.";
+			I18n.t("crypter.when_this_mode_is_active_the");
 
 	private static final String onlyAesTooltip =
-			"<u>ONLY_AES mode</u> uses AES algorithm (128 bits) to encrypt/decrypt a copy of your data."
-			+ "<br/> To use this <u>you only have to specify a string password</u> (or generate a random new one.. just be sure to remember it). The best length is 16 characters."
-			+ "<br/><br/> <b>NB:</b> With this mode you can choose to hash password and/or shuffle original bytes to maximize security, but with a slower process.";
+			I18n.t("crypter.only_aes_mode_uses_aes_algorithm");
 
 	private static final String onlyStegTooltip =
-			"<u>ONLY_STEG mode</u> uses brand new STEG algorithm to encrypt/decrypt a copy of your data. "
-			+ "<br/>To use this you only have to specify a key image with PNG extension that will be your password."
-			+ "<br/> You can load a one-use only image, generate a new random image, or either choose one from your dictionary."
-			+ "<br/> <u>Without key image you won't be able to decrypt</u> the crypted copy of your data once it's crypted: keep it in a safe place! (I suggest you to use a usb Stick)"
-			+ "<br/><br/> <b>NB:</b> With this mode you can choose to shuffle original bytes to maximize security, with a slower process, while key hashing is not supported.";
+			I18n.t("crypter.only_steg_mode_uses_brand_new");
 
 	private static final String completeModeTooltip =
-			"<u>COMPLETE mode</u> is the maximum security mode, that combines AES 128 bits and STEG algorithm, in order to encrypt/decrypt a copy of your data. "
-			+ "<br/> To use this you have to specify both AES password and key image with PNG extension that will be the added-password."
-			+ "<br/> You can load a one-use only image, generate a new random image, or either choose one from your dictionary: be careful and keep it in a safe place."
-			+ "<br/> <u>Without key password and image you won't be able to decrypt</u> the crypted copy of your data once it's crypted! (I suggest you to use a usb Stick)"
-			+ "<br/><br/> <b>NB:</b> With this mode you can choose to hash password and/or shuffle original bytes to maximize security, but with a slower process.";
+			I18n.t("crypter.complete_mode_is_the_maximum_security");
 
 
 	// text Areas
@@ -328,13 +317,13 @@ public class CrypterPanel extends ModulePanel {
 				"[85px:n][][100px][][100px:150px,grow][110px][130px][10px]",
 				"[40px:40px]"));
 
-		lblSourceFileStatic = new JLabel("Source File:");
+		lblSourceFileStatic = new JLabel(I18n.t("crypter.source_file"));
 		lblSourceFileStatic.setBackground(Color.DARK_GRAY);
 		panelHeader.add(lblSourceFileStatic, "cell 0 0,alignx right");
 		lblSourceFileStatic.setForeground(new Color(255, 239, 213));
 		lblSourceFileStatic.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-		lblSrcFileSel = new JLabel("No file selected");
+		lblSrcFileSel = new JLabel(I18n.t("app.no_file_selected"));
 		lblSrcFileSel.setHorizontalTextPosition(SwingConstants.LEADING);
 		lblSrcFileSel.setBackground(Color.DARK_GRAY);
 		panelHeader.add(lblSrcFileSel, "cell 1 0,alignx right");
@@ -342,20 +331,20 @@ public class CrypterPanel extends ModulePanel {
 		lblSrcFileSel.setForeground(new Color(135, 206, 235));
 		lblSrcFileSel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
-		lblSelectedInputStatic = new JLabel(" Key Image:");
+		lblSelectedInputStatic = new JLabel(I18n.t("crypter.key_image"));
 		lblSelectedInputStatic.setHorizontalTextPosition(SwingConstants.RIGHT);
 		lblSelectedInputStatic.setHorizontalAlignment(SwingConstants.RIGHT);
 		panelHeader.add(lblSelectedInputStatic, "cell 2 0,alignx right");
 		lblSelectedInputStatic.setForeground(new Color(255, 239, 213));
 		lblSelectedInputStatic.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-		lblKeyImageSelected = new JLabel("No file selected");
+		lblKeyImageSelected = new JLabel(I18n.t("app.no_file_selected"));
 		panelHeader.add(lblKeyImageSelected, "cell 3 0");
 		lblKeyImageSelected.setMaximumSize(new Dimension(180, 16));
 		lblKeyImageSelected.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		lblKeyImageSelected.setForeground(new Color(135, 206, 235));
 
-		lblScreeptHeader = new JLabel("ScreepT - File Crypt & Decrypt");
+		lblScreeptHeader = new JLabel(I18n.t("crypter.screept_file_crypt_decrypt"));
 		lblScreeptHeader.setHorizontalAlignment(SwingConstants.CENTER);
 		lblScreeptHeader.setForeground(Color.BLACK);
 		lblScreeptHeader.setBackground(new Color(112, 128, 144));
@@ -469,7 +458,7 @@ public class CrypterPanel extends ModulePanel {
 		panelStatus.add(comboModeCrypto, gbc_comboModeCrypto);
 		comboModeCrypto.setModel(new DefaultComboBoxModel<CryptoMode>(CryptoMode.values()));
 
-		chckbxShuffle = new JCheckBox("Shuffle Mode");
+		chckbxShuffle = new JCheckBox(I18n.t("crypter.shuffle_mode"));
 		chckbxShuffle.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		chckbxShuffle.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
 		chckbxShuffle.setDisabledIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
@@ -486,7 +475,7 @@ public class CrypterPanel extends ModulePanel {
 		gbc_chckbxShuffle.gridy = 0;
 		panelStatus.add(chckbxShuffle, gbc_chckbxShuffle);
 
-		chckbxHashKey = new JCheckBox("Hash key");
+		chckbxHashKey = new JCheckBox(I18n.t("crypter.hash_key"));
 		chckbxHashKey.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		chckbxHashKey.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
 		chckbxHashKey.setDisabledIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
@@ -863,7 +852,7 @@ public class CrypterPanel extends ModulePanel {
 						if (screeptManagerFoF.screepTManager != null) {
 							screeptManagerFoF.screepTManager.disableProgressUpdater();
 						}
-						dialogHelper.error("OOOps, an error occurred, see log for details :(", "Generic Error");
+						dialogHelper.error(I18n.t("crypter.ooops_an_error_occurred_see_log"), I18n.t("crypter.generic_error"));
 						logger.error("Exception happened during creept", ex);
 					}
 				}
@@ -885,7 +874,7 @@ public class CrypterPanel extends ModulePanel {
 					if(screeptManagerFoF.screepTManager!=null) {
 						screeptManagerFoF.screepTManager.disableProgressUpdater();
 					}
-					dialogHelper.error("OOOps, an error occurred, see log for details :(", "Generic Error");
+					dialogHelper.error(I18n.t("crypter.ooops_an_error_occurred_see_log"), I18n.t("crypter.generic_error"));
 					logger.error("Exception happened during decreept!", ex);
 				}
 
@@ -1043,8 +1032,8 @@ public class CrypterPanel extends ModulePanel {
 
 				// ask user if he wants to delete decripted after closing ScreepT
 
-				if (dialogHelper.yesOrNo("Delete decripted file(s) after exiting ScreepT? (TEMP folder will be created on Desktop)", "Delete decripted when SW will be closed")) {
-					appendMainTextArea("Decripted files will be exported to temporary folder on user desktop folder\n");
+				if (dialogHelper.yesOrNo(I18n.t("crypter.delete_decripted_file_s_after_exiting"), I18n.t("crypter.delete_decripted_when_sw_will_be"))) {
+					appendMainTextArea(I18n.t("crypter.decripted_files_will_be_exported_to"));
 					// if temporary mode create temp folder ScreepT on desktop
 					destinationDir = new File(GeneralConfig.TEMP_DECRIPTED_ROOT_PATH);
 
@@ -1054,10 +1043,10 @@ public class CrypterPanel extends ModulePanel {
 						flagCreateNewMonitor = false;
 					}
 				} else {
-					appendMainTextArea("Waiting input from user...\n");
+					appendMainTextArea(I18n.t("crypter.waiting_input_from_user"));
 					// get output asking to user
 					destinationDir = MainGuiGeneralAppStarter.fileDialogHelper.directoWrite(parentFrame);
-					appendMainTextArea("Chosen input: " + destinationDir + "\n\n");
+					appendMainTextArea(I18n.t("crypter.chosen_input") + destinationDir + "\n\n");
 				}
 
 				CrypterResultDTO result = new CrypterResultDTO();
@@ -1090,7 +1079,7 @@ public class CrypterPanel extends ModulePanel {
 
 					if (currentFile != null && currentFile.exists() && destinationDir != null) {
 
-						builder.append("Starting conversion of file ").append(nProgrFile + 1).append("/").append(nFilesSource).append("[")
+						builder.append(I18n.t("crypter.starting_conversion_of_file")).append(nProgrFile + 1).append("/").append(nFilesSource).append("[")
 								.append(currentFile.getName()).append("]");
 						int progressPerc = nProgrFile * 100 / nFilesSource;
 
@@ -1124,7 +1113,7 @@ public class CrypterPanel extends ModulePanel {
 				}
 				// INFORM USER ABOUT ESIT OF DECRYPT OPERATION
 				if (result.resultOK) {
-					String msg = "Operation completed succesfully!\nDo you want to empty source file pool?";
+					String msg = I18n.t("crypter.operation_completed_succesfully_do_you_want");
 					if (dialogHelper.yesOrNo(msg, "SUCCESS!")) {
 						removeTreeFiles();
 					}
@@ -1136,14 +1125,14 @@ public class CrypterPanel extends ModulePanel {
 
 				} else {
 					if(result.interrupted) {
-						String msg = "Process interrupted.";
+						String msg = I18n.t("crypter.process_interrupted");
 						dialogHelper.info(msg, (String)null);
 						appendLogTextArea("\n" + msg);
 
 						askUserIfWantsToDelete(destinationDir);
 
 					} else if (destinationDir != null) {
-						String msg = "Something went wrong :(";
+						String msg = I18n.t("crypter.something_went_wrong");
 						dialogHelper.error(msg, (String)null);
 						appendLogTextArea("\n" + msg);
 
@@ -1161,7 +1150,7 @@ public class CrypterPanel extends ModulePanel {
 					fileMonitor = new FileChangeMonitor(destinationDir, null);
 				}
 
-				appendMainTextArea("\n\n => Completed !\n\n #####################################################");
+				appendMainTextArea(I18n.t("crypter.completed"));
 
 				runRunnableImpExp(result.resultOK, destinationDir);
 			}
@@ -1173,12 +1162,12 @@ public class CrypterPanel extends ModulePanel {
 
 			@Override
 			public void run() {
-				textAreaMain.setText("Waiting input from user...\n");
+				textAreaMain.setText(I18n.t("crypter.waiting_input_from_user"));
 
 				// get output asking to user
 				File destinationDir = MainGuiGeneralAppStarter.fileDialogHelper.directoWrite(parentFrame);
 
-				appendMainTextArea("Chosen input: " + destinationDir + "\n\n");
+				appendMainTextArea(I18n.t("crypter.chosen_input") + destinationDir + "\n\n");
 
 				// retrieve source file array from dragNDrop panel
 				srcFiles = panelVDragNDropPane.getTreeNodes();
@@ -1214,7 +1203,7 @@ public class CrypterPanel extends ModulePanel {
 
 					if (currentFile != null && currentFile.exists() && destinationDir != null) {
 
-						builder.append("Starting conversion of file ").append(nProgrFile+1).append("/").append(nFilesSource)
+						builder.append(I18n.t("crypter.starting_conversion_of_file")).append(nProgrFile+1).append("/").append(nFilesSource)
 						.append("[").append(currentFile.getName()).append("]");
 						int progressPerc = nProgrFile*100/nFilesSource;
 						if(nProgrFile == 0)
@@ -1246,7 +1235,7 @@ public class CrypterPanel extends ModulePanel {
 				}
 				// INFORM USER ABOUT ESIT OF CRYPT OPERATION
 				if(result.resultOK) {
-					String msg = "Operation completed succesfully!\nDo you want to empty source file pool?";
+					String msg = I18n.t("crypter.operation_completed_succesfully_do_you_want");
 					if(dialogHelper.yesOrNo(msg,"SUCCESS!")) {
 						removeTreeFiles();
 					}
@@ -1260,15 +1249,15 @@ public class CrypterPanel extends ModulePanel {
 
 				}else {
 					if(result.interrupted) {
-						String msg = "Process interrupted.";
-						dialogHelper.info(msg, "Process Interrupted");
+						String msg = I18n.t("crypter.process_interrupted");
+						dialogHelper.info(msg, I18n.t("crypter.process_interrupted_2"));
 						appendLogTextArea("\n" + msg);
 
 						askUserIfWantsToDelete(destinationDir);
 
 					} else if(destinationDir != null) {
-						String msg = "Something went wrong :(";
-						dialogHelper.error(msg,"An error occurred");
+						String msg = I18n.t("crypter.something_went_wrong");
+						dialogHelper.error(msg,I18n.t("crypter.an_error_occurred"));
 						logger.error(msg);
 						appendLogTextArea("\n" + msg);
 
@@ -1282,7 +1271,7 @@ public class CrypterPanel extends ModulePanel {
 				appendMainTextArea(screeptManagerFoF.getOutputStats());
 				tabbedPane.setSelectedIndex(0);
 
-				appendMainTextArea("\n\n => Completed !\n\n #####################################################");
+				appendMainTextArea(I18n.t("crypter.completed"));
 
 				runRunnableImpExp(result.resultOK, destinationDir);
 			}
@@ -1292,13 +1281,13 @@ public class CrypterPanel extends ModulePanel {
 	private void askUserIfWantsToDelete(File resultDirectory) {
 		if(resultDirectory != null && resultDirectory.isDirectory() && resultDirectory.exists()) {
 			logger.debug("Asking to user if he wants to delete directory: " + resultDirectory);
-			if(dialogHelper.yesOrNo("Do you want to delete " + resultDirectory + "'s content?", "Delete content?")) {
+			if(dialogHelper.yesOrNo(I18n.t("crypter.do_you_want_to_delete") + resultDirectory + I18n.t("crypter.s_content"), I18n.t("crypter.delete_content"))) {
 				boolean result = FileWorker.deleteDirContentRecursive(resultDirectory);
 
 				if(result) {
-					dialogHelper.info(resultDirectory + "'s content deleted.", "Directory cleaned");
+					dialogHelper.info(resultDirectory + I18n.t("crypter.s_content_deleted"), I18n.t("crypter.directory_cleaned"));
 				} else {
-					dialogHelper.warn("Cannot delete all content in " + resultDirectory, "Cannot clean directory.");
+					dialogHelper.warn(I18n.t("crypter.cannot_delete_all_content_in") + resultDirectory, I18n.t("crypter.cannot_clean_directory"));
 					GuiUtilsExtended.openInFileSystem(resultDirectory);
 				}
 			}
@@ -1317,7 +1306,7 @@ public class CrypterPanel extends ModulePanel {
 	private void initializeTextAreas() {
 		scrollPaneLog = new JScrollPane();
 		scrollPaneLog.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		tabbedPane.addTab("Screept Log", null, scrollPaneLog, null);
+		tabbedPane.addTab(I18n.t("crypter.screept_log"), null, scrollPaneLog, null);
 		tabbedPane.setBackgroundAt(0, new Color(216, 191, 216));
 		scrollPaneLog.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 
@@ -1334,19 +1323,19 @@ public class CrypterPanel extends ModulePanel {
 		textAreaLog.setMargin(new Insets(10, 10, 10, 10));
 		textAreaLog.revalidate();
 		textAreaLog.repaint();
-		textAreaLog.setText("### WELCOME TO ScreepT :) ###\n\n Are you ready to crypt/decrypt your files?\n\n Nobody knows how to crypt them better than me ;)");
+		textAreaLog.setText(I18n.t("crypter.welcome_to_screept_are_you_ready"));
 
 		panelContainerKey = new JPanel();
 		panelContainerKey.setBackground(Color.DARK_GRAY);
 		panelContainerKey.setBorder(new LineBorder(new Color(0, 0, 0), 0));
 		scrollPanelTabImagePreview.setViewportView(panelContainerKey);
-		tabbedPane.addTab("Img Preview", null, scrollPanelTabImagePreview, null);
+		tabbedPane.addTab(I18n.t("crypter.img_preview"), null, scrollPanelTabImagePreview, null);
 		panelContainerKey.setLayout(new MigLayout(
 				"",
 				"[100,center,grow]",
 				"[:20:20][200px,grow,top]"));
 
-		lblDisplayedKey = new JLabel("to see image: Right click on img -> Load Image and Details");
+		lblDisplayedKey = new JLabel(I18n.t("crypter.to_see_image_right_click_on"));
 		lblDisplayedKey.setForeground(Color.YELLOW);
 		lblDisplayedKey.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblDisplayedKey.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -1383,7 +1372,7 @@ public class CrypterPanel extends ModulePanel {
 		mainSplitTextAreaMain.setRightComponent(scrollPaneText);
 //		panelMainContainer.add(scrollPaneText, "cell 2 2 1 4,grow");
 
-		textAreaMain.setText("   ###  WELCOME TO ScreepT :) ###\n\n Are you ready to crypt/decrypt your files? I will be your best friend... and attackers worst nightmare ;)");
+		textAreaMain.setText(I18n.t("crypter.welcome_to_screept_are_you_ready_2"));
 		appendMainTextArea("\n\n" + getInstructionsText());
 		textAreaMain.setCaretPosition(0);
 		textAreaMain.revalidate();
@@ -1398,12 +1387,12 @@ public class CrypterPanel extends ModulePanel {
 		} catch (IOException e) {
 
 			logger.error("Cannot read initial string from folder: " + GeneralConfig.CREEPTER_FOLDER, e);
-			builder.append("\n\n 1) load source files or drop them on right panel with file tree")
-			   .append("\n\n 2) choose a modality between only aes, only steg or complete using the selector on top-left bar")
-			   .append("\n\n 2a) if complete or steg mode is selected, you have to import a pre-loaded Image fom dictionary or a disposable, or either generate a new one.")
-		 	   .append("\n\n 3) enter a password in the given field")
-		 	   .append("\n\n 4) press creept or drecreept to start process :)")
-		       .append("\n\n PS: Tooltips are your friends, just hover on buttons to know more about them ;)");
+			builder.append(I18n.t("crypter.1_load_source_files_or_drop"))
+			   .append(I18n.t("crypter.2_choose_a_modality_between_only"))
+			   .append(I18n.t("crypter.2a_if_complete_or_steg_mode"))
+		 	   .append(I18n.t("crypter.3_enter_a_password_in_the"))
+		 	   .append(I18n.t("crypter.4_press_creept_or_drecreept_to"))
+		       .append(I18n.t("crypter.ps_tooltips_are_your_friends_just"));
 		}
 
 		return builder.toString();
@@ -1427,15 +1416,15 @@ public class CrypterPanel extends ModulePanel {
 					File thisFile = (File)tree.getLastSelectedPathComponent();
 					if (thisFile != null) {
 						if (thisFile.isDirectory()) {
-							msg = "\n### Directory selected ### \n\n => " + thisFile.getName();
+							msg = I18n.t("crypter.directory_selected") + thisFile.getName();
 							appendLogTextArea("\n" + msg);
 						} else {
 							if (FilenameUtils.getExtension(thisFile.getAbsolutePath()).equals("png")) {
-								msg = " .png Key recognized ->" + thisFile.getName() + "\n\n ## SIZE: " + ConversionUtils.coolFileSize(thisFile) + "\n\n ## Path: "
+								msg = I18n.t("crypter.png_key_recognized") + thisFile.getName() + I18n.t("crypter.size") + ConversionUtils.coolFileSize(thisFile) + I18n.t("crypter.path")
 										+ thisFile.getAbsolutePath();
 								appendLogTextArea("\n" + msg);
 							} else {
-								msg = "File not recognized as Key: \n\n => " + thisFile.getName();
+								msg = I18n.t("crypter.file_not_recognized_as_key") + thisFile.getName();
 								appendLogTextArea("\n" + msg);
 							}
 						}
@@ -1450,8 +1439,8 @@ public class CrypterPanel extends ModulePanel {
 		Dimension minimumBtnTreeSize = new Dimension(95, 28);
 		Dimension minimumBtnTreeSizeBig = new Dimension(110, 28);
 
-		btnDispoKeyImg = new JButton("One-Use");
-		btnDispoKeyImg.setToolTipText("Select a disposable image that will be forgotten after encryption/decryption");
+		btnDispoKeyImg = new JButton(I18n.t("old.one_use"));
+		btnDispoKeyImg.setToolTipText(I18n.t("crypter.select_a_disposable_image_that_will"));
 		btnDispoKeyImg.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDispoKeyImg.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEY_DICT));
 		btnDispoKeyImg.setRequestFocusEnabled(false);
@@ -1462,8 +1451,8 @@ public class CrypterPanel extends ModulePanel {
 		btnDispoKeyImg.setMinimumSize(minimumBtnTreeSize);
 		leftSplitTopPanel.add(btnDispoKeyImg, "cell 1 0 1 1");
 
-		btnGenerateKeyImg = new JButton("Img Keygen");
-		btnGenerateKeyImg.setToolTipText("Generate a new random key image");
+		btnGenerateKeyImg = new JButton(I18n.t("crypter.img_keygen"));
+		btnGenerateKeyImg.setToolTipText(I18n.t("crypter.generate_a_new_random_key_image"));
 		btnGenerateKeyImg.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGenerateKeyImg.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
 		btnGenerateKeyImg.setRequestFocusEnabled(false);
@@ -1474,8 +1463,8 @@ public class CrypterPanel extends ModulePanel {
 		btnGenerateKeyImg.setMinimumSize(minimumBtnTreeSizeBig);
 		leftSplitTopPanel.add(btnGenerateKeyImg, "cell 2 0 1 1");
 
-		btnGenerateKeyPsw = new JButton("Psw Keygen");
-		btnGenerateKeyPsw.setToolTipText("Generate a new random password with fixed length");
+		btnGenerateKeyPsw = new JButton(I18n.t("crypter.psw_keygen"));
+		btnGenerateKeyPsw.setToolTipText(I18n.t("crypter.generate_a_new_random_password_with"));
 		btnGenerateKeyPsw.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGenerateKeyPsw.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
 		btnGenerateKeyPsw.setRequestFocusEnabled(false);
@@ -1510,7 +1499,7 @@ public class CrypterPanel extends ModulePanel {
 				"[grow][40px:50px:350px,grow]",
 				"[50px][][30px][300px,grow][150px,grow]"));
 
-		lblSelectedFilesDragTitle = new JLabel("Selected Files Pool");
+		lblSelectedFilesDragTitle = new JLabel(I18n.t("crypter.selected_files_pool"));
 		lblSelectedFilesDragTitle.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblSelectedFilesDragTitle.setBorder(null);
 		lblSelectedFilesDragTitle.setHorizontalAlignment(SwingConstants.CENTER);
@@ -1522,7 +1511,7 @@ public class CrypterPanel extends ModulePanel {
 		separatorDragNDropTitle = new JSeparator();
 		panelBackgroundDragSources.add(separatorDragNDropTitle, "cell 0 1 2 1,growx");
 
-		btnAddSourceFile = new JButton("Add Source File or Folder");
+		btnAddSourceFile = new JButton(I18n.t("crypter.add_source_file_or_folder"));
 		btnAddSourceFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelBackgroundDragSources.add(btnAddSourceFile, "cell 0 2 2 1,grow");
 		btnAddSourceFile.setRequestFocusEnabled(false);
@@ -1542,7 +1531,7 @@ public class CrypterPanel extends ModulePanel {
 		panelVDragNDropPane = new VirtualFileDropPane(treeSourcesDragAndDrop, scrollPaneDragNDropSource);
 		panelVDragNDropPane.setPreferredSize(new Dimension(250, 250));
 		panelVDragNDropPane.setMaximumSize(new Dimension(maxBodySize.width, 350));
-		panelVDragNDropPane.message.setText("Drag your files here!");
+		panelVDragNDropPane.message.setText(I18n.t("crypter.drag_your_files_here"));
 		panelVDragNDropPane.message.setFont(new Font("SansSerif", Font.BOLD, 16));
 		panelVDragNDropPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		panelVDragNDropPane.setBackground(Color.BLACK);
@@ -1569,29 +1558,29 @@ public class CrypterPanel extends ModulePanel {
 
 		if(selectedFilesN == 0) {
 			// MISSING source file
-			lblSrcFileSel.setText("No file selected");
+			lblSrcFileSel.setText(I18n.t("app.no_file_selected"));
 			labelFlagCodeReady.setForeground(new Color(111, 127, 143));
-			checkEsit += " - Source File missing - ";
+			checkEsit += I18n.t("crypter.source_file_missing");
 			ready = false;
 		}else {
-			lblSrcFileSel.setText(selectedFilesN + " selected");
+			lblSrcFileSel.setText(selectedFilesN + I18n.t("crypter.selected"));
 		}
 
 		if(srcKeyImageFile==null && selectedMode.isSTEG()) {
 			// INVALID FILE FORMAT
-			checkEsit += " - Missing IMGkey - ";
+			checkEsit += I18n.t("crypter.missing_imgkey");
 			ready = false;
 		}
 
 		if(AESKEYtext.getPassword().length == 0 && selectedMode.isAES()) {
 			// MISSING AES KEY
-			checkEsit += " - missing AES key - ";
+			checkEsit += I18n.t("crypter.missing_aes_key");
 			ready = false;
 		}
 
 		if(ready) {
 			labelFlagCodeReady.setForeground(Color.GREEN);
-			checkEsit += " - ScreepT is Ready to Crypt/Decrypt :) - ";
+			checkEsit += I18n.t("crypter.screept_is_ready_to_crypt_decrypt");
 		}else {
 			labelFlagCodeReady.setForeground(Color.ORANGE);
 		}
@@ -1611,7 +1600,7 @@ public class CrypterPanel extends ModulePanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				btnCreept.setToolTipText(btnCreept.isEnabled()? "Ready to encrypt files!" : labelFlagCodeReady.getText());				btnDeCreept.setToolTipText(btnDeCreept.isEnabled()? "Ready to decrypt files!" : labelFlagCodeReady.getText());			}
+				btnCreept.setToolTipText(btnCreept.isEnabled()? I18n.t("crypter.ready_to_encrypt_files") : labelFlagCodeReady.getText());				btnDeCreept.setToolTipText(btnDeCreept.isEnabled()? I18n.t("crypter.ready_to_decrypt_files") : labelFlagCodeReady.getText());			}
 		});
 		return ready;
 	}
@@ -1651,7 +1640,7 @@ public class CrypterPanel extends ModulePanel {
 			try {
 				if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equalsIgnoreCase("png") && ImageIO.read(thisFile)!=null) {
 					appendLogTextArea("\n" + "");
-					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+ConversionUtils.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
+					String msg = I18n.t("crypter.png_key_recognized") + thisFile.getName()+I18n.t("crypter.size")+ConversionUtils.coolFileSize(thisFile)+I18n.t("crypter.path")+thisFile.getAbsolutePath();
 					logger.info(msg);
 					appendLogTextArea("\n" + msg);
 
@@ -1661,14 +1650,14 @@ public class CrypterPanel extends ModulePanel {
 					lblKeyImageSelected.setText(newdisplayed);
 
 					srcKeyImageFile = thisFile;
-					dialogHelper.info("Key Image file correctly loaded and selected :)","Key Image Selected :)");
+					dialogHelper.info(I18n.t("crypter.key_image_file_correctly_loaded_and"),I18n.t("crypter.key_image_selected"));
 				}else {
-					String msg = " File not recognized as Key: \n\n => "+thisFile.getName();
+					String msg = I18n.t("crypter.file_not_recognized_as_key_2")+thisFile.getName();
 					appendLogTextArea("\n" + msg);
-					dialogHelper.error("Key Image file not recognized :(","Key Image not recognized :(");
+					dialogHelper.error(I18n.t("crypter.key_image_file_not_recognized"),I18n.t("crypter.key_image_not_recognized"));
 				}
 			} catch (IOException e) {
-				String msg = "Some Error Occurred :(";
+				String msg = I18n.t("crypter.some_error_occurred");
 				appendLogTextArea("\n" + msg);
 				dialogHelper.error(msg, msg);
 			}
@@ -1692,40 +1681,40 @@ public class CrypterPanel extends ModulePanel {
 
 			if (BufferedImageType.checkIfAdmittedType(image.getType())) {
 
-				String msg = "\n\n### Image values ###\n\n Width: " + img.getWidth() + " Px\n Height: "
-						+ img.getHeight() + " Px\n\n=> File Size: " + ConversionUtils.coolFileSize(thisFile)
-						+ "\n\n => ImgType: " + img.toString();
+				String msg = I18n.t("crypter.image_values_width") + img.getWidth() + I18n.t("crypter.px_height")
+						+ img.getHeight() + I18n.t("crypter.px_file_size") + ConversionUtils.coolFileSize(thisFile)
+						+ I18n.t("crypter.imgtype") + img.toString();
 				appendLogTextArea("\n" + msg);
 				logger.info(msg);
 
 				String newdisplayed = StringWorker.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
 
-				lblDisplayedKey.setText("Displayed: " + newdisplayed);
+				lblDisplayedKey.setText(I18n.t("crypter.displayed") + newdisplayed);
 			}else {
 
-				String msg = "Image type not supported by cripter: ";
+				String msg = I18n.t("crypter.image_type_not_supported_by_cripter");
 				appendLogTextArea("\n" + msg);
 				logger.info(msg);
 
 				String newdisplayed = StringWorker.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
 
-				lblDisplayedKey.setText("Displayed: " + newdisplayed);
+				lblDisplayedKey.setText(I18n.t("crypter.displayed") + newdisplayed);
 				srcKeyImageFile = null;
 				lblKeyImageSelected.setForeground(SystemColor.RED);
-				lblKeyImageSelected.setText("Not supported: choose another or convert");
-				dialogHelper.error("Image not supported. Please convert it with converter png uncompressed, or generate one!", "UNSUPPORTED IMAGE");
+				lblKeyImageSelected.setText(I18n.t("crypter.not_supported_choose_another_or_convert"));
+				dialogHelper.error(I18n.t("crypter.image_not_supported_please_convert_it"), I18n.t("crypter.unsupported_image"));
 			}
 
 
 
 		} catch (IOException e1) {
-			String msg = "Error reading the image, something went wrong :(";
+			String msg = I18n.t("crypter.error_reading_the_image_something_went");
 			logger.debug(msg);
 			appendLogTextArea("\n" + msg);
 			if (this.srcKeyImageFile == null) {
 				lblKeyImageSelected.setText(msg);
 				panelKeyImgDisp.removeAll();
-				JLabel errorMsg = new JLabel("Error opening file :(");
+				JLabel errorMsg = new JLabel(I18n.t("app.error_opening_file"));
 				errorMsg.setForeground(Color.white);
 				errorMsg.setHorizontalAlignment(JLabel.CENTER);
 				errorMsg.setVerticalAlignment(JLabel.CENTER);
@@ -1733,7 +1722,7 @@ public class CrypterPanel extends ModulePanel {
 				panelKeyImgDisp.revalidate();
 				panelKeyImgDisp.repaint();
 			}
-			dialogHelper.error("OOOps, IO Error occurred :(", "IO error");
+			dialogHelper.error(I18n.t("crypter.ooops_io_error_occurred"), I18n.t("crypter.io_error"));
 		}
     }
 
@@ -1745,20 +1734,20 @@ public class CrypterPanel extends ModulePanel {
 			panelVDragNDropPane.addFileToTree(selected);
 			String newdisplayed = StringWorker.fitToMaxLentgh(selected.getName(), labelLengthLimit);
 			// update gui
-			panelVDragNDropPane.message.setText(newdisplayed + " added to list!");
+			panelVDragNDropPane.message.setText(newdisplayed + I18n.t("crypter.added_to_list"));
 
-			appendMessageTxtAreas("Source File Loaded: "+srcFile.getAbsolutePath());
-			dialogHelper.info("Source file correctly loaded", "File Loaded :)");
+			appendMessageTxtAreas(I18n.t("crypter.source_file_loaded")+srcFile.getAbsolutePath());
+			dialogHelper.info(I18n.t("crypter.source_file_correctly_loaded"), I18n.t("crypter.file_loaded"));
 
 			logger.debug("File :" + selected.getName() + " correctly loaded");
 		} else {
 
 			if (alreadyLoaded) {
-				dialogHelper.info("File was already loaded in source pool", "File already Loaded :)");
+				dialogHelper.info(I18n.t("crypter.file_was_already_loaded_in_source"), I18n.t("crypter.file_already_loaded"));
 				logger.debug("File load skipped: already loaded!");
 
 			} else if(selected != null && !selected.exists()){
-				dialogHelper.warn("Skipped: file does not exist", "Non existing file: Skipped");
+				dialogHelper.warn(I18n.t("crypter.skipped_file_does_not_exist"), I18n.t("crypter.non_existing_file_skipped"));
 				logger.warn("File load skipped cause source does not exist");
 			}
 		}
@@ -1839,7 +1828,7 @@ public class CrypterPanel extends ModulePanel {
 	}
 
 	public void showMessageImageNotSupported() {
-		if(dialogHelper.yesOrNo("Image type not supported! Do you want to open Image Studio to convert it?", "Image not Supported!")) {
+		if(dialogHelper.yesOrNo(I18n.t("app.image_type_not_supported_do_you"), I18n.t("crypter.image_not_supported"))) {
 			mainApplication.getMntmImageViewer().doClick();
 		}
 	}
@@ -1999,7 +1988,7 @@ public class CrypterPanel extends ModulePanel {
 	}
 
 	private void updateModeInfoTooltip() {
-		String tooltip = "No Info available";
+		String tooltip = I18n.t("crypter.no_info_available");
 
 		if (mode.equals(CryptoMode.ONLY_AES)) {
 			tooltip = encapsulateInHtml(onlyAesTooltip);

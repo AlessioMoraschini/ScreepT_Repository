@@ -8,6 +8,7 @@ package gui.texteditor.commons.filesearch.content;
  * RSTAUI.License.txt file for details.
  */
 
+import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
@@ -37,6 +38,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
@@ -133,6 +136,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 	 */
 	public FileContentSearchDialog(Dialog owner, FileSearchActions searchActions) {
 		super(owner);
+		makeOpacityCapable();
 		this.owner = owner;
 		this.searchActions = searchActions;
 		init(getDefaultListener());
@@ -152,6 +156,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 	 */
 	public FileContentSearchDialog(Frame owner, FileSearchActions searchActions) {
 		super(owner);
+		makeOpacityCapable();
 		this.owner = owner;
 		this.searchActions = searchActions;
 		init(getDefaultListener());
@@ -258,12 +263,9 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		temp2.add(fileFiltersTextCombo);
 		AssistanceIconPanel aipF = new AssistanceIconPanel(fileFiltersTextCombo);
 		temp2.add(aipF, BorderLayout.LINE_START);
-		JLabel filtersLabel = new JLabel(GuiUtils.encapsulateInHtml(" File filters:"));
+		JLabel filtersLabel = new JLabel(GuiUtils.encapsulateInHtml(I18n.t("fsearch.file_filters")));
 		filtersLabel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_INFO));
-		filtersLabel.setToolTipText(GuiUtils.encapsulateInHtml("Add file path filters to include/exclude files from search. Filters must be separated by a comma"
-				+ "<br><b>Inclusive:</b> use a wildcard expression to specify which file paths have to be included"
-				+ "<br><b>Exclusive:</b> use a wildcard expression preceeded by \"&lt;&gt;\" to specify which file paths have to be excluded"
-				+ "<br><br> ex. select only files terminating with .java, excluding the ones under DIR folder ->  filter= *.java, &lt;&gt;*/DIR/*"));
+		filtersLabel.setToolTipText(GuiUtils.encapsulateInHtml(I18n.t("fsearch.add_file_path_filters_to_include")));
 		filtersLabel.setMaximumSize(new Dimension(60,60));
 		if (orientation.isLeftToRight()) {
 			enterTextPane.add(filtersLabel);
@@ -315,11 +317,12 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		}
 		contentPane.add(leftPanel);
 		contentPane.add(rightPanel, BorderLayout.LINE_END);
+		contentPane.add(createOpacityPanel(), BorderLayout.SOUTH);
 		temp = new ResizableFrameContentPane(new BorderLayout());
 		temp.add(contentPane, BorderLayout.NORTH);
 		setContentPane(temp);
 		getRootPane().setDefaultButton(searchButton);
-		setTitle("File Search");
+		setTitle(I18n.t("fsearch.file_search"));
 		setResizable(true);
 		pack();
 		setLocationRelativeTo(getParent());
@@ -368,7 +371,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		searchButton.addActionListener((e) -> {
 
 			if(selectedSearchFiles == null || selectedSearchFiles.isEmpty()) {
-				dialogHelper.info("Select source before to search!", "Missing source file(s)!");
+				dialogHelper.info(I18n.t("editor.select_source_before_to_search"), I18n.t("fsearch.missing_source_file_s"));
 				return;
 			}
 
@@ -387,9 +390,9 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 						fileSearchObj.startSearch(true);
 					} catch (Throwable e1) {
 						if(e1 instanceof ProgressBarInterruptedException)
-							dialogHelper.info("Search interrupted by user!");
+							dialogHelper.info(I18n.t("editor.search_interrupted_by_user"));
 						else {
-							String errMsg = "An error occurred: " + e1.getMessage();
+							String errMsg = I18n.t("fsearch.an_error_occurred") + e1.getMessage();
 							dialogHelper.error(errMsg, e1.getClass().getName());
 						}
 					}
@@ -415,7 +418,57 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 
 		setAlwaysOnTop(true);
 
-		GuiUtils.centerComponent(thisDialog, new Dimension(710, 200));
+		// at least the usual size, but never smaller than the content (texts of other languages are longer)
+		GuiUtils.centerComponent(thisDialog, new Dimension(Math.max(710, getWidth()), Math.max(200, getHeight())));
+	}
+
+	private static final int MIN_OPACITY = 20;
+
+	/** Opacity (percent) chosen by the user, kept while ScreepT is open */
+	private static int lastOpacity = 100;
+
+	/**
+	 * A window can be translucent only without the system title bar: the dialog uses the one drawn by the Look and Feel
+	 * (same buttons, drag and resize). Must run before the dialog is displayable.
+	 */
+	private void makeOpacityCapable() {
+		try {
+			if (!isDisplayable()) {
+				setUndecorated(true);
+				getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
+			}
+		} catch (Exception e) {
+			// stays a normal dialog, without the transparency bar effect
+		}
+	}
+
+	private JPanel createOpacityPanel() {
+		JPanel panel = new JPanel(new BorderLayout(8, 0));
+		panel.setBorder(BorderFactory.createEmptyBorder(4, 8, 6, 8));
+		JLabel title = new JLabel(I18n.t("fsearch.opacity"));
+		JLabel value = new JLabel(lastOpacity + "%");
+		value.setPreferredSize(new Dimension(value.getFontMetrics(value.getFont()).stringWidth("100%") + 6, value.getPreferredSize().height));
+		JSlider slider = new JSlider(MIN_OPACITY, 100, lastOpacity);
+		String tip = I18n.t("fsearch.opacity_tip");
+		title.setToolTipText(tip);
+		slider.setToolTipText(tip);
+		slider.addChangeListener(e -> {
+			lastOpacity = Math.max(MIN_OPACITY, slider.getValue());
+			value.setText(lastOpacity + "%");
+			applyOpacity();
+		});
+		panel.add(title, BorderLayout.LINE_START);
+		panel.add(slider, BorderLayout.CENTER);
+		panel.add(value, BorderLayout.LINE_END);
+		return panel;
+	}
+
+	private void applyOpacity() {
+		try {
+			setOpacity(Math.max(MIN_OPACITY, lastOpacity) / 100f);
+		} catch (Exception e) {
+			// translucency not supported here: the dialog stays opaque
+		}
 	}
 
 	public void setSelectedFiles(List<File> selection) {
@@ -553,7 +606,11 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 
 			checkComboWithText();
 
+			// always above every other window of the operating system, with the opacity chosen by the user
+			setAlwaysOnTop(true);
+			applyOpacity();
 			super.setVisible(true);
+			setAlwaysOnTop(true);
 			focusFindTextField();
 
 		}

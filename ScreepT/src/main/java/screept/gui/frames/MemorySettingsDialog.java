@@ -11,6 +11,7 @@
  */
 package screept.gui.frames;
 
+import various.common.light.i18n.I18n;
 import java.awt.Window;
 import java.lang.management.ManagementFactory;
 import java.util.regex.Matcher;
@@ -56,7 +57,7 @@ public final class MemorySettingsDialog {
 		long runningMb = runtime.maxMemory() / MB;
 		String savedArgs = LauncherIniOptions.getMemoryArgs();
 		if (savedArgs == null) {
-			javax.swing.JOptionPane.showMessageDialog(owner, "The launcher settings file was not found: the memory cannot be changed from here.", "Maximum memory",
+			javax.swing.JOptionPane.showMessageDialog(owner, I18n.t("memory.the_launcher_settings_file_was_not"), I18n.t("memory.maximum_memory"),
 					javax.swing.JOptionPane.WARNING_MESSAGE);
 			return;
 		}
@@ -86,11 +87,10 @@ public final class MemorySettingsDialog {
 		final long totalPc = totalMb;
 		final long freeNow = freeMb + heldMb;
 
-		final JDialog dialog = new JDialog(owner, "Maximum memory of ScreepT", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+		final JDialog dialog = new JDialog(owner, I18n.t("memory.maximum_memory_of_screept"), java.awt.Dialog.ModalityType.APPLICATION_MODAL);
 		dialog.setLayout(new MigLayout("insets 16, gapy 8, wrap 1", "[grow,fill]", ""));
-		dialog.add(ToolStyle.caption("Maximum memory (Java heap)"));
-		dialog.add(new JLabel("<html>Running now: <b>" + runningMb + " MB</b> &nbsp;&nbsp; Saved in the launcher: <b>" + savedMb + " MB</b><br>"
-				+ "Choose from the minimum set in the launcher to the most this PC can give now.</html>"));
+		dialog.add(ToolStyle.caption(I18n.t("memory.maximum_memory_java_heap")));
+		dialog.add(new JLabel(I18n.t("memory.running_now") + runningMb + I18n.t("memory.mb_nbsp_nbsp_saved_in_the") + savedMb + I18n.t("memory.mb_choose_from_the_minimum_set")));
 
 		long start = Math.max(minMb, Math.min(limitMax, savedMb));
 		final JSlider slider = new JSlider((int) minMb, (int) limitMax, (int) start);
@@ -98,7 +98,7 @@ public final class MemorySettingsDialog {
 		slider.setPaintTicks(true);
 		final JSpinner spinner = new JSpinner(new SpinnerNumberModel((int) start, (int) minMb, (int) limitMax, STEP));
 		final JLabel hint = ToolStyle.mutedLabel(" ");
-		final JButton save = ToolStyle.accent(ToolStyle.button("Save", null, "Write the value in the launcher settings"), ToolStyle.GREEN);
+		final JButton save = ToolStyle.accent(ToolStyle.button(I18n.t("common.save"), null, I18n.t("memory.write_the_value_in_the_launcher")), ToolStyle.GREEN);
 
 		final Runnable update = new Runnable() {
 			@Override
@@ -106,11 +106,11 @@ public final class MemorySettingsDialog {
 				int v = slider.getValue();
 				String text;
 				if (totalPc > 0 && v > totalPc * 3 / 4) {
-					text = "More than 75% of the PC memory: Windows and other programs may slow down.";
+					text = I18n.t("memory.more_than_75_of_the_pc");
 				} else if (v > freeNow) {
-					text = "More than the memory free now: it may use the disk swap.";
+					text = I18n.t("memory.more_than_the_memory_free_now");
 				} else {
-					text = v == (int) limitMax ? "This is the most available right now." : v == (int) minMb ? "This is the minimum set in the launcher." : " ";
+					text = v == (int) limitMax ? I18n.t("memory.this_is_the_most_available_right") : v == (int) minMb ? I18n.t("memory.this_is_the_minimum_set_in") : " ";
 				}
 				hint.setText(text);
 				save.setEnabled(v != savedMb);
@@ -135,24 +135,24 @@ public final class MemorySettingsDialog {
 		row.add(new JLabel("MB"));
 		row.add(spinner);
 		row.add(new JLabel());
-		JButton bMin = ToolStyle.button("Minimum", null, "The minimum set in the launcher (initial heap, at least 256 MB)");
+		JButton bMin = ToolStyle.button("Minimum", null, I18n.t("memory.the_minimum_set_in_the_launcher"));
 		bMin.addActionListener(e -> slider.setValue((int) minMb));
-		JButton bRec = ToolStyle.button("Recommended", null, "A quarter of the PC memory, at most what is free now");
+		JButton bRec = ToolStyle.button("Recommended", null, I18n.t("memory.a_quarter_of_the_pc_memory"));
 		bRec.addActionListener(e -> {
 			long rec = totalPc > 0 ? Math.min(limitMax, Math.max(minMb, totalPc / 4)) : savedMb;
 			slider.setValue((int) (rec / STEP * STEP));
 		});
-		JButton bMax = ToolStyle.button("Maximum", null, "The most the JVM and the PC can give right now");
+		JButton bMax = ToolStyle.button("Maximum", null, I18n.t("memory.the_most_the_jvm_and_the"));
 		bMax.addActionListener(e -> slider.setValue((int) limitMax));
 		row.add(bMin);
 		row.add(bRec);
 		row.add(bMax);
 		dialog.add(row, "growx");
 		dialog.add(hint, "wmin 0");
-		dialog.add(ToolStyle.mutedLabel("<html>PC memory: " + (totalPc > 0 ? totalPc + " MB, " + freeNow + " MB available to ScreepT now" : "not available")
-				+ (jvm64 ? "" : " (32 bit Java: 1400 MB at most)") + "</html>"), "wmin 0");
+		dialog.add(ToolStyle.mutedLabel(I18n.t("memory.pc_memory") + (totalPc > 0 ? totalPc + " MB, " + freeNow + I18n.t("memory.mb_available_to_screept_now") : I18n.t("memory.not_available"))
+				+ (jvm64 ? "" : I18n.t("memory.32_bit_java_1400_mb_at")) + "</html>"), "wmin 0");
 
-		JButton cancel = ToolStyle.button("Cancel", null, "Close without changes");
+		JButton cancel = ToolStyle.button(I18n.t("common.cancel"), null, I18n.t("memory.close_without_changes"));
 		final boolean[] saved = {false};
 		save.addActionListener(e -> {
 			if (write(owner, savedArgs, slider.getValue(), initialMb)) {
@@ -172,9 +172,8 @@ public final class MemorySettingsDialog {
 		dialog.setVisible(true);
 
 		if (saved[0]) {
-			Object[] options = {"Restart now", "Later"};
-			int choice = JOptionPane.showOptionDialog(owner, "<html>The new maximum memory is saved in the launcher settings.<br>"
-					+ "It applies the next time ScreepT starts: <b>a restart is needed</b>.<br><br>Restart ScreepT now?</html>", "Maximum memory", JOptionPane.DEFAULT_OPTION,
+			Object[] options = {I18n.t("memory.restart_now"), "Later"};
+			int choice = JOptionPane.showOptionDialog(owner, I18n.t("memory.the_new_maximum_memory_is_saved"), I18n.t("memory.maximum_memory"), JOptionPane.DEFAULT_OPTION,
 					JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
 			if (choice == 0) {
 				MainGuiManager.restartApplication(false);
@@ -192,7 +191,7 @@ public final class MemorySettingsDialog {
 			args = ms.replaceFirst("-Xms" + newMb + "m");
 		}
 		if (!LauncherIniOptions.setMemoryArgs(args)) {
-			JOptionPane.showMessageDialog(owner, "The launcher settings could not be written.", "Maximum memory", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(owner, I18n.t("memory.the_launcher_settings_could_not_be"), I18n.t("memory.maximum_memory"), JOptionPane.WARNING_MESSAGE);
 			return false;
 		}
 		return true;

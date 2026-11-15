@@ -1,4 +1,6 @@
 //package utils;
+
+import various.common.light.i18n.I18n;
 //
 //import java.awt.BorderLayout;
 //import java.awt.Toolkit;
@@ -97,7 +99,7 @@
 //
 //		JMenuBar mb = new JMenuBar();
 //
-//		JMenu menu = new JMenu("Options");
+//		JMenu menu = new JMenu(I18n.t("editor.options"));
 //		toggleAction = new ToggleSpellCheckingAction();
 //		toggleAction.setEnabled(false);
 //		JCheckBoxMenuItem cbItem = new JCheckBoxMenuItem(toggleAction);

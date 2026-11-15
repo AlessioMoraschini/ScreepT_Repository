@@ -11,6 +11,7 @@
  */
 package gui.texteditor.commons.filesearch.resultview;
 
+import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -84,8 +85,8 @@ public class FileSearchResultsTreeCellRenderer implements TreeCellRenderer {
 					iconContainer.setMinimumSize(new Dimension(container.getWidth(), FILE_TEXT_HEIGHT));
 
 					container.setToolTipText(nodeFileObj != null
-							? nodeFileObj.toString() + " - line results: " + nodeFileObj.result.getOccurrencesFoundAtLine(nodeFileObj.line)
-							: "element is null!"
+							? nodeFileObj.toString() + I18n.t("fsearch.line_results") + nodeFileObj.result.getOccurrencesFoundAtLine(nodeFileObj.line)
+							: I18n.t("fsearch.element_is_null")
 					);
 				}
 			}

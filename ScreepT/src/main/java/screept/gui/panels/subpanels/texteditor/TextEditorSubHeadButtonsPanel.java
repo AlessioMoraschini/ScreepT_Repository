@@ -11,6 +11,7 @@
  */
 package screept.gui.panels.subpanels.texteditor;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -236,11 +237,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnCloseAllTabs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_ALL_DOCS));
 		add(btnCloseAllTabs, "cell 4 0,grow");
 
-		btntTextFormat = new JButton("Format");
+		btntTextFormat = new JButton(I18n.t("common.format"));
 		btntTextFormat.setMinimumSize(new Dimension(67, 12));
 		add(btntTextFormat, "cell 8 0 2 1,grow");
 
-				btnTemplates = new JButton("Templates");
+				btnTemplates = new JButton(I18n.t("app.templates"));
 				btnTemplates.setMinimumSize(new Dimension(87, 12));
 				btnTemplates.setToolTipText(TextEditTooltips.tooltipTemplatesPanel);
 				add(btnTemplates, "cell 10 0 2 1,grow");
@@ -279,7 +280,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		// QUICK NOTES drawer ON/OFF (same as Ctrl+Alt+N), the state follows the drawer whoever opens it
 		toggleButtonQuickNotes = new JToggleButton("");
 		toggleButtonQuickNotes.setMinimumSize(new Dimension(25, 0));
-		toggleButtonQuickNotes.setToolTipText("Show/hide the Quick notes - (Ctrl+Alt+N)");
+		toggleButtonQuickNotes.setToolTipText(I18n.t("app.show_hide_the_quick_notes_ctrl"));
 		toggleButtonQuickNotes.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		toggleButtonQuickNotes.setIcon(new ImageIcon(GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/quickNotes.png"));
 		toggleButtonQuickNotes.addActionListener(e -> QuickNotesDrawer.getInstance(MainGUI.mainFrameScreept).toggle());
@@ -383,7 +384,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnCalculator.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CALCULATOR));
 		add(btnCalculator, "cell 21 0,grow");
 
-		labelTabSize = new JLabel("Tab size:");
+		labelTabSize = new JLabel(I18n.t("app.tab_size"));
 		labelTabSize.setMinimumSize(new Dimension(50, 12));
 		labelTabSize.setHorizontalAlignment(SwingConstants.RIGHT);
 		labelTabSize.setForeground(SystemColor.menu);
@@ -438,7 +439,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		GuiUtilsExtended.makeTransparentJButton(btnNextHistory);
 		add(btnNextHistory, "cell 3 1 1 1,alignx left,growy");
 
-		chckbxLockLanguage = new JCheckBox("Lock");
+		chckbxLockLanguage = new JCheckBox(I18n.t("app.lock"));
 		chckbxLockLanguage.setOpaque(false);
 		chckbxLockLanguage.setToolTipText(TextEditTooltips.tooltipChckbxLockLanguage);
 		chckbxLockLanguage.setCursor(GuiUtilsExtended.CURSOR_HAND);
@@ -470,7 +471,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnBase64Conversion = new JButton("");
 		btnBase64Conversion.setMinimumSize(new Dimension(25, 0));
 		btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_PURPLE));
-		btnBase64Conversion.setToolTipText("Encode selected/all text to base 64 (press ctrl to decode base 64)");
+		btnBase64Conversion.setToolTipText(I18n.t("app.encode_selected_all_text_to_base"));
 		add(btnBase64Conversion, "cell 14 1,alignx center,grow");
 
 		btnFontChooser = new JButton("");
@@ -518,7 +519,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnTailMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EYE));
 		add(btnTailMode, "cell 21 1,alignx center,grow");
 
-		chckbxShowTabGrid = new JCheckBox("Show Tabs");
+		chckbxShowTabGrid = new JCheckBox(I18n.t("app.show_tabs"));
 		chckbxShowTabGrid.setOpaque(false);
 		chckbxShowTabGrid.setFont(new Font("SansSerif", Font.BOLD, 13));
 		chckbxShowTabGrid.setHorizontalAlignment(SwingConstants.LEFT);
@@ -770,7 +771,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				if (parent.getCurrentTabEditor().loadedTabObj.loadedFile != null && parent.getCurrentTabEditor().loadedTabObj.loadedFile.exists()) {
 					parent.textEditorUtils.openCurrentFileInScreept();
 				} else {
-					dialogHelper.error("Cannot open current file in screept because it does not exist.", "Cannot open in screept");
+					dialogHelper.error(I18n.t("app.cannot_open_current_file_in_screept"), "Cannot open in screept");
 				}
 
 			}
@@ -1045,7 +1046,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							}
 
 						} catch (Exception e1) {
-							dialogHelper.error("Something has gone wrong :(", "An Error Occurred");
+							dialogHelper.error(I18n.t("app.something_has_gone_wrong"), "An Error Occurred");
 							logger.error("An error occurred tryin' to convert using base64 (SelectedText = " + dto.isSomethingSelected(false));
 						} finally {
 							try {
@@ -1141,7 +1142,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			obj.setTailMode(new AtomicBoolean(!tailModeWasActive), ()->{
 				if(!tailModeWasActive && (obj.unsaved || obj.loadedFile == null)) {
 					int choiceY = dialogHelper.yesNoOrCanc(
-							"File has unsaved changes, do you want to save it before to change tail mode?",
+							I18n.t("app.file_has_unsaved_changes_do_you"),
 							"There are some unsaved files in text Editor, do you want to save them?");
 
 					if(choiceY == JOptionHelper.CANC)
@@ -1304,7 +1305,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				if (dialogHelper.yesOrNo("Clear Text?")) {
+				if (dialogHelper.yesOrNo(I18n.t("app.clear_text"))) {
 					parent.getCurrentTabEditor().loadedTabObj.textArea.setText("");
 				}
 			}
@@ -1388,7 +1389,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			SelectionDtoFull dto = new SelectionDtoFull(loadedTabObj.textArea, loadedTabObj.loadedFile);
 			loadedTabObj.textArea.getUndoManager().beginInternalAtomicEdit();
 
-			String toRemove = dialogHelper.askForString("Specify the word you want to remove", "Remove all word occurrences", StringWorker.nullToEmpty(lastRemovedWord));
+			String toRemove = dialogHelper.askForString(I18n.t("app.specify_the_word_you_want_to"), "Remove all word occurrences", StringWorker.nullToEmpty(lastRemovedWord));
 			if(StringWorker.isEmptyNoTrim(toRemove)) {
 				return;
 			}
@@ -1521,7 +1522,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 				done = FileWorker.writeStringToFile(outString, loadedTabObj.loadedFile, true);
 			} catch (IOException e1) {
-				dialogHelper.error("error Saving the selected file :(");
+				dialogHelper.error(I18n.t("common.error_saving_the_selected_file"));
 				logger.error("Exception happened!", e1);
 			}
 
@@ -1590,7 +1591,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), lineSeparator == null ? EOL.defaultEol : lineSeparator);
 
 					if (selectedFile.exists()) {
-						if (dialogHelper.yesOrNo(various.common.light.i18n.I18n.fmt("File {0} exists, overwrite it?", selectedFile.getName()), "Overwrite?")) {
+						if (dialogHelper.yesOrNo(various.common.light.i18n.I18n.fmt("app.file_x_exists_overwrite_it", selectedFile.getName()), I18n.t("common.overwrite"))) {
 							done = FileWorker.writeStringToFile(outString, selectedFile, true);
 						}
 					} else {
@@ -1630,7 +1631,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			} catch (IOException e1) {
 				skipRefresh = true;
 				textEditorUtils.errorAdvice("[Error Saving selected file]");
-				dialogHelper.error("error Saving the selected file :(");
+				dialogHelper.error(I18n.t("common.error_saving_the_selected_file"));
 				logger.error("Exception happened!", e1);
 			} finally {
 
@@ -1710,7 +1711,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	 * @return
 	 */
 	public boolean startCloseAllTabsProcedure() {
-		int askIfUnsaved = dialogHelper.yesNoOrCanc("Do you want to be asked if any file is changed or unsaved?", "Close All Tabs");
+		int askIfUnsaved = dialogHelper.yesNoOrCanc(I18n.t("app.do_you_want_to_be_asked"), "Close All Tabs");
 
 		if(askIfUnsaved == JOptionHelperExtended.CANC)
 			return false;
@@ -1719,7 +1720,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			parent.getCurrentTabEditor().removeAllTabs(true);
 
 		}else if(askIfUnsaved == JOptionHelperExtended.NO){
-			if (dialogHelper.yesOrNo("Are you sure to remove all tabs?")) {
+			if (dialogHelper.yesOrNo(I18n.t("app.are_you_sure_to_remove_all"))) {
 				parent.getCurrentTabEditor().removeAllTabs(false);
 			}
 		}

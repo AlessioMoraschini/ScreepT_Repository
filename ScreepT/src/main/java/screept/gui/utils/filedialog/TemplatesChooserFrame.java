@@ -11,6 +11,7 @@
  */
 package screept.gui.utils.filedialog;
 
+import various.common.light.i18n.I18n;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
@@ -114,7 +115,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 		
 		btnOpenInFilesystem = new JButton("");
 		panel.add(btnOpenInFilesystem, "cell 5 0,grow");
-		btnOpenInFilesystem.setToolTipText("Open Templates folder with OS File Explorer");
+		btnOpenInFilesystem.setToolTipText(I18n.t("app.open_templates_folder_with_os_file"));
 		btnOpenInFilesystem.setPreferredSize(new Dimension(20, 20));
 		btnOpenInFilesystem.setMinimumSize(new Dimension(20, 9));
 		btnOpenInFilesystem.setMaximumSize(new Dimension(20, 20));
@@ -125,7 +126,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 		
 		btnReloadTemplates = new JButton("");
 		panel.add(btnReloadTemplates, "cell 4 0,grow");
-		btnReloadTemplates.setToolTipText("Reload Templates List");
+		btnReloadTemplates.setToolTipText(I18n.t("app.reload_templates_list"));
 		btnReloadTemplates.setPreferredSize(new Dimension(20, 20));
 		btnReloadTemplates.setMinimumSize(new Dimension(20, 9));
 		btnReloadTemplates.setMaximumSize(new Dimension(20, 20));
@@ -139,19 +140,19 @@ public class TemplatesChooserFrame extends ParentFrame {
 		comboTemplateSelector.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(comboTemplateSelector, "cell 0 1,growx");
 		
-		addCustomFromFile = new JButton("Add Custom Template");
+		addCustomFromFile = new JButton(I18n.t("app.add_custom_template"));
 		addCustomFromFile.setMinimumSize(new Dimension(185, 35));
 		addCustomFromFile.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(addCustomFromFile, "cell 1 1,growx");
 		
-		btnInject = new JButton("Inject template");
+		btnInject = new JButton(I18n.t("app.inject_template"));
 		btnInject.setMinimumSize(new Dimension(108, 35));
 		btnInject.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnInject.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		btnInject.setBackground(Color.GRAY);
 		getContentPane().add(btnInject, "cell 0 2,growx");
 		
-		btnAddSelectionToTemplates = new JButton("Add Selection to Templates");
+		btnAddSelectionToTemplates = new JButton(I18n.t("app.add_selection_to_templates"));
 		btnAddSelectionToTemplates.setMinimumSize(new Dimension(185, 35));
 		btnAddSelectionToTemplates.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(btnAddSelectionToTemplates, "cell 1 2,growx");
@@ -211,7 +212,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 						boolean choose = true;
 						
 						if(outputFile.exists()) {
-							choose = dialogHelper.yesOrNo("This name already exists, wanna overwrite?", "Name already existing");
+							choose = dialogHelper.yesOrNo(I18n.t("app.this_name_already_exists_wanna_overwrite"), "Name already existing");
 						}
 						
 						if(choose) {
@@ -222,7 +223,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 								logger.error("An error occurred copying template from file "+selected.getAbsolutePath(), e1);
 								dialogHelper.error("An error occurred copying "+selected.getAbsolutePath(), "An error occurred");
 							}
-							dialogHelper.info("File added to templates :)", "File added to templates!");
+							dialogHelper.info(I18n.t("app.file_added_to_templates"), "File added to templates!");
 						}
 					}else {
 						dialogHelper.warn("File not existing or not one of supported types ["+Arrays.toString(SupportedFileTextEditor.values())+"]", "File not existing or unsupported");
@@ -238,7 +239,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 			public void actionPerformed(ActionEvent e) {
 				String selected = outputTextArea.getSelectedText();
 				if(selected != null && !selected.equals("")) {
-					String inputTemplateName = dialogHelper.askForStringNullable("Please specify a name for the template:", "New Template.txt",  "New Template.txt");
+					String inputTemplateName = dialogHelper.askForStringNullable(I18n.t("app.please_specify_a_name_for_the"), "New Template.txt",  "New Template.txt");
 					boolean cancel = (inputTemplateName == null)? true : false;
 					inputTemplateName = (!cancel && inputTemplateName.equals("")) ? "New Template.txt" : inputTemplateName;
 
@@ -250,13 +251,13 @@ public class TemplatesChooserFrame extends ParentFrame {
 						}
 						boolean choose = true;
 						if (templateFile.exists()) {
-							choose = dialogHelper.yesOrNo("This name already exists, wanna overwrite?", "Name already existing");
+							choose = dialogHelper.yesOrNo(I18n.t("app.this_name_already_exists_wanna_overwrite"), "Name already existing");
 						}
 						if (choose) {
 							try {
 								boolean result = FileWorker.writeStringToFile(selected, templateFile, true);
 								logger.info("Template written with esit: " + result);
-								dialogHelper.info("Template Added to collection.", "Template Added");
+								dialogHelper.info(I18n.t("app.template_added_to_collection"), "Template Added");
 								reloadTemplates();
 							} catch (IOException e1) {
 								dialogHelper.info("An error occurred writing template to file: " + templateFile.getAbsolutePath(), "An error occurred");
@@ -268,7 +269,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 					}
 					
 				}else {
-					dialogHelper.warn("No text is selected", "NO TEXT SELECTED");
+					dialogHelper.warn(I18n.t("app.no_text_is_selected"), "NO TEXT SELECTED");
 				}
 				
 			}

@@ -1,5 +1,6 @@
 package gui.texteditor.commons.filesearch.name;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
@@ -160,8 +161,8 @@ public class FileNameSearchDialog extends ParentDialog {
 		add(lblPopUpMessage, "cell 0 2 3 1,grow");
 
 		radioUseWorkspace = ScreepTGuiFactory.getRadioButton(
-				"Use workspace",
-				"When selected, workspace will be used as root. If not selected, the manual root folder will be used (click on root dir name to change it)",
+				I18n.t("editor.use_workspace"),
+				I18n.t("fsearch.when_selected_workspace_will_be_used"),
 				false);
 		add(radioUseWorkspace, "cell 0 3 1 1,grow");
 
@@ -175,7 +176,7 @@ public class FileNameSearchDialog extends ParentDialog {
 		applyDarkColor();
 
 		setUndecorated(false);
-		setTitle("Search files by name");
+		setTitle(I18n.t("editor.search_files_by_name"));
 		this.setFocusable(true);
 
 		KeyAdapter adapter = getEscAdapter();
@@ -207,9 +208,9 @@ public class FileNameSearchDialog extends ParentDialog {
 		lblCurrentRootFolder.setToolTipText(FileVarious.getCanonicalPathSafe(rootDir));
 
 		if(radioUseWorkspace.isSelected())
-			radioUseWorkspace.setText("Use workspace: ");
+			radioUseWorkspace.setText(I18n.t("fsearch.use_workspace"));
 		else
-			radioUseWorkspace.setText("Use custom folder: ");
+			radioUseWorkspace.setText(I18n.t("fsearch.use_custom_folder"));
 
 		rebuildIndex();
 
@@ -307,7 +308,7 @@ public class FileNameSearchDialog extends ParentDialog {
 	}
 
 	private void chooseManualDir() {
-		File chosen = fileChooser.directoRead(parentFrame, "Choose new root folder to search into");
+		File chosen = fileChooser.directoRead(parentFrame, I18n.t("fsearch.choose_new_root_folder_to_search"));
 		if(chosen != null && chosen.exists() && chosen.isDirectory()) {
 			synchronized (rootDir) {
 				setRootDir(chosen);
@@ -360,13 +361,13 @@ public class FileNameSearchDialog extends ParentDialog {
 		final FileNameIndex cached = INDEX_CACHE.get(key);
 		if (cached != null && cached.isReady() && System.currentTimeMillis() - cached.builtAt < INDEX_MAX_AGE_MS) {
 			index = cached; // the same folder was read a moment ago
-			setPopUpWarning(cached.isTruncated() ? "Huge folder: only the first " + cached.size() + " files are searched" : "");
+			setPopUpWarning(cached.isTruncated() ? I18n.t("fsearch.huge_folder_only_the_first") + cached.size() + I18n.t("fsearch.files_are_searched") : "");
 			searchCurrent();
 			return;
 		}
 		final FileNameIndex fresh = new FileNameIndex(rootDir);
 		index = fresh;
-		setPopUpWarning("Reading the files of the folder (the first time it can take a while)...");
+		setPopUpWarning(I18n.t("fsearch.reading_the_files_of_the_folder"));
 		searchExecutor.execute(() -> {
 			fresh.build();
 			if (fresh.isReady()) {
@@ -376,7 +377,7 @@ public class FileNameSearchDialog extends ParentDialog {
 				return; // root changed meanwhile
 			}
 			SwingUtilities.invokeLater(() -> {
-				setPopUpWarning(fresh.isTruncated() ? "This folder has a huge number of files: only the first " + fresh.size() + " are searched. Use a subfolder as root" : "");
+				setPopUpWarning(fresh.isTruncated() ? I18n.t("fsearch.this_folder_has_a_huge_number") + fresh.size() + I18n.t("fsearch.are_searched_use_a_subfolder_as") : "");
 				searchCurrent();
 			});
 		});
@@ -407,9 +408,9 @@ public class FileNameSearchDialog extends ParentDialog {
 					return;
 				}
 				if (matches.size() >= limit)
-					setPopUpWarning("Result number limited to " + matches.size() + " results");
+					setPopUpWarning(I18n.t("fsearch.result_number_limited_to") + matches.size() + I18n.t("fsearch.results"));
 				else
-					setPopUpWarning(current.isTruncated() ? "Huge folder: only the first " + current.size() + " files are searched" : null);
+					setPopUpWarning(current.isTruncated() ? I18n.t("fsearch.huge_folder_only_the_first") + current.size() + I18n.t("fsearch.files_are_searched") : null);
 
 				fileDropList.setFiles(matches);
 			});

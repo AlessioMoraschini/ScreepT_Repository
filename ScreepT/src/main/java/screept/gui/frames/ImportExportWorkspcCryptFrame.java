@@ -11,6 +11,7 @@
  */
 package screept.gui.frames;
 
+import various.common.light.i18n.I18n;
 import gui.commons.frameutils.frame.arch.ParentFrame;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import initializer.configs.impl.om.TextEditorOption;
@@ -95,7 +96,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		getContentPane().add(panel, "cell 0 0 6 1,grow");
 		panel.setLayout(new MigLayout("", "[579px,grow]", "[40px]"));
 		
-		JLabel lblImportexportCryptedWorkspace = new JLabel("Import/Export crypted workspace");
+		JLabel lblImportexportCryptedWorkspace = new JLabel(I18n.t("app.import_export_crypted_workspace"));
 		lblImportexportCryptedWorkspace.setForeground(Color.WHITE);
 		lblImportexportCryptedWorkspace.setFont(new Font("Segoe UI Semibold", Font.BOLD, 18));
 		panel.add(lblImportexportCryptedWorkspace, "cell 0 0,alignx center,growy");
@@ -216,7 +217,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 						}
 						textEditor.textEditorUtils.openFileInScreeptWithReturnAction(selectedForExport, getAfterExportRunnable());
 					} else {
-						dialogHelper.error("Please select a workspace before to export", "Invalid selection");
+						dialogHelper.error(I18n.t("app.please_select_a_workspace_before_to"), "Invalid selection");
 					}
 				} catch (Exception e1) {
 					String errorMessage = "Cannot proceed with export, an error occurred!";
@@ -234,7 +235,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 					if (selectedForImport != null && selectedForImport.exists() && selectedForImport.isDirectory()) {
 						textEditor.textEditorUtils.openFileInScreeptWithReturnAction(selectedForImport, getAfterImportRunnable(selectedForImport));
 					} else {
-						dialogHelper.error("Please select a workspace before to import", "Invalid selection");
+						dialogHelper.error(I18n.t("app.please_select_a_workspace_before_to_2"), "Invalid selection");
 					}
 				} catch (Exception e1) {
 					String errorMessage = "Cannot proceed with import, an error occurred!";
@@ -314,7 +315,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 					selectedForImport = toImport;
 					labelToImportDyn.setText(toImport.getCanonicalPath());
 				} else {
-					dialogHelper.error("Invalid selection.", "Invalid selction");
+					dialogHelper.error(I18n.t("app.invalid_selection"), "Invalid selction");
 				}
 			} catch (Exception e) {
 				String errorMessage = "Cannot update file to import, an error occurred.";
@@ -332,7 +333,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 			if (toExport.exists() && toExport.isDirectory()) {
 				selectedForExport = toExport;
 			} else {
-				dialogHelper.error("Invalid selection.", "Invalid selction");
+				dialogHelper.error(I18n.t("app.invalid_selection"), "Invalid selction");
 			}
 		} catch (Exception e) {
 			String errorMessage = "Cannot update file to export, an error occurred.";

@@ -11,6 +11,7 @@
  */
 package screept.gui.panels.subpanels.texteditor;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -96,7 +97,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		setBorder(new LineBorder(Color.BLACK, 1));
 		setBackground(new Color(30,30,30));
 		
-		lblVoiceSpeed = new JLabel("Voice rate (Text speaker plugin)");
+		lblVoiceSpeed = new JLabel(I18n.t("app.voice_rate_text_speaker_plugin"));
 		lblVoiceSpeed.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblVoiceSpeed.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		lblVoiceSpeed.setForeground(SystemColor.control);
@@ -271,7 +272,7 @@ public class TextEditorHeaderPanel extends JPanel{
 							}
 
 						} catch (Throwable e) {
-							parent.dialogHelper.error("Something has gone wrong, it's possible that UTF charset can be causing problems :(", "Error");
+							parent.dialogHelper.error(I18n.t("app.something_has_gone_wrong_it_s"), "Error");
 							logger.error("Exception happened!", e);
 							
 							txtAesKey.requestFocusInWindow();
@@ -280,7 +281,7 @@ public class TextEditorHeaderPanel extends JPanel{
 							parent.getCurrentTabEditor().revalidateFoldingPainted(loadedTabObj.textArea);
 						}
 					} else {
-						parent.dialogHelper.warn("Please enter a password, empty key text!","Empty password");
+						parent.dialogHelper.warn(I18n.t("app.please_enter_a_password_empty_key"),I18n.t("app.empty_password"));
 						txtAesKey.requestFocusInWindow();
 					}
 					isCrypterOn = false;
@@ -315,7 +316,7 @@ public class TextEditorHeaderPanel extends JPanel{
 								dto.replaceAllText(decoded, true);
 							}
 						} catch (Exception e) {
-							parent.dialogHelper.error("Something has gone wrong, it's possible that UTF charset can be causing problems :(", "Error");
+							parent.dialogHelper.error(I18n.t("app.something_has_gone_wrong_it_s"), "Error");
 
 							logger.error("Exception happened!", e);
 							txtAesKey.requestFocusInWindow();
@@ -324,7 +325,7 @@ public class TextEditorHeaderPanel extends JPanel{
 							parent.getCurrentTabEditor().revalidateFoldingPainted(loadedTabObj.textArea);
 						}
 					} else {
-						parent.dialogHelper.warn("Please enter a password, empty key text!","Empty password");
+						parent.dialogHelper.warn(I18n.t("app.please_enter_a_password_empty_key"),I18n.t("app.empty_password"));
 						
 						txtAesKey.requestFocusInWindow();
 					}

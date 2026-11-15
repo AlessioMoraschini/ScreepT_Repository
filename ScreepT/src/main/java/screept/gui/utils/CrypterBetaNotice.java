@@ -11,6 +11,7 @@
  */
 package screept.gui.utils;
 
+import various.common.light.i18n.I18n;
 import java.awt.Component;
 
 import javax.swing.JCheckBox;
@@ -45,14 +46,8 @@ public final class CrypterBetaNotice {
 		if (isHidden(config)) {
 			return;
 		}
-		JLabel text = new JLabel("<html><body style='width:430px'>"
-				+ "<b>The Crypter module is in beta.</b><br><br>"
-				+ "It is experimental and has not been extensively tested yet. Its algorithms have not been reviewed by independent experts: "
-				+ "do not rely on it as the only protection of important data, and keep an independent copy of your original files and of your keys. "
-				+ "A bug or a lost key can make crypted files impossible to recover.<br><br>"
-				+ "Updates over the coming weeks and months will improve the Crypter and its integration in ScreepT, and add new features."
-				+ "</body></html>");
-		JCheckBox dontShow = new JCheckBox("Don't show this again");
+		JLabel text = new JLabel(I18n.t("crypter.the_crypter_module_is_in_beta"));
+		JCheckBox dontShow = new JCheckBox(I18n.t("crypter.don_t_show_this_again"));
 		JPanel content = new JPanel();
 		content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 		content.setOpaque(false);
@@ -62,8 +57,8 @@ public final class CrypterBetaNotice {
 		content.add(javax.swing.Box.createVerticalStrut(14));
 		content.add(dontShow);
 
-		JOptionPane.showOptionDialog(parent, content, "Crypter - beta version", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
-				new Object[] { "OK, I understand" }, "OK, I understand");
+		JOptionPane.showOptionDialog(parent, content, I18n.t("crypter.crypter_beta_version"), JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
+				new Object[] { I18n.t("crypter.ok_i_understand") }, I18n.t("crypter.ok_i_understand"));
 
 		if (dontShow.isSelected() && config != null) {
 			config.writeSingleValue(INItializer.GEN_OPT, KEY, "true");

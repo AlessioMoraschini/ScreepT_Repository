@@ -11,6 +11,7 @@
  */
 package gui.texteditor.commons.om;
 
+import various.common.light.i18n.I18n;
 import various.common.light.gui.ShortcutKeys;
 import static java.awt.Event.ALT_MASK;
 import static java.awt.Event.SHIFT_MASK;
@@ -483,7 +484,7 @@ public class TabTextEditorObject {
 		} catch (Exception e) {}
 
 		// Copy with syntax highlighting
-		JMenuItem copySyntaxHighlightItem = new JMenuItem("Copy with syntax highlighting");
+		JMenuItem copySyntaxHighlightItem = new JMenuItem(I18n.t("editor.copy_with_syntax_highlighting"));
 		copySyntaxHighlightItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE));
 		copySyntaxHighlightItem.addActionListener((e) -> {
 			textArea.copyAsStyledText();
@@ -505,7 +506,7 @@ public class TabTextEditorObject {
 
 
 		// Color picker
-		JMenuItem showColorPicker = new JMenuItem("Color picker/converter");
+		JMenuItem showColorPicker = new JMenuItem(I18n.t("editor.color_picker_converter"));
 		showColorPicker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
 		showColorPicker.addActionListener((e)->{
 			iTabsManager.openColorPicker();
@@ -513,7 +514,7 @@ public class TabTextEditorObject {
 		textArea.getPopupMenu().add(showColorPicker);
 
 		// PLUGINS
-		JMenu pluginsMenu = new JMenu("Plugins");
+		JMenu pluginsMenu = new JMenu(I18n.t("common.plugins"));
 		textArea.getPopupMenu().add(pluginsMenu);
 
 		Set<IPlugin> plugins = AbstractPluginApplicationApi.getAvailablePlugins(PluginType.TEXT_EDITOR, false, true);
@@ -533,16 +534,16 @@ public class TabTextEditorObject {
 		}
 		// EOL
 
-		JMenuItem showFileLineTerminators = new JMenuItem("View lineFeeds (From File)");
+		JMenuItem showFileLineTerminators = new JMenuItem(I18n.t("editor.view_linefeeds_from_file"));
 		showFileLineTerminators.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LINES_FILE));
 		showFileLineTerminators.addActionListener(getShowLineTerminatorsPreview(true));
 
-		JMenuItem showTextLineTerminators = new JMenuItem("View lineFeeds (From Loaded Text)");
+		JMenuItem showTextLineTerminators = new JMenuItem(I18n.t("editor.view_linefeeds_from_loaded_text"));
 		showTextLineTerminators.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LINES_SCREEN));
 		showTextLineTerminators.addActionListener(getShowLineTerminatorsPreview(false));
 
 		textArea.getPopupMenu().add(new JSeparator());
-		JMenu eolActions = new JMenu("Normalize End Of Line");
+		JMenu eolActions = new JMenu(I18n.t("editor.normalize_end_of_line"));
 		textArea.getPopupMenu().add(showFileLineTerminators);
 		textArea.getPopupMenu().add(showTextLineTerminators);
 		textArea.getPopupMenu().add(new JSeparator());
@@ -557,7 +558,7 @@ public class TabTextEditorObject {
 		});
 
 		// TEXT TRANSFORMATION
-		final JMenu menuStringActions = new JMenu("Text transformation");
+		final JMenu menuStringActions = new JMenu(I18n.t("common.text_transformation"));
 
 		textArea.getPopupMenu().add(menuStringActions);
 		enrichPopUpMenuStringActions(menuStringActions);
@@ -574,7 +575,7 @@ public class TabTextEditorObject {
 			}
 		});
 
-		JMenuItem filePropertiesItem = new JMenuItem("File properties");
+		JMenuItem filePropertiesItem = new JMenuItem(I18n.t("editor.file_properties"));
 		filePropertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 		filePropertiesItem.addActionListener((e)->{
 			try {
@@ -729,20 +730,20 @@ public class TabTextEditorObject {
 	private void enrichPopUpMenuEolActions(JMenu eolActions) {
 		eolActions.removeAll();
 
-		JMenuItem replacePrintedToLF = new JMenuItem("Normalize to LF (\\n) - Linux's default");
+		JMenuItem replacePrintedToLF = new JMenuItem(I18n.t("editor.normalize_to_lf_n_linux_s"));
 		replacePrintedToLF.addActionListener(getReplaceEol(EOL.LF, false));
-		JMenuItem replacePrintedToCR = new JMenuItem("Normalize to Mac CR (\\r) - Old MAC's default");
+		JMenuItem replacePrintedToCR = new JMenuItem(I18n.t("editor.normalize_to_mac_cr_r_old"));
 		replacePrintedToCR.addActionListener(getReplaceEol(EOL.CR, false));
-		JMenuItem replacePrintedToCRLF = new JMenuItem("Normalize to Windows CRLF (\\r\\n) - Windows' default");
+		JMenuItem replacePrintedToCRLF = new JMenuItem(I18n.t("editor.normalize_to_windows_crlf_r_n"));
 		replacePrintedToCRLF.addActionListener(getReplaceEol(EOL.CRLF, false));
 
 		JSeparator separator = new JSeparator();
 
-		JMenuItem replacePrintedToFileLF = new JMenuItem("Normalize to LF and write to file (\\n) - Linux's default");
+		JMenuItem replacePrintedToFileLF = new JMenuItem(I18n.t("editor.normalize_to_lf_and_write_to"));
 		replacePrintedToFileLF.addActionListener(getReplaceEol(EOL.LF, true));
-		JMenuItem replacePrintedToFileCR = new JMenuItem("Normalize to Mac CR and write to file (\\r) - Old MAC's default");
+		JMenuItem replacePrintedToFileCR = new JMenuItem(I18n.t("editor.normalize_to_mac_cr_and_write"));
 		replacePrintedToFileCR.addActionListener(getReplaceEol(EOL.CR, true));
-		JMenuItem replacePrintedToFileCRLF = new JMenuItem("Normalize to Windows CRLF and write to file (\\r\\n) - Windows' default");
+		JMenuItem replacePrintedToFileCRLF = new JMenuItem(I18n.t("editor.normalize_to_windows_crlf_and_write"));
 		replacePrintedToFileCRLF.addActionListener(getReplaceEol(EOL.CRLF, true));
 
 		eolActions.add(replacePrintedToLF);

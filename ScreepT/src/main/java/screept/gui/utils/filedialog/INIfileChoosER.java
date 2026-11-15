@@ -11,6 +11,7 @@
  */
 package screept.gui.utils.filedialog;
 
+import various.common.light.i18n.I18n;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -102,7 +103,7 @@ public class INIfileChoosER {
             	loadIniIntoTarget(fileINI, iniRead);
     	    	logger.debug("chosen: " + iniRead.getAbsolutePath());
     	    	logger.debug("\n\n\n### NEW INI CONFIGURATION LOADED ###\n\n -> "+fileINI.toStringa());
-    	    	dialogHelper.info("Configuration Loaded!");
+    	    	dialogHelper.info(I18n.t("app.configuration_loaded"));
     	        
 			} else {
 				dialogHelper.error("Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());
@@ -351,7 +352,7 @@ public class INIfileChoosER {
 
 	public static boolean saveCurrentConf(INItializer configuration, JFrame parent) {
 		JOptionHelperExtended dialogHelper = new JOptionHelperExtended(parent);
-		if(dialogHelper.yesOrNo("Are you sure to overwrite current configuration?", "Overwrite current Config?")) {
+		if(dialogHelper.yesOrNo(I18n.t("app.are_you_sure_to_overwrite_current"), "Overwrite current Config?")) {
 			configuration.writeCurrentConfigIniFile();
 			dialogHelper.info(configuration.getIniFile().getFile().getAbsolutePath() + " -> Saved", "Configuration saved");
 			return true;

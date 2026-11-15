@@ -11,6 +11,7 @@
  */
 package network;
 
+import various.common.light.i18n.I18n;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -144,7 +145,7 @@ public class NetworkUtils {
 				currentAdapter.setRemoteIP(retrievePublicIP(currentAdapter.getInetAddr()));
 			} catch (IOException e) {
 				logger.error("Unreachable network using adapter", e);
-				currentAdapter.remIP = "Unreachable Service";
+				currentAdapter.remIP = I18n.t("net.unreachable_service");
 			}
 		}
 		return currentAdapter.remIP;

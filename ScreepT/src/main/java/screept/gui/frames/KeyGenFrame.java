@@ -11,6 +11,7 @@
  */
 package screept.gui.frames;
 
+import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -137,7 +138,7 @@ public class KeyGenFrame extends ParentFrame {
 		getContentPane().add(panel_1, "cell 0 2 4 4,grow");
 		panel_1.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[8][:55px:100px,grow][65px][55px,grow][8]", "[:10:15][:60:100][:60:100][:60:100][10][10][10][10][10][150,grow][10]"));
 
-		JLabel lblNewLabel = new JLabel("Image Width (Px):");
+		JLabel lblNewLabel = new JLabel(I18n.t("keygen.image_width_px"));
 		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -159,12 +160,12 @@ public class KeyGenFrame extends ParentFrame {
 		textLog.setFont(new Font("Dialog", Font.PLAIN, configuration.getGuiOpt().getLogFontSize()));
 		textLog.setBackground(new Color(211, 211, 211));
 
-		lblFinalSize = new JLabel("-> Image size Prevision: ");
+		lblFinalSize = new JLabel(I18n.t("keygen.image_size_prevision"));
 		lblFinalSize.setForeground(new Color(176, 196, 222));
 		lblFinalSize.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
 		panel_1.add(lblFinalSize, "cell 1 6 3 1,alignx left");
 
-		lblThisSettingsAllow = new JLabel("-> This settings allow to code 0 Kbytes of data inside Image");
+		lblThisSettingsAllow = new JLabel(I18n.t("keygen.this_settings_allow_to_code_0"));
 		lblThisSettingsAllow.setForeground(new Color(100, 149, 237));
 		lblThisSettingsAllow.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
 		panel_1.add(lblThisSettingsAllow, "cell 1 5 3 1,alignx left");
@@ -179,7 +180,7 @@ public class KeyGenFrame extends ParentFrame {
 		sliderWidth.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(sliderWidth, "cell 3 1,growx");
 
-		JLabel lblImageHeight = new JLabel("Image Height (Px):");
+		JLabel lblImageHeight = new JLabel(I18n.t("keygen.image_height_px"));
 		lblImageHeight.setForeground(Color.WHITE);
 		lblImageHeight.setFont(new Font("SansSerif", Font.BOLD, 12));
 		panel_1.add(lblImageHeight, "cell 0 2 2 1,alignx center,aligny center");
@@ -193,7 +194,7 @@ public class KeyGenFrame extends ParentFrame {
 		heightValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_H, 100, ImageWorkerScreepT.MAX_HEIGHT_GEN, 5));
 		panel_1.add(heightValGUI, "cell 2 2,growx");
 
-		JLabel lblImageType = new JLabel("Image Type:");
+		JLabel lblImageType = new JLabel(I18n.t("keygen.image_type"));
 		lblImageType.setForeground(Color.WHITE);
 		lblImageType.setFont(new Font("SansSerif", Font.BOLD, 12));
 		panel_1.add(lblImageType, "cell 0 3 2 1,alignx center");
@@ -206,8 +207,8 @@ public class KeyGenFrame extends ParentFrame {
 
 		// update prevision of size according to type of image, the function calculate size
 		int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
-		lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
-		lblThisSettingsAllow.setText("-> This settings allow to code "+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
+		lblFinalSize.setText(I18n.t("keygen.image_size_prevision")+getImgSizePrevision(mult)/1024+I18n.t("keygen.kbytes"));
+		lblThisSettingsAllow.setText(I18n.t("keygen.this_settings_allow_to_code")+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+I18n.t("keygen.kbytes_of_data_inside_image"));
 
 		JSeparator separator = new JSeparator();
 		separator.setForeground(SystemColor.activeCaption);
@@ -217,7 +218,7 @@ public class KeyGenFrame extends ParentFrame {
 		JSeparator separator_2 = new JSeparator();
 		panel_1.add(separator_2, "cell 1 7 3 1,growx");
 
-		JLabel lblOutput = new JLabel("Info");
+		JLabel lblOutput = new JLabel(I18n.t("keygen.info"));
 		lblOutput.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
 		panel_1.add(lblOutput, "cell 0 8 5 1,alignx center");
 
@@ -236,10 +237,10 @@ public class KeyGenFrame extends ParentFrame {
 		textInfo.setBackground(new Color(255, 228, 181));
 		//panel_1.add(textInfo, "cell 1 8 3 2,grow");
 		textInfo.setBorder(new LineBorder(new Color(128, 128, 128), 3));
-		textInfo.setText("Conversion settings:\n\n# width of generated key: "+CURRENT_SEL_W+"Px\n# height of generated key: "+CURRENT_SEL_H+"Px");
-		textInfo.append("\n\nThis will be the same image dimensions of the output converted img(es) when cripting file with ScreepT.\n -> Bigger the image and more the values it can contain! ");
-		textInfo.append("\nAfter Key is generated pressing the 'generate' button,you can see a quick preview on the right :)");
-		textInfo.append("\nNB -> It's recommended to use 4byte types to cript files!");
+		textInfo.setText(I18n.t("keygen.conversion_settings_width_of_generated_key")+CURRENT_SEL_W+I18n.t("keygen.px_height_of_generated_key")+CURRENT_SEL_H+"Px");
+		textInfo.append(I18n.t("keygen.this_will_be_the_same_image"));
+		textInfo.append(I18n.t("keygen.after_key_is_generated_pressing_the"));
+		textInfo.append(I18n.t("keygen.nb_it_s_recommended_to_use"));
 
 		panelIMG = new JPanel();
 		panelIMG.setRequestFocusEnabled(false);
@@ -269,15 +270,15 @@ public class KeyGenFrame extends ParentFrame {
 		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][][][][][][][][100%][]", "[]"));
 
 
-		JLabel lblKeyImageGenerator = new JLabel("Key Image Generator");
+		JLabel lblKeyImageGenerator = new JLabel(I18n.t("keygen.key_image_generator"));
 		lblKeyImageGenerator.setHorizontalAlignment(SwingConstants.CENTER);
 		lblKeyImageGenerator.setBackground(SystemColor.activeCaptionBorder);
 		panel.add(lblKeyImageGenerator, "cell 0 0 10 1,alignx center");
 		lblKeyImageGenerator.setForeground(SystemColor.controlText);
 		lblKeyImageGenerator.setFont(new Font("Lithos Pro Regular", Font.BOLD, 22));
 
-		textLog.setText("Hi "+configuration.getGenOpt().getUserName()+", generate your random custom key Image ;) ");
-		btnGenerateKey = new JButton("Generate Key");
+		textLog.setText("Hi "+configuration.getGenOpt().getUserName()+I18n.t("keygen.generate_your_random_custom_key_image"));
+		btnGenerateKey = new JButton(I18n.t("keygen.generate_key"));
 		btnGenerateKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGenerateKey.setRequestFocusEnabled(false);
 		btnGenerateKey.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -285,7 +286,7 @@ public class KeyGenFrame extends ParentFrame {
 		btnGenerateKey.setBackground(new Color(255, 127, 80));
 
 
-		btnExport = new JButton("Export");
+		btnExport = new JButton(I18n.t("common.export"));
 		btnExport.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnExport.setRequestFocusEnabled(false);
 		btnExport.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -293,7 +294,7 @@ public class KeyGenFrame extends ParentFrame {
 		btnExport.setBackground(new Color(230, 230, 250));
 		getContentPane().add(btnExport, "cell 7 4,grow");
 
-		btnAddInDictionary = new JButton("Add to Dictionary");
+		btnAddInDictionary = new JButton(I18n.t("keygen.add_to_dictionary"));
 		btnAddInDictionary.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnAddInDictionary.setRequestFocusEnabled(false);
 		btnAddInDictionary.setBackground(new Color(230, 230, 250));
@@ -337,7 +338,7 @@ public class KeyGenFrame extends ParentFrame {
 							JFileChooser fileChooser = new NativeFileChooser();
 							// default home dir is the last file saved's parent dir
 							fileChooser.setCurrentDirectory(new File(configuration.getSteganOpt().getImgRecentPath().get(0)).getParentFile());
-							fileChooser.setDialogTitle("Export Key-Image (only .png format)");
+							fileChooser.setDialogTitle(I18n.t("keygen.export_key_image_only_png_format"));
 
 							// only if the container contains an image!
 							if(imageContainer!=null && imageContainer.getImage()!=null) {
@@ -361,10 +362,10 @@ public class KeyGenFrame extends ParentFrame {
 
 							    		progUpdater.getPb().setValue(20);
 
-							        	textLog.append("\n"+now.toString()+" -> Saving file "+selectedFile+" ...");
+							        	textLog.append("\n"+now.toString()+I18n.t("keygen.saving_file")+selectedFile+" ...");
 							    		textLog.setCaretPosition(textLog.getText().length());
 							        	if(selectedFile.exists()) {
-							        		if(dialogHelper.yesOrNo("File "+selectedFile.getName()+" exists, overwrite it?", "overwrite?")) {
+							        		if(dialogHelper.yesOrNo(I18n.t("keygen.file")+selectedFile.getName()+I18n.t("keygen.exists_overwrite_it"), "overwrite?")) {
 							        			selectedFile.delete();
 							                   	done = selectedFile.createNewFile();
 									    		progUpdater.getPb().setValue(30);
@@ -385,25 +386,25 @@ public class KeyGenFrame extends ParentFrame {
 							        	}
 
 							        	if(done) {
-							           		dialogHelper.info("File "+selectedFile.getName()+" succesfully saved!", "");
+							           		dialogHelper.info(I18n.t("keygen.file")+selectedFile.getName()+I18n.t("keygen.succesfully_saved"), "");
 											configuration.getSteganOpt().getImgRecentPath().add(0, selectedFile.getAbsolutePath());
 											if(configuration.getSteganOpt().getImgRecentPath().size()>10) {
 												configuration.getSteganOpt().getImgRecentPath().remove(configuration.getSteganOpt().getImgRecentPath().size());
 											}
-								        	textLog.append("\n #### "+selectedFile+" saved!");
+								        	textLog.append("\n #### "+selectedFile+I18n.t("keygen.saved"));
 							           	}
 									} catch (Exception e1) {
-							    		dialogHelper.error("error Saving the selected file :(", "");
+							    		dialogHelper.error(I18n.t("common.error_saving_the_selected_file"), "");
 										logger.error(" Error saving the file!"+e1.toString());
-								        textLog.append("\n -> ERROR Saving file :(");
+								        textLog.append(I18n.t("keygen.error_saving_file"));
 									}
 							    }else {
 							    	logger.warn("EXPORT ABORTED by user");
-							    	dialogHelper.warn("Process killed by user, not exported.", "Cancelled by user");
+							    	dialogHelper.warn(I18n.t("keygen.process_killed_by_user_not_exported"), I18n.t("keygen.cancelled_by_user"));
 							    }
 
 							}else {
-								dialogHelper.error("Image is null, first you have to generate an image!", "NULL image Error");
+								dialogHelper.error(I18n.t("keygen.image_is_null_first_you_have"), I18n.t("keygen.null_image_error"));
 							}
 						} catch (Throwable e) {
 							logger.error("An error occurred while exporting image.", e);
@@ -437,8 +438,8 @@ public class KeyGenFrame extends ParentFrame {
 								BufferedImage IMG = imageContainer.getImage();
 								textLog.append("\n [Started] adding key to dictionary...");
 								String inputName = dialogHelper.askForString(
-										"Please insert a name for the image to be added (Otherwise current date will be used as filename)",
-										"Choose a name for the File.");
+										I18n.t("app.please_insert_a_name_for_the"),
+										I18n.t("keygen.choose_a_name_for_the_file"));
 								if (inputName != null && inputName.equals("")) {
 									inputName = "ScreepT-Key" + df.format(now) + ".png";
 									logger.debug("No input by user... current date used as name: " + inputName);
@@ -450,12 +451,12 @@ public class KeyGenFrame extends ParentFrame {
 									progUpdater.getPb().setValue(0);
 									progUpdater.getPb().setIndeterminate(true);
 
-									String out = "An error occurred :(";
+									String out = I18n.t("app.an_error_occurred");
 									try {
-										textLog.append("\nI'm workin'... just a second (or maybe two!) :)");
+										textLog.append(I18n.t("keygen.i_m_workin_just_a_second"));
 										textLog.setSelectionStart(textLog.getText().length());
 										File result = ImageWorkerScreepT.addKeyImgToDictionary(inputName, IMG, thisFrame);
-										out = result.getName() + " => Added to dictionary :)";
+										out = result.getName() + I18n.t("keygen.added_to_dictionary");
 										textLog.append(out);
 										logger.debug(out);
 									} catch (Exception e2) {
@@ -465,10 +466,10 @@ public class KeyGenFrame extends ParentFrame {
 									dialogHelper.info(out, "");
 								} else {
 									// case of null input (cancel pressed by user)
-									dialogHelper.warn("Process killed by user, not added to dictionary.", "Cancelled");
+									dialogHelper.warn(I18n.t("keygen.process_killed_by_user_not_added"), "Cancelled");
 								}
 							} else {
-								dialogHelper.info("Image is null, first you have to generate an image!", "NULL image Error");
+								dialogHelper.info(I18n.t("keygen.image_is_null_first_you_have"), I18n.t("keygen.null_image_error"));
 							}
 						} catch (HeadlessException e) {
 							e.printStackTrace();
@@ -492,11 +493,11 @@ public class KeyGenFrame extends ParentFrame {
 						Date now = new Date();
 						panelIMG.setSize(DEF_W, panelIMG.getSize().height);
 						updateBTNenabled(false);
-						textInfo.setText("\n\nConversion started with:\n\n# width of generated key: " + CURRENT_SEL_W + "Px\n# height of generated key: "
+						textInfo.setText(I18n.t("keygen.conversion_started_with_width_of_generated") + CURRENT_SEL_W + I18n.t("keygen.px_height_of_generated_key")
 								+ CURRENT_SEL_H + "Px");
-						textInfo.append("\nAfter Key is generated pressing the 'generate' button,you can see a quick preview on the right :)");
-						textInfo.append("\nNB -> It's recommended to use 4byte types to cript files!");
-						textLog.setText("\n[Started] " + now.toString() + "\n-> I'm reading input values...");
+						textInfo.append(I18n.t("keygen.after_key_is_generated_pressing_the"));
+						textInfo.append(I18n.t("keygen.nb_it_s_recommended_to_use"));
+						textLog.setText("\n[Started] " + now.toString() + I18n.t("keygen.i_m_reading_input_values"));
 						//use config copy to avoid overwrite when changin values
 						imageContainer = new ImageGenContainerPanel(CURRENT_IMG_TYPE, CURRENT_SEL_W, CURRENT_SEL_H, thisFrame, configuration);
 						logger.debug("Exit keygen function");
@@ -525,8 +526,8 @@ public class KeyGenFrame extends ParentFrame {
 
 				// update prevision of size according to type of image, the function calculate size
 				int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
-				lblThisSettingsAllow.setText("-> This settings allow to code "+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
-				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
+				lblThisSettingsAllow.setText(I18n.t("keygen.this_settings_allow_to_code")+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+I18n.t("keygen.kbytes_of_data_inside_image"));
+				lblFinalSize.setText(I18n.t("keygen.image_size_prevision")+getImgSizePrevision(mult)/1024+I18n.t("keygen.kbytes"));
 			}
 		});
 
@@ -542,8 +543,8 @@ public class KeyGenFrame extends ParentFrame {
 
 				// update prevision of size according to type of image, the function calculate size
 				int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
-				lblThisSettingsAllow.setText("-> This settings allow to code "+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
-				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
+				lblThisSettingsAllow.setText(I18n.t("keygen.this_settings_allow_to_code")+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+I18n.t("keygen.kbytes_of_data_inside_image"));
+				lblFinalSize.setText(I18n.t("keygen.image_size_prevision")+getImgSizePrevision(mult)/1024+I18n.t("keygen.kbytes"));
 			}
 		});
 
@@ -579,8 +580,8 @@ public class KeyGenFrame extends ParentFrame {
 				CURRENT_IMG_TYPE = (KeyGenImageType)comboImgType.getSelectedItem();
 				// update prevision of size according to type of image, the function calculate size
 				int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
-				lblThisSettingsAllow.setText("-> This settings allow to code "+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
-				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
+				lblThisSettingsAllow.setText(I18n.t("keygen.this_settings_allow_to_code")+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+I18n.t("keygen.kbytes_of_data_inside_image"));
+				lblFinalSize.setText(I18n.t("keygen.image_size_prevision")+getImgSizePrevision(mult)/1024+I18n.t("keygen.kbytes"));
 			}
 		});
 	}

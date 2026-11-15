@@ -11,6 +11,7 @@
  */
 package gui.texteditor.commons.tabbededitor;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -331,7 +332,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 	private boolean standardSupportedFileLoad(File fileToOpen, boolean checkOnly) {
 		if (!SupportedFileTextEditor.isSupported(fileToOpen)) {
-			boolean userAcceptance = dialogHelper.yesOrNo(various.common.light.i18n.I18n.fmt("This type of file is not fully supported [{0}] : Load anyway?", fileToOpen.getName()));
+			boolean userAcceptance = dialogHelper.yesOrNo(various.common.light.i18n.I18n.fmt("editor.this_type_of_file_is_not", fileToOpen.getName()));
 			if (!checkOnly && userAcceptance) {
 				tabEditorManager.forceUnrecognizedFileType();
 			}
@@ -712,7 +713,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 		if (!alreadyLoading && loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
 			// if unsaved ask to reload
-			if (askDialogOn && !(dialogHelper.yesOrNo("Wanna reload? If document is different or changed by another application, you will lose all unsaved changes... Continue?", "Reload file"))) {
+			if (askDialogOn && !(dialogHelper.yesOrNo(I18n.t("editor.wanna_reload_if_document_is_different"), "Reload file"))) {
 				loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 				alreadyLoading = false;
 				return;
@@ -848,7 +849,7 @@ public class CustomTabbedEditor implements ITabsManager {
 						releaseViewerOf(currentTab);
 						currentTab.deleteTempFile();
 						currentTab.resetData();
-						getPanelFromTabHeader(0).setToolTipText("Unexisting file");
+						getPanelFromTabHeader(0).setToolTipText(I18n.t("editor.unexisting_file"));
 
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override
@@ -1169,12 +1170,12 @@ public class CustomTabbedEditor implements ITabsManager {
 								tabHeadLbl.getText().substring(3, tabHeadLbl.getText().length()),
 								TabUtils.MAX_TAB_LABELENGHT));
 						if (newFileStringTarget.getText().startsWith("(*)")) {
-							newFileStringTarget.setText("No File");
+							newFileStringTarget.setText(I18n.t("editor.no_file"));
 						}
 					} else {
 						tabHeadLbl.setText(
 								StringWorker.fitToMaxLentgh(CustomTabbedEditor.DEFAULT_NEW_FILE_NAME, TabUtils.MAX_TAB_LABELENGHT));
-						newFileStringTarget.setText("No File");
+						newFileStringTarget.setText(I18n.t("editor.no_file"));
 					}
 				}
 				// UPDATE ICON

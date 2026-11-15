@@ -1,5 +1,6 @@
 package gui.texteditor.commons;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -135,7 +136,7 @@ public class SchemeManagerGui extends JFrame {
 
 		// ---- top bar: theme, buttons
 		JPanel top = new JPanel(new MigLayout("insets 10 12 8 12, gapx 8, fillx", "[][grow,fill,200:350:600][][][]push[][][]", "[]"));
-		JLabel lblStyle = new JLabel("Theme");
+		JLabel lblStyle = new JLabel(I18n.t("common.theme"));
 		lblStyle.setFont(lblStyle.getFont().deriveFont(Font.BOLD));
 		top.add(lblStyle);
 
@@ -144,18 +145,18 @@ public class SchemeManagerGui extends JFrame {
 		comboScheme.setToolTipText("Theme being edited. Default themes can be edited too: use Save as... to keep your version");
 		top.add(comboScheme, "wmin 0");
 
-		btnReloadFromFile = ToolStyle.button("Reload", null, "Discard the changes and read the theme from file again");
+		btnReloadFromFile = ToolStyle.button(I18n.t("common.reload"), null, "Discard the changes and read the theme from file again");
 		top.add(btnReloadFromFile);
-		btnImportTheme = ToolStyle.button("Import", null, "Copy a theme .xml file into your themes");
+		btnImportTheme = ToolStyle.button(I18n.t("common.import"), null, "Copy a theme .xml file into your themes");
 		top.add(btnImportTheme);
-		btnOpenThemeFolder = ToolStyle.button("Folder", null, "Open the folder of your themes");
+		btnOpenThemeFolder = ToolStyle.button(I18n.t("common.folder"), null, "Open the folder of your themes");
 		top.add(btnOpenThemeFolder);
 
-		btnSaveTheme = ToolStyle.button("Save", null, "Overwrite the current custom theme (Ctrl+S)");
+		btnSaveTheme = ToolStyle.button(I18n.t("common.save"), null, "Overwrite the current custom theme (Ctrl+S)");
 		top.add(btnSaveTheme);
-		btnSaveAs = ToolStyle.button("Save as...", null, "Save a copy as a new theme");
+		btnSaveAs = ToolStyle.button(I18n.t("editor.save_as"), null, "Save a copy as a new theme");
 		top.add(btnSaveAs);
-		btnExportTheme = ToolStyle.button("Export", null, "Save a copy anywhere on disk");
+		btnExportTheme = ToolStyle.button(I18n.t("common.export"), null, "Save a copy anywhere on disk");
 		top.add(btnExportTheme);
 		getContentPane().add(top, "growx, wrap");
 
@@ -168,10 +169,10 @@ public class SchemeManagerGui extends JFrame {
 
 		JPanel header = new JPanel(new MigLayout("insets 0 10 4 8, gap 6", "[grow,fill][46!,center][46!,center][56!,center]", "[]"));
 		header.setOpaque(false);
-		header.add(ToolStyle.mutedLabel("Element"));
-		header.add(ToolStyle.mutedLabel("Text"));
-		header.add(ToolStyle.mutedLabel("Fill"));
-		header.add(ToolStyle.mutedLabel("Style"));
+		header.add(ToolStyle.mutedLabel(I18n.t("common.element")));
+		header.add(ToolStyle.mutedLabel(I18n.t("common.text")));
+		header.add(ToolStyle.mutedLabel(I18n.t("editor.fill")));
+		header.add(ToolStyle.mutedLabel(I18n.t("editor.style")));
 		left.add(header, "growx, wrap");
 
 		listPanel = new JPanel(new MigLayout("insets 0, wrap 1, gap 0, hidemode 3", "[grow,fill]", ""));
@@ -182,14 +183,14 @@ public class SchemeManagerGui extends JFrame {
 
 		// ---- right: syntax + size + preview
 		JPanel right = new JPanel(new MigLayout("insets 8 6 8 12, gap 6, fill", "[][grow,fill,120:200:260][]push[][]", "[][grow,fill]"));
-		right.add(new JLabel("Preview"));
+		right.add(new JLabel(I18n.t("common.preview")));
 		comboSyntax = new JComboBox<SupportedFileTextEditor>();
 		ToolStyle.hand(comboSyntax);
-		comboSyntax.setToolTipText("Language of the sample text");
+		comboSyntax.setToolTipText(I18n.t("editor.language_of_the_sample_text"));
 		right.add(comboSyntax, "wmin 0");
-		right.add(ToolStyle.mutedLabel("Size"), "gapleft 8");
+		right.add(ToolStyle.mutedLabel(I18n.t("common.size")), "gapleft 8");
 		JSpinner spinSize = new JSpinner(new SpinnerNumberModel(defaultTextFont.getSize(), 8, 40, 1));
-		spinSize.setToolTipText("Size of the sample text (only the preview)");
+		spinSize.setToolTipText(I18n.t("editor.size_of_the_sample_text_only"));
 		right.add(spinSize, "w 60!, wrap");
 
 		testTextArea = new RSyntaxTextArea();
@@ -237,7 +238,7 @@ public class SchemeManagerGui extends JFrame {
 			}
 		});
 
-		setTitle("Theme Editor");
+		setTitle(I18n.t("editor.theme_editor"));
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension size = new Dimension(Math.min(defaultDimension.width, (int) (screen.width * 0.92)), Math.min(defaultDimension.height, (int) (screen.height * 0.88)));
 		setMinimumSize(new Dimension(Math.min(820, size.width), Math.min(520, size.height)));
@@ -260,7 +261,7 @@ public class SchemeManagerGui extends JFrame {
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		    	if (!modified || dialogHelper.yesOrNo("There are changes not saved: close the theme editor and lose them?", "Close theme editor?")) {
+		    	if (!modified || dialogHelper.yesOrNo(I18n.t("editor.there_are_changes_not_saved_close"), "Close theme editor?")) {
 		    		singletonInstance = null;
 		    		closeAction.run();
 		    		dispose();
@@ -296,7 +297,7 @@ public class SchemeManagerGui extends JFrame {
 				return;
 			}
 			int newIndex = comboScheme.getSelectedIndex();
-			if (modified && !dialogHelper.yesOrNo("The changes of the current theme are not saved: switch theme and lose them?", "Unsaved changes")) {
+			if (modified && !dialogHelper.yesOrNo(I18n.t("editor.the_changes_of_the_current_theme"), "Unsaved changes")) {
 				adjusting = true;
 				comboScheme.setSelectedIndex(lastSchemeIndex);
 				adjusting = false;
@@ -312,7 +313,7 @@ public class SchemeManagerGui extends JFrame {
 				getSelectedTheme(false).apply(testTextArea);
 				initGuiFromTheme();
 			} catch (Exception e1) {
-				dialogHelper.error("Cannot load theme, an error occurred");
+				dialogHelper.error(I18n.t("editor.cannot_load_theme_an_error_occurred"));
 				logger.error("Cannot load style into text area!", e1);
 
 			} finally {
@@ -331,7 +332,7 @@ public class SchemeManagerGui extends JFrame {
 				testTextArea.setText(SampleFileReader.getFileTextFromSyntax(selected, SampleFileReader.defaultSamplesFolder));
 				testTextArea.setCaretPosition(0);
 			} catch (Exception e1) {
-				dialogHelper.error("Cannot load syntax scheme, an error occurred");
+				dialogHelper.error(I18n.t("editor.cannot_load_syntax_scheme_an_error"));
 				logger.error("Cannot load syntax into text area!", e1);
 
 			} finally {
@@ -350,7 +351,7 @@ public class SchemeManagerGui extends JFrame {
 		});
 
 		btnReloadFromFile.addActionListener((e) -> {
-			if(!modified || dialogHelper.yesOrNo("Are you sure to reload current theme? all unsaved changes will be lost")) {
+			if(!modified || dialogHelper.yesOrNo(I18n.t("editor.are_you_sure_to_reload_current"))) {
 				try {
 					int previousIndex = comboScheme.getSelectedIndex();
 					schemes = retrieveXmlSchemes();
@@ -363,7 +364,7 @@ public class SchemeManagerGui extends JFrame {
 					initGuiFromTheme();
 				} catch (Exception e1) {
 					adjusting = false;
-					dialogHelper.error("Cannot load theme, an error occurred");
+					dialogHelper.error(I18n.t("editor.cannot_load_theme_an_error_occurred"));
 				}
 			}
 		});
@@ -379,7 +380,7 @@ public class SchemeManagerGui extends JFrame {
 				File imported = FileWorker.copyFile(toImport, destFile, false);
 
 				if(imported != null) {
-					dialogHelper.info("Theme imported.", logger);
+					dialogHelper.info(I18n.t("editor.theme_imported"), logger);
 					try {
 						int previousIndex = comboScheme.getSelectedIndex();
 						schemes = retrieveXmlSchemes();
@@ -392,14 +393,14 @@ public class SchemeManagerGui extends JFrame {
 						initGuiFromTheme();
 					} catch (Exception e1) {
 						adjusting = false;
-						dialogHelper.error("Cannot load theme, an error occurred");
+						dialogHelper.error(I18n.t("editor.cannot_load_theme_an_error_occurred"));
 					}
 				} else {
-					dialogHelper.error("Theme import failed! (See logs for details)", logger);
+					dialogHelper.error(I18n.t("editor.theme_import_failed_see_logs_for"), logger);
 				}
 
 			} catch (DynaValidatorException e1) {
-				dialogHelper.error("Cannot import: invalid theme", logger, e1);
+				dialogHelper.error(I18n.t("editor.cannot_import_invalid_theme"), logger, e1);
 			}
 		});
 
@@ -590,7 +591,7 @@ public class SchemeManagerGui extends JFrame {
 
 	public void saveCurrentThemeAs(boolean canOverwrite) {
 		File uniqueFileOut = FileVarious.uniqueJavaObjFile(getSelectedColorSchemeObj().schemeSource);
-		String outName = dialogHelper.askForStringNullable("Specify theme file name", "Insert theme name", uniqueFileOut.getName());
+		String outName = dialogHelper.askForStringNullable(I18n.t("editor.specify_theme_file_name"), "Insert theme name", uniqueFileOut.getName());
 
 		if (StringWorker.notEmpty(outName)) {
 			File outFile = new File(styleFilesFolder + File.separator + outName);
@@ -612,7 +613,7 @@ public class SchemeManagerGui extends JFrame {
 			}
 
 		} else if(outName != null){
-			dialogHelper.warn("Invalid name, theme not saved!");
+			dialogHelper.warn(I18n.t("editor.invalid_name_theme_not_saved"));
 		}
 	}
 
@@ -676,11 +677,11 @@ public class SchemeManagerGui extends JFrame {
 			}
 
 			loadedSchemeObj.theme.save(outStream);
-			dialogHelper.info(various.common.light.i18n.I18n.fmt("{0} saved!", outFile.getName()));
+			dialogHelper.info(various.common.light.i18n.I18n.fmt("editor.x_saved", outFile.getName()));
 
 		} catch (Exception e) {
 			dialogHelper.info(GuiUtils.encapsulateInHtml(
-					various.common.light.i18n.I18n.fmt("An error occurred: cannot save theme to file.<br>{0}", loadedSchemeObj)));
+					various.common.light.i18n.I18n.fmt("editor.an_error_occurred_cannot_save_theme", loadedSchemeObj)));
 			logger.error("Cannot save theme: " + loadedSchemeObj.schemeSource, e);
 
 		} finally {

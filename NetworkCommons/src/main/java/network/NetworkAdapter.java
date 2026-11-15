@@ -11,6 +11,7 @@
  */
 package network;
 
+import various.common.light.i18n.I18n;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
@@ -124,7 +125,7 @@ public class NetworkAdapter {
 			e.printStackTrace();
 		} 
 		
-		return "- Address Undefined -";
+		return I18n.t("net.address_undefined");
 	}
 
 	public String getBroadCastFromInetAddr() {
@@ -140,7 +141,7 @@ public class NetworkAdapter {
 			e.printStackTrace();
 		} 
 		
-		return "- Address Undefined -";
+		return I18n.t("net.address_undefined");
 	}
 
 	/** Name fragments of adapters created by VMs, VPNs, containers and the OS itself: real hardware never has them */

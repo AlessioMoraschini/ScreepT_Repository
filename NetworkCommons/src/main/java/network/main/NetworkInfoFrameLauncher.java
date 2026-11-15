@@ -11,6 +11,7 @@
  */
 package network.main;
 
+import various.common.light.i18n.I18n;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
@@ -38,7 +39,7 @@ public class NetworkInfoFrameLauncher {
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setAlwaysOnTop(true);
-		frame.setTitle("Network info - "+GeneralConfig.APPLICATION_NAME);
+		frame.setTitle(I18n.t("net.network_info")+GeneralConfig.APPLICATION_NAME);
 	}
 
 }

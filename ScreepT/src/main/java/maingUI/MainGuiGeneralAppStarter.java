@@ -148,6 +148,8 @@ public class MainGuiGeneralAppStarter {
 				currentConfiguration.readConfigIniFile();
 				// language of the interface (packs embedded in the application)
 				various.common.light.i18n.I18n.setLanguage(currentConfiguration.getGenOpt().getLanguage());
+				// every window opens 10% bigger than its content: texts of other languages are longer (see WindowMargin)
+				various.common.light.gui.WindowMargin.install();
 				// the first update to a version with the dark theme as default moves the user to it, once (see DarkThemeMigration)
 				DarkThemeMigration.applyOnce(currentConfiguration);
 				// the ScreepT Dark editor theme must exist for everyone (see EditorThemeInstaller)

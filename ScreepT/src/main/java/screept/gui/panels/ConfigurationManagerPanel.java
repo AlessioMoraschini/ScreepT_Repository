@@ -11,6 +11,7 @@
  */
 package screept.gui.panels;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dialog;
@@ -168,7 +169,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		scrollPaneTextArea.setAutoscrolls(false);
 		scrollPaneTextArea.setBorder(new LineBorder(Color.BLACK, 2));
 
-		btnExportConfig = new JButton("Export");
+		btnExportConfig = new JButton(I18n.t("common.export"));
 		btnExportConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 		btnExportConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnExportConfig.setForeground(Color.BLACK);
@@ -176,7 +177,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnExportConfig.setBackground(Color.LIGHT_GRAY);
 		add(btnExportConfig, "cell 1 1,grow");
 
-		btnSave = new JButton("Save");
+		btnSave = new JButton(I18n.t("common.save"));
 		btnSave.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		btnSave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSave.setForeground(Color.BLACK);
@@ -184,7 +185,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnSave.setBackground(Color.LIGHT_GRAY);
 		add(btnSave, "cell 2 1,grow");
 
-		btnSaveCurrentAsDefault = new JButton("Save as Default");
+		btnSaveCurrentAsDefault = new JButton(I18n.t("cfg.save_as_default"));
 		btnSaveCurrentAsDefault.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_AS_DEFAULT_CONF));
 		btnSaveCurrentAsDefault.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSaveCurrentAsDefault.setForeground(Color.BLACK);
@@ -192,7 +193,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnSaveCurrentAsDefault.setBackground(Color.LIGHT_GRAY);
 		add(btnSaveCurrentAsDefault, "cell 3 1 2 1,grow");
 
-		btnViewCurrentFile = new JButton("Current Config. File");
+		btnViewCurrentFile = new JButton(I18n.t("cfg.current_config_file"));
 		btnViewCurrentFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnViewCurrentFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD2));
 		btnViewCurrentFile.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
@@ -200,7 +201,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnViewCurrentFile.setBackground(new Color(176, 196, 222));
 		add(btnViewCurrentFile, "cell 5 1,grow");
 
-		btnCurrentRefresh = new JButton("Current Volatile");
+		btnCurrentRefresh = new JButton(I18n.t("cfg.current_volatile"));
 		btnCurrentRefresh.setForeground(Color.BLACK);
 		btnCurrentRefresh.setBackground(new Color(176, 196, 222));
 		btnCurrentRefresh.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
@@ -221,7 +222,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		add(panelDynPath, "cell 9 1 3 1,alignx center,growy");
 		panelDynPath.setLayout(new MigLayout("", "[grow][150px,grow]", "[]"));
 
-		btnResetOriginalConfig = new JButton("Reset Original");
+		btnResetOriginalConfig = new JButton(I18n.t("cfg.reset_original"));
 		btnResetOriginalConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESET_CONF));
 		btnResetOriginalConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnResetOriginalConfig.setForeground(Color.BLACK);
@@ -239,12 +240,12 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		separator = new JSeparator();
 		add(separator, "cell 0 2 13 1,growx");
 
-		lblPreferredConfigurations = new JLabel("Preferred Configurations");
+		lblPreferredConfigurations = new JLabel(I18n.t("cfg.preferred_configurations"));
 		lblPreferredConfigurations.setForeground(Color.WHITE);
 		lblPreferredConfigurations.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		add(lblPreferredConfigurations, "cell 0 3 4 1,alignx center,aligny bottom");
 
-		JLabel lblInitializationFrom = new JLabel("Current .ini file: ");
+		JLabel lblInitializationFrom = new JLabel(I18n.t("cfg.current_ini_file"));
 		lblInitializationFrom.setForeground(Color.WHITE);
 		add(lblInitializationFrom, "cell 5 3 3 1");
 		lblInitializationFrom.setFont(new Font("Segoe UI", Font.BOLD, 15));
@@ -268,14 +269,14 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		add(panel_1, "cell 0 0 13 1,grow");
 		panel_1.setLayout(new MigLayout("", "[100%]", "[grow]"));
 
-		JLabel lblConfigurationManager = new JLabel("Configuration Manager");
+		JLabel lblConfigurationManager = new JLabel(I18n.t("cfg.configuration_manager"));
 		lblConfigurationManager.setHorizontalAlignment(SwingConstants.CENTER);
 		lblConfigurationManager.setForeground(Color.BLACK);
 		lblConfigurationManager.setFont(new Font("Lithos Pro Regular", Font.BOLD, 15));
 		lblConfigurationManager.setBackground(SystemColor.activeCaptionBorder);
 		panel_1.add(lblConfigurationManager, "cell 0 0,alignx center");
 
-		btnLoadCustomConfig = new JButton("Load Custom");
+		btnLoadCustomConfig = new JButton(I18n.t("cfg.load_custom"));
 		btnLoadCustomConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
 		btnLoadCustomConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLoadCustomConfig.setForeground(Color.BLACK);
@@ -362,7 +363,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				lblAvviso.setText("[Current Configuration file]");
 				lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(0.2f));
 				config_PATH.setText(config.getIniFile().getFile().getPath());
-				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES (on Disk) ###\n\n");
+				textArea.setText(I18n.t("cfg.configuration_actual_file_config_values_on"));
 				FileWorker.appendFileTxtArea(config.getIniFile().getFile(), textArea, true);
 			}
 		});
@@ -377,7 +378,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 					lblAvviso.setText("[Refreshed temp Config]");
 					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
-					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES (in Volatile Memory) ###\n\n");
+					textArea.setText(I18n.t("cfg.configuration_actual_file_config_values_in"));
 					MainGUI.now = new Date();
 					textArea.append("#### "+sdf.format(MainGUI.now) + " ####\n\n");
 					textArea.append(config.toStringa());
@@ -385,7 +386,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 					// update all panels with current configuration
 					//parent.updateGuiFromCurrConfig();
 				} catch (IOException e1) {
-					dialogHelper.error("Error during read of the file: " + config.getIniFile().getFile().getName(), "Load Error");
+					dialogHelper.error(I18n.t("cfg.error_during_read_of_the_file") + config.getIniFile().getFile().getName(), I18n.t("cfg.load_error"));
 				}
 			}
 		});
@@ -398,7 +399,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				INIfileChoosER.readNloadIniWithTextAreaOutput(config, textArea, lblAvviso);
 				lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 				config_PATH.setText(config.getIniFile().getFile().getPath());
-				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n");
+				textArea.setText(I18n.t("cfg.configuration_actual_file_config_values"));
 				FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
 				textAreaToTop();
 				MainGUI.updateGuiFromCurrConfig();
@@ -411,7 +412,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("SAVE CONFIG clicked");
 				if(INIfileChoosER.saveCurrentConf(config, parent.getMainFrame())) {
-					lblAvviso.setText("Configuration saved on disk!");
+					lblAvviso.setText(I18n.t("cfg.configuration_saved_on_disk"));
 					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 				}
 			}
@@ -431,29 +432,29 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnResetOriginalConfig.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (dialogHelper.yesOrNo("Really want to Reset standard ScreepT configuration? Unsaved changes will be lost! ", "Warning - Reset INI standard config?")) {
+				if (dialogHelper.yesOrNo(I18n.t("cfg.really_want_to_reset_standard_screept"), I18n.t("cfg.warning_reset_ini_standard_config"))) {
 					try {
 						FileUtils.copyFile(new File(GeneralConfig.BACKUP_INI), new File(GeneralConfig.DEFAULT_INI));
 						config.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						lblAvviso.setText("[Configuration Resetted!]");
 						MainGuiUtils.askNameAtStartIfNotDefined(MainGUI.mainAPP.getMainFrame());
-						dialogHelper.info("File '" + config.getIniFile().getFile().getName() + "' loaded!", "");
+						dialogHelper.info(I18n.t("cfg.file") + config.getIniFile().getFile().getName() + I18n.t("cfg.loaded"), "");
 						config.readConfigIniFile();
 						MainGUI.updateGuiFromCurrConfig();
 					} catch (IOException exc) {
-						dialogHelper.error("Error resetting standard configuration: it does not exist or IO error occurred, retry later!", "");
+						dialogHelper.error(I18n.t("cfg.error_resetting_standard_configuration_it_do"), "");
 						logger.error("Exception happened!", exc);
 					}
 
 					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
-					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n");
+					textArea.setText(I18n.t("cfg.configuration_actual_file_config_values"));
 					FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
 
 					textAreaToTop();
 				} else {
-					dialogHelper.warn("Configuration not loaded, current CONFIG mantained!", "");
+					dialogHelper.warn(I18n.t("cfg.configuration_not_loaded_current_config_mant"), "");
 				}
 			}
 		});
@@ -465,19 +466,19 @@ public class ConfigurationManagerPanel extends ModulePanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					File backupIni = config.getIniFile().getFile();
-					if (dialogHelper.yesOrNo("Really want to overwrite default configuration?",	"Warning - Overwrite default configuration?")) {
+					if (dialogHelper.yesOrNo(I18n.t("app.really_want_to_overwrite_default_configurati"),	I18n.t("cfg.warning_overwrite_default_configuration"))) {
 
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						config.setIniReadFile(new Ini(new File(GeneralConfig.DEFAULT_INI)));
 						config.writeCurrentConfigIniFile();
 						lblAvviso.setText("[Configuration Saved as new Default!]");
 						config_PATH.setText(config.getIniFile().getFile().getPath());
-						textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" );
+						textArea.setText(I18n.t("cfg.configuration_actual_file_config_values") );
 						FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
 						textAreaToTop();
-						dialogHelper.info("File " + config.getIniFile().getFile().getAbsolutePath() + " saved!", "");
+						dialogHelper.info(I18n.t("cfg.file_2") + config.getIniFile().getFile().getAbsolutePath() + I18n.t("cfg.saved"), "");
 					} else {
-						dialogHelper.info("Configuration not saved!", "");
+						dialogHelper.info(I18n.t("app.configuration_not_saved"), "");
 					}
 					config.setIniFile(new Wini(backupIni));
 					config.setIniReadFile(new Ini(backupIni));
@@ -485,7 +486,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 				} catch (IOException e1) {
 					logger.error("Exception happened!", e1);
-					dialogHelper.error("An error occurred :(", "Error");
+					dialogHelper.error(I18n.t("app.an_error_occurred"), "Error");
 				}
 			}
 		});

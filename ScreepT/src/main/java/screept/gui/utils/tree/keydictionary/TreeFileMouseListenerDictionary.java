@@ -11,6 +11,7 @@
  */
 package screept.gui.utils.tree.keydictionary;
 
+import various.common.light.i18n.I18n;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -94,22 +95,22 @@ public class TreeFileMouseListenerDictionary {
 	private JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 	    
-	    JMenuItem itemReadKey = new JMenuItem("Read Image & Details");
+	    JMenuItem itemReadKey = new JMenuItem(I18n.t("app.read_image_details"));
 	    itemReadKey.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemReadKey.addActionListener(getInfoActionListener());
 	    menu.add(itemReadKey);
 	    
-	    JMenuItem itemAddKey = new JMenuItem("Add key Image to Dictionary");
+	    JMenuItem itemAddKey = new JMenuItem(I18n.t("app.add_key_image_to_dictionary"));
 	    itemAddKey.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemAddKey.addActionListener(addKeyActionListener());
 	    menu.add(itemAddKey);
 	    
-	    JMenuItem itemExport = new JMenuItem("Export selected key Images");
+	    JMenuItem itemExport = new JMenuItem(I18n.t("app.export_selected_key_images"));
 	    itemExport.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemExport.addActionListener(exportKeyActionListener());
 	    menu.add(itemExport);
 	    
-	    JMenuItem itemDelete = new JMenuItem("Delete selected Key Images");
+	    JMenuItem itemDelete = new JMenuItem(I18n.t("app.delete_selected_key_images"));
 	    itemDelete.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemDelete.addActionListener(getDeleteActionListener());
 	    menu.add(itemDelete);
@@ -158,7 +159,7 @@ public class TreeFileMouseListenerDictionary {
 	        public void actionPerformed(ActionEvent arg0) {
 
 	            TreePath[] treeSelArr = tree.getSelectionPaths();
-            	if(treeSelArr.length!= 0 && dialogHelper.yesOrNo("Are you sure to delete?")){	        		
+            	if(treeSelArr.length!= 0 && dialogHelper.yesOrNo(I18n.t("common.are_you_sure_to_delete"))){	        		
 		            for(TreePath tp : treeSelArr) {
 //		            	String path = tp.toString().replaceAll("\\]| |\\[|", "").replaceAll(",", File.separator);
 		            	String path = tp.getLastPathComponent().toString();
@@ -279,7 +280,7 @@ public class TreeFileMouseListenerDictionary {
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	
         	if(selectedFile==null || !givenExtension.equalsIgnoreCase("png")) {
-        		dialogHelper.error("Please select a valid '.png' file!", "Wrong File format");
+        		dialogHelper.error(I18n.t("app.please_select_a_valid_png_file"), "Wrong File format");
         	}else {
         		correctFile = selectedFile;
 
@@ -308,7 +309,7 @@ public class TreeFileMouseListenerDictionary {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		dialogHelper.error("Please select a directory!", "Select a directory, please");
+        		dialogHelper.error(I18n.t("common.please_select_a_directory"), "Select a directory, please");
         	}else {
         		correctFile = selectedFile;
         		currentConfig.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());

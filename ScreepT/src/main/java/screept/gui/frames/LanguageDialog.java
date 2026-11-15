@@ -44,10 +44,10 @@ public class LanguageDialog extends JDialog {
 			content.add(radio, "gapleft 6");
 		}
 
-		content.add(ToolStyle.mutedLabel("Some texts may stay in English until translated"), "gaptop 6, wmin 0");
+		content.add(ToolStyle.mutedLabel(I18n.t("app.some_texts_may_stay_in_english")), "gaptop 6, wmin 0");
 
-		JButton ok = ToolStyle.button("OK", null, null);
-		JButton cancel = ToolStyle.button("Cancel", null, null);
+		JButton ok = ToolStyle.button(I18n.t("common.ok"), null, null);
+		JButton cancel = ToolStyle.button(I18n.t("common.cancel"), null, null);
 		JPanel buttons = new JPanel(new MigLayout("insets 0, gapx 8", "push[][]", ""));
 		buttons.setOpaque(false);
 		buttons.add(cancel);

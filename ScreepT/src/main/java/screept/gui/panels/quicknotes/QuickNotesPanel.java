@@ -96,7 +96,7 @@ public class QuickNotesPanel extends JPanel {
 
 	private CardPalette palette = CardPalette.current();
 
-	private final JLabel titleLbl = new JLabel("Quick notes");
+	private final JLabel titleLbl = new JLabel(I18n.t("app.quick_notes"));
 	private final JLabel counterLbl = new JLabel();
 	private final FlatButton menuBtn = new FlatButton("\u2261", false);
 	private final FlatButton closeBtn = new FlatButton("\u00D7", true);
@@ -129,7 +129,7 @@ public class QuickNotesPanel extends JPanel {
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
 		add(scroll, BorderLayout.CENTER);
 
-		menuBtn.setToolTipText("Backup and import");
+		menuBtn.setToolTipText(I18n.t("app.backup_and_import"));
 		menuBtn.addActionListener(e -> showBackupMenu());
 		closeBtn.setToolTipText("Close (Esc)");
 		closeBtn.addActionListener(e -> closeAction.run());
@@ -172,13 +172,13 @@ public class QuickNotesPanel extends JPanel {
 	private void showBackupMenu() {
 		JPopupMenu menu = new JPopupMenu();
 		File folder = store.getBackupFolder();
-		JMenuItem backupAs = new JMenuItem("Back up notes to...");
+		JMenuItem backupAs = new JMenuItem(I18n.t("app.back_up_notes_to"));
 		backupAs.addActionListener(e -> backupNotes(true));
-		JMenuItem update = new JMenuItem("Update backup");
+		JMenuItem update = new JMenuItem(I18n.t("app.update_backup"));
 		update.setEnabled(folder != null);
 		update.setToolTipText(folder == null ? "Choose a backup folder first" : folder.getAbsolutePath());
 		update.addActionListener(e -> backupNotes(false));
-		JMenuItem restore = new JMenuItem("Import notes from backup...");
+		JMenuItem restore = new JMenuItem(I18n.t("app.import_notes_from_backup"));
 		restore.addActionListener(e -> importNotes());
 		menu.add(backupAs);
 		menu.add(update);
@@ -214,9 +214,9 @@ public class QuickNotesPanel extends JPanel {
 			store.flush();
 			File written = store.backupTo(folder, QuickNotesStore.BACKUP_FILE_NAME);
 			store.setBackupFolder(folder);
-			JOptionPane.showMessageDialog(this, I18n.fmt("Quick notes saved to {0}", written.getAbsolutePath()), "Backup saved", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, I18n.fmt("app.quick_notes_saved_to_x", written.getAbsolutePath()), I18n.t("app.backup_saved"), JOptionPane.INFORMATION_MESSAGE);
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(this, I18n.fmt("Cannot save the backup: {0}", String.valueOf(ex.getMessage())), "Backup failed", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, I18n.fmt("app.cannot_save_the_backup_x", String.valueOf(ex.getMessage())), I18n.t("app.backup_failed"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -239,16 +239,16 @@ public class QuickNotesPanel extends JPanel {
 		File backup = chooser.getSelectedFile();
 		int incoming = QuickNotesStore.countNotesIn(backup);
 		if (incoming < 0) {
-			JOptionPane.showMessageDialog(this, "This file is not a ScreepT quick notes backup.", "Import failed", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, I18n.t("app.this_file_is_not_a_screept"), I18n.t("app.import_failed"), JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
 		store.flush();
-		String message = I18n.fmt("Importing replaces your {0} current notes with the {1} notes of the backup. The current notes will be lost.", String.valueOf(store.getNotes().size()), String.valueOf(incoming));
-		String backupFirst = "Back up current notes first";
-		String replace = "Replace";
-		int choice = JOptionPane.showOptionDialog(this, message, "Import notes", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
-				new Object[] { I18n.tr(backupFirst), I18n.tr(replace), I18n.tr("Cancel") }, I18n.tr("Cancel"));
+		String message = I18n.fmt("app.importing_replaces_your_x_current_notes", String.valueOf(store.getNotes().size()), String.valueOf(incoming));
+		String backupFirst = I18n.t("app.back_up_current_notes_first");
+		String replace = I18n.t("common.replace");
+		int choice = JOptionPane.showOptionDialog(this, message, I18n.t("app.import_notes"), JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
+				new Object[] { backupFirst, replace, I18n.t("common.cancel") }, I18n.t("common.cancel"));
 		if (choice != 0 && choice != 1) {
 			return; // cancelled by user
 		}
@@ -264,7 +264,7 @@ public class QuickNotesPanel extends JPanel {
 			store.importFrom(backup);
 			rebuild(null);
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(this, I18n.fmt("Cannot import the notes: {0}", String.valueOf(ex.getMessage())), "Import failed", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, I18n.fmt("app.cannot_import_the_notes_x", String.valueOf(ex.getMessage())), I18n.t("app.import_failed"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

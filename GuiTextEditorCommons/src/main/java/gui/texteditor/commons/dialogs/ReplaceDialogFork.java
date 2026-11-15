@@ -8,6 +8,7 @@ package gui.texteditor.commons.dialogs;
  * RSTAUI.License.txt file for details.
  */
 
+import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dialog;

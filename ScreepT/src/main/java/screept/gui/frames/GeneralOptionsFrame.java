@@ -11,6 +11,7 @@
  */
 package screept.gui.frames;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
@@ -197,10 +198,10 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private void createControls() {
 
 		textFieldUname = new JTextField(16);
-		textFieldUname.setToolTipText("Choose name used to customize messages and various dialogs and advices");
+		textFieldUname.setToolTipText(I18n.t("app.choose_name_used_to_customize_messages"));
 
 		comboLocale = new JComboBox<Locale>(getSupportedLocales());
-		comboLocale.setToolTipText("Choose the language of the application");
+		comboLocale.setToolTipText(I18n.t("app.choose_the_language_of_the_application"));
 		comboLocale.setRenderer(new javax.swing.DefaultListCellRenderer() {
 			private static final long serialVersionUID = 1L;
 
@@ -213,42 +214,42 @@ public class GeneralOptionsFrame extends ParentFrame{
 
 		sliderVolume = new JSlider(0, 100);
 		sliderVolume.setOpaque(false);
-		sliderVolume.setToolTipText("Volume of the application sounds");
+		sliderVolume.setToolTipText(I18n.t("app.volume_of_the_application_sounds"));
 		lblDynVolume = new JLabel("");
 
-		chckbxExceptionAdvicesEnabled = newCheckBox("Exception advices",
-				"Enable/Disable error dialog in case of general warnings detected by the application");
+		chckbxExceptionAdvicesEnabled = newCheckBox(I18n.t("app.exception_advices"),
+				I18n.t("app.enable_disable_error_dialog_in_case"));
 
 		comboCharsets = new JComboBox<String>(ListCharsets.getCharsets());
 		comboCharsets.setMaximumRowCount(20);
-		comboCharsets.setToolTipText("Choose general application Charset to use");
+		comboCharsets.setToolTipText(I18n.t("app.choose_general_application_charset_to_use"));
 
 		comboBoxDefEOL = new JComboBox<EOL>(EOL.values());
-		comboBoxDefEOL.setToolTipText("Line ending used for new files");
+		comboBoxDefEOL.setToolTipText(I18n.t("app.line_ending_used_for_new_files"));
 
-		chckbxAutosave = newCheckBox("every",
-				"Enable/Disable periodic autosave (also when exiting application) current configuration will be automatically saved");
+		chckbxAutosave = newCheckBox(I18n.t("app.every"),
+				I18n.t("app.enable_disable_periodic_autosave_also_when"));
 		spinnerInterval = new JSpinner(new SpinnerNumberModel(100, FileOptions.DEFAULT_MIN_AUTOSAVE_INTERVAL/1000, 3600000, 1));
-		spinnerInterval.setToolTipText("Autosave interval, in seconds");
+		spinnerInterval.setToolTipText(I18n.t("app.autosave_interval_in_seconds"));
 		lblIntMinutes = new JLabel("(0 Minutes + 0 Seconds)");
 
 		comboSecurityLevels = new JComboBox<SecurityLevel>(SecurityLevel.values());
-		comboSecurityLevels.setToolTipText("Choose security level used for passwords check");
+		comboSecurityLevels.setToolTipText(I18n.t("app.choose_security_level_used_for_passwords"));
 
-		btnNetworkConfig = new JButton("Proxy settings...");
+		btnNetworkConfig = new JButton(I18n.t("app.proxy_settings"));
 		btnNetworkConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
-		btnNetworkConfig.setToolTipText("Open network options configuration panel");
+		btnNetworkConfig.setToolTipText(I18n.t("app.open_network_options_configuration_panel"));
 
-		chckbxAutostart = newCheckBox("Launch at system startup", "Enable/Disable ScreepT to be automatically launched at System startup.");
-		buttonOpenAutostartDir = new JButton("Open folder");
+		chckbxAutostart = newCheckBox(I18n.t("app.launch_at_system_startup"), I18n.t("app.enable_disable_screept_to_be_automatically"));
+		buttonOpenAutostartDir = new JButton(I18n.t("app.open_folder"));
 		buttonOpenAutostartDir.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
-		buttonOpenAutostartDir.setToolTipText("Open autostart folder in File System");
-		chckbxHideLauncherAt = newCheckBox("Hide launcher at start", "When checked, launcher will not be shown on startup");
+		buttonOpenAutostartDir.setToolTipText(I18n.t("app.open_autostart_folder_in_file_system"));
+		chckbxHideLauncherAt = newCheckBox(I18n.t("common.hide_launcher_at_start"), I18n.t("app.when_checked_launcher_will_not_be"));
 		chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
-		chckbxAutomaticallyCheckFor = newCheckBox("Auto-check updates", "Enable/Disable automatic check for updates at start");
+		chckbxAutomaticallyCheckFor = newCheckBox(I18n.t("app.auto_check_updates"), I18n.t("app.enable_disable_automatic_check_for_updates"));
 
 		lblLogLevelChosen = new JLabel(String.valueOf(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START));
-		lblLogLevelChosen.setToolTipText("Log level chosen at application start");
+		lblLogLevelChosen.setToolTipText(I18n.t("app.log_level_chosen_at_application_start"));
 
 		for (JComponent control : new JComponent[] { comboLocale, sliderVolume, comboCharsets, comboBoxDefEOL, spinnerInterval,
 				comboSecurityLevels, btnNetworkConfig, buttonOpenAutostartDir }) {
@@ -265,10 +266,10 @@ public class GeneralOptionsFrame extends ParentFrame{
 	}
 
 	private void createFooter() {
-		btnResetValues = newFooterButton("Reset initial values", null, new Color(240, 230, 140));
-		btnSaveConf = newFooterButton("Save Values", "Close this dialog and use current settings with explicit save on phisical file", new Color(169, 169, 169));
-		btnUseSettings = newFooterButton("Use", "Close this dialog and use current settings without explicit save on phisical file", new Color(169, 169, 169));
-		btnDiscard = newFooterButton("Discard", "Close this dialog and discard every change", new Color(205, 92, 92));
+		btnResetValues = newFooterButton(I18n.t("app.reset_initial_values"), null, new Color(240, 230, 140));
+		btnSaveConf = newFooterButton(I18n.t("app.save_values"), I18n.t("app.close_this_dialog_and_use_current"), new Color(169, 169, 169));
+		btnUseSettings = newFooterButton("Use", I18n.t("app.close_this_dialog_and_use_current_2"), new Color(169, 169, 169));
+		btnDiscard = newFooterButton(I18n.t("common.discard"), I18n.t("app.close_this_dialog_and_discard_every"), new Color(205, 92, 92));
 
 		footerPanel = new JPanel(new MigLayout("insets 10 18 12 18", "[][grow][][][]"));
 		footerPanel.add(btnResetValues, "cell 0 0");
@@ -276,10 +277,10 @@ public class GeneralOptionsFrame extends ParentFrame{
 		footerPanel.add(btnUseSettings, "cell 3 0");
 		footerPanel.add(btnDiscard, "cell 4 0");
 
-		OptionHelp.attach("Reset initial values", "Brings every option of this window back to the value it had when the window was opened.", btnResetValues);
-		OptionHelp.attach("Save Values", "Closes the window, keeps the current settings and writes them to the configuration file.", btnSaveConf);
-		OptionHelp.attach("Use", "Closes the window and uses the current settings for this session. They are written to the configuration file only when it is saved (autosave or on exit).", btnUseSettings);
-		OptionHelp.attach("Discard", "Closes the window and drops every change made here: the previous settings are restored.", btnDiscard);
+		OptionHelp.attach(I18n.t("app.reset_initial_values"), I18n.t("app.brings_every_option_of_this_window"), btnResetValues);
+		OptionHelp.attach(I18n.t("app.save_values"), I18n.t("app.closes_the_window_keeps_the_current"), btnSaveConf);
+		OptionHelp.attach("Use", I18n.t("app.closes_the_window_and_uses_the"), btnUseSettings);
+		OptionHelp.attach(I18n.t("common.discard"), I18n.t("app.closes_the_window_and_drops_every"), btnDiscard);
 	}
 
 	private JButton newFooterButton(String text, String toolTip, Color background) {
@@ -298,21 +299,21 @@ public class GeneralOptionsFrame extends ParentFrame{
 
 		optionsPanel = new OptionsPanel();
 		optionsPanel.setHelpTexts(OptionDescriptions.general());
-		optionsPanel.addSection("General", "User name, language and sounds")
-				.addRow("User name", textFieldUname)
-				.addRow("Language", comboLocale)
-				.addRow("Volume", sliderVolume, lblDynVolume)
+		optionsPanel.addSection(I18n.t("app.general"), I18n.t("app.user_name_language_and_sounds"))
+				.addRow(I18n.t("app.user_name"), textFieldUname)
+				.addRow(I18n.t("app.language"), comboLocale)
+				.addRow(I18n.t("app.volume"), sliderVolume, lblDynVolume)
 				.addCheckBoxes(chckbxExceptionAdvicesEnabled);
-		optionsPanel.addSection("Files", "Encoding, line endings and configuration autosave")
-				.addRow("Encoding", comboCharsets)
-				.addRow("Default EOL", comboBoxDefEOL)
-				.addRow("Configuration autosave", chckbxAutosave, spinnerInterval, new JLabel("seconds"), lblIntMinutes);
-		optionsPanel.addSection("Security and network", "Password checks and proxy")
-				.addRow("Password security", comboSecurityLevels)
-				.addRow("Network", btnNetworkConfig);
-		optionsPanel.addSection("Startup and updates", "Autostart, launcher and updates check")
-				.addRow("Autostart", chckbxAutostart, buttonOpenAutostartDir)
-				.addRow("Log level", lblLogLevelChosen)
+		optionsPanel.addSection(I18n.t("app.files"), I18n.t("app.encoding_line_endings_and_configuration_auto"))
+				.addRow(I18n.t("app.encoding"), comboCharsets)
+				.addRow(I18n.t("app.default_eol"), comboBoxDefEOL)
+				.addRow(I18n.t("app.configuration_autosave"), chckbxAutosave, spinnerInterval, new JLabel(I18n.t("app.seconds")), lblIntMinutes);
+		optionsPanel.addSection(I18n.t("app.security_and_network"), I18n.t("app.password_checks_and_proxy"))
+				.addRow(I18n.t("app.password_security"), comboSecurityLevels)
+				.addRow(I18n.t("app.network"), btnNetworkConfig);
+		optionsPanel.addSection(I18n.t("app.startup_and_updates"), I18n.t("app.autostart_launcher_and_updates_check"))
+				.addRow(I18n.t("app.autostart"), chckbxAutostart, buttonOpenAutostartDir)
+				.addRow(I18n.t("app.log_level"), lblLogLevelChosen)
 				.addCheckBoxes(chckbxHideLauncherAt, chckbxAutomaticallyCheckFor);
 
 		JScrollPane scroller = new JScrollPane(optionsPanel);
@@ -539,7 +540,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 					setValuesAndAdd();
 
 					logger.debug("SAVE => General Options saved.");
-					dialogHelper.info("General Options Saved :)", "Saved!");
+					dialogHelper.info(I18n.t("app.general_options_saved"), "Saved!");
 
 					dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
 
@@ -681,13 +682,13 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 					dialogHelper.info(outcome[0]);
 					chckbxAutostart.setSelected(true);
 				} else {
-					dialogHelper.error(GuiUtils.encapsulateInHtml(outcome[1] + (SysUtils.getOsInfoLazy().isWindows() ? "" : "<br><br> Try to restart application with Administration rights.")), "Error");
+					dialogHelper.error(GuiUtils.encapsulateInHtml(outcome[1] + (SysUtils.getOsInfoLazy().isWindows() ? "" : "<br><br> Try to restart application with Administration rights.")), I18n.t("common.error"));
 					chckbxAutostart.setSelected(false);
 				}
 			} else {
 				if(!AutostartShortcut.remove()) {
 					chckbxAutostart.setSelected(true);
-					boolean tryAsAdmin = dialogHelper.yesOrNo(GuiUtils.encapsulateInHtml("Cannot remove from autostart menu <br><br> Try to restart application with Administration rights?"), "Error");
+					boolean tryAsAdmin = dialogHelper.yesOrNo(GuiUtils.encapsulateInHtml("Cannot remove from autostart menu <br><br> Try to restart application with Administration rights?"), I18n.t("common.error"));
 					if(tryAsAdmin)
 						MainGuiManager.restartApplication(tryAsAdmin);
 				};

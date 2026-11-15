@@ -11,6 +11,7 @@
  */
 package screept.launcher.gui.utils;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -355,7 +356,7 @@ public class LauncherLoaderPanel extends JPanel{
 				while(indeterminated.get()) {
 					for (int i = 0; i < 20; i++) {
 						String dots = safeText + new String(new char[i + 1]).replace("\0", ".");
-						String msg = "Initializing " + GeneralConfig.APPLICATION_NAME + dots;
+						String msg = I18n.t("launcher.initializing") + GeneralConfig.APPLICATION_NAME + dots;
 						setText(msg);
 						try {
 							Thread.sleep(60);

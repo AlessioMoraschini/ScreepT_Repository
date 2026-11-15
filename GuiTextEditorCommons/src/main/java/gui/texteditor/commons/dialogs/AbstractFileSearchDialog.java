@@ -9,6 +9,7 @@ package gui.texteditor.commons.dialogs;
  * RSTAUI.License.txt file for details.
  */
 
+import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -271,7 +272,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		dirPanel = new JPanel();
 		dirPanel.setLayout(new BoxLayout(dirPanel, BoxLayout.LINE_AXIS));
 
-		includeBinariesCheckBox = new JCheckBox("Binary files");
+		includeBinariesCheckBox = new JCheckBox(I18n.t("fsearch.binary_files"));
 
 		// Rearrange the search conditions panel.
 		searchConditionsPanel.removeAll();
@@ -296,9 +297,9 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		// Create the "Find what" label.
 		findFieldLabel = UIUtil.newLabel(getBundle(), "FindWhat",findTextCombo);
 
-		chooseFileBtn = new JButton("Select source(s)");
-		addFileBtn = new JButton("Add other sources");
-		clearFilesBtn = new JButton("Reset file selection");
+		chooseFileBtn = new JButton(I18n.t("fsearch.select_source_s"));
+		addFileBtn = new JButton(I18n.t("fsearch.add_other_sources"));
+		clearFilesBtn = new JButton(I18n.t("fsearch.reset_file_selection"));
 		// Create a "Find Next" button.
 		searchButton = UIUtil.newButton(getBundle(), "Find");
 		searchButton.setActionCommand(SearchEvent.Type.FIND.name());

@@ -11,6 +11,7 @@
 */
 package mainlauncher;
 
+import various.common.light.i18n.I18n;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -138,6 +139,22 @@ public class ScreepTLauncher {
 	public static boolean criticalJVMnotFound = false;
 	public static ArrayList<DependencyModel> missingDependenciesList;
 
+	/** The launcher speaks the language chosen in ScreepT (key language of the application INI); any problem: English */
+	private static void applyInterfaceLanguage() {
+		try {
+			File appIni = new File(GeneralConfig.DEFAULT_INI);
+			if (appIni.isFile()) {
+				String language = new org.ini4j.Wini(appIni).get("GENERIC_OPTIONS", "language");
+				if (language != null) {
+					various.common.light.i18n.I18n.setLanguage(language);
+				}
+			}
+		} catch (Exception e) {
+			// English
+		}
+		various.common.light.gui.WindowMargin.install();
+	}
+
 	/** MAIN START POINT **/
 	public static void main(String[] args) {
 
@@ -169,6 +186,8 @@ public class ScreepTLauncher {
 
 		GeneralConfig.initLazyGeneralConfig();
 
+		applyInterfaceLanguage();
+
 		// FAST START: with "hide launcher at start" the starter written by the last clean launch is reused, without building the launcher.
 		// The full launcher (below) runs when the starter is missing or outdated, or the application does not come up.
 		if (!settingsOnly && ARGS.length == 0 && GeneralConfig.LICENSE_ACCEPTED) {
@@ -188,14 +207,14 @@ public class ScreepTLauncher {
 			}
 		}
 
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
+		loaderGraphics = new LauncherLoaderFrame(I18n.t("launcher.loading_launcher"), ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
 		loaderGraphics.setIconImage(new ImageIcon(ImagesPathConfigurator.MAIN_APP_ICON).getImage());
-		loaderGraphics.update("Reading configuration... ", 5);
+		loaderGraphics.update(I18n.t("launcher.reading_configuration"), 5);
 		loaderGraphics.indeterminate(true);
 
 		GuiUtils.setupTooltips(500, 30000, new Font("Segoe UI", Font.PLAIN, 17));
 
-		loaderGraphics.update("Checking license status... ", 10);
+		loaderGraphics.update(I18n.t("launcher.checking_license_status"), 10);
 		loaderGraphics.indeterminate(true);
 
 		// SHOW LICENSE IF MARKED AS UNACCEPTED
@@ -207,12 +226,12 @@ public class ScreepTLauncher {
 				loaderGraphics.setVisible(false);
 				licenseViewer = new LightLicenseViewer(
 						GeneralConfig.LICENSE_FILE,
-						"You must accept this EULA before to start using ScreepT",
-						"License acceptance",
+						I18n.t("launcher.you_must_accept_this_eula_before"),
+						I18n.t("launcher.license_acceptance"),
 						new boolean[] {true, false, false});
 				choice = licenseViewer.userChoice;
 				if (choice.equals(UserLicenseChoice.REJECTED)) {
-					if (new JOptionHelper(null).yesOrNo("You cannot use ScreepT without accepting License, wanna exit launch procedure?")) {
+					if (new JOptionHelper(null).yesOrNo(I18n.t("launcher.you_cannot_use_screept_without_accepting"))) {
 						System.exit(0);
 					}
 				} else {
@@ -228,22 +247,22 @@ public class ScreepTLauncher {
 		appLogStart();
 
 		loaderGraphics.setVisible(true);
-		loaderGraphics.indeterminate(false, "Deleting pending updates/plugins files to remove... ");
+		loaderGraphics.indeterminate(false, I18n.t("launcher.deleting_pending_updates_plugins_files_to"));
 		if (!settingsOnly) {
 			startPendingPluginsCleanerThread();
 		}
 
 		JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR + "lib;\"";
 
-		loaderGraphics.update("Initializing launcher...", 10);
+		loaderGraphics.update(I18n.t("launcher.initializing_launcher"), 10);
 
-		loaderGraphics.update("Reading Configuration File " + DEFAULT_INI_PATH, 15);
+		loaderGraphics.update(I18n.t("launcher.reading_configuration_file") + DEFAULT_INI_PATH, 15);
 		iniFileManager.initFromINIFile();
 
-		loaderGraphics.update("Starting Launcher...", 25);
+		loaderGraphics.update(I18n.t("launcher.starting_launcher"), 25);
 		start();
 
-		loaderGraphics.update("Launcher Ready!", 100, 0);
+		loaderGraphics.update(I18n.t("launcher.launcher_ready"), 100, 0);
 
 	}// end main
 
@@ -289,7 +308,7 @@ public class ScreepTLauncher {
 		jvmHelper = new JvmHelper(IniFileManager.MAX_JRE_VERSION, IniFileManager.MIN_JRE_VERSION);
 		commandsAssembler = new CommandsAssembler(jvmHelper);
 
-		loaderGraphics.update("Defining listeners...", 35);
+		loaderGraphics.update(I18n.t("launcher.defining_listeners"), 35);
 
 		defineActionListeners();
 
@@ -330,7 +349,7 @@ public class ScreepTLauncher {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					launcherMainFrame.customizerPanel = new CustomizeParametersPanel("Customize start options", launcherMainFrame.LAUNCHER_GUI);
+					launcherMainFrame.customizerPanel = new CustomizeParametersPanel(I18n.t("launcher.customize_start_options"), launcherMainFrame.LAUNCHER_GUI);
 					launcherMainFrame.customizerPanel.setVisible(true);
 					launcherMainFrame.customizerPanel.setAlwaysOnTop(true);
 					launcherMainFrame.customizerPanel.requestFocus();
@@ -350,14 +369,14 @@ public class ScreepTLauncher {
 		});
 		// IF PROBLEMS WITH DEPENDENCIES LIST CONTAINS SOME ELEMENTS
 		if (!settingsOnly && missingDependenciesList.size() != 0 && (iniFileManager.showInstallOptions && !criticalDependenciesOK)) {
-			launcherMainFrame.missingDependenciesPanel = new DependenciesManagerPanel("Check missing dependencies", launcherMainFrame);
+			launcherMainFrame.missingDependenciesPanel = new DependenciesManagerPanel(I18n.t("launcher.check_missing_dependencies"), launcherMainFrame);
 			launcherMainFrame.missingDependenciesPanel.setVisible(true);
 			launcherMainFrame.missingDependenciesPanel.requestFocus();
 			logger.info("Missing dependencies detected, opening installer panel");
 		}
 		logger.info(this.getClass().getName() + " Loaded");
 
-		loaderGraphics.update("Preparing launch...", 85);
+		loaderGraphics.update(I18n.t("launcher.preparing_launch"), 85);
 	}
 
 	/**
@@ -411,7 +430,7 @@ public class ScreepTLauncher {
 		String localPathMacInstaller = "";
 		DependencyLocalPath pathsLocalInstaller = new DependencyLocalPath(localPathWinInstaller, localPathLinInstaller, localPathMacInstaller);
 
-		String javaMsg = critical ? "Compatible JAVA JVM not found" : "Java interpreter";
+		String javaMsg = critical ? I18n.t("launcher.compatible_java_jvm_not_found") : I18n.t("launcher.java_interpreter");
 		DependencyModel javaDependency = new DependencyModel(javaMsg, "Download/Install/Locate", critical, JvmHelper.JVM_URL_INSTALL, pathsLocalInstaller,
 				actionDownNInstall_Jvm, actionLocManually_Jvm);
 		missingDependenciesList.add(javaDependency);
@@ -435,7 +454,7 @@ public class ScreepTLauncher {
 		// write commands to build bash/batch starter file
 		boolean written = FileWorker.writeStringToFile(commandList, new File(initFilePath), true);
 
-		String msg = (written) ? "Write completed correctly :)" : "Write not succeded for some error :(";
+		String msg = (written) ? I18n.t("launcher.write_completed_correctly") : I18n.t("launcher.write_not_succeded_for_some_error");
 		logger.info(msg);
 
 		return initFilePath;
@@ -454,7 +473,7 @@ public class ScreepTLauncher {
 		actionLocManually_Jvm = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String msg = "Specify /bin folder of a supported java installation (" + IniFileManager.MIN_JRE_VERSION + " <= VERSION < "
+				String msg = I18n.t("launcher.specify_bin_folder_of_a_supported") + IniFileManager.MIN_JRE_VERSION + I18n.t("launcher.version")
 						+ IniFileManager.MAX_JRE_VERSION + ")";
 
 				File tempManualJvm = FileVarious.directoRead(launcherMainFrame, msg, new File(GeneralConfig.USER_PERSONAL_DIR));
@@ -611,7 +630,7 @@ public class ScreepTLauncher {
 			logger.debug("Progress panel created");
 			progPanel.setUndefinedDuration();
 			logger.debug("Progress panel undefined duration");
-			progPanel.update(50, "Waiting for pending plugins removal...", false);
+			progPanel.update(50, I18n.t("launcher.waiting_for_pending_plugins_removal"), false);
 			if (pendingPluginsRemover.isAlive()) {
 				logger.debug("Progress panel updated, joining remover thread...");
 				try {
@@ -646,10 +665,10 @@ public class ScreepTLauncher {
 					updatedList.add(downloadedDto.getName());
 				}
 			}
-			new JOptionHelper(null).info("Pending plugin updates have been installed correctly!" + Arrays.deepToString(updatedList.toArray(new String[0])));
+			new JOptionHelper(null).info(I18n.t("launcher.pending_plugin_updates_have_been_installed") + Arrays.deepToString(updatedList.toArray(new String[0])));
 		} catch (Throwable e) {
 			logger.error("Cannot update pending plugins installations! Try to launch Application and manually reinstall them", e);
-			new JOptionHelper(null).error("Cannot update pending plugins installations! Try to launch Application and manually reinstall them");
+			new JOptionHelper(null).error(I18n.t("launcher.cannot_update_pending_plugins_installations"));
 		} finally {
 			manager.removeAllFromPendingPluginUpdate();
 		}
@@ -727,10 +746,9 @@ public class ScreepTLauncher {
 					logger.error("{}", e);
 				}
 			} else {
-				String advice = "<html>It seems there is already a running instance of " + GeneralConfig.APPLICATION_NAME
-						+ "<br/> -> If this message is not due to a previous application crash, it's strongly recommended to avoid multiple instances."
-						+ "<br/> Are you sure to start another instance?</html>";
-				runNewInstance = new JOptionHelper(null).yesOrNo(advice, "ScreepT already running");
+				String advice = I18n.t("launcher.it_seems_there_is_already_a") + GeneralConfig.APPLICATION_NAME
+						+ I18n.t("launcher.if_this_message_is_not_due");
+				runNewInstance = new JOptionHelper(null).yesOrNo(advice, I18n.t("launcher.screept_already_running"));
 			}
 
 			if (!runNewInstance) {
