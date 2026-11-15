@@ -153,9 +153,11 @@ public class ConfigurationManagerPanel extends ModulePanel {
 
 		setBackground(Color.DARK_GRAY);
 
+		// columns and rows never go under the size of their content, so the text of the buttons is always fully visible
+		// (a fixed pixel size clipped it with bigger fonts, other languages and scaled interfaces)
 		setLayout(new MigLayout("",
-				"[120px:130px][80px:90px][70px:80px][135px:150px][30px][150px:160px][140px:140px][][140px:140px,grow][grow][50][100px,grow,leading][120px:130px,grow]",
-				"[:35px:40px][28px][][20px][400px,grow]"));
+				"[130px::][90px::][80px::][150px::][30px::][160px::][140px::][][140px::,grow][grow][50][100px::,grow,leading][130px::,grow]",
+				"[:35px:40px][28px::][][22px::][400px,grow]"));
 
 		textArea = new RSyntaxTextArea();
 		textArea.setUseSelectedTextColor(true);
@@ -167,8 +169,6 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		scrollPaneTextArea.setBorder(new LineBorder(Color.BLACK, 2));
 
 		btnExportConfig = new JButton("Export");
-		btnExportConfig.setMinimumSize(new Dimension(62, 20));
-		btnExportConfig.setPreferredSize(new Dimension(62, 20));
 		btnExportConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 		btnExportConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnExportConfig.setForeground(Color.BLACK);
@@ -177,8 +177,6 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		add(btnExportConfig, "cell 1 1,grow");
 
 		btnSave = new JButton("Save");
-		btnSave.setPreferredSize(new Dimension(55, 20));
-		btnSave.setMinimumSize(new Dimension(55, 20));
 		btnSave.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		btnSave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSave.setForeground(Color.BLACK);
@@ -187,8 +185,6 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		add(btnSave, "cell 2 1,grow");
 
 		btnSaveCurrentAsDefault = new JButton("Save as Default");
-		btnSaveCurrentAsDefault.setMinimumSize(new Dimension(114, 20));
-		btnSaveCurrentAsDefault.setPreferredSize(new Dimension(114, 20));
 		btnSaveCurrentAsDefault.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_AS_DEFAULT_CONF));
 		btnSaveCurrentAsDefault.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSaveCurrentAsDefault.setForeground(Color.BLACK);
@@ -197,8 +193,6 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		add(btnSaveCurrentAsDefault, "cell 3 1 2 1,grow");
 
 		btnViewCurrentFile = new JButton("Current Config. File");
-		btnViewCurrentFile.setPreferredSize(new Dimension(134, 20));
-		btnViewCurrentFile.setMinimumSize(new Dimension(134, 20));
 		btnViewCurrentFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnViewCurrentFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD2));
 		btnViewCurrentFile.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
@@ -207,8 +201,6 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		add(btnViewCurrentFile, "cell 5 1,grow");
 
 		btnCurrentRefresh = new JButton("Current Volatile");
-		btnCurrentRefresh.setMinimumSize(new Dimension(112, 20));
-		btnCurrentRefresh.setPreferredSize(new Dimension(112, 20));
 		btnCurrentRefresh.setForeground(Color.BLACK);
 		btnCurrentRefresh.setBackground(new Color(176, 196, 222));
 		btnCurrentRefresh.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
@@ -230,14 +222,19 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		panelDynPath.setLayout(new MigLayout("", "[grow][150px,grow]", "[]"));
 
 		btnResetOriginalConfig = new JButton("Reset Original");
-		btnResetOriginalConfig.setMinimumSize(new Dimension(120, 20));
-		btnResetOriginalConfig.setPreferredSize(new Dimension(120, 20));
 		btnResetOriginalConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESET_CONF));
 		btnResetOriginalConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnResetOriginalConfig.setForeground(Color.BLACK);
 		btnResetOriginalConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnResetOriginalConfig.setBackground(new Color(250, 128, 114));
 		add(btnResetOriginalConfig, "cell 11 1 2 1,grow");
+
+		btnCurrentRefresh.setMargin(new java.awt.Insets(3, 10, 3, 10));
+		btnExportConfig.setMargin(new java.awt.Insets(3, 10, 3, 10));
+		btnResetOriginalConfig.setMargin(new java.awt.Insets(3, 10, 3, 10));
+		btnSave.setMargin(new java.awt.Insets(3, 10, 3, 10));
+		btnSaveCurrentAsDefault.setMargin(new java.awt.Insets(3, 10, 3, 10));
+		btnViewCurrentFile.setMargin(new java.awt.Insets(3, 10, 3, 10));
 
 		separator = new JSeparator();
 		add(separator, "cell 0 2 13 1,growx");
@@ -279,13 +276,12 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		panel_1.add(lblConfigurationManager, "cell 0 0,alignx center");
 
 		btnLoadCustomConfig = new JButton("Load Custom");
-		btnLoadCustomConfig.setPreferredSize(new Dimension(103, 20));
-		btnLoadCustomConfig.setMinimumSize(new Dimension(103, 20));
 		btnLoadCustomConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
 		btnLoadCustomConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLoadCustomConfig.setForeground(Color.BLACK);
 		btnLoadCustomConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnLoadCustomConfig.setBackground(Color.LIGHT_GRAY);
+		btnLoadCustomConfig.setMargin(new java.awt.Insets(3, 10, 3, 10));
 		add(btnLoadCustomConfig, "cell 0 1,grow");
 
 		scrollPaneTreeConfigs = new JScrollPane();
