@@ -29,15 +29,15 @@ final class NpcFacts {
 	String factFor(NpcTheme theme, String question) {
 		switch (theme) {
 		case WHO:
-			return "ScreepT " + GeneralConfig.APP_VERSION + " is a desktop crypter and text editor with plugins, made by " + GeneralConfig.AUTHOR + ".";
+			return "ScreepT " + GeneralConfig.APP_VERSION + " is a desktop crypter and file editor with plugins, made by " + GeneralConfig.AUTHOR + ".";
 		case FEATURES:
-			return "Text editor with tabs and a big-file mode (LogSearch), crypter with key images, calculator, quick notes, a real terminal and an offline assistant on the home page.";
+			return "File editor with tabs and a big-file mode (LogSearch), crypter with key images, calculator, quick notes, a real terminal and an offline assistant on the home page.";
 		case SECRET:
 			return "The crypter encrypts with AES, and a key image can act as a second factor. Pick a long password.";
 		case BIG:
 			return "LogSearch (Various > LogSearch, Ctrl+Alt+L) opens huge files read-only, a portion at a time, with text or regex search.";
 		case TERMINAL:
-			return "The shell (Ctrl+Alt+S, or the panel of the text editor) has an Interactive checkbox: a real terminal, where even Claude Code runs.";
+			return "The shell (Ctrl+Alt+S, or the panel of the file editor) has an Interactive checkbox: a real terminal, where even Claude Code runs.";
 		case EGG:
 			return "I will not spoil them. Say what you would like to see, or how you feel about ScreepT.";
 		case CATS:

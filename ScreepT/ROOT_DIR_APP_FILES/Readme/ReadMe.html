@@ -149,9 +149,9 @@
 								</div></li>
 								
 								<li><div class="subIndex2">		
-									<a href="#funcTextEditorSubMenu">Text Editor</a>
+									<a href="#funcTextEditorSubMenu">File Editor</a>
 									<ul>
-										<li><a class="subIndex3" href="#subSectTitleTxtEditor">TEXT EDITOR</a></li>
+										<li><a class="subIndex3" href="#subSectTitleTxtEditor">FILE EDITOR</a></li>
 										<li><a class="subIndex3" href="#subSectTextTransformation">TEXT TRANSFORMATIONS</a></li>
 										<li><a class="subIndex3" href="#subSectTxtEditorRightClick">RIGHT CLICK MENU</a></li>
 										<li><a class="subIndex3" href="#subSectTitleImpExpCrypted">IMPORT/EXPORT CRYPTED WORKSPACE</a></li>
@@ -217,7 +217,7 @@
 						</ul>
 						<ul>
 							<li><div class="subIndex2">		
-								<a href="#shctsTextEditor">Text Editor shortcuts</a>
+								<a href="#shctsTextEditor">File Editor shortcuts</a>
 							</div></li>
 						</ul>
 					</li>
@@ -351,7 +351,7 @@ $link.WorkingDirectory = "$app\Application"
 $link.IconLocation     = "$app\Readme\Images\ScreepT.ico"
 $link.Save()</code></pre>
 				<p><b>NB: </b>these shortcuts go through the normal launcher, so everything works as usual (launcher options, plugins, updates).</p>
-				<p><b>Right click menu ("Open With ScreepT").</b> The menu item <i>Add to Windows context menu after right click on file</i> works without ScreepT.exe and without administrator rights: it writes the entry for your user only and asks whether it should start <i>ScreepT.bat</i> (works everywhere, shows a minimized console window) or <i>ScreepT.exe</i> (no console window, but it may be blocked on company PCs). Use <i>Remove from Windows file right click context menu</i> to take it away. When you open a <i>.log</i> file (with this menu, drag and drop or the open dialog) ScreepT asks whether to open it in the Text Editor or with LogSearch. In the same way <i>Restart as administrator</i> starts <i>ScreepT.bat</i> with administrator rights when it is present (the UAC prompt appears), and uses the exe only when there is no bat. The option to start ScreepT at login does the same: it creates a shortcut in the Startup folder of your user (no administrator rights needed) that starts <i>ScreepT.bat</i>.</p>
+				<p><b>Right click menu ("Open With ScreepT").</b> The menu item <i>Add to Windows context menu after right click on file</i> works without ScreepT.exe and without administrator rights: it writes the entry for your user only and asks whether it should start <i>ScreepT.bat</i> (works everywhere, shows a minimized console window) or <i>ScreepT.exe</i> (no console window, but it may be blocked on company PCs). Use <i>Remove from Windows file right click context menu</i> to take it away. When you open a <i>.log</i> file (with this menu, drag and drop or the open dialog) ScreepT asks whether to open it in the File Editor or with LogSearch. In the same way <i>Restart as administrator</i> starts <i>ScreepT.bat</i> with administrator rights when it is present (the UAC prompt appears), and uses the exe only when there is no bat. The option to start ScreepT at login does the same: it creates a shortcut in the Startup folder of your user (no administrator rights needed) that starts <i>ScreepT.bat</i>.</p>
 			</div>
 			
 			<br><hr>
@@ -422,7 +422,7 @@ $link.Save()</code></pre>
 					<li><image class="iconImgTitleSect" src="Images/icons/graphics.png"/> <span id="subSectTitleGraphOpt" class="subMenuthirdLevel">GRAPHICS OPTIONS</span></li>
 						<p>
 						In this section you can choose the graphic settings that will be mapped into the configuration file currently loaded.
-						Options are grouped in sections (<b>Appearance</b> and <b>Text editor</b>, with its subsections <b>Editing</b>, <b>Display</b> and <b>Brackets and occurrences</b>): click on a section title to collapse or expand it.
+						Options are grouped in sections (<b>Appearance</b> and <b>File editor</b>, with its subsections <b>Editing</b>, <b>Display</b> and <b>Brackets and occurrences</b>): click on a section title to collapse or expand it.
 						Use the <b>search field</b> on top (or [Ctrl + F]) to show only the options matching what you type: filtering only changes what you see, saving always saves all the options.
 						Every change is previewed immediately: <b>Save Values</b> writes it to the configuration file, <b>Use</b> keeps it for this session only, while <b>Discard</b> or closing the window restore the previous values.
 						The window opens sized to show all the options (up to 90% of the screen), and it can be resized or maximized.
@@ -432,9 +432,9 @@ $link.Save()</code></pre>
 							<li><b>GUI style:</b> choose between the available look and feel options. <b>ScreepT Dark</b> (default on new installations) is a modern dark theme in IntelliJ IDEA style, with dark title bar; with dark styles also the custom colors of the application are adapted to stay readable. If supported, you can choose between different themes for a single style;</li>
 							<li><b>Interface size:</b> choose the general size of the interface between Mini, Small, Medium, Big and XXL: fonts, menus, toolbars and (with ScreepT Dark) all graphic elements are resized, and open windows are resized and kept centered. Click on <b>Customize...</b> to see or set the single values (font family, general text, menus, toolbars, graphic elements): changing a value switches to <b>Custom</b> mode;</li>
 							<li><b>Menu and log text size:</b> these will modify the size of menu bar text, and some of the log text used in crypter and other modules;</li>
-							<li><b>Text editor font:</b> font family and size used by the text editor, applied immediately to all open tabs. Use a monospaced font (e.g. Consolas) to have perfectly aligned rectangular selections;</li>
-							<li><b>Text editor settings:</b> different configurations you can set to customize text editor behaviour (editing helpers, display, brackets and occurrences);</li>
-							<li><b>Spellchecker dictionary:</b> choose between different languages available. This will be used in text editor when spell checker is active (remember that spell checker can cause software to slow down, so it's better to turn it off unless you're using it);</li>
+							<li><b>File editor font:</b> font family and size used by the file editor, applied immediately to all open tabs. Use a monospaced font (e.g. Consolas) to have perfectly aligned rectangular selections;</li>
+							<li><b>File editor settings:</b> different configurations you can set to customize file editor behaviour (editing helpers, display, brackets and occurrences);</li>
+							<li><b>Spellchecker dictionary:</b> choose between different languages available. This will be used in file editor when spell checker is active (remember that spell checker can cause software to slow down, so it's better to turn it off unless you're using it);</li>
 
 						</ul><br>
 				
@@ -449,6 +449,7 @@ $link.Save()</code></pre>
 							<li><b>General Volume:</b> used as default for sounds;</li>
 							<li><b>Password security:</b> this will be used when a password field is used (crypt/decrypt text, Creepter module): according to level selected, the password will be checked for security level requested, and you will be advised if the security best practices are not met;</li>
 							<li><b>Auto-check updates:</b> if active, ScreepT will automatically check for new version during the startup. If a new version is available you will be asked if you want to download and install it;</li>
+							<li><b>Auto-check plugin updates:</b> if active (it is by default), at startup ScreepT also checks whether the installed plugins have a newer version: it lists them and asks if you want to update them all (the new versions are installed at the next start). In both questions, this one and the one about a new version of ScreepT, the box <i>Don't show this again</i> turns off the matching automatic check (<i>Auto-check plugin updates</i> or <i>Auto-check updates</i>); you can turn it on again here;</li>
 							<li><b>Default charset:</b> this will be used when reading text from file or during text save to file.</li>
 							<li><b>Username:</b> this will be displayed in the main title and in some other places to customize your experience</li>
 							<li><b>Hide launcher at start:</b> if selected launcher will not be shown during startup (unless some blocking problems are detected); when it is selected, <i>Restart</i> and <i>Restart as administrator</i> (Help menu) ask if the launcher must be shown on that restart (<i>Keep as default</i> turns this option off); the same checkbox is in the launcher window: if it was off and you turn it on, <i>Start ScreepT</i> asks for confirmation and explains how to bring the launcher back;</li>
@@ -583,11 +584,11 @@ $link.Save()</code></pre>
 				</p></ul>
 
 				<hr>
-				<h2 id="funcTextEditorSubMenu" class="sectionSubTitle"> 2.4 - TEXT EDITOR SUBMENU</h2>
+				<h2 id="funcTextEditorSubMenu" class="sectionSubTitle"> 2.4 - FILE EDITOR SUBMENU</h2>
 				<hr>
 				<image class="centerImg forceWidthImg" src="Images/TextEditor.jpg"/>
-				<li><image class="iconImgTitleSect" src="Images/icons/textEditor.png"/> <span id="subSectTitleTxtEditor" class="subMenuthirdLevel">TEXT EDITOR</span></li>
-					<p>This is a built-in text editor with basic functions, and either some extra functionality such as:
+				<li><image class="iconImgTitleSect" src="Images/icons/textEditor.png"/> <span id="subSectTitleTxtEditor" class="subMenuthirdLevel">FILE EDITOR</span></li>
+					<p>This is a built-in file editor (it was called Text Editor in the previous versions) with basic functions, and either some extra functionality such as:
 					<ul>
 						<li class="highLineHeigthList"><span class="highlightBolded">TEXT SPEAKER </span>- you can use this by clicking on <image class="iconImg" src="Images/icons/Speaker.png"/> or using the shortcut [Ctrl+spacebar]. This way you will hear the text visible in text-area with english pronunciation. You can also choose the voice speed rate, dragging the selector over the speaker button. (<u>this function is enabled only if the relative plugin is installed on ScreepT</u>)</li>
 						
@@ -608,15 +609,15 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 						<li class="highLineHeigthList"><span class="highlightBolded">EOL ANALYZER </span>- you can see which end of line terminators are used wither in loaded text, or in current file. Just right click on text area and choose "View line feeds" to open a pop-up tooltip and see the line terminators (CR/LF A.K.A. "\n" "\r"). This is useful when checking compatibility of a file for different operating systems. If you need to convert current text/file EOL, just right click on textArea and select the wanted option from "Normalize End Of Line" subMenu.
 
 						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE THEME </span>- you can choose between different built-in color themes just chosing the wanted one from the given style combo box. It's possible to define your own theme using xml configuration: in order to have this in the combo box options, you have to add an xml with a valid scheme (take inspiration from the existing ones, you can copy one of them modifying the color hexadecimal values) into folder <b>Application\Resources_ScreepT\themes\custom</b>. To load your scheme you'll have to restart ScreepT. A built-in style scheme editor is scheduled for the next versions of ScreepT. Keep following the <u><a href="https://www.am-design-development.it">ScreepT website</a></u> or update your software regularly to have it when available ;)</li>
-						<li class="highLineHeigthList"><span class="highlightBolded">FOOTER </span>- the bar at the bottom of the text editor is always on one row: the current file (it takes the space that is left), then blocks that group the information: file (charset, EOL and size on disk in readable units: B, KB, MB, GB), text (number of lines and length in characters), caret (line, column and position) and selection (length). Names are darker than the values, so the values stand out. Show or hide the bar with [Ctrl + Shift + Alt + L].</li>
+						<li class="highLineHeigthList"><span class="highlightBolded">FOOTER </span>- the bar at the bottom of the file editor is always on one row: the current file (it takes the space that is left), then blocks that group the information: file (charset, EOL and size on disk in readable units: B, KB, MB, GB), text (number of lines and length in characters), caret (line, column and position) and selection (length). Names are darker than the values, so the values stand out. Show or hide the bar with [Ctrl + Shift + Alt + L].</li>
 						
 						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE COLORS/FONT </span>- (<u>works only when no theme is selected</u>) you can customize color of background <image class="iconImg" src="Images/icons/BackgroundColor.png"/> and text <image class="iconImg" src="Images/icons/TextColor_2.png"/> just by clicking on the relative button: a chooser dialog will appear and you'll be able to choose and preview the selected colors on the loaded text.<br>
-						The text editor font (family and size) is chosen in <u><a href="#subSectTitleGraphOpt">Graphics options</a></u>, section "Text editor", where you also set the maximum size of a file opened in the editor ("Max file size (MB)": bigger files are proposed to <u><a href="#funcLogSearch">LogSearch</a></u>).<br>
+						The file editor font (family and size) is chosen in <u><a href="#subSectTitleGraphOpt">Graphics options</a></u>, section "File editor", where you also set the maximum size of a file opened in the editor ("Max file size (MB)": bigger files are proposed to <u><a href="#funcLogSearch">LogSearch</a></u>).<br>
 						If you'll press OK the selected colors/font will be added to current volatile configuration (theese will not be written to configuration file until you explicitly save them, or until autosave will occur, if selected).
 						
 						</li><li class="highLineHeigthList"><span id="subSectTitleImpExpCrypted" class="highlightBolded">IMPORT/EXPORT Crypter workspace </span>- with this function you can choose between import or export a workspace in Crypted form. When clicking this button, a po-up panel will appear, allowing to choose between import a previously crypted workspace folder from your file system, or either export one of the previously loaded workspace.
 						<br>After you've selected the wanted options, you will be lead to CreepT view, with the wanted workspace loaded and ready to crypt/decrypt: you have just to choose the crypter mode, and the right keys according to the selected mode. See the <u><a href="#funcScreeptSubMenu">CreepT</a></u> chapter for further details on how to use this function.
-						<hr>After the encryption/decryption process is completed, you'll be automatically brought back to text editor. (in case of import, decrypted workspace will be setted as current workspace)</li>
+						<hr>After the encryption/decryption process is completed, you'll be automatically brought back to file editor. (in case of import, decrypted workspace will be setted as current workspace)</li>
 						
 					</ul>
 
@@ -647,7 +648,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 					<br><span class="highlightBoldedGrey">This button </span>will become clickable only when there is an active connection from the current selected network card.</p>
 					
 					<li><image class="iconImgTitleSect" src="Images/icons/imageConverter.png"/> <span id="subSectTitleImgConverter" class="subMenuthirdLevel">IMAGE STUDIO (VIEWER AND CONVERTER)</span></li>
-					<p><span class="highlightBoldedGrey">New: Image Studio. </span>The viewer and the converter are now one tool, <strong>Image Studio</strong>: several images in tabs, conversion options in an accordion on the right, and a <strong>Mode</strong> selector (Basic: convert and resize; Classic: + adjustments, ready made filters, rotate, flip, copy and paste; Nerd, the default: + all 54 filters, histogram, gamma, hue, temperature, tint, resampling choice, pixel grid, metadata, border, rounded corners and text watermark). The side panel keeps one section open at a time (a badge on each header says what is set inside): <strong>Crop</strong> (margins and ratios), <strong>Adjustments</strong> (exposure, shadows, highlights, vibrance, Auto enhance), <strong>Effects</strong> (sharpness, blur, vignette, grain), <strong>Filters</strong> (six groups of cards (Color, Looks, Tone, Detail, Art, Wild) that preview the filter on your own image, with a <strong>Strength</strong> slider), <strong>Rotate &amp; flip</strong> (with fine straighten) and quick sizes in <strong>Resize</strong>. The <strong>Before</strong> button (B) shows the image without the pending edits. <strong>Metadata</strong> (in Details) shows what an image carries and can save a clean copy or clean the file itself; <strong>Clean metadata...</strong> in the window header removes EXIF, GPS, XMP, IPTC and the rest from many JPEG, PNG, WebP and GIF files without re-encoding them (files and folders by drag and drop, filters, copies in a folder or replacing the originals with an optional backup, color profile and orientation can be kept, or only the location removed). In <strong>Presets</strong> and in the Batch window <strong>Import</strong> also reads Camera Raw and Lightroom presets (.xmp, .lrtemplate): the values that have an equivalent are translated and the others are listed in a report. Photoshop files (.psd) open too: the merged picture is shown, with the file information and, if present, a button to read the Camera Raw settings stored inside. In the Batch window click an image of the list to preview the settings on it. The <strong>Batch...</strong> button applies the same settings to many images: choose them on a sample (built-in or your own photo), pick the target folder and a name pattern with <em>{name}</em>, <em>{n}</em> (counter) and <em>{date}</em>. Images, .log and .html files also open as <strong>tabs of the text editor</strong>: an image there is a read-only viewer (zoom, details, histogram, copy) with an <strong>Edit in Image Studio</strong> button that opens it in the full window (and asks if you want to close the tab); the viewer of each extension is chosen in Graphic preferences &gt; Text editor &gt; Viewers.</p>
+					<p><span class="highlightBoldedGrey">New: Image Studio. </span>The viewer and the converter are now one tool, <strong>Image Studio</strong>: several images in tabs, conversion options in an accordion on the right, and a <strong>Mode</strong> selector (Basic: convert and resize; Classic: + adjustments, ready made filters, rotate, flip, copy and paste; Nerd, the default: + all 54 filters, histogram, gamma, hue, temperature, tint, resampling choice, pixel grid, metadata, border, rounded corners and text watermark). The side panel keeps one section open at a time (a badge on each header says what is set inside): <strong>Crop</strong> (margins and ratios), <strong>Adjustments</strong> (exposure, shadows, highlights, vibrance, Auto enhance), <strong>Effects</strong> (sharpness, blur, vignette, grain), <strong>Filters</strong> (six groups of cards (Color, Looks, Tone, Detail, Art, Wild) that preview the filter on your own image, with a <strong>Strength</strong> slider), <strong>Rotate &amp; flip</strong> (with fine straighten) and quick sizes in <strong>Resize</strong>. The <strong>Before</strong> button (B) shows the image without the pending edits. <strong>Metadata</strong> (in Details) shows what an image carries and can save a clean copy or clean the file itself; <strong>Clean metadata...</strong> in the window header removes EXIF, GPS, XMP, IPTC and the rest from many JPEG, PNG, WebP and GIF files without re-encoding them (files and folders by drag and drop, filters, copies in a folder or replacing the originals with an optional backup, color profile and orientation can be kept, or only the location removed). In <strong>Presets</strong> and in the Batch window <strong>Import</strong> also reads Camera Raw and Lightroom presets (.xmp, .lrtemplate): the values that have an equivalent are translated and the others are listed in a report. Photoshop files (.psd) open too: the merged picture is shown, with the file information and, if present, a button to read the Camera Raw settings stored inside. In the Batch window click an image of the list to preview the settings on it. The <strong>Batch...</strong> button applies the same settings to many images: choose them on a sample (built-in or your own photo), pick the target folder and a name pattern with <em>{name}</em>, <em>{n}</em> (counter) and <em>{date}</em>. Images, .log and .html files also open as <strong>tabs of the file editor</strong>: an image there is a read-only viewer (zoom, details, histogram, copy, full screen) with an <strong>Edit in Image Studio</strong> button that opens it in the full window (and asks if you want to close the tab); a .log file opens in <strong>LogSearch</strong> inside its tab, bound to that file (no Open file button, and a file dropped on the tab does not replace it: the full LogSearch window, with Open file and drag and drop, is the one of Various &gt; LogSearch); the viewer of each extension is chosen in Graphic preferences &gt; File editor &gt; Viewers (for example to open .log files in the file editor instead). Right click on a file in the file tree &gt; <strong>Open with</strong> opens it, just this once, in the file editor or in the viewer you choose (the default one for that type is marked), without changing the associations. <strong>Open in a window</strong> in the same menu opens the file in the embedded tools of the Various menu that read a file (LogSearch, the Image Studio window for images, the File Hash checker): only the ones compatible with that type of file are listed. In Image Studio, <strong>Full screen</strong> (button or [F11], in the window and in the tab) shows the image on the whole screen: zoom with the wheel, drag to move, double click for fit / actual size, and a menu at the top center with zoom, fit, 100% and rotation (view only, the image is not changed). The menu hides 5 seconds after the mouse left it and comes back when the mouse passes over its place; the pin keeps it always visible. The X at the top right, or [Esc], exits.</p>
 					<p>Here you can find a selection of useful conversion tools for image conversion. <span class="highlightBoldedGrey">Notice </span> that this is a beta version yet, it still has to improve in next versions of ScreepT ;)
 					</p>
 					<p>
@@ -707,12 +708,14 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 						<p>
 						With the picker active, click any element to retrieve its color, or keep [Shift + Ctrl] pressed while moving the mouse over it.
 						The picked color is shown in RGB, HEX, HSB and HSL formats: all fields are editable, so you can also convert a color you type.
-						The picker window always stays above the ScreepT window it was opened from, and [Alt + Tab] switches application as usual.
+						Each format has its own copy button, the big sample shows the HEX code and opens the palette when clicked, and the contrast of white and black text on the color tells you which one is readable.
+						The last picked or copied colors stay in the <b>Recent</b> row for the whole session: click one to use it again.
+						The picker window always stays on top of every other window, also of other applications, and [Alt + Tab] switches application as usual.
 						</p>
 
 					<li><span id="subSectClipboardPanel" class="subMenuthirdLevel">CLIPBOARD PANEL</span></li>
 						<p>
-						A set of named clipboards saved on disk, available as side panel of the text editor or as standalone <b>Clipboard tool</b> (Various menu).
+						A set of named clipboards saved on disk, available as side panel of the file editor or as standalone <b>Clipboard tool</b> (Various menu).
 						You can add a new clipboard, choose between the loaded ones, save or reload the current one (unsaved changes are lost on reload), reload the list and open the current clipboard in the file system.
 						</p>
 					
@@ -736,6 +739,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 					<li class="highLineHeigthList"><span class="highlightBolded">Check for Software Updates </span>- this function is self explanatory: just be sure to have a working internet connection to update the software. NB: you can have some problems updating the software while using a proxy. If ScreepT is already up to date it offers to <b>reinstall the current version</b> from the server: the application files are replaced with a clean copy (useful if something got broken), while your settings and personal data are kept.
 					<li class="highLineHeigthList"><span class="highlightBolded">Install plugins </span>- this function is self explanatory: it opens a new pop up window when you can choose and install plugins for ScreepT. For the early ScreepT versions, this is made mainly to reduce the basic application size, because of some libraries that were very heavy to install as default choice, so I decided to make them installable as plugins. 
 					<li class="highLineHeigthList"><span class="highlightBolded">Markdown Viewer plugin </span>- a Markdown editor with live preview, outline and HTML source (right click on a .md file or the text, or the plugins menu). Since version 1.2.0 it edits like VS Code "Markdown All in One": Enter continues lists, task lists and quotes (an empty item ends the list), Tab / Shift+Tab indent list items and number them again, Ctrl+B / Ctrl+I / Alt+S / Ctrl+M toggle bold, italic, strikethrough and math on the selection or the word at the caret, Ctrl+Shift+] / [ change the heading level, Alt+C checks task boxes, Shift+Alt+F formats tables, Ctrl+Shift+T inserts a table of contents between &lt;!-- TOC --&gt; markers that is updated on every save (&lt;!-- omit in toc --&gt; leaves a heading out), typing "](#" or "](" suggests the headings and the files next to the document, and pasting a url on a selected text makes a link. Formulas between $ and $$ are shown in the preview; Ctrl+E exports a standalone HTML page with the images embedded and the formulas rendered by KaTeX (needs internet). F1 lists every shortcut.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Update all plugins </span>- looks for newer versions of the installed plugins and prepares all their updates in one go: the new versions are installed at the next start and ScreepT offers to restart. The same check runs at startup when <i>Auto-check plugin updates</i> is active in General Options.</li>
 					<li class="highLineHeigthList"><span class="highlightBolded">Open current installation folder </span>- opens in the file explorer the folder that contains the Application folder of this installation (the root of ScreepT), handy to find logs, backups, plugins and updates.</li>
 					<br><b>NB: </b>you may experience some troubles while installing plugins or updates while using a proxy: in this case you can setup your proxy going to preferences -> generic options, clicking the world icon. Here you can specify the url/port combination of your proxy, and eventually a username/password combination if you need it (for security reasons, by default password won't be saved, and must be specified again at each restart).
 				</ul></p>
@@ -747,8 +751,8 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 					<li class="highLineHeigthList">Ask in plain words, in English or Italian, about any ScreepT function ("how do I encrypt a file", "come cambio il tema"). The assistant is fully offline: it reads this guide and the changelog that ship with ScreepT, no cloud, no API keys, no cost.</li>
 					<li class="highLineHeigthList"><span class="highlightBolded">Commands: </span>help, news (what changed in the latest version), shortcuts [word] (keyboard shortcuts, optionally filtered), topics (sections of the guide), eggs, version, about, whoami, clear. You can also summon the hidden surprises by name: snake, puppynoid, cats, poem, matrix, bugs, cipher, typing, trivia, fortune, glitch.</li>
 					<li class="highLineHeigthList"><span class="highlightBolded">Keys: </span>Enter sends, Up/Down recall previous questions, PgUp/PgDn or the mouse wheel scroll the terminal, Esc or Ctrl+U clears the line, Ctrl+L clears the screen, Ctrl+V pastes.</li>
-					<li class="highLineHeigthList">Questions are answered in the background: you can open the text editor, the crypter or any other section while it works, and when you come back to the home page the answers, the history and the text you were typing are all there.</li>
-					<li class="highLineHeigthList"><span class="highlightBolded">How do I open...? </span>Ask for any section or function by name ("text editor", "crypter", "calculator", "quick notes", "home page", also in Italian and with small typos): the assistant answers with the path in the menu bar and the keyboard shortcut, read from the real menus of this version. When it does not understand it says so and suggests how to ask again.</li>
+					<li class="highLineHeigthList">Questions are answered in the background: you can open the file editor, the crypter or any other section while it works, and when you come back to the home page the answers, the history and the text you were typing are all there.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">How do I open...? </span>Ask for any section or function by name ("file editor", "crypter", "calculator", "quick notes", "home page", also in Italian and with small typos): the assistant answers with the path in the menu bar and the keyboard shortcut, read from the real menus of this version. When it does not understand it says so and suggests how to ask again.</li>
 					<li class="highLineHeigthList">The hidden shortcuts of the home page (S three times, A three times, M three times) still work.</li>
 				</ul></p>
 
@@ -756,7 +760,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 				<h2 id="funcQuickNotes" class="sectionSubTitle"> 2.8 - QUICK NOTES</h2>
 				<hr>
 				<p><ul>
-					<li class="highLineHeigthList">Quick notes is a to-do drawer on the right side of the window. Show or hide it with [Ctrl + Alt + N], from Various > Quick notes, or with the Quick notes button of the text editor toolbar (right of the spell checker toggle, it follows the state of the drawer).</li>
+					<li class="highLineHeigthList">Quick notes is a to-do drawer on the right side of the window. Show or hide it with [Ctrl + Alt + N], from Various > Quick notes, or with the Quick notes button of the file editor toolbar (right of the spell checker toggle, it follows the state of the drawer).</li>
 					<li class="highLineHeigthList">Type a note and press Enter to add it, click a note to edit it inline, use the round checkbox (or Ctrl+Enter) to mark it as done: completed notes are grouped at the bottom. The search box filters the notes and highlights the matches.</li>
 					<li class="highLineHeigthList">Notes are saved automatically at every change in Resources_ScreepT/QuickNotes/quick_notes.md, a plain Markdown list with a backup copy.</li>
 					<li class="highLineHeigthList">Backup and import: the &#8801; button at the top of the drawer opens a menu. "Back up notes to..." saves a copy of all the notes in a folder of your choice (file quick_notes_backup.md) and remembers the folder; "Update backup" rewrites that file with the current notes. "Import notes from backup..." replaces ALL the current notes with the ones of a backup file: before doing it ScreepT warns you that the current notes will be lost and offers to back them up first in a folder of your choice.</li>
@@ -776,8 +780,10 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 				<h2 id="funcLogSearch" class="sectionSubTitle"> 2.12 - LOGSEARCH (BIG FILES)</h2>
 				<hr>
 				<p><ul>
-					<li class="highLineHeigthList">LogSearch opens a big text file (a log, a dump, a CSV of many gigabytes) read-only, without loading it in memory: only the visible portion is read from the disk, so it is fast and light whatever the size. The file is never modified. Open it from Various > LogSearch or with [Ctrl + Alt + L]: the window opens empty and the <b>Open file...</b> button at the top chooses the file (you can also drop a file on the window). Once loaded, under the file name you see its path, size, last modified and created dates, number of lines and whether it is read-only. There is one LogSearch window at a time, with one file: opening another file replaces the current one. Opening a file from the text editor loads that file directly.</li>
-					<li class="highLineHeigthList">When you open in the text editor a file bigger than the maximum size (or with too many lines), ScreepT proposes to open it with LogSearch instead. The maximum size is set in Graphics options > Text editor > "Max file size (MB)".</li>
+					<li class="highLineHeigthList">LogSearch opens a big text file (a log, a dump, a CSV of many gigabytes) read-only, without loading it in memory: only the visible portion is read from the disk, so it is fast and light whatever the size. The file is never modified. Open it from Various > LogSearch or with [Ctrl + Alt + L]: the window opens empty and the <b>Open file...</b> button at the top chooses the file (you can also drop a file on the window). Once loaded, under the file name you see its path, size, last modified and created dates, number of lines and whether it is read-only. There is one LogSearch window at a time, with one file: opening another file replaces the current one. Opening a file from the file editor loads that file directly.</li>
+					<li class="highLineHeigthList">The <b>Monitor</b> check box of LogSearch (on by default) watches the file: what other programs write to it, such as the new lines of a log that keeps growing, appears by itself in the lines and in the search results, and the view follows the end if it was at the end. A file that is rewritten or replaced (for example by a log rotation) is indexed again. If you turn the monitor off, a warning tells you when the file changed on disk, because the lines shown could be old, and the <b>Refresh</b> button reads the file again and repeats the search. LogSearch does not keep the file open, so the program that writes the log can rotate, rename or delete it.</li>
+					<li class="highLineHeigthList">The level buttons (TRACE, DEBUG, INFO, WARN, ERROR) appear when the file has log levels: besides the usual words (log4j, logback, Python, java.util.logging...) LogSearch recognizes [INF] [WRN] [ERR] (Serilog), fail: / warn: (.NET), E0102 12:00:00 (glog), E/Tag (Android logcat), FINE / FINER / FINEST, NOTICE / ALERT / EMERG (syslog) and JSON lines with "level". The <b>Dates</b> filter appears when the lines have a date (2026-11-16 12:00:00, 16/11/2026, 10/Oct/2026:13:55:36, Nov 16 12:00:00, Nov 16, 2026, Unix time): type the first and the last day as dd/MM/yyyy or pick them from the calendar (both included, each one is optional). A date typed or picked turns the filter on; the check box turns it off without losing the dates, and the cross removes them. The filter assumes that the lines are in chronological order, as in a normal log, and works on the lines and on the search results.</li>
+					<li class="highLineHeigthList">When you open in the file editor a file bigger than the maximum size (or with too many lines), ScreepT proposes to open it with LogSearch instead. The maximum size is set in Graphics options > File editor > "Max file size (MB)".</li>
 					<li class="highLineHeigthList">The search runs while you type. As plain text it understands a small language made for logs: <span class="highlightBolded">error timeout</span> (all the words, in any order), <span class="highlightBolded">"connection reset"</span> (an exact phrase) and <span class="highlightBolded">-healthcheck</span> (lines without that word). The Regex button makes the text a regular expression; Aa matches the case and "ab" whole words. [F3] / [Shift + F3] (or Enter) go to the next and previous match, [Ctrl + F] focuses the search box, Stop interrupts a long search.</li>
 					<li class="highLineHeigthList"><b>Levels.</b> ERROR, WARN, INFO, DEBUG and TRACE are recognised while the file is read: they colour the left stripe of each line and the map beside the scroll bar (red for errors, orange for warnings), and a stack trace follows the level of its entry. The level chips in the toolbar show how many lines each level has: click one to show or hide that level in the matches, right click to see only that one. [F8] / [Shift + F8] jump to the next and previous error.</li>
 					<li class="highLineHeigthList"><b>Matches.</b> The list under the file shows the matching lines, with the number of lines of context you choose (Context menu: none, 1, 2, 3, 5 or 8 lines around each match). The save button writes the matching lines to a new file.</li>
@@ -791,7 +797,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 				<h2 id="funcShellInteractive" class="sectionSubTitle"> 2.13 - SHELL: INTERACTIVE MODE</h2>
 				<hr>
 				<p><ul>
-					<li class="highLineHeigthList">The shell (Various > System Console, [Ctrl + Alt + S], and the collapsible panel of the text editor) has two modes, chosen with the Interactive checkbox in its header.</li>
+					<li class="highLineHeigthList">The shell (Various > System Console, [Ctrl + Alt + S], and the collapsible panel of the file editor) has two modes, chosen with the Interactive checkbox in its header.</li>
 					<li class="highLineHeigthList">Text mode (checkbox off) is the classic one: the selected commands, or the current block, are run and their output is printed as plain text; a Live cmd field lets you answer to a running command.</li>
 										<li class="highLineHeigthList">Interactive mode (checkbox on) opens a real terminal inside the panel, as if you were using the native one: a real shell with colors, prompt, history, line editing, cursor movements and programs that need a terminal (editors, progress bars, prompts, TUI tools such as Claude Code: type <span class="highlightBolded">claude</span> and use it as usual). Type directly in it; the Play button types the selected commands (or the current block) in the terminal and presses Enter; Stop closes the shell, and Enter in a closed terminal starts a new one. The whole history stays available: scroll it with the mouse wheel, the scroll bar or <span class="highlightBolded">Shift+PageUp/PageDown</span> (<span class="highlightBolded">Shift+Home/End</span> for the beginning and the end), and search it with the magnifier button or <span class="highlightBolded">Ctrl+Shift+H</span> (<span class="highlightBolded">Cmd+Shift+H</span> on macOS): a search bar opens above the terminal with match case, regular expression and whole word options, a match counter and previous/next buttons (<span class="highlightBolded">Enter</span> goes to the previous match, <span class="highlightBolded">Shift+Enter</span> to the next one, <span class="highlightBolded">Esc</span> closes the bar). Full screen programs receive the wheel as they ask for it. The terminal opens in the folder of the loaded script, else in your home folder.</li>
 					<li class="highLineHeigthList">The shell is the same kind on every system: on Linux and macOS your own shell ($SHELL, started as login shell); on Windows Git Bash when Git is installed (so it feels like Linux), else PowerShell, else cmd. To use another one set the environment variable SCREEPT_SHELL before starting ScreepT, for example SCREEPT_SHELL=wsl.exe or SCREEPT_SHELL=pwsh.exe -NoLogo.</li>
@@ -819,7 +825,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 				<h2 id="funcEasterEggs" class="sectionSubTitle"> 2.11 - EASTER EGGS</h2>
 				<hr>
 				<p><ul>
-					<li class="highLineHeigthList">Hidden games and effects: on the home page press a letter three times in a row (S snake, A Puppynoid, M cats parade, B Bug Squasher, C Cipher Breaker, W Code Typist, T Shortcut Trivia, F fortune cookie, G glitch). Ctrl+Alt+U four times opens the code poem in the crypter and in the text editor. The home terminal summons every one of them by name (type eggs).</li>
+					<li class="highLineHeigthList">Hidden games and effects: on the home page press a letter three times in a row (S snake, A Puppynoid, M cats parade, B Bug Squasher, C Cipher Breaker, W Code Typist, T Shortcut Trivia, F fortune cookie, G glitch). Ctrl+Alt+U four times opens the code poem in the crypter and in the file editor. The home terminal summons every one of them by name (type eggs).</li>
 					<li class="highLineHeigthList"><span class="highlightBolded">Cats </span>- Feo and Nano, pixel art, play in the launcher (on the loading image and on the edge of the controls) and visit the home page after 10 seconds of quiet, only while ScreepT is the active window. On the home page they never cover the text of the prompt: they stay beside it and now and then one touches it with a paw and goes away; they also roll, flip, nap, stretch, run and spin at random. In the loading window only Nano plays.</li>
 					<li class="highLineHeigthList"><span class="highlightBolded">Bug Squasher </span>- click the bugs for 30 seconds, golden ones are fast and worth five. <span class="highlightBolded">Cipher Breaker </span>- decrypt Caesar-shifted words before the time runs out. <span class="highlightBolded">Code Typist </span>- typing speed test, words per minute and accuracy. <span class="highlightBolded">Shortcut Trivia </span>- ten questions built from the shortcuts of this guide. <span class="highlightBolded">Fortune cookie </span>- a ScreepT quote typed on a retro console over the window. <span class="highlightBolded">Glitch </span>- the window goes haywire, nobody is hacked.</li>
 					<li class="highLineHeigthList">In the About window the terminal line accepts text: tell ScreepT how you feel about it and it may answer with a list of all the easter eggs, their descriptions and a Launch button.</li>
@@ -829,7 +835,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 				<h2 id="funcRecentOther" class="sectionSubTitle"> 2.10 - EDITOR THEME AND OTHER NEW THINGS</h2>
 				<hr>
 				<p><ul>
-					<li class="highLineHeigthList"><span class="highlightBolded">ScreepT Dark editor theme </span>(screept-dark.xml): a soft, deep and matte syntax theme matching the dark interface, with colors for every language of the editor. It is the default for new installations and can be chosen in the theme combo box of the text editor toolbar.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">ScreepT Dark editor theme </span>(screept-dark.xml): a soft, deep and matte syntax theme matching the dark interface, with colors for every language of the editor. It is the default for new installations and can be chosen in the theme combo box of the file editor toolbar.</li>
 					<li class="highLineHeigthList"><span class="highlightBolded">Theme Editor </span>(Preferences, editor themes): a searchable list of 60+ elements in groups (editor, highlights, gutter and folding, options, embedded languages, syntax tokens). Click a color chip to change it, right click to copy or paste a hex color or remove it; each element can be bold or italic. Click a piece of code in the preview to jump to its element. Ctrl+S saves; default themes can be edited too, "Save as" keeps your own version.</li>
 					<li class="highLineHeigthList"><span class="highlightBolded">Network info, Deep search </span>: by default only the physical adapters are listed; tick <b>Deep search</b> to also see virtual machines, VPNs, containers, tunnels, IPv6 and link-local addresses. F5 reloads the adapters, each value has its own copy button and <b>Copy all</b> (Ctrl+Shift+C) copies everything.</li>
 					<li class="highLineHeigthList"><span class="highlightBolded">Image Studio, crop </span>is live: with the Crop section open the whole image is shown with the crop on it; drag the corners, the sides or the whole rectangle and the sliders follow.</li>
@@ -837,7 +843,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 					<li class="highLineHeigthList"><span class="highlightBolded">Network info </span>opens without freezing: adapters, public IP, DNS and gateway load in the background.</li>
 					<li class="highLineHeigthList">Progress windows and secondary frames no longer switch the application to the Nimbus look and feel: the theme selected in the graphic preferences is always kept.</li>
 					<li class="highLineHeigthList">Dialogs, easter eggs and the first-start name request open on the monitor you used last.</li>
-					<li class="highLineHeigthList"><span class="highlightBolded">Margin, font size, inline tabs and adapt text width </span>are now set in the graphic preferences (Text editor section: Font, Margin, and the Inline tabs and Adapt text width checkboxes) instead of the text editor toolbar. Their shortcuts keep working: inline tabs [Ctrl + Shift + I], font size [Ctrl + Shift + MouseWheel].</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Margin, font size, inline tabs and adapt text width </span>are now set in the graphic preferences (File editor section: Font, Margin, and the Inline tabs and Adapt text width checkboxes) instead of the file editor toolbar. Their shortcuts keep working: inline tabs [Ctrl + Shift + I], font size [Ctrl + Shift + MouseWheel].</li>
 				</ul></p>
 
 			
@@ -864,7 +870,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 					<h4> Windows and top-right bar:</h4>
 					<li> <span class="SHCT_TEXT">CLOSE WINDOW</span> - [Esc] closes the active window like its title bar X (not the main window)</li>
 					<li> <span class="SHCT_TEXT">SEARCH OPTIONS (Graphics options)</span> - [Ctrl + F]; [Esc] clears the search, a second [Esc] closes the window</li>
-					<li> <span class="SHCT_TEXT">PIN APPLICATION ON TOP</span> - click the pin on the top-right: ScreepT and all its windows stay on top of other applications; when not pinned, ScreepT windows behave as normal windows (the color picker always stays above the ScreepT window it was opened from)</li>
+					<li> <span class="SHCT_TEXT">PIN APPLICATION ON TOP</span> - click the pin on the top-right: ScreepT and all its windows stay on top of other applications; when not pinned, ScreepT windows behave as normal windows (the color picker always stays on top of everything)</li>
 					<li> <span class="SHCT_TEXT">RESOURCES USAGE</span> - next to the top-right toggles ScreepT shows its own CPU usage and memory (used / available), and the whole PC CPU usage and memory (used / total), refreshed every second: hover it to see more details</li>
 					<li> <span class="SHCT_TEXT">COLOR PICKER</span> - with picker active, click an element or press [Shift + Ctrl] while moving the mouse to pick its color; [Alt + Tab] switches application as usual</li>
 					<li> <span class="SHCT_TEXT">FILE DIALOGS</span> - open/save dialogs are the native Windows ones (editable address bar, search, copy/paste); when files and folders can be chosen, use "Select current folder" to pick the folder you are in</li>
@@ -892,8 +898,8 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 					<li> <span class="SHCT_TEXT">OPEN IMAGE KEYGEN</span> - [Alt + Shift + K]</li>
 					<li> <span class="SHCT_TEXT">OPEN KEY DICTIONARY</span> - [Alt + Shift + D]</li>
 					<hr>
-					<h4> 4 - Text editor submenu:</h4>
-					<li> <span class="SHCT_TEXT">OPEN TEXT EDITOR</span> - [Alt + Shift + T]</li>
+					<h4> 4 - File editor submenu:</h4>
+					<li> <span class="SHCT_TEXT">OPEN FILE EDITOR</span> - [Alt + Shift + T]</li>
 					<li> <span class="SHCT_TEXT">IMPORT/EXPORT CRYPTED WORKSPACE</span> - [Ctrl + Alt + Shift + I]</li>
 					<hr>
 					<h4> 5 - Various submenu:</h4>
@@ -929,21 +935,21 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 					<hr>
 					<h4> 6.1 - RESET PANELS:</h4>
 					<li> <span class="SHCT_TEXT">RESET ALL PANELS</span> - [Ctrl + Alt + Shift + 0]</li>
-					<li> <span class="SHCT_TEXT">RESET TEXT EDITOR</span> - [Ctrl + Alt + Shift + 9]</li>
+					<li> <span class="SHCT_TEXT">RESET FILE EDITOR</span> - [Ctrl + Alt + Shift + 9]</li>
 					<li> <span class="SHCT_TEXT">RESET CRYPTER</span> - [Ctrl + Alt + Shift + 8]</li>
 					<li> <span class="SHCT_TEXT">RESET CONFIGURATION MANAGER</span> - [Ctrl + Alt + Shift + 7]</li>
 				</ul></p>				
 
 				<hr>
-				<h2 id="shctsTextEditor" class="sectionSubTitle"> 3.2 - TEXT EDITOR SHORTCUTS</h2>
+				<h2 id="shctsTextEditor" class="sectionSubTitle"> 3.2 - FILE EDITOR SHORTCUTS</h2>
 				<hr>
 				<p><ul class="shorctutsList">
 					
 					<h4> On-the-fly view change:</h4>
 					<li> <span class="SHCT_TEXT">MAXIMIZE TEXT AREA</span> - [Ctrl + M]</li>
-					<li> <span class="SHCT_TEXT">SHOW/HIDE SCREEPT TEXT EDITOR'S HEADER</span> - [Ctrl + Shift + Alt + H]</li>
-					<li> <span class="SHCT_TEXT">SHOW/HIDE SCREEPT TEXT EDITOR'S SUB-HEADER</span> - [Ctrl + Shift + Alt + U]</li>
-					<li> <span class="SHCT_TEXT">SHOW/HIDE SCREEPT TEXT EDITOR'S FOOTER</span> - [Ctrl + Shift + Alt + L]</li>
+					<li> <span class="SHCT_TEXT">SHOW/HIDE SCREEPT FILE EDITOR'S HEADER</span> - [Ctrl + Shift + Alt + H]</li>
+					<li> <span class="SHCT_TEXT">SHOW/HIDE SCREEPT FILE EDITOR'S SUB-HEADER</span> - [Ctrl + Shift + Alt + U]</li>
+					<li> <span class="SHCT_TEXT">SHOW/HIDE SCREEPT FILE EDITOR'S FOOTER</span> - [Ctrl + Shift + Alt + L]</li>
 					<li> <span class="SHCT_TEXT">OPEN/CLOSE FILE TREE PANEL</span> - [Alt + Q]</li>
 					<li> <span class="SHCT_TEXT">OPEN/CLOSE CLIPBOARD PANEL</span> - [Alt + A]</li>
 					<li> <span class="SHCT_TEXT">OPEN/CLOSE DOCUMENT MAP PANEL</span> - [Alt + W]</li>
@@ -965,7 +971,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 					<li> <span class="SHCT_TEXT">ADAPT WIDTH TO SCREEN SIZE</span> - [Ctrl + Shift + A]</li>
 					
 					<hr>
-					<h4> Various and text editor panels:</h4>
+					<h4> Various and file editor panels:</h4>
 					<li> <span class="SHCT_TEXT">OPEN SPECIAL/ESCAPES PANEL</span> - [Ctrl + E]</li>
 					<li> <span class="SHCT_TEXT">OPEN TEMPLATES PANEL</span> - [Ctrl + T]</li>
 					<li> <span class="SHCT_TEXT">OPEN CALCULATOR</span> - [Ctrl + Alt + C]</li>
@@ -1068,19 +1074,19 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 						
 						<li><span class="highlightBolded">Apache commons</span> are widely used both for some network communication and for file related stuff. <a class="dependencyLink" target="_blank" href="https://commons.apache.org">[https://commons.apache.org]</a></li>
 						
-						<li><span class="highlightBolded">RsyntaxTextArea</span> Is widely used in text editor, ScreepT, and also configuration manager. <a class="dependencyLink" target="_blank" href="https://github.com/bobbylight/RSyntaxTextArea">[https://github.com/bobbylight/RSyntaxTextArea]</a></li>
+						<li><span class="highlightBolded">RsyntaxTextArea</span> Is widely used in file editor, ScreepT, and also configuration manager. <a class="dependencyLink" target="_blank" href="https://github.com/bobbylight/RSyntaxTextArea">[https://github.com/bobbylight/RSyntaxTextArea]</a></li>
 						
 						<li><span class="highlightBolded">Tesseract</span> Is used for image-pdf-text conversion and parsing <a class="dependencyLink" target="_blank" href="https://github.com/nguyenq/tess4j">[https://github.com/nguyenq/tess4j]</a></li>
 						
 						<li><span class="highlightBolded">FreeTTS</span> is used to implement text speaker. <a class="dependencyLink" target="_blank" href="https://freetts.sourceforge.io">[https://freetts.sourceforge.io]</a></li>
 
-						<li><span class="highlightBolded">Minhas Kamal - Ultimate calculator</span> is used in text editor. <a class="dependencyLink" target="_blank" href="http://minhaskamal.github.io/UltimateCalculator/">[http://minhaskamal.github.io/UltimateCalculator/]</a></li>
+						<li><span class="highlightBolded">Minhas Kamal - Ultimate calculator</span> is used in file editor. <a class="dependencyLink" target="_blank" href="http://minhaskamal.github.io/UltimateCalculator/">[http://minhaskamal.github.io/UltimateCalculator/]</a></li>
 
 						<li><span class="highlightBolded">Icons8</span> has been used to find ScreepT's most icons. <a class="dependencyLink" target="_blank" href="https://icons8.com">[https://icons8.com]</a></li>
 
 						<li><span class="highlightBolded">Smashicons</span> has been used to find some others ScreepT's icons. <a class="dependencyLink" target="_blank" href="https://www.flaticon.com">[https://www.flaticon.com/]</a></li>
 
-						<li><span class="highlightBolded">JsBeautifier</span> has been used to implement text editor code formatter, using external calls to a JS library. <a class="dependencyLink" target="_blank" href="https://jsbeautifier.org/">[https://jsbeautifier.org/]</a></li>
+						<li><span class="highlightBolded">JsBeautifier</span> has been used to implement file editor code formatter, using external calls to a JS library. <a class="dependencyLink" target="_blank" href="https://jsbeautifier.org/">[https://jsbeautifier.org/]</a></li>
 
 						<li><span class="highlightBolded">RXTextUtilities</span> was very useful to do some text area related operations. Thanks to Rob Camick for this awesome code. <a class="dependencyLink" target="_blank" href="https://tips4java.wordpress.com/2008/10/26/text-utilities/">[https://tips4java.wordpress.com/2008/10/26/text-utilities/]</a></li>
 					</ul>

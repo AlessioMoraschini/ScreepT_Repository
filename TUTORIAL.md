@@ -99,7 +99,7 @@ INDEX
         
     *   [Various](#funcVariousSubMenu)
         
-        *   [TEXT EDITOR](#subSectTitleTxtEditor)
+        *   [FILE EDITOR](#subSectTitleTxtEditor)
         *   [SYSTEM INFORMATIONS](#subSectTitleSysInfo)
         *   [NETWORK INFORMATIONS](#subSectTitleNetInfo)
         *   [IMAGE CONVERTER](#subSectTitleImgConverter)
@@ -113,7 +113,7 @@ INDEX
     *   [General Purpose shortcuts](#shctsMainGui)
         
     
-    *   [Text Editor shortcuts](#shctsTextEditor)
+    *   [File Editor shortcuts](#shctsTextEditor)
         
 4.  [Credits and links](#CreditsNLinks)
     
@@ -324,9 +324,9 @@ IMPORTANT: always remember to do not delete ScreepT folders when you view in sys
 2.4 - VARIOUS SUBMENU
 ---------------------
 
-*   ![](../Icons/Menu_Icons/textEditor.png) TEXT EDITOR
+*   ![](../Icons/Menu_Icons/textEditor.png) FILE EDITOR
 
-This is a minimal text editor with basic functions, with some extra functionality such as:
+This is a minimal file editor with basic functions, with some extra functionality such as:
 
 *   TEXT SPEAKER \- you can use this by clicking on ![](../Icons/Text_Editor/Speaker.png) or using the shortcut \[Ctrl+spacebar\]. This way you will hear the text visible in text-area with english pronunciation. You can also choose the voice speed rate, dragging the selector over the speaker button.
 *   TEXT CRYPT/DECRYPT \- with a non-empty password specified in the password-field on top, you can encrypt/decrypt with AES (128bit) the text loaded in text-area, just by clicking on crypt ![](../Icons/Text_Editor/Crypt.png) or decrypt ![](../Icons/Text_Editor/Decrypt.png) (or using the shortcut \[Ctrl+shift+C / Ctrl+shift+D\]).
@@ -433,9 +433,9 @@ IMPORTANT: Always remember that changing section you won't lose any progress of 
 
 * * *
 
-#### 4 - Text editor submenu:
+#### 4 - File editor submenu:
 
-*   OPEN TEXT EDITOR - \[Alt + Shift + T\]
+*   OPEN FILE EDITOR - \[Alt + Shift + T\]
 *   IMPORT/EXPORT CRYPTED WORKSPACE - \[Ctrl + Alt + Shift + I\]
 
 * * *
@@ -480,11 +480,11 @@ IMPORTANT: Always remember that changing section you won't lose any progress of 
 #### 6.1 - RESET PANELS:
 
 *   RESET ALL PANELS - \[Ctrl + Alt + Shift + 0\]
-*   RESET TEXT EDITOR - \[Ctrl + Alt + Shift + 9\]
+*   RESET FILE EDITOR - \[Ctrl + Alt + Shift + 9\]
 *   RESET CRYPTER - \[Ctrl + Alt + Shift + 8\]
 *   RESET CONFIGURATION MANAGER - \[Ctrl + Alt + Shift + 7\]
 
-3.2 - TEXT EDITOR SHORTCUTS
+3.2 - FILE EDITOR SHORTCUTS
 ---------------------------
 
 * * *
@@ -492,9 +492,9 @@ IMPORTANT: Always remember that changing section you won't lose any progress of 
 #### On-the-fly view change:
 
 *   MAXIMIZE TEXT AREA - \[Ctrl + M\]
-*   SHOW/HIDE SCREEPT TEXT EDITOR'S HEADER - \[Ctrl + Shift + Alt + H\]
-*   SHOW/HIDE SCREEPT TEXT EDITOR'S SUB-HEADER - \[Ctrl + Shift + Alt + U\]
-*   SHOW/HIDE SCREEPT TEXT EDITOR'S FOOTER - \[Ctrl + Shift + Alt + L\]
+*   SHOW/HIDE SCREEPT FILE EDITOR'S HEADER - \[Ctrl + Shift + Alt + H\]
+*   SHOW/HIDE SCREEPT FILE EDITOR'S SUB-HEADER - \[Ctrl + Shift + Alt + U\]
+*   SHOW/HIDE SCREEPT FILE EDITOR'S FOOTER - \[Ctrl + Shift + Alt + L\]
 *   OPEN/CLOSE FILE TREE PANEL - \[Alt + Q\]
 *   OPEN/CLOSE CLIPBOARD PANEL - \[Alt + A\]
 *   OPEN/CLOSE DOCUMENT MAP PANEL - \[Alt + W\]
@@ -519,7 +519,7 @@ IMPORTANT: Always remember that changing section you won't lose any progress of 
 
 * * *
 
-#### Various and text editor panels:
+#### Various and file editor panels:
 
 *   OPEN SPECIAL/ESCAPES PANEL - \[Ctrl + E\]
 *   OPEN TEMPLATES PANEL - \[Ctrl + T\]
@@ -614,12 +614,12 @@ In this project are used different open source libraries, to which I really want
 *   Ini4J.Org is used to manage configuration ".INI" files. [\[http://ini4j.sourceforge.net\]](http://ini4j.sourceforge.net)
 *   PngTastic is used to manage PNG conversion. [\[https://github.com/depsypher/pngtastic\]](https://github.com/depsypher/pngtastic)
 *   Apache commons are widely used both for some network communication and for file related stuff. [\[https://commons.apache.org\]](https://commons.apache.org)
-*   RsyntaxTextArea Is widely used in text editor, ScreepT, and also configuration manager. [\[https://github.com/bobbylight/RSyntaxTextArea\]](https://github.com/bobbylight/RSyntaxTextArea)
+*   RsyntaxTextArea Is widely used in file editor, ScreepT, and also configuration manager. [\[https://github.com/bobbylight/RSyntaxTextArea\]](https://github.com/bobbylight/RSyntaxTextArea)
 *   Tesseract Is used for image-pdf-text conversion and parsing [\[https://github.com/nguyenq/tess4j\]](https://github.com/nguyenq/tess4j)
 *   FreeTTS is used to implement text speaker. [\[https://freetts.sourceforge.io\]](https://freetts.sourceforge.io)
 *   Icons8 has been used to find ScreepT's most icons. [\[https://icons8.com\]](https://icons8.com)
 *   Smashicons has been used to find some others ScreepT's icons. [\[https://www.flaticon.com/\]](https://www.flaticon.com)
-*   JsBeautifier has been used to implement text editor code formatter, using external calls to a JS library. [\[https://jsbeautifier.org/\]](https://jsbeautifier.org/)
+*   JsBeautifier has been used to implement file editor code formatter, using external calls to a JS library. [\[https://jsbeautifier.org/\]](https://jsbeautifier.org/)
 
   
 

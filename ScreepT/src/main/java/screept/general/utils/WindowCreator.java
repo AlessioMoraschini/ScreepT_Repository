@@ -119,6 +119,17 @@ public class WindowCreator {
 		return hashCheckerFrame;
 	}
 
+	/** The File Hash checker window on a given file (from the file tree) */
+	public HashCheckerFrame newHashChecker(File file) {
+		HashCheckerFrame hashCheckerFrame = HashCheckerFrame.getInstance(
+				file, mainApplication.getMainFrame(), MainGUI.currentConfiguration.getTextEditorOpt());
+		if (file != null) {
+			hashCheckerFrame.loadFile(file, true);
+		}
+		commonGraphicInitAlwaysOnTop(hashCheckerFrame, "File Hash Checker - ", true);
+		return hashCheckerFrame;
+	}
+
 	public ClipboardFrame newClipboardFrame() {
 
 		ClipboardFrame clipboardFrame = ClipboardFrame.getInstance(
@@ -240,7 +251,7 @@ public class WindowCreator {
 	public ColorPickerFrame newColorPickerFrame() {
 
 		ColorPickerFrame colorPickerFrame = ColorPickerFrame.getInstance(mainApplication.getMainFrame());
-		commonGraphicInitAlwaysOnTop(colorPickerFrame, "Color Picker Frame", true);
+		commonGraphicInitAlwaysOnTop(colorPickerFrame, "Color Picker - ", true);
 
 		return colorPickerFrame;
 	}

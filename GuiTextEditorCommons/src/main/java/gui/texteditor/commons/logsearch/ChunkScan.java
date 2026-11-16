@@ -76,6 +76,11 @@ final class ChunkScan {
 
 	/** Runs on the calling thread (which reads) plus worker threads; returns when everything is done or cancelled */
 	static void run(File file, Supplier<Task> tasks, Committer committer, AtomicBoolean cancelled) throws IOException {
+		run(file, 0L, tasks, committer, cancelled);
+	}
+
+	/** Same, but starting at a byte offset that is the beginning of a line: only what a file gained is scanned */
+	static void run(File file, long startOffset, Supplier<Task> tasks, Committer committer, AtomicBoolean cancelled) throws IOException {
 		final int workers = defaultWorkers();
 		final BlockingQueue<byte[]> free = new ArrayBlockingQueue<byte[]>(workers + 3);
 		for (int i = 0; i < workers + 3; i++) {
@@ -129,7 +134,7 @@ final class ChunkScan {
 		}
 
 		try {
-			read(file, free, full, cancelled, failed);
+			read(file, startOffset, free, full, cancelled, failed);
 		} finally {
 			for (int w = 0; w < workers; w++) {
 				full.add(END);
@@ -148,12 +153,20 @@ final class ChunkScan {
 		free.offer(data.length == CHUNK ? data : new byte[CHUNK]);
 	}
 
-	private static void read(File file, BlockingQueue<byte[]> free, BlockingQueue<Chunk> full, AtomicBoolean cancelled, AtomicBoolean failed)
+	private static void read(File file, long startOffset, BlockingQueue<byte[]> free, BlockingQueue<Chunk> full, AtomicBoolean cancelled, AtomicBoolean failed)
 			throws IOException {
 		try (InputStream in = new FileInputStream(file)) {
 			byte[] current = take(free);
 			int have = 0;
-			long offset = 0;
+			long skipped = 0;
+			while (skipped < startOffset) {
+				long step = in.skip(startOffset - skipped);
+				if (step <= 0) {
+					break;
+				}
+				skipped += step;
+			}
+			long offset = skipped;
 			long sequence = 0;
 			while (current != null && !cancelled.get() && !failed.get()) {
 				if (have == current.length) {

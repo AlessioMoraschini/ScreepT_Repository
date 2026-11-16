@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
+import java.util.zip.CRC32;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,8 +41,7 @@ final class LogFileIndex implements Closeable {
 	private static final int MAX_FULL_BYTES = 8 * 1024 * 1024;
 
 	private final File file;
-	private final RandomAccessFile reader;
-	private final long length;
+	private volatile long length;
 
 	private final Object offsetsLock = new Object();
 	private long[] blockOffsets = new long[1024];
@@ -59,6 +59,27 @@ final class LogFileIndex implements Closeable {
 	private volatile boolean complete;
 	private volatile boolean closed;
 
+	/** Bytes used to recognize that the file is still the one that was indexed (start and end of the indexed part) */
+	private static final int FINGERPRINT = 4096;
+	private volatile long scannedEnd;
+	private volatile long snapshotLength;
+	private volatile long snapshotModified;
+	private volatile long sampleFingerprint;
+	private volatile boolean snapshotReady;
+	/** Line and byte where the last extension restarted: the matches of a search are scanned again from there */
+	private volatile int resumeLine;
+	private volatile long resumeOffset;
+	private volatile int extendFromBlock = -1;
+
+	/** Date format of the file (see LogDates), found on its first lines before the indexing starts */
+	private volatile int dateFormat = LogDates.NONE;
+	private int defaultYear = java.time.LocalDate.now().getYear();
+
+	/** What happened to the file on disk since it was indexed */
+	enum Change {
+		UNCHANGED, APPENDED, REWRITTEN, MISSING
+	}
+
 	private final Map<Integer, String[]> cache = new LinkedHashMap<Integer, String[]>(64, 0.75f, true) {
 		@Override
 		protected boolean removeEldestEntry(Map.Entry<Integer, String[]> eldest) {
@@ -68,8 +89,11 @@ final class LogFileIndex implements Closeable {
 
 	LogFileIndex(File file) throws IOException {
 		this.file = file;
-		this.reader = new RandomAccessFile(file, "r");
-		this.length = reader.length();
+		// opened only to check that it can be read: no handle is kept (on Windows an open file cannot be deleted or renamed by the
+		// program that writes it, so a log could not rotate while it is shown here)
+		try (RandomAccessFile probe = new RandomAccessFile(file, "r")) {
+			this.length = probe.length();
+		}
 	}
 
 	File file() {
@@ -135,9 +159,126 @@ final class LogFileIndex implements Closeable {
 
 	/** Starts the indexing pass on a daemon thread */
 	void startIndexing() {
+		detectDates();
 		Thread thread = new Thread(this::buildIndex, "LogSearch-index");
 		thread.setDaemon(true);
 		thread.start();
+	}
+
+	/** Looks at the first 128 KB to find the date format; the year of syslog lines (they have none) is the one of the file */
+	private void detectDates() {
+		try (InputStream in = new FileInputStream(file)) {
+			byte[] sample = new byte[128 * 1024];
+			int read = 0;
+			int n;
+			while (read < sample.length && (n = in.read(sample, read, sample.length - read)) > 0) {
+				read += n;
+			}
+			long modified = file.lastModified();
+			if (modified > 0) {
+				defaultYear = java.time.Instant.ofEpochMilli(modified).atZone(java.time.ZoneId.systemDefault()).getYear();
+			}
+			dateFormat = LogDates.detect(sample, read, defaultYear);
+		} catch (IOException | RuntimeException e) {
+			dateFormat = LogDates.NONE;
+		}
+	}
+
+	/** True when the lines have dates in a known format: the date filter is possible */
+	boolean hasDates() {
+		return dateFormat != LogDates.NONE && lineCount > 0;
+	}
+
+	int dateFormat() {
+		return dateFormat;
+	}
+
+	/** Day number of a line (read from its text), 0 when the line has no date */
+	int dayOf(int line) {
+		return dateFormat == LogDates.NONE ? 0 : LogDates.parse(dateFormat, line(line), defaultYear);
+	}
+
+	/** Day of the first dated line, 0 when unknown */
+	int firstDay() {
+		for (int l = 0; l < lineCount && l < 400; l++) {
+			int day = dayOf(l);
+			if (day != 0) {
+				return day;
+			}
+		}
+		return 0;
+	}
+
+	/** Day of the last dated line indexed so far, 0 when unknown */
+	int lastDay() {
+		for (int l = lineCount - 1, tries = 0; l >= 0 && tries < 400; l--, tries++) {
+			int day = dayOf(l);
+			if (day != 0) {
+				return day;
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * Lines from a day (0 = no limit) to a day (included), as [start, end). Nothing is recorded while indexing: the limits are found when
+	 * asked, with a binary search over the blocks of 64 lines that reads the first dated line of about 15 of them. It assumes the lines
+	 * are in chronological order (the normal case of a log); a line out of order can fall on the wrong side of a limit.
+	 */
+	int[] lineRange(int fromDay, int toDay) {
+		int start = 0;
+		int end = lineCount;
+		if (fromDay > 0) {
+			start = boundary(fromDay, false);
+		}
+		if (toDay > 0) {
+			end = boundary(toDay, true);
+		}
+		return new int[] {start, Math.max(start, end)};
+	}
+
+	/** Day of the first dated line of a block, 0 when none of its lines has a date */
+	private int blockFirstDay(int block) {
+		int last = Math.min(lineCount, (block + 1) * BLOCK);
+		for (int line = block * BLOCK; line < last; line++) {
+			int day = dayOf(line);
+			if (day != 0) {
+				return day;
+			}
+		}
+		return 0;
+	}
+
+	/** First line dated >= day (or > day when strictly) */
+	private int boundary(int day, boolean strictly) {
+		int blocks;
+		synchronized (offsetsLock) {
+			blocks = Math.min(blockCount, (lineCount + BLOCK - 1) / BLOCK);
+		}
+		int low = 0;
+		int high = blocks;
+		while (low < high) {
+			int mid = (low + high) >>> 1;
+			int value = blockFirstDay(mid);
+			for (int probe = mid + 1; value == 0 && probe < blocks && probe < mid + 8; probe++) {
+				value = blockFirstDay(probe); // a block of an only stack trace: the next dated one tells the same
+			}
+			if (value != 0 && (strictly ? value > day : value >= day)) {
+				high = mid;
+			} else {
+				low = mid + 1;
+			}
+		}
+		// the line is in the block before the first one that qualifies (the lines of the day before come first) or at its start
+		int scanFrom = Math.max(0, (low - 1) * BLOCK);
+		int scanTo = Math.min(lineCount, (low + 1) * BLOCK);
+		for (int line = scanFrom; line < scanTo; line++) {
+			int value = dayOf(line);
+			if (value != 0 && (strictly ? value > day : value >= day)) {
+				return line;
+			}
+		}
+		return low >= blocks ? lineCount : scanTo;
 	}
 
 	/** Raw verdict of one line, before the inheritance of the stack trace levels is applied */
@@ -153,8 +294,12 @@ final class LogFileIndex implements Closeable {
 	}
 
 	private void buildIndex() {
+		runIndex(0L);
+	}
+
+	private void runIndex(long startOffset) {
 		try {
-			ChunkScan.run(file, () -> new ChunkScan.Task() {
+			ChunkScan.run(file, startOffset, () -> new ChunkScan.Task() {
 				private final byte[] head = new byte[HEAD];
 
 				@Override
@@ -165,9 +310,135 @@ final class LogFileIndex implements Closeable {
 		} catch (IOException e) {
 			// a file that cannot be read further just stays as indexed so far
 		} finally {
+			if (!closed && !stopIndexing.get()) {
+				captureSnapshot();
+			}
+			int from = extendFromBlock;
+			if (from >= 0) {
+				// the last block grew: its cached text is old
+				synchronized (cache) {
+					cache.keySet().removeIf(block -> block >= from);
+				}
+				extendFromBlock = -1;
+			}
 			complete = true;
 			indexedBytes = length;
 		}
+	}
+
+	/** What the file looked like when the index was finished: its size, its date and the checksum of its start and of its end */
+	private void captureSnapshot() {
+		long end = scannedEnd;
+		length = end;
+		snapshotLength = end;
+		snapshotModified = file.lastModified();
+		try (RandomAccessFile probe = new RandomAccessFile(file, "r")) {
+			sampleFingerprint = sample(probe, end);
+			snapshotReady = true;
+		} catch (IOException | RuntimeException e) {
+			snapshotReady = false;
+		}
+	}
+
+	/**
+	 * Checksum of small windows of the first {@code size} bytes: the start, the end and 7 more spread along the file. Reading the
+	 * whole file would cost too much on a big one; a change inside it is seen unless it falls between the windows and keeps the size.
+	 */
+	private static long sample(RandomAccessFile probe, long size) throws IOException {
+		CRC32 crc = new CRC32();
+		byte[] data = new byte[FINGERPRINT];
+		for (int k = 0; k <= 8; k++) {
+			long from = k == 8 ? Math.max(0, size - FINGERPRINT) : size * k / 8;
+			int window = (int) Math.min(FINGERPRINT, size - from);
+			if (window <= 0) {
+				continue;
+			}
+			probe.seek(from);
+			probe.readFully(data, 0, window);
+			crc.update(data, 0, window);
+		}
+		return crc.getValue();
+	}
+
+	/**
+	 * Compares the file on disk with what was indexed (size and date first, then the checksum of its start and of the end of the
+	 * indexed part). APPENDED: the indexed part is still the same and the file is longer, so the indexed lines are still right.
+	 * REWRITTEN: something else changed (shorter file, edited, replaced by a new log after a rotation): the index does not match
+	 * it any more and must be built again. Only meaningful when the index is complete.
+	 */
+	Change inspect() {
+		if (!snapshotReady || closed || !complete) {
+			return Change.UNCHANGED;
+		}
+		if (!file.exists()) {
+			return Change.MISSING;
+		}
+		long now = file.length();
+		long modified = file.lastModified();
+		if (now == snapshotLength && modified == snapshotModified) {
+			return Change.UNCHANGED;
+		}
+		if (now < snapshotLength) {
+			return Change.REWRITTEN;
+		}
+		try (RandomAccessFile probe = new RandomAccessFile(file, "r")) {
+			if (sample(probe, snapshotLength) != sampleFingerprint) {
+				return Change.REWRITTEN;
+			}
+		} catch (IOException | RuntimeException e) {
+			return Change.UNCHANGED; // locked for a moment: it is looked at again later
+		}
+		// same size and a new date: edited in place (or touched); reading it again is the only way to be sure
+		return now > snapshotLength ? Change.APPENDED : Change.REWRITTEN;
+	}
+
+	/**
+	 * The file gained lines at its end: only the last block (64 lines) is read again from its start and the new part is indexed;
+	 * the lines already indexed stay valid and readable meanwhile. False when the index is not in a state to be extended.
+	 */
+	synchronized boolean extend() {
+		if (!complete || closed) {
+			return false;
+		}
+		int firstLine;
+		long startOffset;
+		synchronized (offsetsLock) {
+			if (blockCount == 0) {
+				firstLine = 0;
+				startOffset = 0;
+			} else {
+				firstLine = (blockCount - 1) * BLOCK;
+				startOffset = blockOffsets[blockCount - 1];
+			}
+		}
+		// the lines of that block are indexed again: their levels leave the counters first
+		for (int line = firstLine; line < lineCount; line++) {
+			byte stored = levelByte(line);
+			int level = LogLevel.level(stored);
+			if (level != LogLevel.NONE && !LogLevel.isContinuation(stored)) {
+				levelCounts[level]--;
+			}
+		}
+		previousLevelCommitted = firstLine == 0 ? LogLevel.NONE : LogLevel.level(levelByte(firstLine - 1));
+		indexedLines = firstLine;
+		resumeLine = firstLine;
+		resumeOffset = startOffset;
+		extendFromBlock = firstLine / BLOCK;
+		length = file.length();
+		snapshotReady = false;
+		complete = false;
+		Thread thread = new Thread(() -> runIndex(startOffset), "LogSearch-index");
+		thread.setDaemon(true);
+		thread.start();
+		return true;
+	}
+
+	int resumeLine() {
+		return resumeLine;
+	}
+
+	long resumeOffset() {
+		return resumeOffset;
 	}
 
 	private static Part analyse(byte[] data, int len, long offset, byte[] head) {
@@ -211,7 +482,7 @@ final class LogFileIndex implements Closeable {
 		for (int r = 0; r < part.lines; r++) {
 			int line = base + r;
 			if (line % BLOCK == 0) {
-				addBlockOffset(part.offset + part.starts[r]);
+				addBlockOffset(line / BLOCK, part.offset + part.starts[r]);
 			}
 			byte raw = part.raw[r];
 			byte stored;
@@ -233,11 +504,16 @@ final class LogFileIndex implements Closeable {
 		indexedLines = base + part.lines;
 		levels = current;
 		indexedBytes = end;
+		scannedEnd = end;
 		lineCount = indexedLines;
 	}
 
-	private void addBlockOffset(long offset) {
+	private void addBlockOffset(int block, long offset) {
 		synchronized (offsetsLock) {
+			if (block < blockCount) {
+				blockOffsets[block] = offset; // a block that is indexed again
+				return;
+			}
 			if (blockCount == blockOffsets.length) {
 				blockOffsets = Arrays.copyOf(blockOffsets, blockCount * 2);
 			}
@@ -271,11 +547,7 @@ final class LogFileIndex implements Closeable {
 			end = block + 1 >= blockCount ? Math.max(start, complete ? length : indexedBytes) : blockOffsets[block + 1];
 		}
 		try {
-			byte[] data = new byte[(int) Math.min(end - start, MAX_BLOCK_BYTES)];
-			synchronized (reader) {
-				reader.seek(start);
-				reader.readFully(data);
-			}
+			byte[] data = readAt(start, (int) Math.min(end - start, MAX_BLOCK_BYTES));
 			int wanted = number % BLOCK;
 			int from = 0;
 			for (int n = 0; n < wanted && from < data.length; n++) {
@@ -295,6 +567,16 @@ final class LogFileIndex implements Closeable {
 		} catch (IOException | RuntimeException e) {
 			return "";
 		}
+	}
+
+	/** Reads a piece of the file, opening it just for this read */
+	private byte[] readAt(long start, int size) throws IOException {
+		byte[] data = new byte[size];
+		try (RandomAccessFile reader = new RandomAccessFile(file, "r")) {
+			reader.seek(start);
+			reader.readFully(data);
+		}
+		return data;
 	}
 
 	private String[] block(int block) {
@@ -319,12 +601,7 @@ final class LogFileIndex implements Closeable {
 
 		String[] lines;
 		try {
-			byte[] data = new byte[(int) Math.min(end - start, MAX_BLOCK_BYTES)];
-			synchronized (reader) {
-				reader.seek(start);
-				reader.readFully(data);
-			}
-			lines = split(data);
+			lines = split(readAt(start, (int) Math.min(end - start, MAX_BLOCK_BYTES)));
 		} catch (IOException | RuntimeException e) {
 			return new String[] { "<cannot read this part of the file: " + e.getMessage() + ">" };
 		}
@@ -363,12 +640,5 @@ final class LogFileIndex implements Closeable {
 	public void close() {
 		closed = true;
 		stopIndexing.set(true);
-		try {
-			synchronized (reader) {
-				reader.close();
-			}
-		} catch (IOException e) {
-			// nothing left to release
-		}
 	}
 }

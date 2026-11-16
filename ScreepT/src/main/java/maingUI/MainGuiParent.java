@@ -133,6 +133,7 @@ public class MainGuiParent {
 	JMenu mnFilesAndDirectories;
 	JMenu mnPlugins;
 		CustomJmenuItem mntmLookForPlugins;
+		CustomJmenuItem mntmUpdateAllPlugins;
 	JMenu mnHelp;
 		JMenu mnrestartPanel;
 		JMenu mnWindowsRegistry;
@@ -264,7 +265,7 @@ public class MainGuiParent {
 					BASE_TITLE = currentConfiguration.getGenOpt().getUserName() + " is using " + GeneralConfig.APPLICATION_NAME;
 
 					if(mainGuiUtils.isTextEditorActive(false)) {
-						mainFrameScreept.setTitle(BASE_TITLE + " - Text Editor");
+						mainFrameScreept.setTitle(BASE_TITLE + " - File Editor");
 
 					} else if(mainGuiUtils.isCrypterActive(false)) {
 						mainFrameScreept.setTitle(BASE_TITLE + " - Crypter");
@@ -440,6 +441,7 @@ public class MainGuiParent {
 				mnFilesAndDirectories.add(mntmEmptyDirectoryRecursive);
 
 			mnPlugins.add(mntmLookForPlugins);
+			mnPlugins.add(mntmUpdateAllPlugins);
 			mnPlugins.add(new JSeparator());
 
 			mnHelp.add(mntmAboutScreept);
@@ -611,6 +613,7 @@ public class MainGuiParent {
 		mntmViewWebsite.setFont(menuItemFont);
 		mntmLookForUpdates.setFont(menuItemFont);
 		mntmLookForPlugins.setFont(menuItemFont);
+		mntmUpdateAllPlugins.setFont(menuItemFont);
 		mntmAboutScreept.setFont(menuItemFont);
 		mntmLicenseScreept.setFont(menuItemFont);
 		mntmChangeLog.setFont(menuItemFont);
@@ -720,6 +723,7 @@ public class MainGuiParent {
 		mntmViewWebsite.setIcon(new ImageIcon(IconsPathConfigurator.ICON_WEBSITE));
 		mntmLookForUpdates.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPDATES));
 		mntmLookForPlugins.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PLUGINS));
+		mntmUpdateAllPlugins.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPDATES));
 
 		MenuSetter.setIconTextGap(mnrestartPanel, 20);
 		mnWindowsRegistry.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
@@ -941,6 +945,7 @@ public class MainGuiParent {
 			mnPlugins.removeAll();
 
 			mnPlugins.add(mntmLookForPlugins);
+			mnPlugins.add(mntmUpdateAllPlugins);
 			mnPlugins.add(new JSeparator());
 
 			if(!MainGuiGeneralAppStarter.tesseractAvailable) {
@@ -1151,7 +1156,7 @@ public class MainGuiParent {
 			stringActions.add(replaceTabsWithSpaces);
 			stringActions.add(replaceSpacesWithTabs);
 
-			MenuSetter.setSubItemsCommonTooltip(menuStringActions, "Start text editor to use theese functions!");
+			MenuSetter.setSubItemsCommonTooltip(menuStringActions, "Start file editor to use theese functions!");
 		} else {
 			loadedTabObj.enrichPopUpMenuStringActions(stringActions);
 		}

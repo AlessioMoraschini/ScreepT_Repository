@@ -82,7 +82,7 @@ public final class EasterEggCatalog {
 						+ "Hidden on the home page: press M (meow) three times in a row. In the home terminal: type \"cats\".");
 		add("poem", "Code poem", "a verse for programmers",
 				"A random poem or quote about code, shown in a dialog. Code can be a poem, or even a nightmare.\n\n"
-						+ "Hidden in the crypter and in the text editor: press Ctrl+Alt+U four times in a row. In the home terminal: type \"poem\".");
+						+ "Hidden in the crypter and in the file editor: press Ctrl+Alt+U four times in a row. In the home terminal: type \"poem\".");
 		add("bugs", "Bug Squasher", "squash the bugs in 30 seconds",
 				"Bugs crawl over the screen and you have 30 seconds to squash as many as you can. Golden bugs are fast and worth five points, "
 						+ "missing costs one. Your best score is remembered.\n\n"

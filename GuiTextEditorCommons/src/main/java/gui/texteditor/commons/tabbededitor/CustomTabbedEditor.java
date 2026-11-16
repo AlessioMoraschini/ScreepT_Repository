@@ -300,7 +300,7 @@ public class CustomTabbedEditor implements ITabsManager {
 				String msg = exceedsLines
 						? "This file has more than " + GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES + " lines, and can slow down or crash ScreepT."
 						: "This file is bigger than max admitted size [" + ConversionUtils.coolFileSize((long) GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024) + "] and can slow down or crash ScreepT.";
-				msg += "\nLogSearch opens it read-only, a portion at a time, with fast text / regex search.\n(The size limit is in Graphic preferences > Text editor.)";
+				msg += "\nLogSearch opens it read-only, a portion at a time, with fast text / regex search.\n(The size limit is in Graphic preferences > File editor.)";
 				String[] choices = { "Open with LogSearch", "Load in editor anyway", "Cancel" };
 				int choice = JOptionPane.showOptionDialog(parent, msg, "Big file", JOptionPane.YES_NO_CANCEL_OPTION,
 						JOptionPane.WARNING_MESSAGE, null, choices, choices[0]);
@@ -383,13 +383,20 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 
 	public void loadFile(final File fileToLoad) {
+		loadFile(fileToLoad, true);
+	}
+
+	/**
+	 * @param allowViewers false: the file always opens as text in the file editor, ignoring the viewer associations ("Open with" > File editor)
+	 */
+	public void loadFile(final File fileToLoad, boolean allowViewers) {
 
 		if(goToTabByFile(fileToLoad)) {
 			return;
 		}
 
 		// integrated viewers (image studio, LogSearch, HTML...) open in their own tab, as chosen in the preferences
-		TabImplementor viewerImplementor = fileToLoad != null && fileToLoad.isFile() ? TabImplementors.resolve(fileToLoad) : null;
+		TabImplementor viewerImplementor = allowViewers && fileToLoad != null && fileToLoad.isFile() ? TabImplementors.resolve(fileToLoad) : null;
 		if(viewerImplementor != null && openInViewerTab(fileToLoad, viewerImplementor)) {
 			return;
 		}

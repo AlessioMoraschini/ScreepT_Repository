@@ -155,9 +155,34 @@ public class LogSearchFrame extends JFrame {
 	private final JScrollPane mainScroll = new JScrollPane(mainList);
 	private final OverviewMap map = new OverviewMap();
 	private final Timer refreshTimer;
+	/** Looks at the file on disk once a second (size and date only) */
+	private final Timer monitorTimer;
+	/** Monitor on: the changes made by other programs are read by themselves. Kept while ScreepT is open */
+	private static boolean monitorOn = true;
+	private final javax.swing.JCheckBox chkMonitor = new javax.swing.JCheckBox(I18n.t("log.monitor"), monitorOn);
+	private final javax.swing.JButton btnRefresh = new javax.swing.JButton(I18n.t("log.refresh"));
+	private final JLabel lblStale = new JLabel(" ");
+	/** After an update the list follows the end of the file (the view was at the end) */
+	private boolean stickToEnd;
+
+	/** Date filter: off by default; typing or picking a date turns it on, turning it off keeps the dates (they are just not used) */
+	private final javax.swing.JCheckBox chkDates = new javax.swing.JCheckBox(I18n.t("log.dates"));
+	private final DatePickerField dateFrom = new DatePickerField(I18n.t("log.date_from"), I18n.t("log.date_from_tip"));
+	private final DatePickerField dateTo = new DatePickerField(I18n.t("log.date_to"), I18n.t("log.date_to_tip"));
+	private final javax.swing.JButton btnClearDates = new javax.swing.JButton("\u2715");
+	private final JPanel dateBox = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
+	private JPanel filters;
+	/** Lines of the dates chosen: [dateStart, dateEnd). Everything when the filter is off */
+	private int dateStart = 0;
+	private int dateEnd = Integer.MAX_VALUE;
+	private int rangeLines;
+	private boolean clearingDates;
+	private boolean dateHintsSet;
 	private final Timer debounce;
 	private JScrollPane matchScrollRef;
 	private JSplitPane splitRef;
+	/** True when this LogSearch lives in a tab of the file editor, bound to its file */
+	private final boolean tabMode;
 	private final java.beans.PropertyChangeListener lafListener = e -> {
 		if ("lookAndFeel".equals(e.getPropertyName())) {
 			SwingUtilities.invokeLater(this::onLookAndFeelChanged);
@@ -171,7 +196,7 @@ public class LogSearchFrame extends JFrame {
 	public static void open(Component parent, File file) {
 		LogSearchFrame frame = current;
 		if (frame == null || !frame.isDisplayable()) {
-			frame = new LogSearchFrame(parent);
+			frame = new LogSearchFrame(parent, false);
 			current = frame;
 			frame.showEmptyState();
 			frame.setVisible(true);
@@ -193,6 +218,9 @@ public class LogSearchFrame extends JFrame {
 	}
 
 	private void chooseFile() {
+		if (tabMode) {
+			return; // the tab is bound to its file
+		}
 		File chosen = new GenericFileChooserDialog(null).fileRead(this);
 		if (chosen != null) { // else cancelled by user
 			load(chosen);
@@ -201,7 +229,7 @@ public class LogSearchFrame extends JFrame {
 
 	/** Viewer for an editor tab: the same LogSearch panel, without a window (the frame is never shown) */
 	public static gui.commons.tabs.TabContent createTabContent(final File file) {
-		final LogSearchFrame frame = new LogSearchFrame(null);
+		final LogSearchFrame frame = new LogSearchFrame(null, true);
 		frame.load(file);
 		final JComponent content = (JComponent) frame.getContentPane();
 		final JPanel holder = new JPanel(new BorderLayout());
@@ -298,8 +326,14 @@ public class LogSearchFrame extends JFrame {
 		}
 	}
 
-	private LogSearchFrame(Component parent) {
+	/**
+	 * @param tabMode true: LogSearch inside a tab of the file editor. Like the image studio in a tab, it is the base mode: the tab
+	 * is the file it was opened for, so there is no Open file button and dropping another file does not replace it (the window
+	 * mode, with Open file and drag and drop, is the one opened from Various > LogSearch)
+	 */
+	private LogSearchFrame(Component parent, boolean tabMode) {
 		super("LogSearch");
+		this.tabMode = tabMode;
 		Theme.refresh();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		monoFamily = monospacedFamily();
@@ -375,7 +409,11 @@ public class LogSearchFrame extends JFrame {
 		JPanel status = new Surface(new BorderLayout(), true);
 		status.setBorder(BorderFactory.createEmptyBorder(4, 14, 5, 14));
 		status.add(lblStatus, BorderLayout.WEST);
-		status.add(lblCaret, BorderLayout.EAST);
+		JPanel statusRight = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 14, 0));
+		statusRight.setOpaque(false);
+		statusRight.add(lblDetails);
+		statusRight.add(lblCaret);
+		status.add(statusRight, BorderLayout.EAST);
 
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(north, BorderLayout.NORTH);
@@ -406,6 +444,8 @@ public class LogSearchFrame extends JFrame {
 
 		refreshTimer = new Timer(120, e -> refresh());
 		refreshTimer.start();
+		monitorTimer = new Timer(1000, e -> checkFileChanges());
+		monitorTimer.start();
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
@@ -420,31 +460,51 @@ public class LogSearchFrame extends JFrame {
 	////////// LAYOUT ////////////////
 
 	private JPanel buildHeader() {
-		JPanel header = new JPanel(new BorderLayout(14, 0));
+		JPanel header = new JPanel(new BorderLayout(10, 0));
 		header.setOpaque(false);
 		header.putClientProperty("screept.darkColors.exclude", Boolean.TRUE);
-		header.setBorder(BorderFactory.createEmptyBorder(12, 16, 4, 16));
-		JPanel names = new JPanel(new BorderLayout());
-		names.setOpaque(false);
-		names.add(lblName, BorderLayout.NORTH);
-		JPanel paths = new JPanel(new BorderLayout());
-		paths.setOpaque(false);
+		header.setBorder(BorderFactory.createEmptyBorder(6, 14, 2, 12));
+		lblName.setFont(lblName.getFont().deriveFont(Font.BOLD, 14f));
 		lblDetails.setFont(lblDetails.getFont().deriveFont(Font.PLAIN, 12f));
 		lblDetails.setForeground(muted());
-		paths.add(lblPath, BorderLayout.NORTH);
-		paths.add(lblDetails, BorderLayout.SOUTH);
-		names.add(paths, BorderLayout.SOUTH);
+		lblStale.setFont(lblStale.getFont().deriveFont(Font.BOLD, 12f));
+		lblStale.setForeground(new Color(0xE0, 0x9A, 0x2B));
+		// name, path and warning on one line: the path takes the free space and is cut with ... when it does not fit
+		JPanel pathAndWarning = new JPanel(new BorderLayout(10, 0));
+		pathAndWarning.setOpaque(false);
+		pathAndWarning.add(lblPath, BorderLayout.CENTER);
+		pathAndWarning.add(lblStale, BorderLayout.EAST);
+		JPanel line = new JPanel(new BorderLayout(10, 0));
+		line.setOpaque(false);
+		line.add(lblName, BorderLayout.WEST);
+		line.add(pathAndWarning, BorderLayout.CENTER);
 		btnOpenFile.setToolTipText(I18n.t("log.choose_the_file_to_load_logsearch"));
 		btnOpenFile.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 		btnOpenFile.setFocusable(false);
 		btnOpenFile.addActionListener(e -> chooseFile());
-		JPanel pills = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 6, 2));
+		JPanel pills = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 5, 0));
 		pills.setOpaque(false);
 		pills.add(pillSize);
 		pills.add(pillLines);
 		pills.add(new Pill("read-only"));
+		chkMonitor.setOpaque(false);
+		chkMonitor.setFocusable(false);
+		chkMonitor.setToolTipText(I18n.t("log.monitor_tip"));
+		chkMonitor.addActionListener(e -> {
+			monitorOn = chkMonitor.isSelected();
+			btnRefresh.setVisible(!monitorOn);
+			checkFileChanges();
+		});
+		btnRefresh.setToolTipText(I18n.t("log.refresh_tip"));
+		btnRefresh.setFocusable(false);
+		btnRefresh.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+		btnRefresh.setVisible(!monitorOn);
+		btnRefresh.addActionListener(e -> reloadFromDisk(false));
+		pills.add(chkMonitor);
+		pills.add(btnRefresh);
 		pills.add(btnOpenFile);
-		header.add(names, BorderLayout.CENTER);
+		btnOpenFile.setVisible(!tabMode);
+		header.add(line, BorderLayout.CENTER);
 		header.add(pills, BorderLayout.EAST);
 		return header;
 	}
@@ -452,7 +512,7 @@ public class LogSearchFrame extends JFrame {
 	private JPanel buildToolbar() {
 		JPanel bar = new JPanel(new GridBagLayout());
 		bar.setOpaque(false);
-		bar.setBorder(BorderFactory.createEmptyBorder(4, 12, 8, 12));
+		bar.setBorder(BorderFactory.createEmptyBorder(2, 12, 4, 12));
 
 		txtSearch.setToolTipText(I18n.t("log.search_while_you_type_words_all"));
 		txtSearch.setPreferredSize(new Dimension(320, 32));
@@ -460,8 +520,6 @@ public class LogSearchFrame extends JFrame {
 
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridy = 0;
-		c.insets = new Insets(0, 0, 0, 4);
-		c.fill = GridBagConstraints.NONE;
 		c.insets = new Insets(0, 0, 0, 6);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1;
@@ -473,10 +531,6 @@ public class LogSearchFrame extends JFrame {
 		bar.add(btnWord, c);
 		c.insets = new Insets(0, 0, 0, 10);
 		bar.add(btnRegex, c);
-		c.insets = new Insets(0, 0, 0, 4);
-		for (LevelChip chip : chips) {
-			bar.add(chip, c);
-		}
 		c.insets = new Insets(0, 6, 0, 2);
 		bar.add(btnPrev, c);
 		c.insets = new Insets(0, 0, 0, 2);
@@ -487,6 +541,40 @@ public class LogSearchFrame extends JFrame {
 		c.insets = new Insets(0, 0, 0, 2);
 		bar.add(btnGoto, c);
 		bar.add(btnExport, c);
+
+		// second line, only when the file has levels or dates: the level chips and the date filter
+		filters = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
+		filters.setOpaque(false);
+		for (LevelChip chip : chips) {
+			filters.add(chip);
+		}
+		chkDates.setOpaque(false);
+		chkDates.setFocusable(false);
+		chkDates.setToolTipText(I18n.t("log.dates_tip"));
+		btnClearDates.setToolTipText(I18n.t("log.date_clear"));
+		btnClearDates.setFocusable(false);
+		btnClearDates.setMargin(new Insets(1, 5, 1, 5));
+		btnClearDates.putClientProperty("JButton.buttonType", "toolBarButton");
+		btnClearDates.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+		btnClearDates.setVisible(false);
+		dateBox.setOpaque(false);
+		dateBox.setBorder(BorderFactory.createEmptyBorder(0, 14, 0, 0));
+		dateBox.add(chkDates);
+		dateBox.add(dateFrom);
+		dateBox.add(new JLabel("\u2013"));
+		dateBox.add(dateTo);
+		dateBox.add(btnClearDates);
+		dateBox.setVisible(false);
+		filters.add(dateBox);
+		filters.setVisible(false);
+		GridBagConstraints second = new GridBagConstraints();
+		second.gridx = 0;
+		second.gridy = 1;
+		second.gridwidth = GridBagConstraints.REMAINDER;
+		second.fill = GridBagConstraints.HORIZONTAL;
+		second.anchor = GridBagConstraints.WEST;
+		second.insets = new Insets(4, 0, 0, 0);
+		bar.add(filters, second);
 		return bar;
 	}
 
@@ -555,6 +643,10 @@ public class LogSearchFrame extends JFrame {
 		btnGoto.onClick(this::goToLine);
 		btnExport.onClick(this::exportMatches);
 		btnMarks.onClick(() -> showBookmarksMenu(btnMarks));
+		dateFrom.setOnChange(() -> onDateEdited(dateFrom));
+		dateTo.setOnChange(() -> onDateEdited(dateTo));
+		chkDates.addActionListener(e -> applyDateFilter());
+		btnClearDates.addActionListener(e -> clearDateFilter());
 		cmbContext.onChange(() -> {
 			context = CONTEXTS[Math.max(0, cmbContext.getSelectedIndex())];
 			grepModel.reset();
@@ -604,6 +696,9 @@ public class LogSearchFrame extends JFrame {
 	}
 
 	private TransferHandler dropHandler() {
+		if (tabMode) {
+			return null; // a file dropped on the tab is handled by the editor, it must not replace this one
+		}
 		return new TransferHandler() {
 			private static final long serialVersionUID = 1L;
 
@@ -676,13 +771,21 @@ public class LogSearchFrame extends JFrame {
 	////////// FILE AND SEARCH ////////////////
 
 	private void load(File file) {
+		load(file, false);
+	}
+
+	/** @param quiet true: no error dialog when the file cannot be read (the monitor reads it again later) */
+	private boolean load(File file, boolean quiet) {
+		final boolean sameFile = loadedFile != null && loadedFile.equals(file);
 		stopSearch();
 		LogFileIndex previous = index;
 		try {
 			index = new LogFileIndex(file);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this, I18n.t("log.cannot_open_the_file") + e.getMessage(), I18n.t("common.logsearch"), JOptionPane.ERROR_MESSAGE);
-			return;
+			if (!quiet) {
+				JOptionPane.showMessageDialog(this, I18n.t("log.cannot_open_the_file") + e.getMessage(), I18n.t("common.logsearch"), JOptionPane.ERROR_MESSAGE);
+			}
+			return false;
 		}
 		if (previous != null) {
 			previous.close();
@@ -700,9 +803,24 @@ public class LogSearchFrame extends JFrame {
 		detailsDone = false;
 		lblName.setText(file.getName());
 		lblPath.setText(file.getAbsolutePath());
+		lblPath.setToolTipText(file.getAbsolutePath());
 		pillSize.setText(humanSize(file.length()));
+		lblStale.setText(" ");
+		if (!sameFile) {
+			clearingDates = true;
+			dateFrom.clear();
+			dateTo.clear();
+			clearingDates = false;
+			chkDates.setSelected(false);
+			btnClearDates.setVisible(false);
+		}
+		dateStart = 0;
+		dateEnd = Integer.MAX_VALUE;
+		rangeLines = 0;
+		dateHintsSet = false;
 		updateDetails();
 		refresh();
+		return true;
 	}
 
 	private static String hex(Color color) {
@@ -744,6 +862,156 @@ public class LogSearchFrame extends JFrame {
 			lastDetails = text;
 			lblDetails.setText(text);
 		}
+	}
+
+	////////// DATE FILTER ////////////////
+
+	/** On and with at least one date: the lines outside the dates are hidden */
+	private boolean dateFilterActive() {
+		return chkDates.isSelected() && (dateFrom.getDate() != null || dateTo.getDate() != null);
+	}
+
+	/** A date typed or picked turns the filter on; the check box turns it off without losing the dates */
+	private void onDateEdited(DatePickerField field) {
+		if (clearingDates) {
+			return;
+		}
+		if (field.getDate() != null && !chkDates.isSelected()) {
+			chkDates.setSelected(true);
+		}
+		btnClearDates.setVisible(dateFrom.hasText() || dateTo.hasText());
+		applyDateFilter();
+	}
+
+	/** The cross: removes the dates and the filter */
+	private void clearDateFilter() {
+		clearingDates = true;
+		dateFrom.clear();
+		dateTo.clear();
+		clearingDates = false;
+		chkDates.setSelected(false);
+		btnClearDates.setVisible(false);
+		applyDateFilter();
+	}
+
+	private void applyDateFilter() {
+		recomputeDateRange();
+		grepModel.reset();
+		jumpToFirst = query != null;
+		refresh();
+		mainList.repaint();
+		map.invalidateCache();
+	}
+
+	/**
+	 * The lines of the dates chosen, [dateStart, dateEnd): worked out from the day of each block of lines of the index, without reading the
+	 * file. True when they changed. It is done again when the file grows.
+	 */
+	private boolean recomputeDateRange() {
+		int start = 0;
+		int end = Integer.MAX_VALUE;
+		LogFileIndex idx = index;
+		if (idx != null && dateFilterActive()) {
+			java.time.LocalDate from = dateFrom.getDate();
+			java.time.LocalDate to = dateTo.getDate();
+			int[] range = idx.lineRange(from == null ? 0 : LogDates.fromDate(from), to == null ? 0 : LogDates.fromDate(to));
+			start = range[0];
+			end = to == null ? Integer.MAX_VALUE : range[1];
+			rangeLines = idx.lineCount();
+		}
+		boolean changed = start != dateStart || end != dateEnd;
+		dateStart = start;
+		dateEnd = end;
+		return changed;
+	}
+
+	////////// MONITOR ////////////////
+
+	/**
+	 * Once a second: is the file on disk still what was indexed? The lines and the matches are read from byte positions recorded
+	 * while indexing, so after a change they could point to the wrong place: the change is always noticed. With the monitor on it is
+	 * read by itself (what the file gained is indexed and searched, a rewritten file is indexed again); with it off a warning says
+	 * that the lines shown can be old and the Refresh button reads the file again.
+	 */
+	private void checkFileChanges() {
+		LogFileIndex idx = index;
+		if (idx == null || loadedFile == null || !idx.isComplete()) {
+			return;
+		}
+		LogFileIndex.Change change = idx.inspect();
+		if (change == LogFileIndex.Change.UNCHANGED) {
+			return;
+		}
+		if (change == LogFileIndex.Change.MISSING) {
+			lblStale.setForeground(new Color(0xD0, 0x50, 0x48));
+			lblStale.setText(I18n.t("log.file_missing"));
+			return;
+		}
+		if (monitorOn) {
+			if (change == LogFileIndex.Change.APPENDED) {
+				applyAppend(idx);
+			} else {
+				reloadFromDisk(true);
+			}
+		} else if (change == LogFileIndex.Change.APPENDED) {
+			lblStale.setForeground(new Color(0xE0, 0x9A, 0x2B));
+			lblStale.setText(I18n.t("log.stale_appended"));
+		} else {
+			lblStale.setForeground(new Color(0xD0, 0x50, 0x48));
+			lblStale.setText(I18n.t("log.stale_modified"));
+		}
+	}
+
+	/** The file gained lines at its end: they are indexed and, if a search is shown, searched, without losing what is already there */
+	private void applyAppend(LogFileIndex idx) {
+		stickToEnd = isViewAtEnd();
+		if (!idx.extend()) {
+			return;
+		}
+		LogSearcher current = search;
+		if (current != null) {
+			if (current.isFinished() && !current.isCancelled()) {
+				grepModel.reset();
+				current.extend(idx.resumeLine(), idx.resumeOffset());
+			} else if (!current.isFinished()) {
+				runSearch(); // still searching: start again over the new size
+				jumpToFirst = false;
+			}
+		}
+		lblStale.setText(" ");
+		pillSize.setText(humanSize(loadedFile.length()));
+		lastDetails = "";
+		detailsDone = false;
+		dateHintsSet = false;
+		map.invalidateCache();
+	}
+
+	/** Reads the file again from scratch (new index) and repeats the search shown; used when the file was rewritten and by the Refresh button */
+	private void reloadFromDisk(boolean quiet) {
+		File file = loadedFile;
+		if (file == null) {
+			return;
+		}
+		if (!file.isFile()) {
+			lblStale.setForeground(new Color(0xD0, 0x50, 0x48));
+			lblStale.setText(I18n.t("log.file_missing"));
+			return;
+		}
+		String text = txtSearch.getText();
+		boolean atEnd = isViewAtEnd();
+		if (!load(file, quiet)) {
+			return;
+		}
+		stickToEnd = atEnd;
+		if (!text.trim().isEmpty()) {
+			runSearch();
+			jumpToFirst = false;
+		}
+	}
+
+	private boolean isViewAtEnd() {
+		int size = fileModel.getSize();
+		return size == 0 || mainList.getLastVisibleIndex() >= size - 2;
 	}
 
 	private void rerunIfActive() {
@@ -794,6 +1062,7 @@ public class LogSearchFrame extends JFrame {
 	private void release() {
 		UIManager.removePropertyChangeListener(lafListener);
 		refreshTimer.stop();
+		monitorTimer.stop();
 		debounce.stop();
 		stopSearch();
 		if (index != null) {
@@ -814,6 +1083,9 @@ public class LogSearchFrame extends JFrame {
 
 	/** A line is shown when its level is on; a line without a level is shown only while no level is hidden */
 	private boolean passes(int line) {
+		if (line < dateStart || line >= dateEnd) {
+			return false;
+		}
 		LogFileIndex current = index;
 		if (current == null || !current.hasLevels()) {
 			return true;
@@ -850,6 +1122,15 @@ public class LogSearchFrame extends JFrame {
 		grepModel.sync();
 		LogFileIndex idx = index;
 		LogSearcher current = search;
+		if (stickToEnd && idx != null) {
+			int last = fileModel.getSize() - 1;
+			if (last >= 0) {
+				mainList.ensureIndexIsVisible(last);
+			}
+			if (idx.isComplete()) {
+				stickToEnd = false;
+			}
+		}
 
 		boolean searching = current != null && !current.isFinished();
 		boolean indexing = idx != null && !idx.isComplete();
@@ -871,13 +1152,34 @@ public class LogSearchFrame extends JFrame {
 			chip.setVisible(levels);
 			chip.repaint();
 		}
+		// the date filter is possible only when the lines have dates in a known format
+		boolean dates = idx != null && idx.hasDates();
+		if (dateBox.isVisible() != dates) {
+			dateBox.setVisible(dates);
+		}
+		if (filters != null && filters.isVisible() != (levels || dates)) {
+			filters.setVisible(levels || dates);
+			filters.getParent().revalidate();
+		}
+		if (dates && !dateHintsSet && idx.isComplete()) {
+			int first = idx.firstDay();
+			int last = idx.lastDay();
+			if (first != 0 && last != 0) {
+				dateFrom.setRange(LogDates.toDate(first), LogDates.toDate(last));
+				dateTo.setRange(LogDates.toDate(first), LogDates.toDate(last));
+				dateHintsSet = true;
+			}
+		}
+		if (dates && dateFilterActive() && idx.lineCount() != rangeLines && recomputeDateRange()) {
+			grepModel.reset();
+		}
 
 		if (query == null && !txtSearch.getText().trim().isEmpty() && txtSearch.getClientProperty("JComponent.outline") != null) {
 			// invalid expression: the message stays
 			pillMatches.setText("");
 		} else if (current != null) {
 			pillMatches.setText(String.format("%,d match%s", grepModel.matchCount, grepModel.matchCount == 1 ? "" : "es"));
-		} else if (levelFilterActive()) {
+		} else if (levelFilterActive() || dateFilterActive()) {
 			pillMatches.setText(String.format("%,d line%s", grepModel.matchCount, grepModel.matchCount == 1 ? "" : "s"));
 		} else {
 			pillMatches.setText(I18n.t("log.type_to_search"));
@@ -1354,8 +1656,11 @@ public class LogSearchFrame extends JFrame {
 			if (idx == null) {
 				return;
 			}
-			boolean filterOnly = current == null && levelFilterActive();
-			int sourceSize = current != null ? current.results.size() : filterOnly ? idx.lineCount() : 0;
+			boolean filterOnly = current == null && (levelFilterActive() || dateFilterActive());
+			int sourceSize = current != null ? current.results.size() : filterOnly ? Math.min(idx.lineCount(), dateEnd) : 0;
+			if (filterOnly && consumed < dateStart) {
+				consumed = dateStart;
+			}
 			int lines = idx.lineCount();
 			int ctx = current != null ? context : 0;
 			int budget = SYNC_BUDGET;
@@ -1366,7 +1671,7 @@ public class LogSearchFrame extends JFrame {
 			while (consumed < sourceSize && budget-- > 0) {
 				int line = current != null ? current.results.get(consumed) : consumed;
 				consumed++;
-				if (!passes(line) || (filterOnly && idx.level(line) == LogLevel.NONE)) {
+				if (!passes(line) || (filterOnly && levelFilterActive() && idx.level(line) == LogLevel.NONE)) {
 					continue;
 				}
 				matchCount++;

@@ -79,6 +79,10 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	private CustomTabbedEditor currentTabEditor;
 
 	public JMenu subMenuNew;
+	/** "Open with": the file editor or an integrated viewer, only for this opening */
+	public JMenu itemOpenWith;
+	/** "Open in a window": the embedded tools of the Various menu that open a file (LogSearch, Image Studio, Hash checker) */
+	public JMenu itemOpenInWindow;
 		public JMenuItem itemNewFile;
 		public JMenuItem itemNewFolder;
 	public JMenuItem itemRename;
@@ -180,12 +184,12 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 
 	private void updateEnabledOrDisabled() {
 
-		JMenuItem[] ifFile = new JMenuItem[] {itemLoadFile, itemRename};
+		JMenuItem[] ifFile = new JMenuItem[] {itemLoadFile, itemOpenWith, itemOpenInWindow, itemRename};
 		JMenuItem[] ifDir = new JMenuItem[] {workspaceItem};
 		JMenuItem[] ifCurrentTabFileExists = new JMenuItem[] {copyHereCurrentItem, moveHereCurrentItem};
 		JMenuItem[] ifExists = new JMenuItem[] {
 				copyHereCurrentItem, moveHereCurrentItem, itemRename, sysExplorerItem, searchContentItem,
-				copyPathsItem, hashingItem, deleteItem, copyItem, pasteItem, itemLoadFile,
+				copyPathsItem, hashingItem, deleteItem, copyItem, pasteItem, itemLoadFile, itemOpenWith, itemOpenInWindow,
 				workspaceItem, propertiesItem, pluginsMenuItem};
 
 		if(selectedNode == null || selectedNode.mFile == null || !selectedNode.mFile.exists()) {
@@ -223,6 +227,112 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				jCurr.setEnabled(true);
 		}
 
+		rebuildOpenWithMenu();
+		rebuildOpenInWindowMenu();
+	}
+
+	/**
+	 * "Open in a window" for the selected file(s): only the tools that can read that type of file are listed. They are the windows of the
+	 * Various menu (LogSearch for any file, Image Studio for the images, File Hash checker for any file).
+	 */
+	private void rebuildOpenInWindowMenu() {
+		if (itemOpenInWindow == null) {
+			return;
+		}
+		itemOpenInWindow.removeAll();
+		final java.util.List<File> files = new java.util.ArrayList<File>();
+		for (File selected : getSelectedFiles()) {
+			if (selected != null && selected.isFile()) {
+				files.add(selected);
+			}
+		}
+		if (files.isEmpty() && selectedNode != null && selectedNode.mFile != null && selectedNode.mFile.isFile()) {
+			files.add(selectedNode.mFile);
+		}
+		if (files.isEmpty()) {
+			itemOpenInWindow.setEnabled(false);
+			return;
+		}
+
+		Font font = GeneralConfig.DEFAULT_POP_UP_MENUS_FONT;
+		final File first = files.get(0);
+
+		JMenuItem logSearch = new JMenuItem(I18n.t("common.logsearch"));
+		logSearch.setFont(font);
+		logSearch.addActionListener((e) -> gui.texteditor.commons.logsearch.LogSearchFrame.open(textEditor.mainApplication.getMainFrame(), first));
+		itemOpenInWindow.add(logSearch);
+
+		gui.commons.tabs.TabImplementor image = gui.commons.tabs.TabImplementors.byId(gui.commons.imagestudio.ImageStudioTabImplementor.ID);
+		if (image != null && image.getDefaultExtensions().contains(gui.commons.tabs.TabImplementors.extensionOf(first))) {
+			JMenuItem imageStudio = new JMenuItem(I18n.t("common.image_studio"));
+			imageStudio.setFont(font);
+			imageStudio.addActionListener((e) -> {
+				for (File file : files) {
+					gui.commons.frameutils.frame.ImageViewerFrame.loadIntoLastExistingInstance(file);
+				}
+			});
+			itemOpenInWindow.add(imageStudio);
+		}
+
+		JMenuItem hashChecker = new JMenuItem(I18n.t("app.file_hash_checker"));
+		hashChecker.setFont(font);
+		hashChecker.addActionListener((e) -> textEditor.mainApplication.windowCreator.newHashChecker(first));
+		itemOpenInWindow.add(hashChecker);
+		itemOpenInWindow.setEnabled(true);
+	}
+
+	/**
+	 * "Open with" for the selected file(s): the file editor and every integrated viewer (image studio, LogSearch, HTML...). The choice is for
+	 * this opening only: the associations of Graphic preferences > File editor > Viewers do not change. The default one is marked.
+	 */
+	private void rebuildOpenWithMenu() {
+		if (itemOpenWith == null) {
+			return;
+		}
+		itemOpenWith.removeAll();
+		final List<File> files = new java.util.ArrayList<File>();
+		for (File selected : getSelectedFiles()) {
+			if (selected != null && selected.isFile()) {
+				files.add(selected);
+			}
+		}
+		if (files.isEmpty() && selectedNode != null && selectedNode.mFile != null && selectedNode.mFile.isFile()) {
+			files.add(selectedNode.mFile);
+		}
+		if (files.isEmpty()) {
+			itemOpenWith.setEnabled(false);
+			return;
+		}
+
+		String defaultId = gui.commons.tabs.TabImplementors.effectiveIdFor(gui.commons.tabs.TabImplementors.extensionOf(files.get(0)));
+		String suffix = " " + I18n.t("app.open_with_default");
+		Font font = GeneralConfig.DEFAULT_POP_UP_MENUS_FONT;
+
+		JMenuItem asText = new JMenuItem(I18n.t("common.text_editor") + (gui.commons.tabs.TabImplementors.TEXT_ID.equals(defaultId) ? suffix : ""));
+		asText.setFont(font);
+		asText.addActionListener((e) -> {
+			for (File file : files) {
+				currentTabEditor.loadFile(file, false);
+			}
+		});
+		itemOpenWith.add(asText);
+
+		for (final gui.commons.tabs.TabImplementor implementor : gui.commons.tabs.TabImplementors.all()) {
+			if (!implementor.canOpen(files.get(0))) {
+				continue;
+			}
+			JMenuItem item = new JMenuItem(implementor.getDisplayName() + (implementor.getId().equals(defaultId) ? suffix : ""));
+			item.setFont(font);
+			item.addActionListener((e) -> {
+				for (File file : files) {
+					if (!currentTabEditor.goToTabByFile(file)) {
+						currentTabEditor.openInViewerTab(file, implementor);
+					}
+				}
+			});
+			itemOpenWith.add(item);
+		}
+		itemOpenWith.setEnabled(true);
 	}
 
 	private JMenuItem addMenuItem(JMenu menu, String label, Font font, boolean separatorBefore, boolean separatorAfter) {
@@ -260,6 +370,14 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 
 	    itemLoadFile = addMenuItem(menu, I18n.t("common.open_file"), font, false, false);
 	    itemLoadFile.addActionListener(getLoadActionListener());
+
+	    itemOpenWith = new JMenu(I18n.t("app.open_with"));
+	    itemOpenWith.setFont(font);
+	    menu.add(itemOpenWith);
+
+	    itemOpenInWindow = new JMenu(I18n.t("app.open_in_window"));
+	    itemOpenInWindow.setFont(font);
+	    menu.add(itemOpenInWindow);
 
 	    itemRename = addMenuItem(menu, I18n.t("app.rename_selected_files_only"), font, false, false);
 	    itemRename.addActionListener(getRenameActionListener());
@@ -413,8 +531,14 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				@Override
 				public void run() {
 					try {
-						if (selectedNode != null && selectedNode.mFile != null && !currentTabEditor.alreadyLoading) {
-							currentTabEditor.loadFile(selectedNode.mFile);
+						// the node comes from the current selection of the tree: selectedNode is updated only by the mouse, so with the keyboard (arrows + Enter) it would be missing or old
+						FileNamed nodeToOpen = selectedNode;
+						if (tree.getSelectionCount() == 1 && tree.getSelectionPath() != null && tree.getSelectionPath().getLastPathComponent() instanceof FileNamed) {
+							nodeToOpen = (FileNamed) tree.getSelectionPath().getLastPathComponent();
+						}
+						if (nodeToOpen != null && nodeToOpen.mFile != null && nodeToOpen.mFile.isFile() && !currentTabEditor.alreadyLoading) {
+							selectedNode = nodeToOpen;
+							currentTabEditor.loadFile(nodeToOpen.mFile);
 							currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 						}
 					} catch (Exception e) {
@@ -651,6 +775,12 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 
 	@Override
 	public void keyReleased(KeyEvent event) {
+		// Enter on a file of the tree opens it in a tab: the focus must then come back to the tree, on the same node
+		if (tree.hasFocus() && !event.isAltDown() && !ShortcutKeys.isCtrlDown(event) && !event.isShiftDown()
+				&& event.getKeyCode() == KeyEvent.VK_ENTER && tree.getSelectionCount() == 1) {
+			openSelectedFromKeyboard();
+			return;
+		}
 		super.keyReleased(event);
 		if (tree.hasFocus()) {
 			if (!ShortcutKeys.isCtrlDown(event) && event.isAltDown() && !event.isShiftDown()  && event.getKeyCode() == KeyEvent.VK_F2) {
@@ -675,6 +805,44 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			}
 
 		}
+	}
+
+	/**
+	 * Enter on the selected file: same as the double click (text in a tab, or the integrated viewer chosen for the type: image studio,
+	 * LogSearch, HTML...). It does not go through the "Open file" menu item: that one stays disabled after a right click on a folder,
+	 * and the editor flag of a loading in progress must not block it.
+	 */
+	private void openSelectedFromKeyboard() {
+		TreePath selection = tree.getSelectionPath();
+		if (selection == null || !(selection.getLastPathComponent() instanceof FileNamed)) {
+			return;
+		}
+		FileNamed node = (FileNamed) selection.getLastPathComponent();
+		if (node.mFile == null || !node.mFile.isFile()) {
+			return; // a folder: the tree expands or collapses it
+		}
+		selectedNode = node;
+		try {
+			currentTabEditor.loadFile(node.mFile);
+		} catch (Exception e) {
+			logger.error("Cannot open " + node.mFile + " from the file tree", e);
+		}
+		returnFocusToTree();
+	}
+
+	/** The tab that opens takes the focus after the loading: a moment later the tree gets it back, with the selected node still in view */
+	private void returnFocusToTree() {
+		javax.swing.Timer timer = new javax.swing.Timer(350, e -> {
+			if (tree.isShowing() && !tree.hasFocus()) {
+				tree.requestFocusInWindow();
+				TreePath selection = tree.getSelectionPath();
+				if (selection != null) {
+					tree.scrollPathToVisible(selection);
+				}
+			}
+		});
+		timer.setRepeats(false);
+		timer.start();
 	}
 
 	private void updateShortcutStrings() {

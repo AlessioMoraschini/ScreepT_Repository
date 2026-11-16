@@ -118,6 +118,109 @@ public class MainGuiUtils {
 		}
 	}
 
+	/** Disables the automatic check for software updates at start (the user ticked "don't show this again") */
+	private static void disableAutomaticUpdateCheck() {
+		MainGUI.currentConfiguration.getGenOpt().setAutomaticUpdateOn(false);
+		MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "automaticUpdateOn", false);
+		logger.info("Automatic check for software updates disabled by the user from the update dialog.");
+	}
+
+	/** Disables the automatic check for plugin updates at start (the user ticked "don't show this again") */
+	private static void disableAutomaticPluginUpdateCheck() {
+		MainGUI.currentConfiguration.getGenOpt().setAutomaticPluginUpdateOn(false);
+		MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "automaticPluginUpdateOn", false);
+		logger.info("Automatic check for plugin updates disabled by the user from the update dialog.");
+	}
+
+	/**
+	 * Yes/No question with a "don't show this again" check box.
+	 * @return {answer is yes, check box selected}
+	 */
+	public static boolean[] askWithDontShowAgain(String htmlMessage, String title, String checkBoxText, String checkBoxTip) {
+		final boolean[] result = new boolean[] {false, false};
+		Runnable ask = () -> {
+			javax.swing.JCheckBox check = new javax.swing.JCheckBox(checkBoxText);
+			check.setToolTipText(checkBoxTip);
+			javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.BorderLayout(0, 12));
+			panel.add(new javax.swing.JLabel(htmlMessage), java.awt.BorderLayout.CENTER);
+			panel.add(check, java.awt.BorderLayout.SOUTH);
+			int choice = javax.swing.JOptionPane.showConfirmDialog(MainGUI.mainFrameScreept, panel, title, javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE);
+			result[0] = choice == javax.swing.JOptionPane.YES_OPTION;
+			result[1] = check.isSelected();
+		};
+		try {
+			if (SwingUtilities.isEventDispatchThread()) {
+				ask.run();
+			} else {
+				SwingUtilities.invokeAndWait(ask);
+			}
+		} catch (Exception e) {
+			logger.warn("Cannot show the question dialog", e);
+		}
+		return result;
+	}
+
+	private static final java.util.concurrent.atomic.AtomicBoolean pluginUpdateCheckRunning = new java.util.concurrent.atomic.AtomicBoolean(false);
+
+	/**
+	 * Looks for newer versions of the installed plugins and proposes to update them all.
+	 * @param silent true: check done at start (no progress window, nothing shown when everything is up to date or the server is
+	 * unreachable, and the dialog has the "don't show this again" check box that turns the automatic check off)
+	 */
+	public static Thread lookForPluginUpdates(final boolean silent) {
+		return new Thread(new Runnable() {
+			@Override
+			public void run() {
+				if (!pluginUpdateCheckRunning.compareAndSet(false, true)) {
+					return;
+				}
+				try {
+					java.util.ArrayList<updater.module.plugins.PluginDTO> updatable = MainGuiGeneralAppStarter.pluginManager.findUpdatablePlugins(!silent);
+					if (updatable.isEmpty()) {
+						logger.info("All installed plugins are up to date.");
+						if (!silent) {
+							dialogHelper.info(I18n.t("app.all_plugins_up_to_date"), I18n.t("app.plugin_updates_title"));
+						}
+						return;
+					}
+
+					StringBuilder list = new StringBuilder();
+					for (updater.module.plugins.PluginDTO plugin : updatable) {
+						list.append("<li><b>").append(plugin.getName().replaceFirst("\\.[^.]+$", "")).append("</b>: ")
+							.append(plugin.getInstalledVersion()).append(" &rarr; ").append(plugin.getLastVersion()).append("</li>");
+					}
+					SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
+					String message = I18n.fmt("app.plugin_updates_found_message", updatable.size(), list);
+					boolean update;
+					if (silent) {
+						boolean[] answer = askWithDontShowAgain(message, I18n.t("app.plugin_updates_title"), I18n.t("app.dont_show_again_plugins"), I18n.t("app.dont_show_again_plugins_tip"));
+						update = answer[0];
+						if (answer[1]) {
+							disableAutomaticPluginUpdateCheck();
+						}
+					} else {
+						update = dialogHelper.yesOrNo(message, I18n.t("app.plugin_updates_title"));
+					}
+
+					if (update) {
+						int prepared = MainGuiGeneralAppStarter.pluginManager.updateAll(updatable);
+						logger.info(prepared + " plugin update(s) prepared, they are installed at next start.");
+						if (prepared > 0 && dialogHelper.yesOrNo(I18n.fmt("app.plugins_ready_restart_message", prepared), I18n.t("app.plugin_updates_title"))) {
+							MainGuiManager.restartApplication(false);
+						}
+					}
+				} catch (Throwable e) {
+					logger.warn("Cannot check the plugin updates", e);
+					if (!silent) {
+						dialogHelper.error(I18n.t("app.cannot_check_plugin_updates"), I18n.t("app.plugin_updates_title"));
+					}
+				} finally {
+					pluginUpdateCheckRunning.set(false);
+				}
+			}
+		});
+	}
+
 	public static Thread lookForUpdates(final boolean silent) {
 		dialogHelper.setAdvicesEnabled(!silent);
 
@@ -138,9 +241,19 @@ public class MainGuiUtils {
 
 							// If found ask to user what to do
 							SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
-							boolean downloadUpdates = dialogHelper.yesOrNo(
-									"<html>New version [" + newVersion + "] found, do you want to download and install it? </br>(you can disable automatic check at start going to preferences -> generalOptions)</html>",
-									"Update found: " + newVersion);
+							String updateMessage = I18n.fmt("app.update_found_message", newVersion);
+							String updateTitle = I18n.fmt("app.update_found_title", newVersion);
+							boolean downloadUpdates;
+							if (silent) {
+								// found by the automatic check at start: the user can turn it off from here
+								boolean[] answer = askWithDontShowAgain(updateMessage, updateTitle, I18n.t("app.dont_show_again_updates"), I18n.t("app.dont_show_again_updates_tip"));
+								downloadUpdates = answer[0];
+								if (answer[1]) {
+									disableAutomaticUpdateCheck();
+								}
+							} else {
+								downloadUpdates = dialogHelper.yesOrNo(updateMessage, updateTitle);
+							}
 							if (downloadUpdates && checkNewLicense()) {
 								downloadUpdatesAndAskRestart();
 							} else {
@@ -949,7 +1062,7 @@ public class MainGuiUtils {
 
 		Boolean choiceY = dialogHelper.askYorNPrecond(
 				"Files unsaved in textEditor",
-				"There are some unsaved files in text Editor, do you want to save them?",
+				"There are some unsaved files in file Editor, do you want to save them?",
 				MainGUI.mainAPP.getMainFrame(),
 				askCondition
 		);

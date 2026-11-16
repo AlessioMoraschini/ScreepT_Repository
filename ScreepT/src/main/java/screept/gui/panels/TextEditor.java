@@ -1252,7 +1252,7 @@ public class TextEditor extends ModulePanel {
 			}
 		} else if(currentConfiguration.getTextEditorOpt().firstTimeOpened){
 
-			currentTabbedEditor.loadedTabObj.textArea.setText(" Welcome to ScreepT's Text Editor!\n\n\n"
+			currentTabbedEditor.loadedTabObj.textArea.setText(" Welcome to ScreepT's File Editor!\n\n\n"
 					+ "This functionality is made mainly for coding use, here you can find many useful functions, and remember:"
 					+ "\n\n 1) Take a look into documentation under \"help\" submenu to know everything about ScreepT"
 					+ "\n\n 2) Remember to hover with mouse on buttons and other interactive elements to have useful hints about functionalities"

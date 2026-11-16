@@ -422,12 +422,22 @@ public class MainGUI extends MainGuiParent {
 								MainGuiUtils.welcomeMethodFirstTime();
 							}
 
-							if (currentConfiguration.getGenOpt().isAutomaticUpdateOn()) {
+							boolean autoSoftwareCheck = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
+							boolean autoPluginCheck = currentConfiguration.getGenOpt().isAutomaticPluginUpdateOn();
+							if (autoSoftwareCheck || autoPluginCheck) {
 								try {
 									Thread.sleep(GeneralConfig.UPDATES_AUTOCHECK_DELAY);
-									Thread updater = MainGuiUtils.lookForUpdates(true);
-									updater.start();
-									updater.join();
+									if (autoSoftwareCheck) {
+										Thread updater = MainGuiUtils.lookForUpdates(true);
+										updater.start();
+										updater.join();
+									}
+									// the plugins are checked after the software, and not when a new version is already waiting to be installed
+									if (autoPluginCheck && !MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.get()) {
+										Thread pluginUpdater = MainGuiUtils.lookForPluginUpdates(true);
+										pluginUpdater.start();
+										pluginUpdater.join();
+									}
 								} catch (Exception e) {
 									logger.warn("Cannot wait " + GeneralConfig.UPDATES_AUTOCHECK_DELAY
 											+ " ms to check for updates", e);
@@ -745,7 +755,7 @@ public class MainGUI extends MainGuiParent {
 		mntmResetTextEditor = new CustomJmenuItem(new AbstractAction(I18n.t("app.reset_text_editor")) {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-				if (dialogHelper.yesOrNo(msg1 + "Text Editor" + msg2, "Reset TextEditor?")) {
+				if (dialogHelper.yesOrNo(msg1 + "File Editor" + msg2, "Reset TextEditor?")) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					mainGuiUtils.resetPanel(TextEditor.class, MainGUI.mainFrameScreept);
 				}
@@ -1338,6 +1348,14 @@ public class MainGUI extends MainGuiParent {
 			public void actionPerformed(ActionEvent e) {
 				Thread updatesTHread = MainGuiUtils.lookForUpdates(false);
 				updatesTHread.start();
+			}
+		});
+
+		// Update every installed plugin that has a newer version
+		mntmUpdateAllPlugins = new CustomJmenuItem(new AbstractAction(I18n.t("app.update_all_plugins")) {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainGuiUtils.lookForPluginUpdates(false).start();
 			}
 		});
 

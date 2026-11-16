@@ -294,7 +294,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		chckbxInlineTabs = newCheckBox(I18n.t("app.inline_tabs_one_scrolling_line"));
 		chckbxAdaptTextWidth = newCheckBox(I18n.t("app.adapt_text_width_word_wrap"));
 		chckbxAdaptTextWidth.setToolTipText(TextEditTooltips.tooltipCutWordsTo);
-		chckbxInlineTabs.setToolTipText("[Ctrl + Shift + I] If selected the tabs of the text editor are on one line, else they are organized in rows and always visible");
+		chckbxInlineTabs.setToolTipText("[Ctrl + Shift + I] If selected the tabs of the file editor are on one line, else they are organized in rows and always visible");
 		comboSpellcheckerDictionary = new JComboBox<FileNamed>(RsyntaxUtils.getSpellCheckerDIctionaries());
 
 		chckbxAutoindentation = newCheckBox(I18n.t("app.auto_indentation"));

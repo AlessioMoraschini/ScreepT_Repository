@@ -1143,7 +1143,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				if(!tailModeWasActive && (obj.unsaved || obj.loadedFile == null)) {
 					int choiceY = dialogHelper.yesNoOrCanc(
 							I18n.t("app.file_has_unsaved_changes_do_you"),
-							"There are some unsaved files in text Editor, do you want to save them?");
+							"There are some unsaved files in file Editor, do you want to save them?");
 
 					if(choiceY == JOptionHelper.CANC)
 						return false;

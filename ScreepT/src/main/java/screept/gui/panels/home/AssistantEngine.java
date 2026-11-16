@@ -436,7 +436,7 @@ final class AssistantEngine {
 		if (!answer.alsoSee.isEmpty()) {
 			reply.add(Kind.SOURCE, "Closest things I know: " + String.join(", ", answer.alsoSee));
 		}
-		reply.add(Kind.SOURCE, "Try another prompt: a feature name (text editor, crypter, calculator...), \"shortcuts\", \"news\" or \"help\".");
+		reply.add(Kind.SOURCE, "Try another prompt: a feature name (file editor, crypter, calculator...), \"shortcuts\", \"news\" or \"help\".");
 		return reply;
 	}
 

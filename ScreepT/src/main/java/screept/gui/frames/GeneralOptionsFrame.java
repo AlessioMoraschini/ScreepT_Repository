@@ -100,6 +100,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private JCheckBox chckbxHideLauncherAt;
 	private JCheckBox chckbxExceptionAdvicesEnabled;
 	private JCheckBox chckbxAutomaticallyCheckFor;
+	private JCheckBox chckbxAutomaticallyCheckPlugins;
 	private JCheckBox chckbxAutostart;
 
 	private JLabel lblDynVolume;
@@ -126,6 +127,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private boolean BACKUP_AUTOSAVE_FLAG;
 	private boolean BACKUP_EXCEPTION_ADVICES;
 	private boolean BACKUP_AUTOCHECK_UPDATES;
+	private boolean BACKUP_AUTOCHECK_PLUGIN_UPDATES;
 	private String BACKUP_CURRENT_USERNAME;
 	private String BACKUP_CHARSET;
 	private SecurityLevel BACKUP_SECURITY_LEVEL;
@@ -247,6 +249,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		chckbxHideLauncherAt = newCheckBox(I18n.t("common.hide_launcher_at_start"), I18n.t("app.when_checked_launcher_will_not_be"));
 		chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
 		chckbxAutomaticallyCheckFor = newCheckBox(I18n.t("app.auto_check_updates"), I18n.t("app.enable_disable_automatic_check_for_updates"));
+		chckbxAutomaticallyCheckPlugins = newCheckBox(I18n.t("app.auto_check_plugin_updates"), I18n.t("app.auto_check_plugin_updates_tip"));
 
 		lblLogLevelChosen = new JLabel(String.valueOf(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START));
 		lblLogLevelChosen.setToolTipText(I18n.t("app.log_level_chosen_at_application_start"));
@@ -314,7 +317,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		optionsPanel.addSection(I18n.t("app.startup_and_updates"), I18n.t("app.autostart_launcher_and_updates_check"))
 				.addRow(I18n.t("app.autostart"), chckbxAutostart, buttonOpenAutostartDir)
 				.addRow(I18n.t("app.log_level"), lblLogLevelChosen)
-				.addCheckBoxes(chckbxHideLauncherAt, chckbxAutomaticallyCheckFor);
+				.addCheckBoxes(chckbxHideLauncherAt, chckbxAutomaticallyCheckFor, chckbxAutomaticallyCheckPlugins);
 
 		JScrollPane scroller = new JScrollPane(optionsPanel);
 		scroller.setBorder(BorderFactory.createEmptyBorder());
@@ -401,6 +404,14 @@ public class GeneralOptionsFrame extends ParentFrame{
 			public void actionPerformed(ActionEvent e) {
 				boolean autoUpdates = chckbxAutomaticallyCheckFor.isSelected();
 				currentConfiguration.getGenOpt().setAutomaticUpdateOn(autoUpdates);
+			}
+		});
+
+		// AUTO PLUGIN UPDATES ON/OFF
+		chckbxAutomaticallyCheckPlugins.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentConfiguration.getGenOpt().setAutomaticPluginUpdateOn(chckbxAutomaticallyCheckPlugins.isSelected());
 			}
 		});
 
@@ -590,6 +601,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_LOCALE = currentConfiguration.getGenOpt().getLocale();
 		BACKUP_LANGUAGE = currentConfiguration.getGenOpt().getLanguage();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
+		BACKUP_AUTOCHECK_PLUGIN_UPDATES = currentConfiguration.getGenOpt().isAutomaticPluginUpdateOn();
 	}
 
 	/**
@@ -604,6 +616,7 @@ public class GeneralOptionsFrame extends ParentFrame{
     	chckbxAutosave.setSelected(currentConfiguration.getFileOpt().isFlagAutosave());
     	chckbxExceptionAdvicesEnabled.setSelected(currentConfiguration.getGenOpt().isExceptionAdvicesEnabled());
     	chckbxAutomaticallyCheckFor.setSelected(currentConfiguration.getGenOpt().isAutomaticUpdateOn());
+    	chckbxAutomaticallyCheckPlugins.setSelected(currentConfiguration.getGenOpt().isAutomaticPluginUpdateOn());
     	updateComboCharsetSelection(currentConfiguration.getGenOpt().getCharset());
     	System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
     	comboSecurityLevels.setSelectedItem(currentConfiguration.getAesOpt().getSecurityLevel());
@@ -664,6 +677,7 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 		currentConfiguration.getGenOpt().setGeneralVolume(BACKUP_GENVOLUME);
 		currentConfiguration.getGenOpt().setExceptionAdvicesEnabled(BACKUP_EXCEPTION_ADVICES);
 		currentConfiguration.getGenOpt().setAutomaticUpdateOn(BACKUP_AUTOCHECK_UPDATES);
+		currentConfiguration.getGenOpt().setAutomaticPluginUpdateOn(BACKUP_AUTOCHECK_PLUGIN_UPDATES);
 		currentConfiguration.getGenOpt().setLocale(BACKUP_LOCALE);
 		currentConfiguration.getGenOpt().setLanguage(BACKUP_LANGUAGE);
 		various.common.light.i18n.I18n.setLanguage(BACKUP_LANGUAGE);
@@ -721,6 +735,7 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
+		BACKUP_AUTOCHECK_PLUGIN_UPDATES = currentConfiguration.getGenOpt().isAutomaticPluginUpdateOn();
 		BACKUP_LOCALE = currentConfiguration.getGenOpt().getLocale();
 		BACKUP_LANGUAGE = currentConfiguration.getGenOpt().getLanguage();
 
@@ -739,6 +754,7 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "generalVolume", currentConfiguration.getGenOpt().getGeneralVolume());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "exceptionAdvicesEnabled", currentConfiguration.getGenOpt().isExceptionAdvicesEnabled());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "automaticUpdateOn", currentConfiguration.getGenOpt().isAutomaticUpdateOn());
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "automaticPluginUpdateOn", currentConfiguration.getGenOpt().isAutomaticPluginUpdateOn());
 		currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "flagAutosave", currentConfiguration.getFileOpt().isFlagAutosave());
 		currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "autosaveInterval", currentConfiguration.getFileOpt().autosaveInterval);
 		currentConfiguration.writeSingleValue(INItializer.AES_OPT, "securityLevel", currentConfiguration.getAesOpt().getSecurityLevel().name());

@@ -26,6 +26,8 @@ final class LogLevel {
 	static final int WARN = 3;
 	static final int ERROR = 4;
 	static final int COUNT = 5;
+	/** Bytes of a line looked at by the formats other than the standard words */
+	private static final int OTHER_SCAN = 64;
 	static final int NONE = 15;
 	static final int CONTINUATION = 0x10;
 
@@ -65,7 +67,134 @@ final class LogLevel {
 			}
 			i = end;
 		}
+		return detectOther(head, length);
+	}
+
+	/**
+	 * The other log systems, looked for only on the lines where no standard level word was found (so the common case costs nothing
+	 * more): .NET "fail: ...", Google glog "E0102 12:00:00", Android logcat "E/Tag(", Serilog "[INF] [WRN] [ERR]" and the words
+	 * java.util.logging (FINE, FINER, FINEST) and syslog (NOTICE, ALERT, EMERG) use, written in capitals because they are also plain words.
+	 */
+	private static int detectOther(byte[] head, int length) {
+		if (length == 0 || head[0] == ' ' || head[0] == '	') {
+			return -1; // indented: a stack trace or a wrapped line, it has no level of its own
+		}
+		int special = lineStart(head, length);
+		if (special >= 0) {
+			return special;
+		}
+		length = Math.min(length, OTHER_SCAN); // the level of these formats is at the start of the line
+		for (int i = 0; i < length;) {
+			byte c = head[i];
+			if (!isLetter(c) || (i > 0 && isAlphaNumeric(head[i - 1]))) {
+				i++;
+				continue;
+			}
+			int end = i;
+			while (end < length && isLetter(head[end])) {
+				end++;
+			}
+			int size = end - i;
+			if (size == 3) {
+				if (i > 0 && head[i - 1] == '[' && end < length && head[end] == ']') {
+					int level = bracketCode(head, i);
+					if (level >= 0) {
+						return level;
+					}
+				}
+			} else if (size >= 4 && size <= 7) {
+				int level = wordOther(head, i, size);
+				if (level >= 0) {
+					return level;
+				}
+			}
+			i = end;
+		}
 		return -1;
+	}
+
+	private static int wordOther(byte[] b, int from, int size) {
+		switch (size) {
+		case 4:
+			return eqExact(b, from, "FINE") ? DEBUG : -1;
+		case 5:
+			if (eqExact(b, from, "FINER")) {
+				return TRACE;
+			}
+			return eqExact(b, from, "ALERT") || eqExact(b, from, "EMERG") || eqExact(b, from, "PANIC") ? ERROR : -1;
+		case 6:
+			if (eqExact(b, from, "FINEST")) {
+				return TRACE;
+			}
+			return eqExact(b, from, "NOTICE") ? INFO : -1;
+		case 7:
+			return eqExact(b, from, "VERBOSE") ? TRACE : -1;
+		default:
+			return -1;
+		}
+	}
+
+	/** Forms that only count at the very start of the line: .NET "fail: ...", Google glog "E0102 12:00:00", Android logcat "E/Tag(" */
+	private static int lineStart(byte[] b, int length) {
+		if (length >= 6 && b[4] == ':' && isLetter(b[0]) && isLetter(b[3])) {
+			if (eqExact(b, 0, "fail") || eqExact(b, 0, "crit")) {
+				return ERROR;
+			}
+			if (eqExact(b, 0, "dbug")) {
+				return DEBUG;
+			}
+			if (eqExact(b, 0, "trce")) {
+				return TRACE;
+			}
+		}
+		if (length >= 6 && b[5] == ' ' && isDigit(b[1]) && isDigit(b[2]) && isDigit(b[3]) && isDigit(b[4])) {
+			switch (b[0]) {
+			case 'I':
+				return INFO;
+			case 'W':
+				return WARN;
+			case 'E':
+			case 'F':
+				return ERROR;
+			default:
+				break;
+			}
+		}
+		if (length >= 3 && b[1] == '/') {
+			switch (b[0]) {
+			case 'V':
+				return TRACE;
+			case 'D':
+				return DEBUG;
+			case 'I':
+				return INFO;
+			case 'W':
+				return WARN;
+			case 'E':
+			case 'F':
+				return ERROR;
+			default:
+				break;
+			}
+		}
+		return -1;
+	}
+
+	/** The 3 letters of Serilog between square brackets */
+	private static int bracketCode(byte[] b, int at) {
+		if (eqExact(b, at, "VRB") || eqExact(b, at, "TRC")) {
+			return TRACE;
+		}
+		if (eqExact(b, at, "DBG")) {
+			return DEBUG;
+		}
+		if (eqExact(b, at, "INF")) {
+			return INFO;
+		}
+		if (eqExact(b, at, "WRN")) {
+			return WARN;
+		}
+		return eqExact(b, at, "ERR") || eqExact(b, at, "FTL") ? ERROR : -1;
 	}
 
 	/** Stack trace and wrapped lines: indented, "at ...", "Caused by", "..." */
@@ -143,6 +272,20 @@ final class LogLevel {
 		default:
 			return -1;
 		}
+	}
+
+	/** Same letters and capitals as given: for the words that are also common in plain text */
+	private static boolean eqExact(byte[] b, int from, String word) {
+		for (int i = 0; i < word.length(); i++) {
+			if (b[from + i] != word.charAt(i)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static boolean isDigit(byte c) {
+		return c >= '0' && c <= '9';
 	}
 
 	private static boolean eq(byte[] b, int from, String upper) {

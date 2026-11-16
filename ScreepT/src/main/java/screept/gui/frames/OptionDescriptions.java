@@ -28,9 +28,9 @@ final class OptionDescriptions {
 		Map<String, String> m = new HashMap<String, String>();
 		m.put("GUI style", "Look and feel of the whole application: ScreepT Dark (the default dark theme), the classic light styles, Nimbus and others.\n\n"
 				+ "The change is applied immediately to every open window. Discard brings back the previous style.");
-		m.put("Theme", "Color theme of the text editor (syntax colors, background, selection).\n\n"
+		m.put("Theme", "Color theme of the file editor (syntax colors, background, selection).\n\n"
 				+ "It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite. "
-				+ "You can also define your own theme from the Text editor menu.");
+				+ "You can also define your own theme from the File editor menu.");
 		m.put("Interface size", "Size of fonts and graphic elements of the whole interface: Mini, Small, Medium, Big, XXL or Custom.\n\n"
 				+ "Custom keeps the values you set with the button beside the list. Windows that are already open are resized in proportion.");
 		m.put("Menu font size", "Extra size of the font of the menus, added to the interface size you chose.\n\n"
@@ -38,15 +38,15 @@ final class OptionDescriptions {
 		m.put("Log font size", "Size of the font used by the log area at the bottom of the application.");
 		m.put("Nimbus size variant", "Size variant of the Nimbus look and feel (0 = regular, 1 = small, 2 = mini).\n\nIt only matters when Nimbus is the selected GUI style.");
 		m.put("Nimbus dark theme", "Uses the dark color scheme with the Nimbus look and feel.\n\nIt only matters when Nimbus is the selected GUI style: ScreepT Dark is already dark.");
-		m.put("Font", "Font family and size of the text editor.\n\nA monospaced font (for example Consolas) is the best choice: the rectangular selection "
+		m.put("Font", "Font family and size of the file editor.\n\nA monospaced font (for example Consolas) is the best choice: the rectangular selection "
 				+ "(Alt + drag) stays aligned to the characters and columns line up.\n\nThe change is shown live in every open tab.");
-		m.put("Margin and interline", "Margin: space between the border of the text editor and the text.\n\n"
+		m.put("Margin and interline", "Margin: space between the border of the file editor and the text.\n\n"
 				+ "Interline: extra space between lines of text.\n\nEach one has a slider and a box with the exact value.");
 		m.put("Max file size (MB)", "Files bigger than this size are not loaded directly in the editor, because they could slow down or crash ScreepT.\n\n"
 				+ "When you open one, ScreepT proposes LogSearch: a read-only viewer that reads the file a portion at a time and searches it as text "
 				+ "or regular expression, so even files of many gigabytes open at once. You can still choose to load the file in the editor anyway.");
-		m.put("Viewers", "Chooses how each type of file opens: in the text editor, or in an integrated viewer tab (Image Studio for pictures, LogSearch for .log files, HTML viewer for web pages).\n\nOnly the choices that differ from the defaults are saved in the ini file.");
-		m.put("Spellchecker dictionary", "Dictionary used by the spellchecker of the text editor.\n\nThe spellchecker is switched on and off from the text editor toolbar.");
+		m.put("Viewers", "Chooses how each type of file opens: in the file editor, or in an integrated viewer tab (Image Studio for pictures, LogSearch for .log files, HTML viewer for web pages).\n\nOnly the choices that differ from the defaults are saved in the ini file.");
+		m.put("Spellchecker dictionary", "Dictionary used by the spellchecker of the file editor.\n\nThe spellchecker is switched on and off from the file editor toolbar.");
 
 		m.put("Auto-indentation", "When you press Enter, the new line starts with the same indentation as the previous one.");
 		m.put("Close curly braces", "Typing an opening curly brace adds the closing one automatically.");
@@ -56,9 +56,9 @@ final class OptionDescriptions {
 		m.put("Autosave temp files", "Keeps a temporary copy of the files you are editing and saves it periodically, so work can be recovered after a crash.\n\n"
 				+ "Your original file is not touched until you save.");
 		m.put("Auto check for file changes", "Watches the open files: when another program modifies one of them, ScreepT notices it and lets you reload it.");
-		m.put("Sync clipboard style", "The clipboard panel uses the same colors and syntax style as the text editor.");
+		m.put("Sync clipboard style", "The clipboard panel uses the same colors and syntax style as the file editor.");
 
-		m.put("Antialiasing enabled", "Smooths the edges of the letters in the text editor. Turn it off only if text looks blurry on your screen.");
+		m.put("Antialiasing enabled", "Smooths the edges of the letters in the file editor. Turn it off only if text looks blurry on your screen.");
 		m.put("Allow fractional fonts", "Uses fractional font metrics: letters are spaced more precisely, especially with non-integer scaling.");
 		m.put("Code folding", "Lets you collapse and expand blocks of code (functions, classes, tags) with the markers in the left margin.");
 		m.put("Fade highlight", "The highlight of the current line fades out softly instead of being drawn as a solid band.");
@@ -98,6 +98,7 @@ final class OptionDescriptions {
 		m.put("Log level", "Verbosity of the application log, chosen when the application starts. A more detailed level helps to investigate problems but writes more.");
 		m.put("Hide launcher at start", "The launcher window (loading progress) is not shown while ScreepT starts.");
 		m.put("Auto-check updates", "At start ScreepT checks whether a new version is available.");
+		m.put("Auto-check plugin updates", "At start ScreepT checks whether the installed plugins have a newer version and proposes to update them all.");
 		return m;
 	}
 }

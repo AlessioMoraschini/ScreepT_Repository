@@ -32,7 +32,7 @@ final class LogSearcher {
 	final LogQuery query;
 
 	private final File file;
-	private final long length;
+	private volatile long length;
 	private final AtomicBoolean cancelled = new AtomicBoolean();
 	private volatile boolean finished;
 	private volatile long bytesRead;
@@ -85,10 +85,29 @@ final class LogSearcher {
 	}
 
 	private void run() {
+		runFrom(0L);
+	}
+
+	/**
+	 * The file grew (append only): the part from the start of line {@code fromLine} (at byte {@code fromOffset}) is scanned again,
+	 * the matches found before it stay. Call it when the search is finished.
+	 */
+	void extend(int fromLine, long fromOffset) {
+		results.truncate(fromLine);
+		linesScanned = fromLine;
+		bytesRead = fromOffset;
+		length = file.length();
+		finished = false;
+		Thread thread = new Thread(() -> runFrom(fromOffset), "LogSearch-search");
+		thread.setDaemon(true);
+		thread.start();
+	}
+
+	private void runFrom(long startOffset) {
 		try {
 			final boolean bytes = query.bytesCapable();
 			final boolean prefiltered = query.hasPrefilter();
-			ChunkScan.run(file, () -> {
+			ChunkScan.run(file, startOffset, () -> {
 				final LogQuery.Tester tester = bytes ? null : query.tester();
 				final AsciiChars ascii = new AsciiChars();
 				return (data, len, offset, unterminated) -> scan(data, len, unterminated, bytes, prefiltered, tester, ascii);

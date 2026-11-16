@@ -30,7 +30,7 @@ final class NpcHints {
 			"Psst: say how you feel about this software. Honestly. All of it. The full vault likes declarations.",
 			"Psst: ask me about the eggs and I will tell you if you are warm or cold.",
 			"Psst: the home terminal obeys the names of the eggs too.",
-			"Psst: the crypter and the text editor have a secret of their own, four taps on Ctrl+Alt and a letter.",
+			"Psst: the crypter and the file editor have a secret of their own, four taps on Ctrl+Alt and a letter.",
 			"Psst: something here hisses and eats apples.",
 			"Psst: there are puppies, a ball and a wall of bricks somewhere.",
 			"Psst: two cats, a ball of yarn and an unreasonable amount of paw prints.",

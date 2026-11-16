@@ -6,11 +6,34 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
-## 0.9.80 - (in development)
-> Markdown Viewer plugin 1.2.0: smart editing like VS Code "Markdown All in One"
+## 0.9.80 - 2026-11-16
+> A faster and smarter LogSearch (monitor, date filter, more log formats), Image Studio full screen, "Open with" in the file tree, update all plugins at once, and the Text editor is now the File editor
 
 ### New
+- LogSearch date filter: from / to (both optional, both days included), typed as dd/MM/yyyy or picked from a small calendar in your language. It appears when the lines have a date in one of the usual formats (ISO, dd/MM/yyyy, Apache / nginx, syslog, java.util.logging, Unix time, JSON). A date typed or picked turns it on; the check box turns it off without clearing the dates and the cross removes them. Finding the limits reads a few blocks, so it is instant on huge files.
+- File tree: right click on a file > Open in a window: opens it in LogSearch, in the Image Studio window (images) or in the File Hash checker, the tools of the Various menu that read a file; only the ones that can read that type of file are listed.
+- LogSearch monitor (on by default): the file is watched, and what other programs write to it (new lines, a log that keeps growing) appears by itself in the lines and in the search results, following the end when the view was at the end; a file that is rewritten or replaced (log rotation) is indexed again. With the monitor off a warning tells that the file changed on disk and the Refresh button reads it again. The file is no longer kept open, so other programs can rotate, rename or delete it while it is shown.
+- Image Studio full screen (button or F11, in the window and in the tab): the image fills the screen with zoom (wheel, drag to move) and a menu at the top center with zoom, fit, 100% and rotation (view only). The menu hides 5 seconds after the mouse left it and comes back when the mouse passes over its place; the pin keeps it always visible, and the X at the top right (or Esc) is always there to exit.
+- File tree: right click on a file > Open with: opens it once in the file editor or in an integrated viewer (image studio, LogSearch, HTML...), the default viewer of the type is marked and the associations do not change.
+- Plugins > Update all plugins: looks for newer versions of the installed plugins and prepares all their updates in one go (installed at the next start, with the offer to restart).
+- Auto-check plugin updates (General Options, on by default): at startup ScreepT checks the installed plugins like it does for the software. Both update questions now explain where to turn the check off and have a "Don't show this again" box that turns it off.
+- Search in files: opacity slider (from 20% to 100%) and the window always stays above every other window.
 - Markdown Viewer plugin 1.2.0 (update it from Install plugins): Enter continues lists, task lists and quotes and an empty item ends the list; Tab / Shift+Tab indent list items and number them again; Backspace after a marker goes up one level; Ctrl+B / Ctrl+I / Alt+S / Ctrl+M toggle bold, italic, strikethrough and math on the selection or the word at the caret; Ctrl+Shift+] / [ heading level; Alt+C task boxes; Shift+Alt+F table formatter (alignment kept); Ctrl+Shift+T table of contents between <!-- TOC --> markers, updated on every save (<!-- omit in toc --> leaves a heading out, GitHub anchors with -1, -2 for duplicates); suggestions of headings and files after "](#" and "]("; a url pasted on a selection makes a link; $math$ and $$blocks$$ in the preview; HTML export with images embedded, links fixed and formulas rendered by KaTeX; F1 lists every shortcut.
+
+### Improved
+- LogSearch recognizes the levels of more log systems: Serilog [INF] [WRN] [ERR], .NET fail: / warn:, glog, Android logcat, java.util.logging FINE / FINER / FINEST, syslog NOTICE / ALERT / EMERG, JSON "level". Indexing speed is unchanged.
+- LogSearch header is more compact: name, path, warnings and controls on one line, file details in the status bar, level and date filters on one line under the search.
+- LogSearch in a file editor tab (.log files, or the extensions chosen in Graphic preferences > File editor > Viewers) is bound to its file: no Open file button and dropping another file does not replace it; the window opened from Various > LogSearch keeps both.
+- "Text editor" is now "File editor" everywhere: menus, window titles, options, guide and all languages.
+- Interface texts use stable ids shared by every language pack (English is a pack like the others): Crypter, Batch, Metadata cleaner, Hardware info, Key generator, Configuration manager, Plugin manager, LogSearch, launcher, memory dialog, network info, file search and the exit dialog are translated; the launcher also speaks the language chosen in ScreepT.
+- Every window opens 10% bigger than its content, so longer texts of other languages do not overlap; Network info is bigger too and scrolls when it does not fit.
+- Color picker redesigned: rounded look, big sample with its HEX code, one click copy of every format, contrast of white and black text, recent colors of the session; it now always stays on top of every window, pinned or not.
+
+### Fixed
+- Image Studio opened from "Edit in Image Studio" now always comes in front: it is above everything for the first 2 seconds, then it is a normal window again. The question "Keep tab / Close tab" is gone: the tab stays open.
+- File editor: with the focus on the file tree, Enter now opens the selected file also when it was chosen with the arrow keys, and after the tab opens the focus comes back to the tree on the same node.
+- Search in files and Find / Replace did not open in languages other than English.
+- Hash checker: long hashes (SHA-512) no longer widen the window and hide the copy buttons; the full value is in the tooltip.
 
 ## 0.9.79 - 2026-11-15
 > The whole application speaks 7 languages, a new Theme Editor, live crop in Image Studio, a much faster LogSearch and a clearer text editor footer

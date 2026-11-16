@@ -45,6 +45,24 @@ final class LineSet {
 		}
 	}
 
+	/** Removes the elements >= line (the matches of a part of the file that is scanned again) */
+	synchronized void truncate(int line) {
+		if (line <= 0) {
+			clear();
+			return;
+		}
+		int w = line >>> 6;
+		if (w >= wordCount) {
+			return;
+		}
+		words[w] &= (1L << (line & 63)) - 1;
+		for (int k = w + 1; k < wordCount; k++) {
+			words[k] = 0;
+		}
+		wordCount = w + 1;
+		size = before[w] + Long.bitCount(words[w]);
+	}
+
 	synchronized int size() {
 		return size;
 	}
