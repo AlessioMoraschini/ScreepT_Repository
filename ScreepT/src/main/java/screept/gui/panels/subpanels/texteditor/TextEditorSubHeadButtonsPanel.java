@@ -215,6 +215,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	private JButton btnFileContentSearch;
 	public JButton btnCopyPath;
 	private ScrollableToolbar toolbar;
+	/** Font size of the editor when the toolbar was built (the saved one): "Reset zoom" goes back to it */
+	private int baseFontSize = 16;
 
 	private String lastRemovedWord = "";
 
@@ -376,6 +378,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		sliderFontSize = new JSlider(4, 100);
 		sliderFontSize.setToolTipText(TextEditTooltips.tooltipIncreaseTextSize);
 		sliderFontSize.setValue(currentConfiguration.getTextEditorOpt().getFont().getSize());
+		baseFontSize = sliderFontSize.getValue();
 
 		slider_margin = new JSlider(0, 100, 0);
 
@@ -488,7 +491,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		menu.addSeparator();
 		menu.add(menuItem(EditorIcons.Kind.ZOOM_IN, I18n.t("toolbar.zoom_in"), () -> sliderFontSize.setValue(sliderFontSize.getValue() + 2)));
 		menu.add(menuItem(EditorIcons.Kind.ZOOM_OUT, I18n.t("toolbar.zoom_out"), () -> sliderFontSize.setValue(sliderFontSize.getValue() - 2)));
-		menu.add(menuItem(EditorIcons.Kind.ZOOM_RESET, I18n.t("toolbar.zoom_reset"), () -> sliderFontSize.setValue(TextEditorOption.DEFAULT_FONT.getSize())));
+		menu.add(menuItem(EditorIcons.Kind.ZOOM_RESET, I18n.t("toolbar.zoom_reset"), () -> sliderFontSize.setValue(baseFontSize)));
 		return menu;
 	}
 
