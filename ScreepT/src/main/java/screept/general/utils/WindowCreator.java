@@ -297,7 +297,7 @@ public class WindowCreator {
 
 		KeyDictionaryFrame panelKeyDict = KeyDictionaryFrame.getInstance(MainGUI.currentConfiguration);
 
-		commonGraphicInit(panelKeyDict, "Key Dictionary - ", true);
+		commonGraphicInit(panelKeyDict, "Key Image Vault - ", true);
 
     	return panelKeyDict;
 	}

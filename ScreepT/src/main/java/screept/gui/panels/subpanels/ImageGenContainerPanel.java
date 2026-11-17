@@ -11,191 +11,189 @@
  */
 package screept.gui.panels.subpanels;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.Panel;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
-import gui.commons.utils.ImageWorkerExtended;
+import gui.commons.frameutils.frame.arch.ToolStyle;
 import initializer.configs.impl.INItializer;
 import screept.gui.frames.KeyGenFrame;
 import screept.gui.utils.ImageWorkerScreepT;
-import various.common.light.gui.UpdateProgressPanel;
+import various.common.light.i18n.I18n;
 import various.common.light.om.KeyGenImageType;
 
-public class ImageGenContainerPanel extends JPanel{
+/**
+ * Preview of a key image. The image is generated in background, showing the progress in the progress bar of the
+ * key generator. It can be stopped: then no image is produced at all (the preview stays empty, export and dictionary
+ * have nothing to save). The image is drawn scaled to fit this panel, proportions kept.
+ */
+public class ImageGenContainerPanel extends JPanel {
 	private static final long serialVersionUID = 3880705375830247529L;
 
 	// ImageGenContainerPanel logger
-	static Logger logger = Logger.getLogger(ImageGenContainerPanel.class); 
-	
-    public BufferedImage image;
-    
-	// object that display wait dialog
-	private volatile UpdateProgressPanel progUpdater;
-    
-	Image scaledImage;
-	
-	// elements of gui taken from the main key generator panel
-	volatile private JProgressBar bar;
-	private JTextArea jtext;
-	private JButton btnGen;
-	private JButton btnAddDict;
-	private JButton btnExp;
-	private int width;
-	private int height;
-	
-	private ImageGenContainerPanel genContPane;
+	static Logger logger = Logger.getLogger(ImageGenContainerPanel.class);
 
-	
-	// constructor that create a random img and adds it to obj panel (this class extends JPanel)
-    public ImageGenContainerPanel(KeyGenImageType imgEnumType, int w, int h, KeyGenFrame thisFrame, INItializer currentConf) {
-    	
-    	logger.info(this.getClass().getName() + " Starting...");
-    	
-    	genContPane = this;
-    	width= w;
-    	height= h;
-    	
-    	jtext = thisFrame.getTextLog();
-    	btnAddDict = thisFrame.getBtnAddInDictionary();
-    	btnExp = thisFrame.getBtnExport();
-    	btnGen = thisFrame.getBtnGenerateKey();
-    	
-    	ImageGenContainerPanel actualPanel = this;
-    	Thread starterAsync = new Thread(new Runnable() {
-			
+	// null until the generation ends successfully
+	private volatile BufferedImage image;
+
+	// set by the user with the stop button
+	private final AtomicBoolean cancel = new AtomicBoolean(false);
+
+	// elements of gui taken from the main key generator panel
+	private final JProgressBar bar;
+	private final JTextArea jtext;
+	private final JButton btnGen;
+	private final JButton btnAddDict;
+	private final JButton btnExp;
+	private final JButton btnStop;
+	private final int width;
+	private final int height;
+
+	// constructor that starts the creation of a random img, shown here when ready
+	public ImageGenContainerPanel(KeyGenImageType imgEnumType, int w, int h, KeyGenFrame thisFrame, INItializer currentConf) {
+
+		logger.info(this.getClass().getName() + " Starting...");
+
+		width = w;
+		height = h;
+		setOpaque(false);
+
+		jtext = thisFrame.getTextLog();
+		btnAddDict = thisFrame.getBtnAddInDictionary();
+		btnExp = thisFrame.getBtnExport();
+		btnGen = thisFrame.getBtnGenerateKey();
+		btnStop = thisFrame.getBtnStop();
+		bar = thisFrame.getProgressBar();
+
+		btnStop.setEnabled(true);
+
+		Thread starterAsync = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				
-				try {
-					progUpdater = new UpdateProgressPanel(false);
-					progUpdater.getDialog().setLocationRelativeTo(thisFrame);
-					progUpdater.setProgBarEnabled(true);
-					progUpdater.getPb().setValue(0);
-					bar = thisFrame.getProgressBar();
-					
-					bar.setValue(20);
-					bar.setString("Workin...");
-					bar.setIndeterminate(true);
-					jtext.append(" Values loaded :)");
-					FlowLayout layout = new FlowLayout();
-					layout.setVgap(0);
-					actualPanel.setLayout(layout);
-					bar.setValue(35);
-					Dimension backup = new Dimension(thisFrame.getSize());
-					actualPanel.setSize(thisFrame.getSize());
-					jtext.append("\n -> Creation of random "+w+" x "+h+" image");
-					bar.setValue(40);
-					progUpdater.getPb().setValue(40);
-					image = ImageWorkerScreepT.generateKeyImage(width, height, imgEnumType.getType(), genContPane);
-					scaledImage = image.getScaledInstance((int)backup.getWidth(), (int)backup.getHeight(),Image.SCALE_FAST);
-					JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
-					removeAll();
+				generate(imgEnumType);
+			}
+		}, "key-image-generation");
+		starterAsync.start();
 
-					bar.setValue(85);
-					progUpdater.getPb().setValue(85);
-					setOpaque(false);
-					add(picLabel, BorderLayout.NORTH);
-					btnAddDict.setEnabled(true);
-					btnExp.setEnabled(true);
-					btnGen.setEnabled(true);
-					revalidate(); 
-					repaint();	
-					picLabel.setBounds(0, 0,(int)backup.getWidth(), (int)backup.getHeight());
-					bar.setValue(100);
-					bar.setString("Ready :)");
+		logger.info(this.getClass().getName() + " Started");
+	}
+
+	private void generate(KeyGenImageType imgEnumType) {
+		try {
+			log("\n -> Creation of random " + width + " x " + height + " image");
+			showProgress(0, false);
+
+			BufferedImage generated = ImageWorkerScreepT.generateKeyImage(width, height, imgEnumType.getType(), new ProgressSink(), cancel);
+
+			if (generated == null) {
+				// stopped by the user: as if the image was never generated
+				log(" -> Stopped: no image generated");
+				logger.debug("Key generation stopped by the user");
+			} else {
+				image = generated;
+				log(" -> Finished!");
+				logger.debug("Generated Image of " + width + "Px X " + height + "Px");
+			}
+		} catch (Throwable e) {
+			logger.error("There was an exception/error!", e);
+			log(" -> Error while generating the image");
+		} finally {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
 					bar.setIndeterminate(false);
-					progUpdater.getPb().setValue(100);
-					progUpdater.forceClose();
-					jtext.append("\n -> Finished!");
-					logger.debug("Generated Image of " + width + "Px X " + height + "Px");
-				} catch (Throwable e) {
-					logger.error("There was an exception/error!", e);
-				} finally {
-					UpdateProgressPanel.forceDisposeSafe(progUpdater);
+					bar.setValue(image != null ? 100 : 0);
+					btnStop.setEnabled(false);
+					btnGen.setEnabled(true);
+					btnExp.setEnabled(true);
+					btnAddDict.setEnabled(true);
+					repaint();
 				}
+			});
+		}
+	}
 
+	/** Stops the generation: the image is discarded */
+	public void cancelGeneration() {
+		cancel.set(true);
+		btnStop.setEnabled(false);
+		log(" -> Stop requested...");
+	}
 
+	/** Receives the progress of the generator (called from the generation thread) */
+	private class ProgressSink implements java.util.function.IntConsumer {
+		private int last = -1;
+
+		@Override
+		public void accept(int percent) {
+			if (percent != last) {
+				last = percent;
+				showProgress(percent, false);
+			}
+		}
+	}
+
+	private void showProgress(final int percent, final boolean indeterminate) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				bar.setIndeterminate(indeterminate);
+				bar.setValue(percent);
 			}
 		});
-    	starterAsync.start();
-    	
-    	logger.info(this.getClass().getName() + " Started");
-    }
-    
+	}
 
-    // constructor to print image on this.JPanel object extender, and save it on the given file
-    public ImageGenContainerPanel(int width, int height,int type, File dest, String imgExtension, Panel thisPanel) throws IOException {
-        
-        image = ImageWorkerExtended.generateKeyImageAndWrite(width, height, type, dest, imgExtension);
-        scaledImage = image.getScaledInstance(thisPanel.getWidth(),thisPanel.getHeight(),Image.SCALE_FAST);
-        JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
-        add(picLabel);        
-   
-  }
-    
-    public static void loadImageInPanel(BufferedImage image, JPanel thisPanel) {
-        Dimension backup = new Dimension(thisPanel.getSize());
-        Image scaledImage = image.getScaledInstance((int)backup.getWidth(), (int)backup.getHeight(),Image.SCALE_REPLICATE);
-        JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
-        thisPanel.removeAll();
-        thisPanel.setOpaque(false);
-        thisPanel.add(picLabel, BorderLayout.NORTH);
-//        revalidate(); 
-		  //repaint();	
-        picLabel.setBounds(0, 0,(int)backup.getWidth(), (int)backup.getHeight());
-        
-  }
-//    @Override
-//    protected void paintComponent(Graphics g) {
-//        super.paintComponent(g);
-//        g.drawImage(scaledImage, 0, 0, this); // see javadoc for more info on the parameters            
-//    }
+	/** Appends a line to the log of the key generator (from any thread) */
+	private void log(final String text) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				jtext.append(text);
+				jtext.setCaretPosition(jtext.getDocument().getLength());
+			}
+		});
+	}
 
-    public BufferedImage getImage() {
+	@Override
+	protected void paintComponent(Graphics g0) {
+		super.paintComponent(g0);
+		BufferedImage img = image;
+		Graphics2D g = (Graphics2D) g0.create();
+		try {
+			g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			if (img == null) {
+				g.setColor(ToolStyle.muted());
+				g.setFont(ToolStyle.font(0f, Font.PLAIN));
+				String hint = I18n.t("keygen.generate_key");
+				int x = (getWidth() - g.getFontMetrics().stringWidth(hint)) / 2;
+				g.drawString(hint, Math.max(0, x), getHeight() / 2);
+				return;
+			}
+			double scale = Math.min(getWidth() / (double) img.getWidth(), getHeight() / (double) img.getHeight());
+			if (scale <= 0) {
+				return;
+			}
+			int dw = (int) Math.round(img.getWidth() * scale);
+			int dh = (int) Math.round(img.getHeight() * scale);
+			g.drawImage(img, (getWidth() - dw) / 2, (getHeight() - dh) / 2, dw, dh, null);
+		} finally {
+			g.dispose();
+		}
+	}
+
+	public BufferedImage getImage() {
 		return image;
 	}
 
-	public void setImage(BufferedImage image) {
-		this.image = image;
-	}
-
-	public Image getScaledImage() {
-		return scaledImage;
-	}
-
-
-	public UpdateProgressPanel getProgUpdater() {
-		return progUpdater;
-	}
-
-
-	public void setProgUpdater(UpdateProgressPanel progUpdater) {
-		this.progUpdater = progUpdater;
-	}
-
-
-	public JProgressBar getBar() {
-		return bar;
-	}
-
-
-	public void setBar(JProgressBar bar) {
-		this.bar = bar;
-	}
-	
 }

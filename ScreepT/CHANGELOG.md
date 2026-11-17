@@ -6,13 +6,25 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
-## 0.9.84 - 2026-11-17
-> A file tree filter that answers while you type, with rules to skip heavy folders, and a clearer memory card
+## 0.9.84 - 2026-11-18
+> A file tree filter that answers while you type, a Key Image Vault with previews and links, a password strength checker, and a safer Configuration Manager
 
 ### New
+- Key Image Vault (formerly Key Dictionary): the window and the menu use the new name. Select a key to see its thumbnail and details, and use the Delete button to remove the selected key images after confirmation.
+- Key Image Generator and Key Image Vault: a link at the top right opens the other window.
+- Key Image Generator: a Stop button stops the generation. No image is produced, as if it had never been generated.
+- Password generator: seven strength levels, from "Hacker's birthday gift" to "Now even FBI can't hack you :)". Every password is judged, including the ones derived from a word, with its estimated bits and the tips to make it stronger.
+- Password generator: a "Password strength" field checks any password while you type, with a meter and what is missing to reach the next level.
+- Configuration Manager: the configuration in use is the first entry of the list, even when it is outside the INI_FILES folder.
+- Configuration Manager: before loading another configuration, ScreepT asks whether to save the unsaved changes.
+- Configuration Manager: tooltips on the actions.
 - File tree filter: the funnel button opens the filter rules. Folders and files to skip (by default .git, .svn, .hg, node_modules, .idea, .gradle, __pycache__ and target), each with a name or wildcard (*.java, TEST*.rar...), the kind it applies to (folder, file, symbolic link, any) and an on/off switch. Add, remove or restore the defaults; the rules are saved.
 
 ### Improved
+- Password generator, Key Image Generator, Key Image Vault and Configuration Manager use the look of the other tool windows: readable in light and dark themes and with bigger fonts, and the windows fit their content.
+- Key Image Vault refreshes by itself when the files in its folder change.
+- Key Image Generator: the preview keeps the proportions of the image and fits its card.
+- Configuration Manager: the configuration text is read-only, since the changes typed there were never saved.
 - File tree filter: the names under the folder are read once in the background into a compact index, and then every letter you type searches memory (a few milliseconds, also with hundreds of thousands of files; a longer text refines the previous result). The question about folders over 5000 elements and the refusal over 200000 are gone. The index is refreshed in the background when the tree is reloaded and released after five minutes without filtering.
 - File tree filter: only the folders that lead to the matches are opened, and the result is prepared in the background, so the tree no longer freezes on big results. Changing tab or folder while filtering never shows the result of the previous one.
 - Memory card of the menu bar: labels in bold and values in plain text, and the entries now add up to the total shown (heap reserved, JVM internals, thread stacks, direct buffers, and the native code and libraries calculated by difference).
@@ -20,6 +32,12 @@
 - Launcher: the default thread stack is 6 MB, the default initial memory is 128 MB (lower than before) and the default garbage collector is G1. Installed launchers get the stack and memory values once after the update (lower values are kept); the collector follows the default unless one was chosen in the launcher
 
 ### Fixed
+- Key Image Generator: the window could freeze at 100% after generating a key (deadlock with the progress dialog). The progress is now shown in the window.
+- Key Image Generator: after 11 saved keys the recent list raised an error even though the file was saved.
+- Key Image Generator and Key Image Vault: cancelling a file dialog showed an error popup.
+- Password generator: random passwords come from a cryptographically strong source.
+- Configuration Manager: Export changed the configuration in memory, so a later Save could write default values to disk.
+- Configuration Manager: the configuration in use cannot be deleted from the list.
 - Launcher: the loading screen was updated from a background thread, which the interface library reports as a warning at every start: now it is updated on the interface thread
 - Launcher: an ini without the stack size produced an invalid "-Xssnullm" argument: now it falls back to the default
 - File Editor cleanup (broom in the top right corner): an empty untitled tab no longer stops the cleanup, and when the editor is kept because of unsaved work the message says so

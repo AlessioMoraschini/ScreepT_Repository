@@ -12,14 +12,10 @@
 package screept.gui.panels;
 
 import various.common.light.i18n.I18n;
-import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -36,11 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.tree.TreeModel;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -54,8 +46,7 @@ import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.frame.arch.ModulePanel;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.guistyle.GUIStyelSettingsExtended;
-import gui.commons.treeutils.om.FileTreeModel;
-import gui.commons.utils.ImageWorkerExtended;
+import gui.commons.frameutils.frame.arch.ToolStyle;
 import gui.texteditor.commons.dialogs.FindDialogFork;
 import gui.texteditor.commons.om.themes.Themes;
 import gui.texteditor.commons.utils.RsyntaxUtils;
@@ -69,6 +60,8 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import screept.gui.utils.filedialog.INIfileChoosER;
 import screept.gui.utils.tree.iniconfmanager.FileCellRendererIni;
+import screept.gui.utils.tree.iniconfmanager.ConfigPool;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 import screept.gui.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
 import various.common.light.files.FileWorker;
 
@@ -83,6 +76,9 @@ public class ConfigurationManagerPanel extends ModulePanel {
 	public TreeFileMouseListenerIni menuMouseListener;
 
 	private INItializer config;
+
+	// configuration as last loaded or saved: the differences from it are the unsaved changes
+	private String savedSnapshot;
 	public MainGUI parent;
 	private ConfigurationManagerPanel thisPanel;
 
@@ -115,8 +111,6 @@ public class ConfigurationManagerPanel extends ModulePanel {
 	private FindDialogFork searchBox;
 
 	public ConfigurationManagerPanel(INItializer configuration, MainGUI parentFrame) {
-		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(112, 128, 144), new Color(105, 105, 105), new Color(0, 0, 0), new Color(0, 0, 0)));
-
 		thisPanel = this;
 		parent = parentFrame;
 		config = configuration;
@@ -152,164 +146,83 @@ public class ConfigurationManagerPanel extends ModulePanel {
 
 		logger.info(this.getClass().getName() + " Starting...");
 
-		setBackground(Color.DARK_GRAY);
+		setLayout(new MigLayout("fill, insets 14 18 14 18, wrap 1", "[grow,fill]", "[][][][][grow,fill]"));
 
-		// columns and rows never go under the size of their content, so the text of the buttons is always fully visible
-		// (a fixed pixel size clipped it with bigger fonts, other languages and scaled interfaces)
-		setLayout(new MigLayout("",
-				"[130px::][90px::][80px::][150px::][30px::][160px::][140px::][][140px::,grow][grow][50][100px::,grow,leading][130px::,grow]",
-				"[:35px:40px][28px::][][22px::][400px,grow]"));
+		// TITLE
+		add(ToolStyle.header(I18n.t("cfg.configuration_manager"), null), "growx");
+
+		// FILE: load, export, save (green), save as default
+		JPanel fileCard = ToolStyle.card(new MigLayout("insets 0, fillx, gap 8 8", "[][][][][grow,fill]", "[]"));
+		btnLoadCustomConfig = plainButton(I18n.t("cfg.load_custom"), IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF, I18n.t("cfg.tip_load_custom"));
+		btnExportConfig = plainButton(I18n.t("common.export"), IconsPathConfigurator.ICON_EXPORT_CONF, I18n.t("cfg.tip_export"));
+		btnSave = ToolStyle.accent(plainButton(I18n.t("common.save"), IconsPathConfigurator.ICON_SAVE_CONF, I18n.t("cfg.tip_save")), ToolStyle.GREEN);
+		btnSaveCurrentAsDefault = plainButton(I18n.t("cfg.save_as_default"), IconsPathConfigurator.ICON_SAVE_AS_DEFAULT_CONF, I18n.t("cfg.tip_save_as_default"));
+		fileCard.add(btnLoadCustomConfig);
+		fileCard.add(btnExportConfig);
+		fileCard.add(btnSave);
+		fileCard.add(btnSaveCurrentAsDefault);
+		add(fileCard, "growx");
+
+		// VIEW: current file, volatile values, find, reset to the original (red)
+		JPanel viewCard = ToolStyle.card(new MigLayout("insets 0, fillx, gap 8 8", "[][][][grow,fill][]", "[]"));
+		btnViewCurrentFile = plainButton(I18n.t("cfg.current_config_file"), IconsPathConfigurator.ICON_RELOAD2, I18n.t("cfg.tip_current_file"));
+		btnCurrentRefresh = plainButton(I18n.t("cfg.current_volatile"), IconsPathConfigurator.ICON_RELOAD2, I18n.t("cfg.tip_current_volatile"));
+		btnFind = plainButton("", IconsPathConfigurator.ICON_SEARCH, I18n.t("cfg.tip_find"));
+		btnResetOriginalConfig = ToolStyle.accent(plainButton(I18n.t("cfg.reset_original"), IconsPathConfigurator.ICON_RESET_CONF, I18n.t("cfg.tip_reset_original")), ToolStyle.RED);
+		viewCard.add(btnViewCurrentFile);
+		viewCard.add(btnCurrentRefresh);
+		viewCard.add(btnFind);
+		viewCard.add(new JLabel(), "growx");
+		viewCard.add(btnResetOriginalConfig);
+		add(viewCard, "growx");
+
+		// STATUS: last action, file in use
+		JPanel status = new JPanel(new MigLayout("insets 0, fillx, gap 10 0", "[][][grow,fill]", "[]"));
+		status.setOpaque(false);
+		lblAvviso = ToolStyle.caption(I18n.t("cfg.status_loaded"));
+		lblAvviso.setForeground(ToolStyle.BLUE);
+		config_PATH = ToolStyle.mutedLabel(config.getIniFile().getFile().getPath());
+		status.add(lblAvviso);
+		status.add(ToolStyle.caption(I18n.t("cfg.current_ini_file")));
+		status.add(config_PATH, "wmin 0");
+		add(status, "growx");
+
+		// TREE of the ini files (left) and the text of the chosen one (right)
+		tree = new JTree(ConfigPool.modelFor(configuration.getIniFile().getFile()));
+		menuMouseListener = new TreeFileMouseListenerIni(config, this, tree);
+		tree.setCellRenderer(new FileCellRendererIni());
+		ConfigPool.expandAll(tree);
+		scrollPaneTreeConfigs = new JScrollPane(tree);
+
+		JPanel treeCard = ToolStyle.card(new MigLayout("insets 0, fill, wrap 1", "[grow,fill]", "[][grow,fill]"));
+		treeCard.add(ToolStyle.caption(I18n.t("cfg.preferred_configurations")));
+		treeCard.add(scrollPaneTreeConfigs, "grow");
 
 		textArea = new RSyntaxTextArea();
 		textArea.setUseSelectedTextColor(true);
 		textArea.setBorder(null);
 		textArea.setEditable(false);
-
 		scrollPaneTextArea = new RTextScrollPane(textArea);
 		scrollPaneTextArea.setAutoscrolls(false);
-		scrollPaneTextArea.setBorder(new LineBorder(Color.BLACK, 2));
+		scrollPaneTextArea.setBorder(null);
 
-		btnExportConfig = new JButton(I18n.t("common.export"));
-		btnExportConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
-		btnExportConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnExportConfig.setForeground(Color.BLACK);
-		btnExportConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnExportConfig.setBackground(Color.LIGHT_GRAY);
-		add(btnExportConfig, "cell 1 1,grow");
-
-		btnSave = new JButton(I18n.t("common.save"));
-		btnSave.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
-		btnSave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnSave.setForeground(Color.BLACK);
-		btnSave.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnSave.setBackground(Color.LIGHT_GRAY);
-		add(btnSave, "cell 2 1,grow");
-
-		btnSaveCurrentAsDefault = new JButton(I18n.t("cfg.save_as_default"));
-		btnSaveCurrentAsDefault.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_AS_DEFAULT_CONF));
-		btnSaveCurrentAsDefault.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnSaveCurrentAsDefault.setForeground(Color.BLACK);
-		btnSaveCurrentAsDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnSaveCurrentAsDefault.setBackground(Color.LIGHT_GRAY);
-		add(btnSaveCurrentAsDefault, "cell 3 1 2 1,grow");
-
-		btnViewCurrentFile = new JButton(I18n.t("cfg.current_config_file"));
-		btnViewCurrentFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnViewCurrentFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD2));
-		btnViewCurrentFile.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnViewCurrentFile.setForeground(Color.BLACK);
-		btnViewCurrentFile.setBackground(new Color(176, 196, 222));
-		add(btnViewCurrentFile, "cell 5 1,grow");
-
-		btnCurrentRefresh = new JButton(I18n.t("cfg.current_volatile"));
-		btnCurrentRefresh.setForeground(Color.BLACK);
-		btnCurrentRefresh.setBackground(new Color(176, 196, 222));
-		btnCurrentRefresh.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnCurrentRefresh.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnCurrentRefresh.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD2));
-		add(btnCurrentRefresh, "cell 6 1,grow");
-
-		btnFind = new JButton("");
-		btnFind.setForeground(Color.BLACK);
-		btnFind.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnFind.setBackground(Color.GRAY);
-		btnFind.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnFind.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH));
-		add(btnFind, "cell 7 1,grow");
-
-		panelDynPath = new JPanel();
-		panelDynPath.setOpaque(false);
-		add(panelDynPath, "cell 9 1 3 1,alignx center,growy");
-		panelDynPath.setLayout(new MigLayout("", "[grow][150px,grow]", "[]"));
-
-		btnResetOriginalConfig = new JButton(I18n.t("cfg.reset_original"));
-		btnResetOriginalConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESET_CONF));
-		btnResetOriginalConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnResetOriginalConfig.setForeground(Color.BLACK);
-		btnResetOriginalConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnResetOriginalConfig.setBackground(new Color(250, 128, 114));
-		add(btnResetOriginalConfig, "cell 11 1 2 1,grow");
-
-		btnCurrentRefresh.setMargin(new java.awt.Insets(3, 10, 3, 10));
-		btnExportConfig.setMargin(new java.awt.Insets(3, 10, 3, 10));
-		btnResetOriginalConfig.setMargin(new java.awt.Insets(3, 10, 3, 10));
-		btnSave.setMargin(new java.awt.Insets(3, 10, 3, 10));
-		btnSaveCurrentAsDefault.setMargin(new java.awt.Insets(3, 10, 3, 10));
-		btnViewCurrentFile.setMargin(new java.awt.Insets(3, 10, 3, 10));
-
-		separator = new JSeparator();
-		add(separator, "cell 0 2 13 1,growx");
-
-		lblPreferredConfigurations = new JLabel(I18n.t("cfg.preferred_configurations"));
-		lblPreferredConfigurations.setForeground(Color.WHITE);
-		lblPreferredConfigurations.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		add(lblPreferredConfigurations, "cell 0 3 4 1,alignx center,aligny bottom");
-
-		JLabel lblInitializationFrom = new JLabel(I18n.t("cfg.current_ini_file"));
-		lblInitializationFrom.setForeground(Color.WHITE);
-		add(lblInitializationFrom, "cell 5 3 3 1");
-		lblInitializationFrom.setFont(new Font("Segoe UI", Font.BOLD, 15));
-
-		config_PATH = new JLabel("");
-		config_PATH.setForeground(Color.WHITE);
-		add(config_PATH, "cell 8 3 5 1");
-		config_PATH.setHorizontalAlignment(SwingConstants.LEFT);
-		config_PATH.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		config_PATH.setText(config.getIniFile().getFile().getPath());
-
-		lblAvviso = new JLabel("[Configuration loaded]");
-		lblAvviso.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblAvviso.setForeground(Color.DARK_GRAY);
-		add(lblAvviso, "cell 8 1,growx");
-
-		JPanel panel_1 = new JPanel();
-		panel_1.setForeground(SystemColor.menu);
-		panel_1.setBorder(new LineBorder(Color.BLACK, 2));
-		panel_1.setBackground(Color.LIGHT_GRAY);
-		add(panel_1, "cell 0 0 13 1,grow");
-		panel_1.setLayout(new MigLayout("", "[100%]", "[grow]"));
-
-		JLabel lblConfigurationManager = new JLabel(I18n.t("cfg.configuration_manager"));
-		lblConfigurationManager.setHorizontalAlignment(SwingConstants.CENTER);
-		lblConfigurationManager.setForeground(Color.BLACK);
-		lblConfigurationManager.setFont(new Font("Lithos Pro Regular", Font.BOLD, 15));
-		lblConfigurationManager.setBackground(SystemColor.activeCaptionBorder);
-		panel_1.add(lblConfigurationManager, "cell 0 0,alignx center");
-
-		btnLoadCustomConfig = new JButton(I18n.t("cfg.load_custom"));
-		btnLoadCustomConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
-		btnLoadCustomConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnLoadCustomConfig.setForeground(Color.BLACK);
-		btnLoadCustomConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnLoadCustomConfig.setBackground(Color.LIGHT_GRAY);
-		btnLoadCustomConfig.setMargin(new java.awt.Insets(3, 10, 3, 10));
-		add(btnLoadCustomConfig, "cell 0 1,grow");
-
-		scrollPaneTreeConfigs = new JScrollPane();
-		scrollPaneTreeConfigs.setBorder(new LineBorder(Color.BLACK, 2));
-		scrollPaneTreeConfigs.setOpaque(true);
-		scrollPaneTreeConfigs.setBackground(new Color(255, 255, 240));
-
-		TreeModel treeModel = new FileTreeModel(new File(GeneralConfig.DEFAULT_INI_FOLDER));
-		tree = new JTree(treeModel);
-		menuMouseListener = new TreeFileMouseListenerIni(config, this, tree);
-		tree.setCellRenderer(new FileCellRendererIni());
-		tree.setBorder(null);
-		tree.setBackground(new Color(255, 255, 240));
-		scrollPaneTreeConfigs.setViewportView(tree);
+		JPanel textCard = ToolStyle.card(new MigLayout("insets 0, fill", "[grow,fill]", "[grow,fill]"));
+		textCard.add(scrollPaneTextArea, "grow");
 
 		splitPane = new JSplitPane();
 		splitPane.setOneTouchExpandable(true);
-		splitPane.setBackground(Color.DARK_GRAY);
-		splitPane.setLeftComponent(scrollPaneTreeConfigs);
-		splitPane.setRightComponent(scrollPaneTextArea);
+		splitPane.setOpaque(false);
+		splitPane.setBorder(null);
+		splitPane.setLeftComponent(treeCard);
+		splitPane.setRightComponent(textCard);
 		splitPane.setDividerLocation(300);
-		add(splitPane, "cell 0 4 13 1,grow");
+		add(splitPane, "grow");
 
 		addHandlers();
 
 		initGuiFromConfig();
 
+		markSaved();
 		logger.info(this.getClass().getName() + " Started");
 	}
 
@@ -328,25 +241,26 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				// same rule of the window: the syntax colors follow the look and feel
+				Themes theme = ToolStyle.isDark() ? Themes.DARK : Themes.DEFAULT;
 
 				boolean usePreloadedStringXml = GeneralConfig.XML_THEMES_CONTENT_MAP != null
-						&& GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(Themes.DARK.fileName);
+						&& GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(theme.fileName);
 				if (usePreloadedStringXml) {
 					// If available use lazy initialized in memory
-					RsyntaxUtils.changeStyleViaThemeXmlString(textArea, GeneralConfig.XML_THEMES_CONTENT_MAP.get(Themes.DARK.fileName));
+					RsyntaxUtils.changeStyleViaThemeXmlString(textArea, GeneralConfig.XML_THEMES_CONTENT_MAP.get(theme.fileName));
 				} else {
 					// if not available read from file
-					RsyntaxUtils.changeStyleViaThemeXml(textArea, Themes.DARK.defaultPath);
+					RsyntaxUtils.changeStyleViaThemeXml(textArea, theme.defaultPath);
 				}
 				textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_INI);
 				textArea.setFocusable(true);
 				textArea.setRequestFocusEnabled(true);
 				textArea.setLineWrap(true);
-				textArea.setEditable(true);
+				textArea.setEditable(false);
 				textArea.setEnabled(true);
-				textArea.setSelectedTextColor(Color.LIGHT_GRAY);
-				textArea.setMargin(new Insets(20, 20, 20, 20));
-				textArea.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+				textArea.setMargin(new Insets(10, 12, 10, 12));
+				textArea.setFont(ToolStyle.mono(1f));
 				FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
 				textArea.revalidate();
 				textArea.repaint();
@@ -360,8 +274,8 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnViewCurrentFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				lblAvviso.setText("[Current Configuration file]");
-				lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(0.2f));
+				lblAvviso.setText(I18n.t("cfg.status_current_file"));
+				lblAvviso.setForeground(ToolStyle.BLUE);
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText(I18n.t("cfg.configuration_actual_file_config_values_on"));
 				FileWorker.appendFileTxtArea(config.getIniFile().getFile(), textArea, true);
@@ -373,10 +287,14 @@ public class ConfigurationManagerPanel extends ModulePanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+					if (!confirmLoadingOtherConfig()) {
+						return;
+					}
 					config.setIniFile(new Wini(config.getIniFile().getFile()));
 					config.setIniReadFile(new Wini(config.getIniFile().getFile()));
-					lblAvviso.setText("[Refreshed temp Config]");
-					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
+					lblAvviso.setText(I18n.t("cfg.status_refreshed"));
+					afterLoad();
+					lblAvviso.setForeground(ToolStyle.BLUE);
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText(I18n.t("cfg.configuration_actual_file_config_values_in"));
 					MainGUI.now = new Date();
@@ -396,8 +314,15 @@ public class ConfigurationManagerPanel extends ModulePanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("Load CONFIG clicked");
+				if (!confirmLoadingOtherConfig()) {
+					return;
+				}
+				String previousPath = config.getIniFile().getFile().getPath();
 				INIfileChoosER.readNloadIniWithTextAreaOutput(config, textArea, lblAvviso);
-				lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
+				if (!previousPath.equals(config.getIniFile().getFile().getPath())) {
+					afterLoad();
+				}
+				lblAvviso.setForeground(ToolStyle.BLUE);
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText(I18n.t("cfg.configuration_actual_file_config_values"));
 				FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
@@ -413,7 +338,8 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				logger.debug("SAVE CONFIG clicked");
 				if(INIfileChoosER.saveCurrentConf(config, parent.getMainFrame())) {
 					lblAvviso.setText(I18n.t("cfg.configuration_saved_on_disk"));
-					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
+					markSaved();
+					lblAvviso.setForeground(ToolStyle.BLUE);
 				}
 			}
 		});
@@ -424,7 +350,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("EXPORT CONFIG clicked");
 		    	INIfileChoosER.exportIniFile(config, lblAvviso);
-		    	lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
+		    	lblAvviso.setForeground(ToolStyle.BLUE);
 			}
 		});
 
@@ -437,7 +363,8 @@ public class ConfigurationManagerPanel extends ModulePanel {
 						FileUtils.copyFile(new File(GeneralConfig.BACKUP_INI), new File(GeneralConfig.DEFAULT_INI));
 						config.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
-						lblAvviso.setText("[Configuration Resetted!]");
+						lblAvviso.setText(I18n.t("cfg.status_reset"));
+						afterLoad();
 						MainGuiUtils.askNameAtStartIfNotDefined(MainGUI.mainAPP.getMainFrame());
 						dialogHelper.info(I18n.t("cfg.file") + config.getIniFile().getFile().getName() + I18n.t("cfg.loaded"), "");
 						config.readConfigIniFile();
@@ -447,7 +374,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 						logger.error("Exception happened!", exc);
 					}
 
-					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
+					lblAvviso.setForeground(ToolStyle.BLUE);
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText(I18n.t("cfg.configuration_actual_file_config_values"));
 					FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
@@ -471,7 +398,8 @@ public class ConfigurationManagerPanel extends ModulePanel {
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						config.setIniReadFile(new Ini(new File(GeneralConfig.DEFAULT_INI)));
 						config.writeCurrentConfigIniFile();
-						lblAvviso.setText("[Configuration Saved as new Default!]");
+						markSaved();
+						lblAvviso.setText(I18n.t("cfg.status_saved_default"));
 						config_PATH.setText(config.getIniFile().getFile().getPath());
 						textArea.setText(I18n.t("cfg.configuration_actual_file_config_values") );
 						FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
@@ -483,7 +411,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 					config.setIniFile(new Wini(backupIni));
 					config.setIniReadFile(new Ini(backupIni));
 					MainGUI.updateGuiFromCurrConfig();
-					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
+					lblAvviso.setForeground(ToolStyle.BLUE);
 				} catch (IOException e1) {
 					logger.error("Exception happened!", e1);
 					dialogHelper.error(I18n.t("app.an_error_occurred"), "Error");
@@ -513,6 +441,46 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				});
 			}
 		});
+	}
+
+	private static JButton plainButton(String text, String iconPath, String tooltip) {
+		JButton button = new JButton(text);
+		button.setIcon(new ImageIcon(iconPath));
+		button.setToolTipText(tooltip);
+		return ToolStyle.hand(button);
+	}
+
+	/** Remembers the configuration in memory as the saved one */
+	public void markSaved() {
+		savedSnapshot = config.toStringa();
+	}
+
+	/** True when the configuration in memory differs from the last loaded or saved one */
+	public boolean hasUnsavedChanges() {
+		return savedSnapshot != null && !savedSnapshot.equals(config.toStringa());
+	}
+
+	/**
+	 * Before replacing the configuration in use: when it has unsaved changes, asks to save them.
+	 *  false when the user cancels, so nothing must be loaded
+	 */
+	public boolean confirmLoadingOtherConfig() {
+		if (!hasUnsavedChanges()) {
+			return true;
+		}
+		int choice = dialogHelper.yesNoOrCanc(I18n.t("cfg.unsaved_changes_question"), I18n.t("cfg.unsaved_changes_title"));
+		if (choice == JOptionHelper.OK) {
+			config.writeCurrentConfigIniFile();
+			markSaved();
+			return true;
+		}
+		return choice == JOptionHelper.NO;
+	}
+
+	/** After a configuration has been loaded: it becomes the reference for the unsaved changes, and the list is rebuilt */
+	public void afterLoad() {
+		markSaved();
+		menuMouseListener.refreshTree();
 	}
 
 	private void textAreaToTop() {

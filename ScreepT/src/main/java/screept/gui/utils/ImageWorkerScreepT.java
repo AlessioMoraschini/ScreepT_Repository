@@ -22,7 +22,8 @@ import javax.imageio.ImageIO;
 import org.apache.log4j.Logger;
 
 import screept.gui.frames.KeyGenFrame;
-import screept.gui.panels.subpanels.ImageGenContainerPanel;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.IntConsumer;
 import various.common.light.files.FileVarious;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 
@@ -81,7 +82,11 @@ public class ImageWorkerScreepT {
 	 * 
 	 * @return BufferedImage keyImage
 	 */
-	public static synchronized BufferedImage generateKeyImage(int width, int height, int imgType, ImageGenContainerPanel container ) {
+	/**
+	 * Random key image. progress gets the percentage of the rows done; when cancel becomes true the work stops
+	 * and null is returned: no image at all.
+	 */
+	public static synchronized BufferedImage generateKeyImage(int width, int height, int imgType, IntConsumer progress, AtomicBoolean cancel) {
 		// use secure random for more entrophy on the key
 		SecureRandom random;
 		
@@ -103,8 +108,14 @@ public class ImageWorkerScreepT {
 		int pixelRGBValue = 0;
 
 		for (int i = 0; i < height; i++) {
-			// for each row update progress bar with %
-			container.getProgUpdater().getPb().setValue((int)(i/(float) height*100));
+			if (cancel != null && cancel.get()) {
+				loGGer.info("Key generation stopped by user");
+				return null;
+			}
+			// for each row report the progress in %
+			if (progress != null) {
+				progress.accept((int) (i / (float) height * 100));
+			}
 			
 			for (int j = 0; j < width; j++) {
 				// per ogni colonna

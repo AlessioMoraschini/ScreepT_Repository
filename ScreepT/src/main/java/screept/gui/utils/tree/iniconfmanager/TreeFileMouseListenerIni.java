@@ -34,8 +34,6 @@ import org.ini4j.Wini;
 
 import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
-import gui.commons.treeutils.om.FileTreeModel;
-import gui.commons.utils.ImageWorkerExtended;
 import initializer.configs.impl.INItializer;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
@@ -175,7 +173,7 @@ public class TreeFileMouseListenerIni extends gui.commons.mouseutils.TreeFileMou
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// update textArea with preview of content
-		        confManagerPanel.textArea.setText("Previewing: ["+selectedNode.getAbsolutePath()+"]\n\n");
+		        confManagerPanel.textArea.setText(I18n.t("cfg.previewing") + " ["+selectedNode.getAbsolutePath()+"]\n\n");
 		        FileWorker.appendFileTxtArea(selectedNode, confManagerPanel.textArea, false);
 			}
 		};
@@ -191,7 +189,7 @@ public class TreeFileMouseListenerIni extends gui.commons.mouseutils.TreeFileMou
 				File defaultFolder = new File(GeneralConfig.DEFAULT_INI_FOLDER);
 				
 				String newName = "";
-				newName = new JOptionHelperExtended(parent).askForString("Choose a name for the configuration to save");
+				newName = new JOptionHelperExtended(parent).askForString(I18n.t("cfg.name_for_configuration"));
 				if (newName.trim().equals("")) {
 					return;
 				}
@@ -214,9 +212,9 @@ public class TreeFileMouseListenerIni extends gui.commons.mouseutils.TreeFileMou
 			public void actionPerformed(ActionEvent e) {
 				
 				Object lastSelected = tree.getLastSelectedPathComponent();
-				String path = lastSelected.toString();
+				String path = lastSelected == null ? "" : lastSelected.toString();
 				
-				if (lastSelected != null && path.toLowerCase().endsWith(".ini")) {
+				if (lastSelected != null && path.toLowerCase().endsWith(".ini") && confManagerPanel.confirmLoadingOtherConfig()) {
 					loadIni(new File(path));
 					MainGUI.updateGuiFromCurrConfig();
 				}
@@ -267,11 +265,33 @@ public class TreeFileMouseListenerIni extends gui.commons.mouseutils.TreeFileMou
 	    };
 	}
 	
+	/** Deletion never touches the configuration in use: the application runs with it */
+	@Override
+	public ActionListener getDeleteActionListener() {
+		final ActionListener base = super.getDeleteActionListener();
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				TreePath[] selected = tree.getSelectionPaths();
+				if (selected != null) {
+					for (TreePath path : selected) {
+						if (path.getLastPathComponent() instanceof ConfigPool.CurrentConfigFile) {
+							dialogHelper.info(I18n.t("cfg.current_cannot_be_deleted"));
+							return;
+						}
+					}
+				}
+				base.actionPerformed(e);
+			}
+		};
+	}
+
 	// utility methods //
 	
 	@Override
 	public void refreshTree() {
-		tree.setModel(new FileTreeModel(new File(GeneralConfig.DEFAULT_INI_FOLDER)));
+		tree.setModel(ConfigPool.modelFor(currentConfig.getIniFile().getFile()));
+		ConfigPool.expandAll(tree);
 	}
 	
 	private void loadIni(File iniFile) {
@@ -280,13 +300,14 @@ public class TreeFileMouseListenerIni extends gui.commons.mouseutils.TreeFileMou
 			currentConfig.setIniReadFile(new Wini(iniFile));
 			currentConfig.readConfigIniFile();
 			
-			confManagerPanel.lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
-			confManagerPanel.lblAvviso.setText("[Configuration Loaded!]");
+			confManagerPanel.lblAvviso.setForeground(gui.commons.frameutils.frame.arch.ToolStyle.BLUE);
+			confManagerPanel.lblAvviso.setText(I18n.t("cfg.status_loaded_new"));
 			confManagerPanel.config_PATH.setText(currentConfig.getIniFile().getFile().getPath());
 			confManagerPanel.textArea.setText("");
 			confManagerPanel.textArea.append("chosen: "+iniFile);
 			confManagerPanel.textArea.append("\n\n\n### NEW INI CONFIGURATION LOADED ###\n\n -> ");
 			confManagerPanel.textArea.append( currentConfig.toStringa());
+			confManagerPanel.afterLoad();
 	        
 		} catch (IOException e) {
 			logger.error(e);

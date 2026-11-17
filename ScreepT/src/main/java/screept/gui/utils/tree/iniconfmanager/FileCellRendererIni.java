@@ -36,8 +36,14 @@ public class FileCellRendererIni implements TreeCellRenderer {
 	public FileCellRendererIni() {
 		iconContainer = new JLabel();
 		oldFont = iconContainer.getFont();
-		iconContainer.setFont(new Font(oldFont.getFontName(), oldFont.getStyle(), 15));
+		iconContainer.setFont(gui.commons.frameutils.frame.arch.ToolStyle.font(2f, Font.PLAIN));
     }
+    /** Colors of the look and feel for the tree rows (the tree colors when the key is missing) */
+    private static Color treeColor(JTree tree, String key, boolean selected) {
+        Color color = javax.swing.UIManager.getColor(key);
+        return color != null ? color : (selected ? tree.getBackground() : tree.getForeground());
+    }
+
 
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
                                                   boolean leaf, int row, boolean hasFocus) {
@@ -47,15 +53,18 @@ public class FileCellRendererIni implements TreeCellRenderer {
         }else if(elementFile.isDirectory()) {
         	iconContainer.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
         }
-        iconContainer.setText(elementFile.getName());
+        iconContainer.setText(elementFile instanceof ConfigPool.CurrentConfigFile ? various.common.light.i18n.I18n.t("cfg.in_use") + ": " + elementFile.getName() : elementFile.getName());
+        iconContainer.setToolTipText(elementFile.getAbsolutePath());
         
         // selected custom graphics
         if(selected) {
         	iconContainer.setOpaque(false);
-        	iconContainer.setForeground(Color.WHITE);
+        	iconContainer.setForeground(treeColor(tree, "Tree.selectionForeground", true));
+        	iconContainer.setBackground(javax.swing.UIManager.getColor("Tree.selectionBackground"));
+        	iconContainer.setOpaque(true);
         }else {
         	iconContainer.setOpaque(false);
-        	iconContainer.setForeground(Color.DARK_GRAY);
+        	iconContainer.setForeground(treeColor(tree, "Tree.foreground", false));
         }
         
         iconContainer.revalidate();

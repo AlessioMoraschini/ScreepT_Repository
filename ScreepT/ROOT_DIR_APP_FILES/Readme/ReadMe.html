@@ -144,7 +144,7 @@
 										<li><a class="subIndex3" href="#subSectTitleCrypter">SCREEPT</a></li>
 										<li><a class="subIndex3" href="#subSectTitleKeyGenImg">KEY IMAGE GENERATOR</a></li>
 										<li><a class="subIndex3" href="#subSectTitlePswGenImg">PASSWORD GENERATOR</a></li>
-										<li><a class="subIndex3" href="#subSectTitleKeyDict">KEY DICTIONARY</a></li>
+										<li><a class="subIndex3" href="#subSectTitleKeyDict">KEY IMAGE VAULT</a></li>
 									<ul>
 								</div></li>
 								
@@ -378,7 +378,8 @@ $link.Save()</code></pre>
 						<p>
 						This contains a view of the loaded configuration, a text print with the values contained in the current one, and different functions that are basically the same you can find in the main menu bar items under the "File" element.
 						In this view you can also visualize the loaded settings (either in memory or in current/selected .ini file). <strong>By right clicking</strong> an element in the list, you can choose between different actions on the selected configuration from the loaded ones, such as select, delete, delete all or refresh.<br>
-						The actions that fire when clicking the action buttons are described in the next points.
+						The actions that fire when clicking the action buttons are described in the next points.<br>
+						The first entry of the tree is the configuration in use, even when it is outside the INI_FILES folder: it cannot be deleted. Before loading another configuration (Load custom, Current volatile, or loading from the tree) ScreepT asks whether to save the unsaved changes: <b>Yes</b> saves them, <b>No</b> discards them, <b>Cancel</b> keeps everything as it is. Export copies the file as it is saved on disk. The text of the configuration is read-only: change the values in the application and use Save to write them.
 						</p>
 						
 					<li><image class="iconImgTitleSect" src="Images/icons/reload.png"/> <span id="subSectTitleReload" class="subMenuthirdLevel">RELOAD CONFIGURATION</span></li>
@@ -572,13 +573,16 @@ $link.Save()</code></pre>
 							<li><b>USE SYMBOLS</b></li>
 							<li><b>PASSWORD LENGTH</b></li>
 							<li><b>FROM WORD</b> - with this you can generate a string sequence from a chosen word. In the opening dialog, you can choose either to reach requested length with random words or deterministic words (this mode will always generate same key if the source is the same)</li>
+							<li><b>STRENGTH LEVELS</b> - every password is judged, from "Hacker's birthday gift" to "Now even FBI can't hack you :)", through seven levels of estimated bits. Hover over the strength badge to see the tips that make the password stronger.</li>
+							<li><b>PASSWORD STRENGTH</b> - type any password in the field at the bottom: the level, the meter and the tips update while you type, with what is missing to reach the next level.</li>
 						</ul>
 					</p>
 
-					<li><image class="iconImgTitleSect" src="Images/icons/keyDictionary.png"/> <span id="subSectTitleKeyDict" class="subMenuthirdLevel">KEY DICTIONARY</span></li>
+					<li><image class="iconImgTitleSect" src="Images/icons/keyDictionary.png"/> <span id="subSectTitleKeyDict" class="subMenuthirdLevel">KEY IMAGE VAULT</span></li>
 						<p>
 						This is a function similar to the one you can find embedded on left panel in cripter, but with some extra option.
 						Using this functionality you can have a specific view on which PNG images you have loaded in your personal library, that is saved inside current SScreepTsource launch folder.<br>
+						Select a key to see its thumbnail and details. The <b>Delete</b> button removes the selected key images, after confirmation. The link at the top right goes to the Key Image Generator, and the link there comes back here.<br>
 						The tree view of files is updated in real time, and by right click on it you can view different actions, such as delete all/selected files from dictionary, manual refresh and viewing informations about selected file.
 						In this panel you can also open the dictionary in system explorer to manage manually the files contained in it.</p>
 						<p><span class="highlightBoldedGrey">IMPORTANT: </span>always be careful: don't delete ScreepT's internal folders when you view in system explorer: the software may not work as expected or run into unexpected crashes.
@@ -923,7 +927,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 					<li> <span class="SHCT_TEXT">OPEN SCREEPT</span> - [Alt + Shift + S]</li>
 					<li> <span class="SHCT_TEXT">OPEN PASSWORD KEYGEN</span> - [Ctrl + Alt + Shift + K]</li>
 					<li> <span class="SHCT_TEXT">OPEN IMAGE KEYGEN</span> - [Alt + Shift + K]</li>
-					<li> <span class="SHCT_TEXT">OPEN KEY DICTIONARY</span> - [Alt + Shift + D]</li>
+					<li> <span class="SHCT_TEXT">OPEN KEY IMAGE VAULT</span> - [Alt + Shift + D]</li>
 					<hr>
 					<h4> 4 - File editor submenu:</h4>
 					<li> <span class="SHCT_TEXT">OPEN FILE EDITOR</span> - [Alt + Shift + T]</li>

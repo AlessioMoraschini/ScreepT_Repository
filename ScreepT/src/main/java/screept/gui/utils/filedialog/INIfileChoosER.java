@@ -65,14 +65,14 @@ public class INIfileChoosER {
            
         	if(fileExtension.equalsIgnoreCase("ini")) {
             	loadIniIntoTarget(fileINI, iniRead);
-            	lblAvviso.setText("[Configuration Loaded!]");
+            	lblAvviso.setText(I18n.t("cfg.status_loaded_new"));
     	    	textA.setText("");
     	    	textA.append("chosen: " + iniRead.getAbsolutePath());
     	    	textA.append("\n\n\n### NEW INI CONFIGURATION LOADED ###\n\n -> ");
     			textA.append( fileINI.toStringa());
     	        
 			} else {
-				dialogHelper.error("Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());
+				dialogHelper.error(I18n.t("cfg.error_extension")+ backupINI.getIniFile().getFile().getName());
 				fileINI = backupINI;
 			}
             
@@ -106,7 +106,7 @@ public class INIfileChoosER {
     	    	dialogHelper.info(I18n.t("app.configuration_loaded"));
     	        
 			} else {
-				dialogHelper.error("Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());
+				dialogHelper.error(I18n.t("cfg.error_extension")+ backupINI.getIniFile().getFile().getName());
 			}
             
         }else {
@@ -248,48 +248,28 @@ public class INIfileChoosER {
 	 * Export file INI updating label (use null for label if you don't want to use it)
 	 */
     public static void exportIniFile(INItializer fileINI, JLabel lblAvviso) {
-		
     	GenericFileChooserDialog chooserDialogHelper = new GenericFileChooserDialog(MainGUI.currentConfiguration);
     	File selectedFile = chooserDialogHelper.fileWrite(MainGUI.mainAPP.getMainFrame(), "Config_Export.ini", new File("./INI_FILES"), new ExtensionFileFilter[] {new ExtensionFileFilter(new String[] {"ini"}, "Configuration file (.ini)")});
-
-    	File backupIni = fileINI.getIniFile().getFile();
-		boolean done = false;
-
 		dialogHelper = new JOptionHelperExtended(MainGUI.mainAPP.getMainFrame());
-		
         if (selectedFile != null) {
             try {
             	selectedFile = FileVarious.changeExtension(selectedFile, ".ini");
-            	if(selectedFile.exists()) {
-            		if(dialogHelper.yesOrNo("File "+selectedFile.getName()+" exists, overwrite it?")) {
-            			selectedFile.delete();	
-                       	done = selectedFile.createNewFile();
-            		}else {
-            			// cancelled by user: no message needed
-            		}
-            	}else {
-                   	done = selectedFile.createNewFile();
+            	boolean write = true;
+            	if (selectedFile.exists()) {
+            		write = dialogHelper.yesOrNo(I18n.t("cfg.file_2") + selectedFile.getName() + " " + I18n.t("cfg.export_file_exists"));
             	}
-            		   		
-               	if(done) {
-               		dialogHelper.info("File "+selectedFile.getName()+" succesfully created!");
-               		loadIniIntoTarget(fileINI, selectedFile);
-    				if(lblAvviso != null) lblAvviso.setText("[Configuration Exported!]");
-               	}
-
-               	fileINI.setIniFile(new Wini(backupIni));
-               	fileINI.setIniReadFile(new Ini(backupIni));
-				
+            	if (write) {
+            		// the file in use is copied as it is on disk: the configuration in memory is not touched
+            		FileUtils.copyFile(fileINI.getIniFile().getFile(), selectedFile);
+            		dialogHelper.info(I18n.t("cfg.file_2") + selectedFile.getName() + " " + I18n.t("cfg.export_file_created"));
+            		if (lblAvviso != null) lblAvviso.setText(I18n.t("cfg.status_exported"));
+            	}
 			} catch (IOException e) {
 				logger.error(e);
-			}  			
-            
-        }else{
-        	// cancelled by user: no message needed
+			}
         }
-		
-	}
-    
+    }
+
     public static void updateFromExternalGeneralConfig(File generalConfigRootSearch) {
     	
     	List<File> matchedGeneralConf = FileNameSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true, false, false, Long.MAX_VALUE);

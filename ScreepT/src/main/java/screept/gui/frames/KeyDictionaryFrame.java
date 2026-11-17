@@ -11,16 +11,49 @@
  */
 package screept.gui.frames;
 
-import various.common.light.i18n.I18n;
-import resources.GeneralConfig;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import javax.swing.Timer;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import various.common.light.i18n.I18n;
 import gui.commons.dialogutils.NativeFileChooser;
-import gui.commons.dialogutils.JOptionHelperExtended;
+import gui.commons.imagestudio.DialogFit;
 import gui.commons.frameutils.frame.arch.ParentFrame;
+import gui.commons.frameutils.frame.arch.ToolIcons;
+import gui.commons.frameutils.frame.arch.ToolStyle;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.treeutils.om.FileTreeModel;
 import initializer.configs.impl.INItializer;
@@ -32,263 +65,231 @@ import various.common.light.files.FileWorker;
 import various.common.light.om.BufferedImageType;
 import various.common.light.utility.manipulation.ConversionUtils;
 
-import javax.swing.JPanel;
-import java.awt.SystemColor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.swing.border.LineBorder;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
-
-import java.awt.Color;
-
-import javax.swing.JLabel;
-
-import java.awt.Font;
-import javax.swing.SwingConstants;
-import javax.swing.UIDefaults;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTree;
-import javax.swing.JCheckBox;
-import javax.swing.ScrollPaneConstants;
-import java.awt.Cursor;
-import java.awt.Dimension;
-
-public class KeyDictionaryFrame extends ParentFrame{
+/**
+ * Key images (png) used for the encryption. The list refreshes by itself when files change in the folder
+ * (checked every 2 seconds, the tree is rebuilt only when something changed).
+ */
+public class KeyDictionaryFrame extends ParentFrame {
 	private static final long serialVersionUID = -2183390950352993867L;
-	
+
 	public static KeyDictionaryFrame singletonInstance = null;
 
-	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(KeyDictionaryFrame.class); 
-	
+	// KeyDictionary logger
+	static Logger logger = Logger.getLogger(KeyDictionaryFrame.class);
+
 	// static path of keyDictionary
 	public static final String KEY_DICTIONARY = KeyGenFrame.KEY_DICTIONARY;
-	
+
 	// file representing dictionary
 	public static final File KEY_DICTIONARY_FILE = new File(KEY_DICTIONARY);
-	
+
+	private static final int WATCH_INTERVAL_MS = 2000;
+
+	private static final String WELCOME = "Key Dictionary\n\nSelect a key image from the list to see its details.\nRight click on a file for more actions.";
+
 	//INItializer confuguration
 	public INItializer currentConf;
-	
-	// listener used to refresh file options displayed
-	public TreeSelectionListener treeListener;
-	//Jtree used to represent dictionary
+
+	private JFrame thisPanel;
 	private JTree tree;
-	
-	// same for scrollpane
-	public JScrollPane scrollPane;
-	
-	JFrame thisPanel;
-	
+	private JTextArea textArea;
+	private JCheckBox chkOverwrite;
+	private Timer watcher;
+	private long lastSignature;
+	private Dimension fitDimension;
+	private static final int PREVIEW_SIZE = 220;
+	private JLabel previewLabel;
+	private volatile File previewFile;
+	private JButton btnDelete;
+	private JButton btnReload;
+	private JButton btnViewInSystem;
+	private JButton btnAddKey;
+	private JButton btnImport;
+	private JButton btnExport;
+
 	// constructor
 	public KeyDictionaryFrame(INItializer currentConfiguration) {
-		setBackground(new Color(255, 228, 225));
-		
+
 		logger.info(this.getClass().getName() + " Starting...");
-		
+
 		isActive.set(true);
-		
+
 		// SW window icon
 		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_KEY_DICT, this);
 		GuiUtilsExtended.showOnSameScreen(this, MainGUI.mainFrameScreept);
-		
+
 		thisPanel = this;
 		singletonInstance = this;
-		
+
 		// initialize configuration
 		currentConf = currentConfiguration;
-		
-		logger.debug("## KeyDictionary panel started!");
-		getContentPane().setBackground(new Color(211, 211, 211));
-		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[88.00px][93.00][89.00px][10.00px][10px:100:500,grow 500][:100:10%][:100:8%][:100:8%][:100:14%]", "[35px][:25:25px][40%,grow]"));
-		
-		JPanel panel = new JPanel();
-		panel.setForeground(SystemColor.menu);
-		panel.setBorder(new LineBorder(new Color(0, 0, 0), 3));
-		panel.setBackground(new Color(176, 196, 222));
-		getContentPane().add(panel, "cell 0 0 9 1,growx,aligny center");
-		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][][][][][][][][][grow][][][]", "[]"));
-		
-		JLabel lblKeyDictionary = new JLabel("Key Dictionary");
-		lblKeyDictionary.setHorizontalAlignment(SwingConstants.CENTER);
-		lblKeyDictionary.setForeground(Color.BLACK);
-		lblKeyDictionary.setFont(new Font("Lithos Pro Regular", Font.BOLD, 22));
-		lblKeyDictionary.setBackground(SystemColor.activeCaptionBorder);
-		panel.add(lblKeyDictionary, "cell 1 0 12 1,alignx center");
-		
-		JLabel labelPathAd = new JLabel("");
-		getContentPane().add(labelPathAd, "cell 0 1 9 1,alignx center");
-		labelPathAd.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		labelPathAd.setForeground(new Color(0, 0, 128));
-		labelPathAd.setText("Dictionary Path: ..\\ScreepT_Folder\\"+KEY_DICTIONARY_FILE.getPath());
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel_1.setBackground(Color.DARK_GRAY);
-		getContentPane().add(panel_1, "cell 0 2 9 1,grow");
-		panel_1.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[:10px:10px][:50:50px][:100:60%,grow][:10px:10px][][10][][5%][20px:12.5%,grow]", "[:20px:30px][20][20][20][20][10,grow]"));
-		
-		
-		scrollPane = new JScrollPane();
-		panel_1.add(scrollPane, "cell 4 1 5 5,grow");
-		
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		panel_1.add(scrollPane_1, "cell 0 5 4 1,grow");
-		
-		JTextArea textArea = new JTextArea();
-		textArea.setLineWrap(true);
-		textArea.setEditable(false);
-		textArea.setText("\n\n ### WELCOME TO KEY DICTIONARY ###\n\n"
-				+ " Select a file from the list to see details ;)");
-		textArea.setFont(new Font("SansSerif", Font.PLAIN, currentConfiguration.getGuiOpt().getLogFontSize()));
-		textArea.setBackground(new Color(255, 222, 173));
-		scrollPane_1.setViewportView(textArea);
-		
-		JCheckBox chkOverwrite = new JCheckBox("Overwrite Dictionary files");
-		chkOverwrite.setOpaque(false);
-		chkOverwrite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		chkOverwrite.setFont(new Font("SansSerif", Font.BOLD, 12));
-		chkOverwrite.setForeground(Color.LIGHT_GRAY);
-		chkOverwrite.setSelected(currentConf.getFileOpt().isFlagOverwrite());
-		chkOverwrite.addActionListener(new ActionListener() {
+
+		buildGui();
+		addHandlers();
+
+		DialogFit.apply(this, null, 860, 580);
+		fitDimension = getSize();
+
+		new TreeFileMouseListenerDictionary(currentConfiguration, thisPanel, tree, textArea, null);
+
+		lastSignature = dictionarySignature(KEY_DICTIONARY_FILE);
+		watcher = new Timer(WATCH_INTERVAL_MS, new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(chkOverwrite.isSelected()) {
-					currentConf.getFileOpt().setFlagOverwrite(true);
-				}else {
-					currentConf.getFileOpt().setFlagOverwrite(false);
+				long signature = dictionarySignature(KEY_DICTIONARY_FILE);
+				if (signature != lastSignature) {
+					reloadTree();
 				}
 			}
 		});
-		
-		TreeModel treeModel = new FileTreeModel(KEY_DICTIONARY_FILE);
-		tree = new JTree(treeModel);
-		tree.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		tree.setBackground(Color.GRAY);
-		tree.setVisibleRowCount(10);
-		scrollPane.setViewportView(tree);
-		treeListener = new TreeSelectionListener() {
+		watcher.start();
+
+		logger.debug("## KEY DICTIONARY started");
+	}
+
+	private void buildGui() {
+
+		JPanel content = new JPanel(new MigLayout("wrap 1, fill, insets 14 18 14 18, gapy 10", "[grow,fill]", "[][grow,fill][]"));
+		setContentPane(content);
+
+		JPanel top = new JPanel(new MigLayout("insets 0, fillx", "[grow,fill][]", "[]"));
+		top.setOpaque(false);
+		top.add(ToolStyle.header("Key Image Vault", "Key images (.png) used for the encryption. Select one to see its details, right click for more actions"), "growx");
+		top.add(ToolStyle.link("Go to Key Image Generator", new Runnable() {
 			
+			public void run() {
+				MainGUI.mainAPP.windowCreator.newKeyGenFrame();
+			}
+		}), "aligny top");
+		content.add(top, "growx");
+
+		// FILES (left)
+		JPanel filesCard = ToolStyle.card(new MigLayout("insets 0, fill, wrap 1", "[grow,fill]", "[][][][grow,fill]"));
+		filesCard.add(ToolStyle.caption("Files in the dictionary"));
+
+		JLabel pathLabel = ToolStyle.mutedLabel(KEY_DICTIONARY_FILE.getPath());
+		pathLabel.setToolTipText(KEY_DICTIONARY_FILE.getAbsolutePath());
+		filesCard.add(pathLabel, "growx, wmin 0");
+
+		JPanel filesButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+		filesButtons.setOpaque(false);
+		filesButtons.add(btnReload = ToolStyle.button("Refresh", ToolIcons.Kind.REFRESH, "Reload the list of files in the dictionary"));
+		filesButtons.add(btnViewInSystem = ToolStyle.button("View in System explorer", ToolIcons.Kind.FOLDER, "Open the dictionary folder"));
+		filesCard.add(filesButtons, "growx");
+
+		tree = new JTree(new FileTreeModel(KEY_DICTIONARY_FILE));
+		tree.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		tree.setVisibleRowCount(10);
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				String msg;
-				File thisFile = (File)tree.getLastSelectedPathComponent();
-				if (thisFile!=null) {
-					if (thisFile.isDirectory()) {
-
+				File thisFile = (File) tree.getLastSelectedPathComponent();
+				if (thisFile != null && !thisFile.isDirectory()) {
+					if ("png".equalsIgnoreCase(FilenameUtils.getExtension(thisFile.getName()))) {
+						textArea.setText("Key image: " + thisFile.getName() + "\n\nSize: " + ConversionUtils.coolFileSize(thisFile) + "\n\nPath: " + thisFile.getAbsolutePath());
 					} else {
-						if (FilenameUtils.getExtension(thisFile.getAbsolutePath()).equals("png")) {
-							msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+ConversionUtils.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
-							textArea.setText(msg);
-
-						} else {
-							msg = "File not recognized as Key: \n\n => " + thisFile.getName();
-							textArea.setText(msg);
-						}
-					} 
+						textArea.setText("Not a key image:\n\n" + thisFile.getName());
+					}
+					textArea.setCaretPosition(0);
 				}
 			}
-		};
-		tree.addTreeSelectionListener(treeListener);
-		
-		JButton btnReloadImgTree = new JButton("");
-		btnReloadImgTree.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnReloadImgTree.setBackground(Color.BLACK);
-		btnReloadImgTree.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD));
-		btnReloadImgTree.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tree.setModel(treeModel);
-				
-				// refresh tree gui
-				refreshJTree();
-			}
 		});
-		panel_1.add(btnReloadImgTree, "cell 1 4,alignx center,aligny center");
-		panel_1.add(chkOverwrite, "cell 2 4,alignx center");
-		
-		JButton btnViewInSystem = new JButton("View in System explorer");
-		btnViewInSystem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panel_1.add(btnViewInSystem, "cell 1 0 2 1,growx");
-		btnViewInSystem.setForeground(new Color(211, 211, 211));
-		btnViewInSystem.setFont(new Font("SansSerif", Font.BOLD, 15));
-		btnViewInSystem.setBackground(new Color(0, 0, 0));
-		
-		
-		btnViewInSystem.addActionListener(new ActionListener() {
-			
+		filesCard.add(new JScrollPane(tree), "grow, push");
+
+		// DETAILS (right)
+		textArea = new JTextArea(WELCOME);
+		textArea.setEditable(false);
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
+		textArea.setFont(ToolStyle.font(0f, Font.PLAIN));
+		textArea.setMargin(new Insets(10, 10, 10, 10));
+		textArea.setColumns(24);
+
+		previewLabel = new JLabel("", SwingConstants.CENTER);
+		JPanel detailsCard = ToolStyle.card(new MigLayout("insets 0, fill, wrap 1", "[grow,fill]", "[][grow,fill]"));
+		detailsCard.add(previewLabel, "growx, h " + PREVIEW_SIZE + "!");
+		JScrollPane textScroll = new JScrollPane(textArea);
+		textScroll.setPreferredSize(new Dimension(260, 150));
+		detailsCard.add(textScroll, "grow");
+
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, filesCard, detailsCard);
+		split.setResizeWeight(0.4);
+		split.setContinuousLayout(true);
+		split.setOpaque(false);
+		split.setBorder(null);
+		content.add(split, "grow");
+
+		// ACTIONS (bottom)
+		btnAddKey = ToolStyle.accent(ToolStyle.button("Add Key Image", ToolIcons.Kind.PASTE, "Copy a key image (png) into the dictionary"), ToolStyle.GREEN);
+		btnImport = ToolStyle.button("Import Dictionary", ToolIcons.Kind.FOLDER, "Copy the key images of a folder into the dictionary");
+		btnExport = ToolStyle.button("Export Dictionary", ToolIcons.Kind.FOLDER, "Copy the dictionary key images into a folder");
+
+		chkOverwrite = ToolStyle.hand(new JCheckBox("Overwrite same names"));
+		chkOverwrite.setToolTipText("Replace the files that have the same name when adding or importing");
+		chkOverwrite.setSelected(currentConf.getFileOpt().isFlagOverwrite());
+
+		btnDelete = ToolStyle.accent(ToolStyle.button("Delete", ToolIcons.Kind.CLEAR, "Delete the selected key images from the dictionary"), ToolStyle.RED);
+		btnDelete.setEnabled(false);
+
+		JPanel actions = ToolStyle.card(new MigLayout("insets 0, fillx, gap 8 8", "[][][][][grow,fill][]", "[]"));
+		actions.add(btnAddKey);
+		actions.add(btnImport);
+		actions.add(btnExport);
+		actions.add(btnDelete);
+		actions.add(new JLabel(), "growx");
+		actions.add(chkOverwrite, "alignx right");
+		content.add(actions, "growx");
+	}
+
+	private void addHandlers() {
+
+		// window on close operations
+		addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent windowEvent) {
+
+		    	watcher.stop();
+		    	isActive.set(false);
+		    	singletonInstance = null;
+		    	logger.debug("Closing "+getClass().getName());
+		    	dispose();
+		    }
+	    });
+
+		chkOverwrite.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				currentConf.getFileOpt().setFlagOverwrite(chkOverwrite.isSelected());
+			}
+		});
+
+		btnReload.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				reloadTree();
+			}
+		});
+
+		btnViewInSystem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
 				GuiUtilsExtended.openInFileSystem(KEY_DICTIONARY_FILE);
 			}
 		});
-		
-		JLabel lblNewLabel = new JLabel("Current files in Dictionary");
-		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblNewLabel.setForeground(Color.WHITE);
-		panel_1.add(lblNewLabel, "cell 4 0 5 1,alignx center");
-	
-		JButton btnLoadKey = new JButton("Add Key Image");
-		btnLoadKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnLoadKey.addActionListener(new ActionListener() {
+
+		btnAddKey.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				// show input dialog to select the file(gives null in case of no file selected)
-				File selected = fileRead(thisPanel);
-				if (selected!=null && selected.getName().toLowerCase().endsWith("png")) {
-					
-					try {
-						BufferedImage tempImg = ImageIO.read(selected);
-						if(BufferedImageType.checkIfAdmittedType(tempImg.getType())) {
-							
-							if (FileWorker.copyFile(selected, new File(KEY_DICTIONARY + selected.getName()),currentConf.getFileOpt().isFlagOverwrite()) != null) {
-								dialogHelper.info("File correctly saved in " + KEY_DICTIONARY, "File added to dictionary :)");
-								logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KEY_DICTIONARY);
-							}else{
-								erorrLogNmsg();
-							}
-							refreshJTree();
-							
-						}else {
-							erorrLogNmsg();
-						}
-					} catch (IOException e1) {
-						logger.error("IO error retrieving image from selected file", e1);
-						erorrLogNmsg();
-					}
-				} else {
-					erorrLogNmsg();
-				}
+				addKeyImage();
 			}
 		});
-		panel_1.add(btnLoadKey, "cell 1 1 2 1,grow");
-		btnLoadKey.setBackground(Color.GRAY);
-		btnLoadKey.setFont(new Font("SansSerif", Font.BOLD, 13));
-		
-		JButton btnImportDictionary = new JButton("Import Dictionary");
-		btnImportDictionary.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panel_1.add(btnImportDictionary, "cell 1 2 2 1,growx");
-		btnImportDictionary.setBackground(Color.GRAY);
-		btnImportDictionary.setFont(new Font("SansSerif", Font.BOLD, 13));
-		btnImportDictionary.addActionListener(new ActionListener() {
-			
+
+		btnImport.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				File selectedImportDir = directoRead(thisPanel);
-				
-				if (selectedImportDir!=null) {
+
+				if (selectedImportDir != null) {
 					try {
 						FileWorker.copyDirectoryContents(selectedImportDir, KEY_DICTIONARY_FILE, currentConf.getFileOpt().isFlagOverwrite(), "png");
 						dialogHelper.info(
@@ -298,97 +299,168 @@ public class KeyDictionaryFrame extends ParentFrame{
 					} catch (IOException e1) {
 						dialogHelper.error("Directory not imported in " + KEY_DICTIONARY, ". Some error occurred :(");
 						logger.error("Directory not imported, some error occurred :( ");
-					} 
+					} finally {
+						reloadTree();
+					}
 				}
 			}
 		});
-		
-		JButton btnExportDictionary = new JButton("Export Dictionary");
-		btnExportDictionary.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panel_1.add(btnExportDictionary, "cell 1 3 2 1,growx");
-		btnExportDictionary.setBackground(Color.GRAY);
-		btnExportDictionary.setFont(new Font("SansSerif", Font.BOLD, 13));
-		btnExportDictionary.addActionListener(new ActionListener() {
-			
+
+		btnDelete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				java.util.List<File> files = selectedFiles();
+				if (!files.isEmpty() && dialogHelper.yesOrNo(I18n.t("common.are_you_sure_to_delete"))) {
+					deleteFiles(files);
+				}
+			}
+		});
+
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
+			@Override
+			public void valueChanged(TreeSelectionEvent e) {
+				File thisFile = (File) tree.getLastSelectedPathComponent();
+				showPreview(thisFile != null && !thisFile.isDirectory() ? thisFile : null);
+				btnDelete.setEnabled(!selectedFiles().isEmpty());
+			}
+		});
+
+		btnExport.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				File selectedExportDir = directoRead(thisPanel);
-				
-				if (selectedExportDir!=null) {
+
+				if (selectedExportDir != null) {
 					// if input fonder not exists then create it
-					if(!selectedExportDir.exists()) {
+					if (!selectedExportDir.exists()) {
 						selectedExportDir.mkdirs();
 					}
 					try {
 						String msg = "Export completed in Target Directory ->" + selectedExportDir.getAbsolutePath();
-						FileWorker.copyDirectoryContents(KEY_DICTIONARY_FILE,selectedExportDir, false, "png");
-						dialogHelper.info(msg,"Dictionary exported");
+						FileWorker.copyDirectoryContents(KEY_DICTIONARY_FILE, selectedExportDir, false, "png");
+						dialogHelper.info(msg, "Dictionary exported");
 						logger.debug(msg);
 					} catch (IOException e1) {
-						String msg = "Directory not exported"+e1.toString();
-						dialogHelper.error( msg,". Some error occurred :(");
+						String msg = "Directory not exported" + e1.toString();
+						dialogHelper.error(msg, ". Some error occurred :(");
 						logger.error(msg);
-					} 
-				}
-			}
-		});
-		
-		// new thread that updates jtree periodically
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				while (true) {
-					String backupText = textArea.getText();
-					TreePath[] backup = tree.getSelectionPaths();
-					tree.setModel(treeModel);
-					// refresh tree gui
-					refreshJTree();
-					tree.setSelectionPaths(backup);
-					textArea.setText(backupText);
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
 					}
 				}
 			}
-		}).start();
-		
-		addHandlers();
-		
-		new TreeFileMouseListenerDictionary(currentConfiguration, thisPanel, tree, textArea, null);
-		logger.debug("## KEY DICTIONARY started");
+		});
+	}
 
+	/** Files selected in the list (folders excluded) */
+	private java.util.List<File> selectedFiles() {
+		java.util.List<File> files = new java.util.ArrayList<File>();
+		TreePath[] paths = tree.getSelectionPaths();
+		if (paths != null) {
+			for (TreePath path : paths) {
+				Object node = path.getLastPathComponent();
+				if (node instanceof File && ((File) node).isFile()) {
+					files.add((File) node);
+				}
+			}
+		}
+		return files;
 	}
-	
-	private void addHandlers() {
-		// DEFAULT CLOSE ACTIONS 
-		addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		    	
-		    	isActive.set(false);
-		    	singletonInstance = null;
-		    	logger.debug("Closing "+getClass().getName());
-		    	dispose();
-		    }
-	    });
+
+	/** Deletes the given files of the dictionary and refreshes the list */
+	void deleteFiles(java.util.List<File> files) {
+		for (File file : files) {
+			if (!file.delete()) {
+				logger.error("Key image not deleted: " + file.getAbsolutePath());
+			}
+		}
+		reloadTree();
 	}
-	
+
+	/** Thumbnail of the selected key image, read in background so the list stays responsive */
+	private void showPreview(final File file) {
+		previewFile = file;
+		previewLabel.setIcon(null);
+		previewLabel.setText("");
+		if (file == null || !"png".equalsIgnoreCase(FilenameUtils.getExtension(file.getName()))) {
+			return;
+		}
+		new SwingWorker<ImageIcon, Void>() {
+			@Override
+			protected ImageIcon doInBackground() throws Exception {
+				BufferedImage img = ImageIO.read(file);
+				return img == null ? null : new ImageIcon(scaleToFit(img, PREVIEW_SIZE));
+			}
+
+			@Override
+			protected void done() {
+				try {
+					ImageIcon icon = get();
+					if (file.equals(previewFile)) {
+						previewLabel.setIcon(icon);
+						previewLabel.setText(icon == null ? "No preview" : "");
+					}
+				} catch (Exception e) {
+					logger.debug("Preview not available for " + file.getName(), e);
+				}
+			}
+		}.execute();
+	}
+
+	/** Copy of the image that fits a square box, proportions kept, never bigger than the original */
+	private static BufferedImage scaleToFit(BufferedImage img, int box) {
+		double scale = Math.min(1.0, Math.min(box / (double) img.getWidth(), box / (double) img.getHeight()));
+		int w = Math.max(1, (int) Math.round(img.getWidth() * scale));
+		int h = Math.max(1, (int) Math.round(img.getHeight() * scale));
+		BufferedImage out = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = out.createGraphics();
+		try {
+			g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			g.drawImage(img, 0, 0, w, h, null);
+		} finally {
+			g.dispose();
+		}
+		return out;
+	}
+
+	/** Copies a png chosen by the user into the dictionary, if it is a valid image */
+	private void addKeyImage() {
+		// cancelled by user: fileRead returns null and shows nothing
+		File selected = fileRead(thisPanel);
+		if (selected == null) {
+			return;
+		}
+		try {
+			BufferedImage tempImg = ImageIO.read(selected);
+			if (tempImg != null && BufferedImageType.checkIfAdmittedType(tempImg.getType())) {
+				if (FileWorker.copyFile(selected, new File(KEY_DICTIONARY + selected.getName()), currentConf.getFileOpt().isFlagOverwrite()) != null) {
+					dialogHelper.info("File correctly saved in " + KEY_DICTIONARY, "File added to dictionary :)");
+					logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KEY_DICTIONARY);
+				} else {
+					erorrLogNmsg();
+				}
+			} else {
+				erorrLogNmsg();
+			}
+		} catch (IOException e1) {
+			logger.error("IO error retrieving image from selected file", e1);
+			erorrLogNmsg();
+		} finally {
+			reloadTree();
+		}
+	}
+
 	/**
 	 * this method select a file from the user (only png files),if nothing is selected returns null
 	 */
 	private File fileRead(JFrame parent) {
 
-		JFileChooser fileChooser = new NativeFileChooser();		
+		JFileChooser fileChooser = new NativeFileChooser();
 		fileChooser.setDialogTitle("Load .png File");
-		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
-		File correctFile = null;		
-		
+		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));
+		File correctFile = null;
+
 		int returnVal = fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            
+
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null||!givenExtension.equalsIgnoreCase("png")) {
@@ -403,7 +475,7 @@ public class KeyDictionaryFrame extends ParentFrame{
         }
         return correctFile;
 	}
-	
+
 	/**
 	 * this method select a directory from the user (only directories),if nothing is selected returns null
 	 */
@@ -412,12 +484,12 @@ public class KeyDictionaryFrame extends ParentFrame{
 		JFileChooser fileChooser = new NativeFileChooser();
 		fileChooser.setDialogTitle("Choose Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
-		File correctFile = null;	
-		
+		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));
+		File correctFile = null;
+
 		int returnVal = fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            
+
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
         		dialogHelper.error(I18n.t("common.please_select_a_directory"), "Select a directory, please");
@@ -430,60 +502,52 @@ public class KeyDictionaryFrame extends ParentFrame{
         }
         return correctFile;
 	}
-	
-	/**
-	 * this method select a directory from the user (only directories)to write a copy of current
-	 * dictionary, if nothing is selected returns null
-	 */
-	@Deprecated
-	protected File directoWrite(JFrame parent) {
 
-		JFileChooser fileChooser = new NativeFileChooser();
-		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));		
-		File correctFile = null;		
-		
-		int returnVal = fileChooser.showSaveDialog(parent);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            
-        	File selectedFile = fileChooser.getSelectedFile();
-        	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		dialogHelper.error(I18n.t("common.please_select_a_directory"), "Select a directory, please");
-        	}else {
-        		correctFile = selectedFile;
-        		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
-        	}
-        }else {
-        	// cancelled by user: no message needed
-        }
-        return correctFile;
-	}
-	
 	private void erorrLogNmsg() {
 		dialogHelper.error( "File not saved in " + KEY_DICTIONARY,
 				"Some error occurred :(");
 		logger.error("File not saved, some error occurred :( ");
 	}
-	
-	private void refreshJTree() {
 
-		UIDefaults paneDefaults = new UIDefaults();
-	    paneDefaults.put("Tree.selectionBackground",Color.BLACK);
-		tree.putClientProperty("Nimbus.Overrides",paneDefaults);
-		tree.putClientProperty("Nimbus.Overrides.InheritDefaults",false);
-		scrollPane.setViewportView(tree);
-		tree.setBackground(Color.GRAY);
-		tree.setVisibleRowCount(10);
-		tree.addTreeSelectionListener(treeListener);
-		tree.revalidate();
-		tree.repaint();
+	/** Rebuilds the list keeping the selected files selected */
+	private void reloadTree() {
+		TreePath[] selection = tree.getSelectionPaths();
+		tree.setModel(new FileTreeModel(KEY_DICTIONARY_FILE));
+		if (selection != null) {
+			java.util.List<TreePath> kept = new java.util.ArrayList<TreePath>();
+				for (TreePath path : selection) {
+					if (path.getLastPathComponent() instanceof File && ((File) path.getLastPathComponent()).exists()) {
+						kept.add(path);
+					}
+				}
+				tree.setSelectionPaths(kept.toArray(new TreePath[0]));
+		}
+		lastSignature = dictionarySignature(KEY_DICTIONARY_FILE);
 	}
-	
+
+	/** Changes with names, sizes and dates of the files inside the folder (recursive) */
+	private static long dictionarySignature(File dir) {
+		File[] files = dir.listFiles();
+		if (files == null) {
+			return 0;
+		}
+		long signature = 1;
+		for (File file : files) {
+			signature = signature * 31 + file.getName().hashCode();
+			signature = signature * 31 + file.lastModified();
+			signature = signature * 31 + file.length();
+			if (file.isDirectory()) {
+				signature = signature * 31 + dictionarySignature(file);
+			}
+		}
+		return signature;
+	}
+
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(800, 560);
+		return fitDimension != null ? new Dimension(fitDimension) : new Dimension(860, 580);
 	}
-	
+
 	public static KeyDictionaryFrame getInstance(INItializer currentConfiguration) {
 		return singletonInstance == null ? new KeyDictionaryFrame(currentConfiguration): singletonInstance;
 	}
