@@ -496,7 +496,7 @@ public class WindowCreator {
 		} finally {
 			// no JavaFX (e.g. OpenJDK, Java 11+) or Linux: the default browser renders the guide with full HTML and search
 			if ((SysUtils.getOsInfoLazy().isLinux() || unsupported) && visible) {
-				File htmlTutorialFile = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
+				File htmlTutorialFile = TutorialFrame.guideFile();
 				SysUtils.openUrlInBrowserOrdered(htmlTutorialFile.toURI().toString());
 			}
 		}

@@ -13,6 +13,7 @@ package gui.texteditor.commons.logsearch;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -172,6 +173,7 @@ final class DatePickerField extends JPanel {
 		commit();
 		final JPopupMenu popup = new JPopupMenu();
 		popup.setBorder(BorderFactory.createLineBorder(new Color(128, 128, 128, 110)));
+		popup.setFocusable(true);
 		popup.add(new CalendarPanel(popup));
 		popup.show(this, 0, getHeight() + 2);
 	}
@@ -180,7 +182,11 @@ final class DatePickerField extends JPanel {
 		private static final long serialVersionUID = 1L;
 		private YearMonth shown;
 		private final JPopupMenu popup;
-		private final JLabel title = new JLabel("", JLabel.CENTER);
+		private final JLabel monthLabel = new JLabel("", JLabel.RIGHT);
+		private final JLabel yearLabel = new JLabel("", JLabel.LEFT);
+		private final JTextField yearEditor = new JTextField(4);
+		private final CardLayout yearCards = new CardLayout();
+		private final JPanel yearHolder = new JPanel(yearCards);
 		private final JPanel grid = new JPanel(new GridLayout(7, 7, 1, 1));
 		private final Locale locale = Locale.forLanguageTag(I18n.getLanguage());
 
@@ -194,9 +200,45 @@ final class DatePickerField extends JPanel {
 			top.setOpaque(false);
 			JButton previous = arrow("◀", -1);
 			JButton next = arrow("▶", 1);
-			title.setFont(title.getFont().deriveFont(Font.BOLD, 13f));
+			monthLabel.setFont(monthLabel.getFont().deriveFont(Font.BOLD, 13f));
+			yearLabel.setFont(yearLabel.getFont().deriveFont(Font.BOLD, 13f));
+			yearLabel.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.TEXT_CURSOR));
+			yearLabel.setToolTipText(I18n.t("log.year_edit_tip"));
+			yearLabel.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					editYear();
+				}
+			});
+			yearEditor.setFont(yearLabel.getFont());
+			yearEditor.setHorizontalAlignment(JTextField.LEFT);
+			yearEditor.setMargin(new java.awt.Insets(0, 2, 0, 2));
+			yearEditor.addActionListener(e -> commitYear());
+			yearEditor.addFocusListener(new FocusAdapter() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					commitYear();
+				}
+			});
+			yearEditor.addKeyListener(new java.awt.event.KeyAdapter() {
+				@Override
+				public void keyPressed(java.awt.event.KeyEvent e) {
+					if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
+						yearEditor.setText("");
+						yearCards.show(yearHolder, "label");
+						e.consume();
+					}
+				}
+			});
+			yearHolder.setOpaque(false);
+			yearHolder.add(yearLabel, "label");
+			yearHolder.add(yearEditor, "edit");
+			JPanel titleBox = new JPanel(new GridLayout(1, 2, 4, 0));
+			titleBox.setOpaque(false);
+			titleBox.add(monthLabel);
+			titleBox.add(yearHolder);
 			top.add(previous, BorderLayout.WEST);
-			top.add(title, BorderLayout.CENTER);
+			top.add(titleBox, BorderLayout.CENTER);
 			top.add(next, BorderLayout.EAST);
 
 			JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
@@ -232,6 +274,34 @@ final class DatePickerField extends JPanel {
 			return button;
 		}
 
+		/** The year becomes a field to type in: Enter or leaving the field applies it, Esc leaves it as it was */
+		private void editYear() {
+			yearEditor.setText(String.valueOf(shown.getYear()));
+			yearCards.show(yearHolder, "edit");
+			yearEditor.requestFocusInWindow();
+			yearEditor.selectAll();
+		}
+
+		private void commitYear() {
+			if (!yearEditor.isShowing()) {
+				return;
+			}
+			String raw = yearEditor.getText().trim();
+			yearCards.show(yearHolder, "label");
+			if (raw.isEmpty()) {
+				return; // cancelled
+			}
+			try {
+				int year = Integer.parseInt(raw);
+				if (year >= 1 && year <= 9999) {
+					shown = shown.withYear(year);
+					fill();
+				}
+			} catch (NumberFormatException e) {
+				// not a year: the previous one stays
+			}
+		}
+
 		private void move(int months) {
 			shown = shown.plusMonths(months);
 			fill();
@@ -244,7 +314,8 @@ final class DatePickerField extends JPanel {
 		}
 
 		private void fill() {
-			title.setText(shown.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, locale) + " " + shown.getYear());
+			monthLabel.setText(shown.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, locale));
+			yearLabel.setText(String.valueOf(shown.getYear()));
 			grid.removeAll();
 			for (int d = 1; d <= 7; d++) {
 				JLabel name = new JLabel(DayOfWeek.of(d).getDisplayName(TextStyle.SHORT_STANDALONE, locale), JLabel.CENTER);

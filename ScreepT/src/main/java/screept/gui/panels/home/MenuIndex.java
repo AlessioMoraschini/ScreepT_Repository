@@ -27,7 +27,7 @@ import javax.swing.KeyStroke;
 
 /**
  * Index of the menu bar of the application: every item with its path and shortcut, read from the real menus, so the
- * assistant can tell how to reach a section ("Creept > Text Editor Module, Ctrl + Alt + Shift + T") and the answer is
+ * assistant can tell how to reach a section ("Creept > File Editor Module, Ctrl + Alt + Shift + T") and the answer is
  * always the one of this version of the application. Built on the EDT, searched anywhere (it is an immutable snapshot).
  */
 final class MenuIndex {
@@ -131,7 +131,7 @@ final class MenuIndex {
 		return entries.size();
 	}
 
-	/** True when the question asks how to reach something ("open the calculator", "where is the text editor") */
+	/** True when the question asks how to reach something ("open the calculator", "where is the file editor") */
 	static boolean asksToReach(String query) {
 		for (String stem : AssistantKnowledge.queryStems(query)) {
 			if (LAUNCH_WORDS.contains(stem) && !stem.equals("menu") && !stem.equals("find")) {
@@ -199,11 +199,11 @@ final class MenuIndex {
 
 	/**
 	 * True when every word of the question (an Italian word counts through its English terms) is found in the item:
-	 * the user named it, as in "text editor" or "home page".
+	 * the user named it, as in "file editor" or "home page".
 	 */
 	boolean covers(Entry entry, String query) {
 		int words = 0;
-		for (String token : AssistantKnowledge.normalize(query).split("[^a-z0-9]+")) {
+		for (String token : AssistantKnowledge.normalize(AssistantKnowledge.currentNames(query)).split("[^a-z0-9]+")) {
 			if (token.length() < 2 || AssistantKnowledge.isStopWord(token)) {
 				continue;
 			}

@@ -981,7 +981,7 @@ public class CustomTabbedEditor implements ITabsManager {
 		JPanel customTab = TabUtils.getCustomClosableTab(title, tooltip, icon, getTabCloseListener(index), ()->{return getPanelFromTabHeader(mainTabList.getSelectedIndex());});
 		customTab.setMaximumSize(new Dimension(1500, GeneralConfig.TAB_HEAD_HEIGHT));
 //		customTab.setPreferredSize(new Dimension(200,GeneralConfig.TAB_HEAD_HEIGHT));
-		customTab.setMinimumSize(new Dimension(150, GeneralConfig.TAB_HEAD_HEIGHT-1));
+		customTab.setMinimumSize(new Dimension(120, GeneralConfig.TAB_HEAD_HEIGHT-1));
 
 		customTab.addMouseListener(new MouseListener() {
 			@Override

@@ -687,6 +687,46 @@
 		return info;
 	}
 
+	////////// language //////////
+
+	// Languages of the guide: the English one is ReadMe.html, the others ReadMe_<code>.html next to it.
+	// A code goes in GUIDE_TRANSLATED only when its file exists: with one language the selector stays hidden.
+	var GUIDE_LANGUAGES = [['en', 'English'], ['it', 'Italiano'], ['de', 'Deutsch'], ['es', 'Español'], ['fr', 'Français'], ['pt', 'Português'], ['zh', '中文']];
+	var GUIDE_TRANSLATED = ['en', 'it'];
+
+	function guideFileOf(code) {
+		return code === 'en' ? 'ReadMe.html' : 'ReadMe_' + code + '.html';
+	}
+
+	function buildLanguageSelector(parent) {
+		if (GUIDE_TRANSLATED.length < 2) {
+			return;
+		}
+		var current = (document.documentElement.lang || 'en').toLowerCase().substring(0, 2);
+		var select = make('select', 'guideLang');
+		select.title = 'Language of the guide';
+		select.id = 'guideLangSelect';
+		each(GUIDE_LANGUAGES, function (language) {
+			var available = false;
+			each(GUIDE_TRANSLATED, function (code) {
+				available = available || code === language[0];
+			});
+			if (available) {
+				var option = make('option', '', language[1]);
+				option.value = language[0];
+				option.selected = language[0] === current;
+				select.appendChild(option);
+			}
+		});
+		select.onchange = function () {
+			window.location.href = guideFileOf(select.value);
+		};
+		var holder = make('div');
+		holder.id = 'guideLang';
+		holder.appendChild(select);
+		parent.appendChild(holder);
+	}
+
 	function buildTools() {
 		var index = document.getElementById('indexList');
 		if (!index) {
@@ -916,6 +956,7 @@
 		var themeButton = make('div', 'guideFab');
 		themeButton.id = 'guideTheme';
 		body.appendChild(themeButton);
+		buildLanguageSelector(body);
 		var theme = readTheme();
 		applyTheme(theme, themeButton);
 		themeButton.onclick = function () {

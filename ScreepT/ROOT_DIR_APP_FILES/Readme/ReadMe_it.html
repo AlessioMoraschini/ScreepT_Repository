@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="it">
+	
+	<!--  HEAD SECTION  -->
+	<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ScreepT - Guida</title>
+	<link rel="stylesheet" href="ReadMe_Style.css">
+	<script src="script.js"></script>
+	</head>
+	
+	<!--  START BODY  -->
+	<body>
+
+		<div id="titleBlock">
+			<canvas id="heroCanvas"></canvas>
+			<!--  TITLE SECTION  -->
+			<div id="mainTitle" class="center">
+				<h1>ScreepT<span class="heroCursor">_</span></h1>
+				<div class="heroTag">&gt; banco di lavoro portatile<span class="heroDots"></span></div>
+			</div>
+		</div>
+		
+		<div id="subTitleBlock"class="centerColoredSub2">Un banco di lavoro portatile per codice, log enormi e strumenti di tutti i giorni
+			<div id="subTitle" class="centerColoredSub1">
+				<span>Di A.M. Design and Development - 2019 - Versione ${project.version}</span>
+			</div>
+			<p style="font-size:12px; color:#444444"><b>(Questa versione è stata compilata il: ${maven.build.timestamp})</b></p>
+		</div>
+		
+		<!--  MAIN SECTION  -->
+		<div class="mainBlock">
+					
+			<!--  DESCTIPTION  -->
+			<div id="desSrcYpTion" align="center"><hr>
+				<p>Benvenuto nella guida di <b><span class="subIndex2">ScreepT</span></b>! Qui trovi tutte le informazioni per usarlo al meglio.</p>
+				<p>ScreepT è nato come crypter sperimentale ed è cresciuto fino a diventare un banco di lavoro portatile, scritto per divertimento e per aiutarmi nel mio lavoro di programmazione. 
+					<br>
+					Se trovi qualcosa da migliorare, o vuoi segnalare un bug, puoi scrivere a <i>${developer.bugs.mail}</i>. Buon divertimento!
+				</p>
+				<p><b>NB: </b>dai un'occhiata ai tooltip dei pulsanti e alle scorciatoie da tastiera, possono essere <u>molto utili</u>!</p>
+				<hr>
+			</div>
+
+			<div id="whyScreept">
+			<h2 class="whyTitle">Perché ScreepT?</h2>
+			<p class="whyLead">Pensato per chi legge log, modifica codice e script, e vuole avere tutto in un'unica finestra portatile.</p>
+			<div class="whyCards">
+				<div class="whyCard whyA">
+					<h3>Apri file enormi, all'istante</h3>
+					<p>LogSearch apre log da molti gigabyte in sola lettura, senza caricarli in memoria. Cerca mentre scrivi, individua a colpo d'occhio le righe ERROR e WARN, mantieni il contesto, aggiungi segnalibri ed esporta le corrispondenze. Un log da 2 GB (24 milioni di righe) viene indicizzato in circa un secondo e mezzo, e una ricerca richiede più o meno lo stesso tempo.</p>
+				</div>
+				<div class="whyCard whyB">
+					<h3>Un terminale dentro il tuo editor</h3>
+					<p>Esegui una shell vera accanto al tuo codice, con colori, programmi a schermo intero, cronologia scorrevole e ricerca nell'output. Invia le righe selezionate alla shell con un solo tasto.</p>
+				</div>
+				<div class="whyCard whyC">
+					<h3>Un editor che non ti intralcia</h3>
+					<p>Evidenziazione della sintassi, temi, template, albero dei file, selezione rettangolare, trasformazioni di testo e formattatori. Confronta file e visualizza l'anteprima del Markdown con i plugin.</p>
+				</div>
+				<div class="whyCard whyD">
+					<h3>Portatile e privato</h3>
+					<p>Nessun installer, nessun diritto di amministratore: estrai ed esegui. Le tue impostazioni restano nella sua cartella e, se il tuo PC non ha Java, ti propone di scaricarne uno solo per ScreepT. Windows è la piattaforma principale; Linux e macOS sono supportati ma meno testati.</p>
+				</div>
+				<div class="whyCard whyE">
+					<h3>Strumenti di tutti i giorni in una sola finestra</h3>
+					<p>Cerca file per nome o contenuto, hash, selettore di colori, conversione di immagini, testo da immagini e PDF (OCR), cronologia degli appunti, informazioni di sistema e di rete, calcolatrici.</p>
+				</div>
+				<div class="whyCard whyF">
+					<h3>Pensato per la tastiera e la modalità scura</h3>
+					<p>ScreepT Dark di default, scorciatoie per quasi tutto, tooltip su ogni pulsante, un assistente offline che risponde basandosi su questa guida e aggiornamenti integrati.</p>
+				</div>
+			</div>
+			<p class="whyNote">Dentro c'è anche il <b>Crypter</b>, un modulo sperimentale di cifratura dei file. È in beta: leggi l'avviso qui sotto.</p>
+		</div>
+		<div class="betaNotice">
+					<b>Modulo Crypter: versione beta.</b> Il Crypter (CreepT) è <b>sperimentale e non ancora testato a fondo</b>. I suoi algoritmi (AES-128 combinato con lo Steg-Crypt personalizzato, più le opzioni di hash e shuffle) non sono stati verificati da esperti indipendenti. Non affidarti a esso come unica protezione di dati importanti e conserva sempre una copia indipendente dei file originali e delle tue chiavi: un bug o una chiave persa possono rendere impossibile il recupero dei file cifrati.
+					<br>Anche il resto di ScreepT è in sviluppo attivo. Nelle prossime settimane e nei prossimi mesi gli aggiornamenti miglioreranno sia il Crypter sia la sua integrazione nel software, e aggiungeranno nuove funzionalità.
+				</div>
+	
+			<br>
+			
+			<!--  INDEX  -->
+			<a id="indexAnchor" href="#indexList"></a>
+			<div id="indexList">
+				<h1 id="indexTitle" class="sectionTitle">INDICE</h1> 
+				<ol>
+					<li>
+						<div id="InstallationNusage_index" class="subIndex1">		
+							<a href="#InstallationNusage">Installazione e primo avvio</a>
+						</div>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#subLauncherCompatibility">Launcher e compatibilità</a>
+							</div></li>
+						</ul>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#subSettings">Impostazioni del launcher</a>
+							</div></li>
+						</ul>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#subOSdepLauncher">Dipendenza dal sistema operativo</a>
+							</div></li>
+						</ul>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#subExeBlocked">Se l'exe è bloccato</a>
+							</div></li>
+						</ul>
+					</li>
+					
+					<li>
+						<div id="FunctionsDescNtips_index" class="subIndex1">		
+							<a href="#FunctionsDescNtips">Descrizione delle funzioni e consigli</a>
+						</div>
+						<div>
+							<ul>
+								<li><div class="subIndex2">		
+									<a href="#funcFileSubMenu">File</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleConfigManager">GESTORE CONFIGURAZIONE</a></li>
+										<li><a class="subIndex3" href="#subSectTitleReload">RICARICA CONFIGURAZIONE</a></li>
+										<li><a class="subIndex3" href="#subSectTitleLoad">CARICA CONFIGURAZIONE</a></li>
+										<li><a class="subIndex3" href="#subSectTitleExp">ESPORTA CONFIGURAZIONE</a></li>
+										<li><a class="subIndex3" href="#subSectTitleCurrAsDef">SALVA CORRENTE COME PREDEFINITA</a></li>
+										<li><a class="subIndex3" href="#subSectTitleResetOrig">RIPRISTINA CONFIGURAZIONE ORIGINALE</a></li>
+									<ul>
+								</div></li>
+								
+								<li><div class="subIndex2">		
+									<a href="#funcPreferencesSubMenu">Preferences</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleGraphOpt">OPZIONI GRAFICHE</a></li>
+										<li><a class="subIndex3" href="#subSectTitleGenOpt">OPZIONI GENERALI</a></li>
+									<ul>
+								</div></li>
+								
+								<li><div class="subIndex2">		
+									<a href="#funcScreeptSubMenu">ScreepT</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleCrypter">SCREEPT</a></li>
+										<li><a class="subIndex3" href="#subSectTitleKeyGenImg">GENERATORE DI KEY IMAGE</a></li>
+										<li><a class="subIndex3" href="#subSectTitlePswGenImg">GENERATORE DI PASSWORD</a></li>
+										<li><a class="subIndex3" href="#subSectTitleKeyDict">DIZIONARIO DELLE CHIAVI</a></li>
+									<ul>
+								</div></li>
+								
+								<li><div class="subIndex2">		
+									<a href="#funcTextEditorSubMenu">File Editor</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleTxtEditor">FILE EDITOR</a></li>
+										<li><a class="subIndex3" href="#subSectTextTransformation">TRASFORMAZIONI DI TESTO</a></li>
+										<li><a class="subIndex3" href="#subSectTxtEditorRightClick">MENU TASTO DESTRO</a></li>
+										<li><a class="subIndex3" href="#subSectTitleImpExpCrypted">IMPORTA/ESPORTA WORKSPACE CIFRATO</a></li>
+									<ul>
+								</div></li>
+								
+								<li><div class="subIndex2">		
+									<a href="#funcVariousSubMenu">Various</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleSysInfo">INFORMAZIONI DI SISTEMA</a></li>
+										<li><a class="subIndex3" href="#subSectTitleNetInfo">INFORMAZIONI DI RETE</a></li>
+										<li><a class="subIndex3" href="#subSectFileHasher">FILE HASHER</a></li>
+										<li><a class="subIndex3" href="#subSectColorPicker">SELETTORE DI COLORI</a></li>
+										<li><a class="subIndex3" href="#subSectClipboardPanel">PANNELLO APPUNTI</a></li>
+										<li><a class="subIndex3" href="#subSectTitleImgConverter">IMAGE STUDIO</a></li>
+										<li><a class="subIndex3" href="#subSectTitleFilesNFolders">FILE E CARTELLE</a></li>
+									<ul>
+								</div></li>
+								
+								<li><div class="subIndex2">		
+									<a href="#funcHelpSubMenu">Help</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleExit">ESCI</a></li>
+									</ul>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcHomeAssistant">Assistente della home page</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcQuickNotes">Note rapide</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcCalculator">Calcolatrice</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcLogSearch">LogSearch (file grandi)</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcShellInteractive">Shell: modalità interattiva</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcOptionHelp">Descrizione delle opzioni</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcAboutAssistant">About: l'assistente ironico</a>
+								</div></li>
+								<li><div class="subIndex2">		
+									<a href="#funcRecentOther">Tema e altre novità</a>
+								</div></li>
+							</ul>
+								
+						</div>
+					</li>
+					
+					<li>
+						<div id="ShortcutsKeyboard_index" class="subIndex1">		
+							<a href="#ShortcutsKeyboard">Elenco delle scorciatoie da tastiera</a>
+						</div>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#shctsMainGui">Scorciatoie generali</a>
+							</div></li>
+						</ul>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#shctsTextEditor">Scorciatoie del File Editor</a>
+							</div></li>
+						</ul>
+					</li>
+					
+					<li>
+						<div id="CreditsNLinks_index" class="subIndex1">		
+							<a href="#CreditsNLinks">Crediti e link</a>
+						</div>
+					</li>
+				</ol>
+				
+			</div>
+			
+			<br><hr>
+			
+			<!--  INSTALLATION AND USAGE  -->
+			<div id="InstallationNusage">
+				<h1 class="sectionTitle">1 - INSTALLAZIONE E PRIMO AVVIO</h1>
+				<hr>
+				<h2 id="subLauncherCompatibility" class="sectionSubTitle"> 1.1 - LAUNCHER/COMPATIBILITÀ</h2>
+				<hr>
+				<li><span class="highlightBoldedGrey">ScreepT non richiede un processo di installazione</span>, ed è scritto in java: questo significa che può essere eseguito virtualmente su qualsiasi sistema operativo che abbia un JRE (> 1.8) installato (detto questo, tieni presente che è testato soprattutto su Windows e Linux, quindi potrebbe comportarsi meglio su questi sistemi). Va avviato usando il launcher fornito, in modo da personalizzare i parametri (se serve) e controllare lo stato delle dipendenze sul tuo computer prima dell'avvio. Ogni volta che viene rilevato un problema nella tua configurazione, verrai avvisato con pop-up o icone di avviso. 
+				<p> 
+					<li><span class="highlightBoldedGrey">Trovi il launcher</span> nella cartella principale una volta estratto lo .zip ricevuto: usa quello giusto per il tuo sistema operativo (.exe su Windows, .sh su Linux/Mac). L'unica cosa di cui hai bisogno è un interprete Java installato, ovvero JVM/JRE/JDK (versione minima: 1.8).<br><br>
+					<span class="highlightBolded">Java mancante?</span> Gli starter (ScreepT.exe, ScreepT_64.exe, ScreepT.bat, ScreepT.sh) cercano Java 8 o successivo (la cartella "jre" accanto a loro, JAVA_HOME, PATH, il registro di Windows). Se non ne trovano nessuno, propongono di scaricare Eclipse Temurin 21 JRE (gratuito, circa 50 MB) nella cartella "jre", senza diritti di amministratore e senza installare nulla a livello di sistema, e poi avviano ScreepT. Puoi eliminare la cartella "jre" in qualsiasi momento.<br><br>
+					<span class="highlightBolded">Avviso</span>: è comunque possibile avviare direttamente il "ScreepT_Vxx.jar" che trovi nella cartella "/application", ma ricorda: non è pensato per funzionare al meglio in questo modo... quindi l'esperienza potrebbe non essere ottimale... meglio usare il launcher ;)
+					<br><br>
+					
+					<span class="highlightBolded">Avviso</span>: ScreepT funziona con Java 8 e con le versioni più recenti fino alla 21 (LTS). Le versioni precedenti non funzionano affatto; le versioni successive alla 21 non sono ancora state testate. Puoi scaricare la versione di Oracle (<a class="dependencyLink" target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html">pagina di download JVM</a>), quella di openJdk (<a class="dependencyLink" target="_blank" href="https://adoptopenjdk.net/releases.html">pagina di download openJdk</a>) oppure scaricarla da un'altra fonte (<u>altre JVM potrebbero non essere rilevate automaticamente dal launcher di ScreepT</u>).
+					<br>Al termine dell'installazione del JRE, aggiorna e/o riavvia ScreepT. Durante l'avvio la JVM viene cercata automaticamente, ma se non viene trovata puoi indicare manualmente il percorso della cartella /bin della tua JVM ;).
+					<br><br>
+					
+					Dopo aver eseguito l'eseguibile ScreepT_launcher verrai portato a un pannello base dove puoi scegliere se avviare il software, selezionare impostazioni specifiche per eseguirlo o controllare le dipendenze.<br>
+					Se manca qualcosa ti verrà chiesto di aggiornarlo/scaricarlo. Una volta installate le dipendenze richieste, puoi avviare il software.
+					<br>Se hai ancora problemi, puoi provare a riavviare il launcher.
+					
+					<p> Non serve passare dal pannello del launcher ogni volta... se vuoi, dopo il primo avvio, puoi disattivare il pannello del launcher nella scheda "general options" nella barra dei menu di ScreepT, alla voce "preferences -> general options".
+					</p>
+				<p><span class="highlightBolded">Avvio veloce</span>: quando il pannello del launcher è disattivato, ScreepT riusa il file di avvio scritto dall'ultimo avvio pulito (LauncherBatch.bat o LauncherBash.sh) invece di preparare tutto da capo, così si apre prima. Se quel file manca o è obsoleto, il Java che usa non esiste più o l'applicazione non parte, il pannello del launcher si apre da solo. Con il pannello attivo non cambia nulla: aspetta te.</p>
+				</p>
+				
+				<hr>
+				<h2 id="subSettings" class="sectionSubTitle"> 1.2 - IMPOSTAZIONI DEL LAUNCHER</h2>
+				<hr>
+				<image class="centerImg" src="Images/Launcher.jpg"/>
+				<p>
+					Come detto prima, puoi personalizzare le impostazioni del launcher cliccando su "Customize launch parameters". Si aprirà una nuova finestra: qui puoi impostare la memoria RAM massima e minima allocata quando usi ScreepT. In questa sezione si possono regolare anche la dimensione dello stack, il LOGGING LEVEL e altre opzioni. L'elenco dei Java installati mostra nomi leggibili (un numero progressivo distingue quelli identici) e, sotto, un riquadro con percorso, versione, produttore, tipo, architettura, parametri di avvio in uso e compatibilità del Java selezionato.
+					<p><strong>IMPORTANTE: </strong> I valori predefiniti sono testati e impostati per offrire il miglior compromesso tra prestazioni e uso delle risorse. Si consiglia di usare le impostazioni predefinite se non hai esigenze particolari.
+					</p>
+					<p><strong>IMPORTANTE: </strong>si consiglia di avviare ScreepT come ".class", perché l'avvio come jar può far sì che i plugin non vengano caricati dopo l'avvio.</p>
+					<p><span class="highlightBolded">Java</span>: l'elenco "Preferred JVM" mostra i Java trovati sul tuo PC: Oracle, OpenJDK, Eclipse Adoptium (Temurin), Amazon Corretto, Microsoft, Azul Zulu, BellSoft, JAVA_HOME, il PATH e la cartella "jre" accanto a ScreepT. Il pulsante "Get Java 21" accanto scarica l'ultimo Eclipse Temurin 21 JRE (checksum verificato) nella cartella "jre" di ScreepT e lo seleziona: non viene installato nulla a livello di sistema e non servono diritti di amministratore. Salva le opzioni per usarlo.</p>
+				</p>
+
+				<hr>
+				<h2 id="subOSdepLauncher" class="sectionSubTitle"> 1.3 - LAUNCHER DIPENDENTE DAL SISTEMA OPERATIVO</h2>
+				<hr>
+				<p> ScreepT è scritto in linguaggio java, che può girare quasi ovunque. Tuttavia, il launcher di ScreepT crea un launcher nativo, che viene scritto durante la fase di avvio. Per sfruttare la personalizzazione del launcher, usa semplicemente il launcher nativo fornito per il tuo sistema operativo:
+				<ul>
+					<li><p><span class="subMenuthirdLevel"><strong>Windows: </span></strong>doppio clic sul launcher ScreepT.exe</p>
+						<p><b>NB: </b>Su alcune versioni di Windows (per esempio Windows 10), l'applicazione potrebbe non avviarsi quando la shell è disattivata. Per risolvere, vai su "Customize launch parameters" nel pannello principale del launcher e attiva l'opzione "Display shell". Ora ScreepT dovrebbe avviarsi correttamente.</p>
+						<p><b>NB: </b>Se avvii ScreepT come amministratore, le funzioni di trascinamento (drag 'n drop) potrebbero essere disattivate di default. Questo comportamento è causato da un'opzione di sicurezza di Windows e non può essere evitato avviando come amministratore.</p>
+					</li>
+					
+					<li><p><span class="subMenuthirdLevel"><strong>Linux: </span></strong>doppio clic sul launcher <i>ScreepT.sh</i> (ricorda di dargli i permessi di esecuzione prima di avviarlo, con il comando <code>"sudo chmod 755 ScreepT.sh"</code>)</p>
+						<span><b>NB: </b></span>in alcuni casi l'applicazione non si avvia se la shell è visibile: se hai problemi ad eseguire ScreepT puoi provare a disattivare la shell nelle opzioni del launcher prima di avviare. <span><b>NB: </b></span>in alcune distro linux il launcher ha problemi ad avviare il launcher nativo .sh generato. Se incontri questo problema, quando premi il pulsante di avvio e il software non parte, puoi lanciare manualmente il launcher .sh generato: vai nella cartella /Application e fai doppio clic su <u>LauncherBash.sh</u>, oppure avvialo dalla shell <br>(in alternativa, puoi provare a disattivare la shell nelle impostazioni del launcher).<br>
+						<span><b>NB: </b></span>se hai problemi a scaricare gli aggiornamenti, puoi provare ad aggiornare i certificati java con il comando seguente: <code>sudo apt-get install ca-certificates-java</code>
+					</li>
+					<li><p><span class="subMenuthirdLevel"><strong>Mac-OS: </span></strong>doppio clic sul launcher ScreepT.dmg <i class="subIndex1"> - Prossimamente!</i></p></li>
+				</ul>
+				
+				</p>
+			
+				<hr>
+				<h2 id="subExeBlocked" class="sectionSubTitle"> 1.4 - SE L'EXE È BLOCCATO (PC AZIENDALI)</h2>
+				<hr>
+				<p>
+					Su alcuni PC, soprattutto quelli aziendali, l'antivirus o la policy di sicurezza possono bloccare <i>ScreepT.exe</i> e <i>ScreepT_64.exe</i> (Windows dice che non riesce ad accedere al dispositivo, al percorso o al file specificato, oppure il file viene segnalato come falso positivo e non puoi sbloccarlo come utente normale). Gli eseguibili sono solo piccoli launcher: <b>non ti servono</b>. Avvia ScreepT in uno di questi modi:
+				</p>
+				<ul>
+					<li><p><span class="subMenuthirdLevel"><strong>Windows: </strong></span>doppio clic su <i>ScreepT.bat</i>, nella stessa cartella dell'exe. Trova Java (e propone di scaricarlo se manca) e avvia il launcher.</p></li>
+					<li><p><span class="subMenuthirdLevel"><strong>Linux e macOS: </strong></span>usa <i>ScreepT.sh</i>. Se non parte con il doppio clic, apri un terminale nella cartella di ScreepT ed esegui <code>chmod +x ScreepT.sh</code> e poi <code>./ScreepT.sh</code>.</p></li>
+					<li><p><span class="subMenuthirdLevel"><strong>Qualsiasi sistema: </strong></span>vai dentro la cartella <i>Application</i> ed esegui <code>java -jar ScreepT_Launcher.jar</code> (su Windows <code>javaw</code> al posto di <code>java</code> evita la finestra della console).</p></li>
+				</ul>
+				<p>
+					<b>Collegamento con l'icona di ScreepT e fissaggio alla barra delle applicazioni (Windows).</b> Il collegamento esegue <i>cmd.exe</i>, che fa parte di Windows e non è bloccato, e gli chiede di avviare <i>ScreepT.bat</i>. L'icona si trova in <i>Readme\Images\ScreepT.ico</i>. Il modo più rapido è incollare quanto segue in PowerShell (imposta <code>$app</code> sulla cartella che contiene <i>ScreepT.bat</i>): crea <i>ScreepT.lnk</i> sul tuo desktop.
+				</p>
+				<pre style="background:#1e1f22;color:#dfe1e5;padding:10px;border:1px solid #4e5157;white-space:pre-wrap"><code># folder of ScreepT: the one that contains ScreepT.bat $app = "C:\ScreepT" $desktop = [Environment]::GetFolderPath("Desktop") $shell = New-Object -ComObject WScript.Shell $link = $shell.CreateShortcut("$desktop\ScreepT.lnk") $link.TargetPath = "$env:WINDIR\System32\cmd.exe" $link.Arguments = "/c `"`"$app\ScreepT.bat`"`"" $link.WorkingDirectory = $app $link.IconLocation = "$app\Readme\Images\ScreepT.ico" $link.WindowStyle = 7 # 7 = minimized: hides the black console window $link.Description = "ScreepT" $link.Save()</code></pre>
+				<p>Lo stesso a mano: clic destro sul desktop, <i>New - Shortcut</i>, come percorso scrivi <code>C:\Windows\System32\cmd.exe /c ""C:\ScreepT\ScreepT.bat""</code> (mantieni le virgolette doppie, adatta il percorso), chiamalo <i>ScreepT</i>. Poi clic destro su di esso, <i>Properties</i>: imposta <i>Start in</i> sulla cartella di ScreepT, <i>Run</i> su <i>Minimized</i> e, con <i>Change Icon - Browse</i>, scegli <i>Readme\Images\ScreepT.ico</i>.</p>
+				<p><b>Aggiungilo alla barra delle applicazioni:</b></p>
+				<ul>
+					<li><p><b>Windows 10:</b> clic destro sul collegamento e scegli <i>Pin to taskbar</i>.</p></li>
+					<li><p><b>Windows 11:</b> clic destro sul collegamento, <i>Show more options</i>, <i>Pin to taskbar</i> (oppure trascina il collegamento sulla barra delle applicazioni).</p></li>
+					<li><p>Se l'opzione di fissaggio non compare per un collegamento che esegue cmd.exe, usa questa variante che avvia Java direttamente (anch'essa senza finestra console): imposta <code>$java</code> sul <i>javaw.exe</i> del tuo Java, oppure della cartella <i>jre</i> scaricata da ScreepT.</p></li>
+				</ul>
+				<pre style="background:#1e1f22;color:#dfe1e5;padding:10px;border:1px solid #4e5157;white-space:pre-wrap"><code>$app = "C:\ScreepT" $java = "C:\Program Files\Java\jdk1.8.0_162\bin\javaw.exe" # or "$app\jre\bin\javaw.exe" $desktop = [Environment]::GetFolderPath("Desktop") $shell = New-Object -ComObject WScript.Shell $link = $shell.CreateShortcut("$desktop\ScreepT.lnk") $link.TargetPath = $java $link.Arguments = "-jar `"$app\Application\ScreepT_Launcher.jar`"" $link.WorkingDirectory = "$app\Application" $link.IconLocation = "$app\Readme\Images\ScreepT.ico" $link.Save()</code></pre>
+				<p><b>NB: </b>questi collegamenti passano dal normale launcher, quindi tutto funziona come al solito (opzioni del launcher, plugin, aggiornamenti).</p>
+				<p><b>Menu del tasto destro ("Open With ScreepT").</b> La voce di menu <i>Add to Windows context menu after right click on file</i> funziona senza ScreepT.exe e senza diritti di amministratore: scrive la voce solo per il tuo utente e chiede se deve avviare <i>ScreepT.bat</i> (funziona ovunque, mostra una finestra console ridotta a icona) o <i>ScreepT.exe</i> (nessuna finestra console, ma può essere bloccato sui PC aziendali). Usa <i>Remove from Windows file right click context menu</i> per toglierla. Quando apri un file <i>.log</i> (con questo menu, con drag and drop o con la finestra di apertura) ScreepT chiede se aprirlo nel File Editor o con LogSearch. Allo stesso modo <i>Restart as administrator</i> avvia <i>ScreepT.bat</i> con i diritti di amministratore quando è presente (compare la richiesta UAC) e usa l'exe solo se non c'è il bat. L'opzione per avviare ScreepT all'accesso fa lo stesso: crea un collegamento nella cartella Esecuzione automatica del tuo utente (non servono diritti di amministratore) che avvia <i>ScreepT.bat</i>.</p>
+			</div>
+			
+			<br><hr>
+			
+			<!--  FUNCTIONS-DESCRIPTION AND TIPS  -->
+			<div id="FunctionsDescNtips">
+				<h1 class="sectionTitle">2 - DESCRIZIONE DELLE FUNZIONI E CONSIGLI</h1>
+
+				<hr>
+				<h2 id="funcFileSubMenu" class="sectionSubTitle"> 2.1 - SOTTOMENU FILE</h2>
+				<hr>
+				<p><ul>
+					In questa sezione trovi tutte le funzioni per salvare/caricare le configurazioni, accessibili dalla vista più dettagliata del gestore di configurazione. Puoi salvare, esportare, caricare, ripristinare, ricaricare la tua configurazione preferita, oppure usare quella predefinita.<br>
+					Nella vista ad albero a sinistra trovi le tue configurazioni salvate. Puoi salvare le tue configurazioni cliccando su export configuration e usando la cartella predefinita "INI_FILES", oppure anche con il clic destro sull'albero dei file selezionando "import configuration file or folder". Ricorda che le versioni più recenti di ScreepT possono avere alcune differenze o non caricare alcuni valori quando carichi configurazioni esportate/salvate con versioni precedenti (in questo caso verranno usati i valori predefiniti). Nota inoltre che se l'opzione Autosave è attiva, la configurazione corrente verrà salvata automaticamente ogni N secondi (vedi <u><a href="#subSectTitleGenOpt">opzioni generali</a></u>), oppure all'uscita del programma.<br><br>
+					
+					<image class="centerImg forceWidthImg" src="Images/ConfigurationManager.jpg"></image>
+				
+					<li><image class="iconImgTitleSect" src="Images/icons/manager.png"/> <span id="subSectTitleConfigManager" class="subMenuthirdLevel">GESTORE CONFIGURAZIONE</span></li>
+						<p>
+						Contiene una vista della configurazione caricata, una stampa di testo con i valori contenuti in quella corrente e diverse funzioni che sono sostanzialmente le stesse che trovi nella barra dei menu principale sotto la voce "File". In questa vista puoi anche visualizzare le impostazioni caricate (sia in memoria sia nel file .ini corrente/selezionato). <strong>Con il clic destro</strong> su un elemento dell'elenco puoi scegliere tra diverse azioni sulla configurazione selezionata tra quelle caricate, come select, delete, delete all o refresh.<br>
+						Le azioni che si attivano cliccando i pulsanti di azione sono descritte nei punti successivi.
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="Images/icons/reload.png"/> <span id="subSectTitleReload" class="subMenuthirdLevel">RICARICA CONFIGURAZIONE</span></li>
+						<p>
+						Cliccando su questo elemento puoi ricaricare la configurazione attualmente caricata. Ricorda che i valori non salvati andranno persi durante la ricarica.
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="Images/icons/loadConfig.png"/> <span id="subSectTitleLoad" class="subMenuthirdLevel">CARICA CONFIGURAZIONE PERSONALIZZATA</span></li>
+						<p>
+						Questa funzione ti permette di caricare configurazioni salvate/esportate in precedenza, selezionandole dal tuo file system. Se per qualche motivo un valore non viene trovato nel file di configurazione indicato, verrà caricato quello predefinito. Devi usare un file di configurazione .ini valido salvato dal software ScreepT.<br>
+						<br><b>Suggerimento: </b>se vuoi importare una copia del file di configurazione durante il caricamento, devi aprire il gestore di configurazione, fare clic destro sull'albero delle configurazioni a sinistra e selezionare "import configuration": dopo di che troverai una copia della configurazione importata nella vista ad albero dei file caricati dall'utente (/Application/INI_FILES).
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="Images/icons/export.png"/> <span id="subSectTitleExp" class="subMenuthirdLevel">ESPORTA CONFIGURAZIONE CORRENTE</span></li>
+						<p>
+						Questa funzione ti permette di esportare un backup dei valori di configurazione correnti dell'istanza di ScreepT in esecuzione. I file di configurazione esportati possono essere reimportati in seguito con la funzione di caricamento.
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="Images/icons/save.png"/> <span id="subSectTitleCurrSave" class="subMenuthirdLevel">SALVA CONFIGURAZIONE CORRENTE</span></li>
+						<p>
+						Questa funzione salva la configurazione nel file attualmente caricato, sovrascrivendolo. Per salvare come predefinita usa la funzione dedicata.
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="Images/icons/saveAsDefault.png"/> <span id="subSectTitleCurrAsDef" class="subMenuthirdLevel">SALVA CORRENTE COME PREDEFINITA</span></li>
+						<p>
+						Cliccando questo pulsante la tua configurazione verrà salvata come configurazione predefinita, e quella attualmente caricata diventerà anch'essa quella predefinita. Così potrai ritrovarla anche dopo aver riavviato ScreepT, senza doverla ricaricare a mano ogni volta.
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="Images/icons/reset.png"/> <span id="subSectTitleResetOrig" class="subMenuthirdLevel">RIPRISTINA ORIGINALE</span></li>
+						<p>
+						Dopo il click ti verrà chiesta una conferma: se accetti, i valori della configurazione predefinita originale verranno usati come configurazione predefinita.
+						</p>
+						
+				</p></ul>
+
+				<hr>
+				<h2 id="funcPreferencesSubMenu" class="sectionSubTitle"> 2.2 - SOTTOMENU PREFERENCES</h2>
+				<hr>
+				<p><ul>
+				
+					<li><image class="iconImgTitleSect" src="Images/icons/graphics.png"/> <span id="subSectTitleGraphOpt" class="subMenuthirdLevel">OPZIONI GRAFICHE</span></li>
+						<p>
+						In questa sezione puoi scegliere le impostazioni grafiche che verranno salvate nel file di configurazione attualmente caricato. Le opzioni sono raggruppate in sezioni (<b>Appearance</b> e <b>File editor</b>, con le sottosezioni <b>Editing</b>, <b>Display</b> e <b>Brackets and occurrences</b>): clicca sul titolo di una sezione per comprimerla o espanderla. Usa il <b>campo di ricerca</b> in alto (oppure [Ctrl + F]) per mostrare solo le opzioni che corrispondono a quello che scrivi: il filtro cambia solo ciò che vedi, il salvataggio salva sempre tutte le opzioni. Ogni modifica viene mostrata subito in anteprima: <b>Save Values</b> la scrive nel file di configurazione, <b>Use</b> la tiene solo per questa sessione, mentre <b>Discard</b> o la chiusura della finestra ripristinano i valori precedenti. La finestra si apre con una dimensione che mostra tutte le opzioni (fino al 90% dello schermo) e può essere ridimensionata o massimizzata.
+						</p>
+						<ul class="subList2">
+
+							<li><b>GUI style:</b> scegli tra gli stili di look and feel disponibili. <b>ScreepT Dark</b> (predefinito nelle nuove installazioni) è un tema scuro moderno in stile IntelliJ IDEA, con barra del titolo scura; con gli stili scuri anche i colori personalizzati dell'applicazione vengono adattati per restare leggibili. Se supportato, puoi scegliere tra diversi temi per un singolo stile;</li>
+							<li><b>Interface size:</b> scegli la dimensione generale dell'interfaccia tra Mini, Small, Medium, Big e XXL: font, menu, barre degli strumenti e (con ScreepT Dark) tutti gli elementi grafici vengono ridimensionati, e le finestre aperte vengono ridimensionate e mantenute centrate. Clicca su <b>Customize...</b> per vedere o impostare i singoli valori (famiglia di font, testo generale, menu, barre degli strumenti, elementi grafici): modificando un valore si passa alla modalità <b>Custom</b>;</li>
+							<li><b>Menu and log text size:</b> modificano la dimensione del testo della barra dei menu e di parte del testo dei log usato nel crypter e in altri moduli;</li>
+							<li><b>File editor font:</b> famiglia e dimensione del font usato dal File Editor, applicati subito a tutte le schede aperte. Usa un font a spaziatura fissa (es. Consolas) per avere selezioni rettangolari perfettamente allineate;</li>
+							<li><b>File editor settings:</b> diverse configurazioni per personalizzare il comportamento del File Editor (aiuti alla scrittura, visualizzazione, parentesi e occorrenze);</li>
+							<li><b>Spellchecker dictionary:</b> scegli tra le diverse lingue disponibili. Verrà usato nel File Editor quando il controllo ortografico è attivo (ricorda che il controllo ortografico può rallentare il software, quindi conviene tenerlo spento a meno che non lo usi);</li>
+
+						</ul><br>
+				
+					<li><image class="iconImgTitleSect" src="Images/icons/options.png"/> <span id="subSectTitleGenOpt" class="subMenuthirdLevel">OPZIONI GENERALI</span></li>
+						<p>
+						Qui puoi cambiare le preferenze generali contenute nella configurazione caricata. Puoi scegliere se salvarle, scartarle, usarle, oppure tornare alle impostazioni lette all'apertura di questa sezione. In questo pannello puoi configurare cose come: 
+						</p>
+						<ul class="subList2">
+							
+							<li><b>Autosave configuration:</b> se attivo, il file di configurazione corrente viene salvato automaticamente con il timeout scelto;</li>
+							<li><b>General Volume:</b> usato come valore predefinito per i suoni;</li>
+							<li><b>Password security:</b> viene usato quando c'è un campo password (cifratura/decifratura del testo, modulo Creepter): in base al livello selezionato, la password viene controllata rispetto al livello di sicurezza richiesto e ti viene segnalato se non rispetta le buone pratiche;</li>
+							<li><b>Auto-check updates:</b> se attivo, ScreepT controlla automaticamente la presenza di una nuova versione all'avvio. Se ne è disponibile una, ti verrà chiesto se vuoi scaricarla e installarla;</li>
+							<li><b>Auto-check plugin updates:</b> se attivo (lo è per impostazione predefinita), all'avvio ScreepT controlla anche se i plugin installati hanno una versione più recente: li elenca e ti chiede se vuoi aggiornarli tutti (le nuove versioni vengono installate al prossimo avvio). In entrambe le domande, questa e quella su una nuova versione di ScreepT, la casella <i>Don't show this again</i> disattiva il relativo controllo automatico (<i>Auto-check plugin updates</i> o <i>Auto-check updates</i>); puoi riattivarlo da qui;</li>
+							<li><b>Default charset:</b> verrà usato per leggere il testo da file o durante il salvataggio del testo su file.</li>
+							<li><b>Username:</b> verrà mostrato nel titolo principale e in alcuni altri punti per personalizzare la tua esperienza</li>
+							<li><b>Hide launcher at start:</b> se selezionato, il launcher non verrà mostrato durante l'avvio (a meno che non vengano rilevati problemi bloccanti); quando è selezionato, <i>Restart</i> e <i>Restart as administrator</i> (menu Help) chiedono se il launcher deve essere mostrato a quel riavvio (<i>Keep as default</i> disattiva questa opzione); la stessa casella è presente nella finestra del launcher: se era disattivata e la attivi, <i>Start ScreepT</i> chiede conferma e spiega come riportare il launcher;</li>
+							<li><b>Launcher Settings</b> (menu Preferences di ScreepT): apre il launcher in modalità <i>settings only</i>, con le stesse opzioni e senza il pulsante Start, per cambiare le opzioni di avvio dall'applicazione (si applicano dal prossimo avvio);</li>
+							<li><b>Maximum memory:</b> il valore predefinito è 1,5 GB. Nella barra dei menu, la matita accanto alla memoria di ScreepT (prima dei valori del PC) apre una piccola finestra per sceglierla tra il minimo impostato nel launcher e ciò che il PC può dare ora; viene salvata nelle impostazioni del launcher e, dopo il salvataggio, ScreepT chiede se riavviare subito;</li>
+						
+						</ul><br>
+										
+				</p></ul>
+
+				<hr>
+				<h2 id="funcScreeptSubMenu" class="sectionSubTitle"> 2.3 - SOTTOMENU CREEPT</h2>
+				<hr>
+				<p><ul>
+				
+					<p>
+						Questo modulo cifra e decifra copie dei tuoi file e cartelle, con generatori di chiavi e un gestore personalizzato del dizionario di chiavi.
+						<br><br>
+						<span class="highlightBoldedGrey">Beta:</span> il Crypter è sperimentale e non ancora testato in modo approfondito (vedi l'avviso all'inizio di questa guida). Tieni una copia indipendente dei tuoi originali e delle tue chiavi.
+						<br><br>
+						CreepT usa AES-128 e un algoritmo sperimentale chiamato STEG_CRYPT, che possono essere combinati in diverse modalità e con diverse opzioni. Trovi informazioni su come funziona nella sezione CreepT qui sotto :)
+					</p>
+					<span class="highlightBolded">IMPORTANTE: </span>i tuoi file sorgente NON verranno eliminati né modificati. Invece, nella cartella di destinazione che scegli verrà creata una cartella con nome univoco, e i file risultanti verranno creati al suo interno.<br><br>
+					
+					<li><image class="iconImgTitleSect" src="Images/icons/crypter.png"/> <span id="subSectTitleCrypter" class="subMenuthirdLevel">CreepT - CIFRA E DECIFRA FILE</span></li><br>
+						Aprendo questo modulo troverai:
+						<ul class="subList2">
+						
+							<br><li><span class="highlightBolded">Sul lato sinistro</span> le informazioni sul dizionario di immagini-chiave, un log delle operazioni in corso e un pulsante per selezionare dal tuo file system un'immagine-chiave monouso.</li>
+							<br><li><span class="highlightBolded">Sul lato destro</span> un pannello drag 'n drop in cui puoi trascinare i file che vuoi cifrare/decifrare, oppure selezionarli con il pulsante "add source file or folder". Dopo averli caricati puoi aggiungere altro contenuto semplicemente ripetendo questa operazione. I file aggiunti compariranno nel "Selected files pool", dove puoi vedere i file in attesa di essere cifrati/decifrati.<br>
+							<span class="highlightBoldedGrey">Nota:</span> finché non li cifri/decifri, nessun file verrà creato.<br>
+							Cliccando con il tasto destro su questo pannello vedrai un menu con operazioni utili sui file caricati. Anche queste operazioni non modificano i tuoi file sorgente, ma solo il collegamento creato verso di essi (ad es. quando rimuovi dei file rimuovi solo il riferimento ai file da questa vista).</li>
+							<br><li><span class="highlightBolded">In alto</span> trovi tutte le informazioni su chiavi e file caricati, con un messaggio di feedback utile che ti segnala chiavi mancanti o errori.<br>
+							In questo pannello puoi anche inserire la chiave di testo AES usata per cifrare/decifrare e specificare quale tipo di coder vuoi usare. Assicurati di usare la modalità giusta per le tue esigenze e ricorda che per decifrare il risultato cifrato devi usare la stessa modalità!<br>
+							<span class="highlightBoldedGrey">Quando carichi una cartella</span> il risultato conterrà tutti i suoi file, mantenendo la struttura delle directory.<br>
+							<span class="highlightBoldedGrey">Quando usi la modalità STEG/COMPLETE</span> ogni file codificato sarà una cartella, per questo con queste modalità puoi decifrare solo cartelle. Assicurati di importare tutta la cartella risultante quando decifri questo tipo di file!<br>
+							<span class="highlightBoldedGrey">Quando decifri dei file</span> ti verrà chiesto se metterli in una cartella temporanea sul desktop (<u>verrà eliminata automaticamente quando chiudi il software</u>) oppure usare una directory personalizzata a tua scelta.</li>
+							<br><li><span class="highlightBolded">Nella sezione centrale</span> trovi un'area di testo che stampa tutte le informazioni sul processo in corso e sui file/cartelle che vengono cifrati/decifrati.</li>
+						
+						</ul><br>
+						
+					<h2 class="subList2">MODALITÀ DEL CRYPTER: Descrizione</h2>
+					<p>
+						<ul>
+							<li><span class="highlightBolded">AES_ONLY</span> Questa modalità usa solo l'algoritmo di cifratura AES, con una chiave di testo che devi scrivere nella casella password del pannello in alto. Usa una password lunga e casuale (almeno 16 caratteri). (guarda il colore del campo password: ti dà un riscontro sulla robustezza della tua password).<br>
+							<span class="highlightBoldedGrey">IMPORTANTE: </span> ti servirà la password di testo per decifrare i file cifrati risultanti, assicurati di ricordarla!<br></li>
+							
+							<br><li><span class="highlightBolded">STEG_ONLY</span> Questa modalità usa solo l'algoritmo di cifratura STEG, con un'immagine PNG come chiave, che devi specificare nel pannello di sinistra, scegliendola dal dizionario (oppure caricandola per un solo utilizzo, dopo il quale CreepT la dimenticherà). Per la massima sicurezza dovresti usare un'immagine di pixel casuali, che puoi generare con l'"Image Key Generator" che trovi nel sottomenu CreepT.
+							<br>Con questa modalità i tuoi file verranno codificati uno a uno, usando il valore di ogni pixel dell'immagine-chiave per produrre un risultato cifrato che può essere decifrato solo con l'immagine-chiave originale.<br>
+							<span class="highlightBoldedGrey">IMPORTANTE: </span> ti servirà l'immagine-chiave per decifrare i file cifrati risultanti, assicurati di conservarla in un posto sicuro (chiavetta USB o disco, ma ricorda: mai tenere le chiavi sotto lo zerbino!).<br>
+							Il numero di immagini create dipende dalla dimensione del file sorgente e dalla dimensione dell'immagine-chiave: <br>
+							 <ol><li>Se devi codificare un gran numero di file piccoli usa un'immagine-chiave piccola, altrimenti il risultato spreca spazio.
+							 <li>Se devi codificare file grandi usa un'immagine medio-grande, per avere una codifica più veloce.
+							</ol>
+							
+							<br><li><span class="highlightBolded">COMPLETE</span> Questa modalità combina le modalità AES e STEG in questo modo: prima i byte sorgente di ogni file vengono codificati con lo standard di cifratura AES, poi vengono cifrati con la modalità STEG spiegata prima.
+							<br> Con l'opzione "Ultra secure" viene aggiunto un passaggio extra, sperimentale: un riordinamento dei byte che dipende dalla chiave. Questo passaggio non è stato analizzato da esperti indipendenti, quindi non va considerato un miglioramento di sicurezza dimostrato.<br>
+							<span class="highlightBoldedGrey">IMPORTANTE: </span> ti serviranno sia la password di testo sia l'immagine-chiave per decifrare i file cifrati risultanti, assicurati di conservarle in un posto sicuro (chiavetta USB o disco, ma ricorda: mai tenere le chiavi sotto lo zerbino!).
+							<br> Il numero di immagini create dipende dalla dimensione del file sorgente e dalla dimensione dell'immagine: <br>
+							 <ol><li>Se devi codificare un gran numero di file piccoli usa un'immagine-chiave piccola, altrimenti il risultato spreca spazio.</li>
+							 <li>Se devi codificare file grandi usa un'immagine medio-grande, così il processo di codifica sarà più veloce.</li>
+							</ol>
+						</ul>
+
+						<br>
+						<u>Ora vediamo più da vicino le opzioni disponibili da combinare con l'algoritmo scelto:</u>
+						<br>
+						<ol>	
+							<br><li><span class="highlightBolded">OPZIONE ULTRA SECURE</span>
+							<p>Quando questa casella è selezionata, i file avranno una fase extra in cui i byte AES (o i byte risultanti, nel caso di ONLY_STEG) verranno riordinati in base ai valori contenuti nella chiave usata: CreepT userà questi valori come "reorderKey index" per cambiare l'ordine dei byte sorgente prima/dopo averli cifrati o decifrati. <br>
+							<span class="highlightBoldedGrey">IMPORTANTE: </span>se cifri i file con questa modalità, non dovrai selezionare questa opzione anche quando decifrerai il risultato in seguito. CreepT ricorderà l'opzione selezionata salvando un bit aggiuntivo nel file risultante.</p>
+							
+							<br><li><span class="highlightBolded">OPZIONE HASH KEY</span>
+							<p>Quando questa casella è selezionata, la tua password di testo (quella AES) verrà sottoposta ad hash con un algoritmo sicuro (<u>pbkdf2 con hmac sha512</u>). In questo modo il file conserva un valore derivato dalla password, non la password stessa.<br>
+								<span class="highlightBoldedGrey">IMPORTANTE: </span>se cifri i file con questa modalità, non dovrai selezionare questa opzione anche quando decifrerai il risultato in seguito. CreepT ricorderà l'opzione selezionata salvando un bit aggiuntivo nel file risultante.
+								<br><b>NB:</b> <i>questa modalità non è disponibile con la modalità STEG_ONLY</i>.
+							</p>
+						</ol>
+					</p>
+				
+					<li><image class="iconImgTitleSect" src="Images/icons/imageWriter.png"/> <span id="subSectTitleKeyGenImg" class="subMenuthirdLevel">KEY IMAGE GENERATOR</span></li>
+						<p>
+						In questo pannello puoi generare la tua immagine-chiave .png casuale... Ma ricorda dove la metti: perdere questa chiave rende impossibile recuperare i tuoi file cifrati: tienine un backup!
+						<br>Ti consiglio di tenere le chiavi su una chiavetta o un disco portatile, in un posto sicuro (magari proprio accanto al cuore :D).
+						<p>
+						Puoi scegliere diverse opzioni quando generi un'immagine-chiave, e puoi usarla per cifrare file o cartelle con la modalità STEG o COMPLETE. Quando generi una chiave puoi specificare:
+						<ol>
+							<li class="highLineHeigthList"><span class="highlightBolded">Larghezza e altezza</span> dell'immagine-chiave: ricorda di scegliere le dimensioni in base alla grandezza dei file che vuoi cifrare. Come detto prima, scegliendole male puoi incorrere in una codifica lenta o, peggio, in uno spreco di spazio su disco. Una regola veloce da seguire può essere: 
+								<br>=> Ottimizzare lo spazio = immagine piccola.
+								<br>=> Ottimizzare la velocità = dimensione simile a quella dei file sorgente.
+							</li>
+							
+							<li class="highLineHeigthList"><span class="highlightBolded">Tipo di immagine-chiave</span>: scegli il numero di byte per ogni pixel dell'immagine generata. Valore più alto = più sicurezza.
+							</li>
+							
+							<li class="highLineHeigthList">Pulsante <span class="highlightBolded">"Generate key"</span>: clicca questo pulsante per generare una nuova immagine-chiave con i parametri scelti... Aspetta solo che il processo finisca :)</li>
+							
+							<li class="highLineHeigthList">Pulsante <span class="highlightBolded">"Export"</span>: clicca per salvare l'immagine generata in una cartella del tuo file system</li>
+
+							<li class="highLineHeigthList">Pulsante <span class="highlightBolded">"Add to Dictionary"</span>: clicca per aggiungere la chiave generata al dizionario. In questo modo verrà salvata in una directory dentro la directory principale di ScreepT e sarà accessibile sia dalla funzione dizionario sia dalla funzione CreepT vista prima.
+
+						</ol></p>
+						</p>
+
+					<li><image class="iconImgTitleSect" src="Images/icons/keyGenPsw.png"/> <span id="subSectTitlePswGenImg" class="subMenuthirdLevel">PASSWORD GENERATOR</span></li>
+					<p>
+						Utile quando vuoi generare una password casuale robusta. Personalizza le opzioni e clicca sul pulsante "Generate" per generare una nuova password.<br>
+						Quando apri questa sezione, una finestra pop-up ti permette di personalizzare le impostazioni per generare la password desiderata, come:
+						<ul>
+							<li><b>USE NUMBERS</b></li>
+							<li><b>USE SPECIALS</b></li>
+							<li><b>USE SYMBOLS</b></li>
+							<li><b>PASSWORD LENGTH</b></li>
+							<li><b>FROM WORD</b> - con questa opzione puoi generare una sequenza di caratteri a partire da una parola scelta. Nella finestra che si apre puoi scegliere se raggiungere la lunghezza richiesta con parole casuali o deterministiche (questa modalità genera sempre la stessa chiave se la sorgente è la stessa)</li>
+						</ul>
+					</p>
+
+					<li><image class="iconImgTitleSect" src="Images/icons/keyDictionary.png"/> <span id="subSectTitleKeyDict" class="subMenuthirdLevel">KEY DICTIONARY</span></li>
+						<p>
+						Una funzione simile a quella incorporata nel pannello di sinistra del cripter, ma con qualche opzione in più. Con questa funzionalità hai una vista dedicata alle immagini PNG caricate nella tua libreria personale, salvata dentro la cartella di avvio di ScreepT corrente.<br>
+						L'albero dei file viene aggiornato in tempo reale e con il tasto destro puoi vedere diverse azioni, come eliminare tutti i file/quelli selezionati dal dizionario, aggiornare manualmente e vedere le informazioni sul file selezionato. In questo pannello puoi anche aprire il dizionario in Esplora risorse per gestire a mano i file che contiene.</p>
+						<p><span class="highlightBoldedGrey">IMPORTANTE: </span>fai sempre attenzione: non eliminare le cartelle interne di ScreepT quando le vedi in Esplora risorse: il software potrebbe non funzionare come previsto o andare incontro a crash imprevisti. Comunque, se hai qualche problema, puoi avviare una nuova istanza di ScreepT e reimportare le tue chiavi a mano: ricorda solo di farne un backup in un posto sicuro!! ;)
+						</p>
+				</p></ul>
+
+				<hr>
+				<h2 id="funcTextEditorSubMenu" class="sectionSubTitle"> 2.4 - SOTTOMENU FILE EDITOR</h2>
+				<hr>
+				<image class="centerImg forceWidthImg" src="Images/TextEditor.jpg"/>
+				<li><image class="iconImgTitleSect" src="Images/icons/textEditor.png"/> <span id="subSectTitleTxtEditor" class="subMenuthirdLevel">FILE EDITOR</span></li>
+					<p>È un File Editor integrato (nelle versioni precedenti si chiamava Text Editor) con le funzioni di base e anche qualche funzionalità extra, come:
+					<ul>
+						<li class="highLineHeigthList"><span class="highlightBolded">TEXT SPEAKER </span>- puoi usarlo cliccando su <image class="iconImg" src="Images/icons/Speaker.png"/> o con la scorciatoia [Ctrl+spacebar]. In questo modo ascolterai il testo visibile nell'area di testo con pronuncia inglese. Puoi anche scegliere la velocità della voce trascinando il selettore sopra il pulsante dell'altoparlante. (<u>questa funzione è abilitata solo se il relativo plugin è installato in ScreepT</u>)</li>
+						
+						<li class="highLineHeigthList"><span class="highlightBolded">TEXT CRYPT/DECRYPT </span>- con una password non vuota indicata nel campo password in alto, puoi cifrare/decifrare con AES (128bit) il testo caricato nell'area di testo, semplicemente cliccando su cifra <image class="iconImg" src="Images/icons/Crypt.png"/> o decifra <image class="iconImg" src="Images/icons/Decrypt.png"/> (oppure usando la scorciatoia [Ctrl+shift+C / Ctrl+shift+D]).</li>
+						
+						<li class="highLineHeigthList"><span id="subSectTextTransformation" class="highlightBolded">TEXT MANIPULATION </span>- Trovi queste funzioni nel menu "File Editor -> text transformation" oppure con il tasto destro sull'area di testo -> "text transformation". Cliccando su <image class="iconImg" src="Images/icons/uppercase.png"/> puoi rendere maiuscolo tutto il testo selezionato, cliccando <strong>[.Tt]</strong> puoi mettere in maiuscolo tutto il testo dopo i punti o i separatori, mentre un clic su <strong>[Tt Tt]</strong> fa iniziare con la maiuscola le parole separate da uno spazio.</li>
+						
+						<li class="highLineHeigthList"><span id="subSectTxtEditorRightClick" class="highlightBolded">MENU DEL TASTO DESTRO </span>- clicca con il tasto destro sull'area di testo per aprire il suo menu: undo/redo, taglia/copia/incolla, seleziona tutto, <b>copy with syntax highlighting</b> (per incollare codice colorato in altri programmi), trasformazioni del testo, visualizzazione dei line feed e normalizzazione della fine riga.</li>
+
+						<li class="highLineHeigthList"><span class="highlightBolded">SELEZIONE RETTANGOLARE (A COLONNE) </span>- tieni premuto [Alt] mentre trascini il mouse per selezionare un rettangolo, anche oltre la fine delle righe più corte (come in Notepad++). Scrivendo, il testo viene inserito su ogni riga selezionata (le righe più corte vengono riempite con spazi), poi resta attiva una colonna di cursori per continuare a scrivere; [Backspace]/[Canc] agiscono su ogni riga, [Ctrl + X / C / V] tagliano, copiano e incollano la colonna (un testo su più righe viene incollato una riga per ogni riga, una singola riga viene ripetuta su ogni riga). Ogni operazione si annulla con un solo [Ctrl + Z]; [Esc], le frecce o un clic terminano la modalità colonna.</li>
+
+						<li class="highLineHeigthList"><span class="highlightBolded">TEMPLATES INJECTION </span>- cliccando sul pulsante <strong>[Templates]</strong> si apre una nuova finestra che resta in primo piano fino alla chiusura, in cui puoi selezionare un template esistente, crearne uno dal testo attualmente selezionato, o anche definire un tuo template usando il file corrente. <span class="highlightBoldedGrey">Per usare un template</span> selezionalo dall'elenco e clicca su "Inject Template".</li>
+
+						<li class="highLineHeigthList"><span class="highlightBolded">BASE 64 CONVERTER </span>- con questa funzione puoi codificare il testo selezionato (o tutto il testo, se non c'è nulla di selezionato) in base64. Se il tasto Ctrl è premuto, il testo verrà decodificato da base64. Basta cliccare sul pulsante <image class="iconImg" src="Images/icons/64_Purple.png"/> per attivare questa funzione.
+
+						<li class="highLineHeigthList"><span class="highlightBolded">EOL ANALYZER </span>- puoi vedere quali terminatori di fine riga sono usati nel testo caricato o nel file corrente. Clicca con il tasto destro sull'area di testo e scegli "View line feeds" per aprire un tooltip pop-up e vedere i terminatori di riga (CR/LF alias "\n" "\r"). È utile per controllare la compatibilità di un file con diversi sistemi operativi. Se devi convertire l'EOL del testo/file corrente, clicca con il tasto destro sull'area di testo e scegli l'opzione desiderata dal sottomenu "Normalize End Of Line".
+
+						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE THEME </span>- puoi scegliere tra diversi temi di colore integrati, selezionando quello che vuoi dalla combo box dello stile. È possibile definire un tuo tema con una configurazione xml: per averlo tra le opzioni della combo box devi aggiungere un xml con uno schema valido (prendi ispirazione da quelli esistenti, puoi copiarne uno modificando i valori esadecimali dei colori) nella cartella <b>Application\Resources_ScreepT\themes\custom</b>. Per caricare il tuo schema dovrai riavviare ScreepT. Un editor integrato degli schemi di stile è previsto nelle prossime versioni di ScreepT. Segui il <u><a href="https://www.am-design-development.it">sito di ScreepT</a></u> o aggiorna regolarmente il software per averlo quando sarà disponibile ;)</li>
+						<li class="highLineHeigthList"><span id="subSectFileTree" class="highlightBolded">ALBERO DEI FILE </span>- il pannello a sinistra mostra la cartella del file corrente ([Alt + Q] lo apre e lo chiude): prima le cartelle, poi i file, con l'icona di ogni tipo; il doppio clic apre un file, il tasto destro mostra le azioni. Resta veloce anche con cartelle grandi: ogni cartella viene letta una sola volta e l'albero viene ricostruito solo quando qualcosa è cambiato su disco.
+						<br><span class="highlightBoldedGrey">Filtro: </span>scrivi una parte del nome nel campo sopra l'albero e resteranno visibili solo i file che la contengono (senza distinzione tra maiuscole e minuscole), insieme alle cartelle che portano a essi. Il pulsante <b>x</b>, o [Esc], cancella il filtro e le cartelle si aprono com'erano. Dentro cartelle molto grandi (oltre 5000 elementi) ScreepT chiede conferma prima di filtrare, perché può richiedere molto tempo e rallentare l'editor; oltre 200000 elementi il filtro viene rifiutato, apri una cartella più piccola.</li>
+
+						<li class="highLineHeigthList"><span class="highlightBolded">FILE PROPERTIES </span>- il tasto destro su un file o una cartella nell'albero (o il pulsante delle proprietà del File Editor) ne apre le proprietà. La finestra appare subito e si riempie mentre legge: dimensione, date con la loro età, permessi, proprietario, attributi, spazio libero del volume, tipo e MIME; per le immagini la dimensione in pixel, per i file di testo codifica, numero di righe e fine riga, per le cartelle il numero di file e la dimensione totale. I <b>Checksums</b> (MD5, SHA-1, SHA-256, CRC-32) sono calcolati in un solo passaggio con una barra di avanzamento che si può interrompere (oltre 256 MB attendono il pulsante Calculate); incolla un hash nel campo <b>Compare</b> per vedere se il file corrisponde.</li>
+
+						<li class="highLineHeigthList"><span class="highlightBolded">TABS </span>- le schede dei file aperti sono piatte e compatte: quella selezionata ha una barra di accento in alto, quelle con modifiche non salvate mostrano il nome in rosso, e i colori seguono il look and feel in uso, chiaro o scuro.</li>
+
+						<li class="highLineHeigthList"><span class="highlightBolded">FOOTER </span>- la barra in fondo al File Editor è sempre su una sola riga: il file corrente (occupa lo spazio rimasto), poi blocchi che raggruppano le informazioni: file (charset, EOL e dimensione su disco in unità leggibili: B, KB, MB, GB), testo (numero di righe e lunghezza in caratteri), cursore (riga, colonna e posizione) e selezione (lunghezza). I nomi sono più scuri dei valori, così i valori risaltano. Mostra o nascondi la barra con [Ctrl + Shift + Alt + L].</li>
+						
+						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE COLORS/FONT </span>- (<u>funziona solo quando non è selezionato alcun tema</u>) puoi personalizzare il colore dello sfondo <image class="iconImg" src="Images/icons/BackgroundColor.png"/> e del testo <image class="iconImg" src="Images/icons/TextColor_2.png"/> cliccando sul relativo pulsante: comparirà una finestra di selezione in cui potrai scegliere e vedere in anteprima i colori selezionati sul testo caricato.<br>
+						Il font del File Editor (famiglia e dimensione) si sceglie nelle <u><a href="#subSectTitleGraphOpt">Opzioni grafiche</a></u>, sezione "File editor", dove imposti anche la dimensione massima di un file aperto nell'editor ("Max file size (MB)": i file più grandi vengono proposti a <u><a href="#funcLogSearch">LogSearch</a></u>).<br>
+						Se premi OK, i colori/font selezionati verranno aggiunti alla configurazione volatile corrente (non verranno scritti nel file di configurazione finché non li salvi esplicitamente, o finché non avviene l'autosave, se selezionato).
+						
+						</li><li class="highLineHeigthList"><span id="subSectTitleImpExpCrypted" class="highlightBolded">IMPORT/EXPORT Crypter workspace </span>- con questa funzione puoi scegliere se importare o esportare un workspace in forma cifrata. Cliccando questo pulsante comparirà un pannello pop-up che ti permette di scegliere se importare dal tuo file system una cartella workspace cifrata in precedenza, oppure esportare uno dei workspace caricati in precedenza.
+						<br>Dopo aver selezionato le opzioni desiderate, verrai portato alla vista CreepT, con il workspace scelto caricato e pronto per essere cifrato/decifrato: devi solo scegliere la modalità del crypter e le chiavi giuste in base alla modalità selezionata. Consulta il capitolo <u><a href="#funcScreeptSubMenu">CreepT</a></u> per maggiori dettagli su come usare questa funzione.
+						<hr>Terminato il processo di cifratura/decifratura, verrai riportato automaticamente al File Editor. (in caso di importazione, il workspace decifrato verrà impostato come workspace corrente)</li>
+						
+					</ul>
+
+					<b>NB:</b> non tutte le funzioni disponibili sono descritte qui: passa il mouse sopra i pulsanti per scoprirle tutte e scopri di più sulle <u>relative scorciatoie da tastiera</u>! :)
+					</p>
+
+				<hr>
+				<h2 id="funcVariousSubMenu" class="sectionSubTitle"> 2.5 - SOTTOMENU VARIOUS</h2>
+				<hr>
+				<p><ul>
+					
+					<li><image class="iconImgTitleSect" src="Images/icons/hardware.png"/> <span id="subSectTitleSysInfo" class="subMenuthirdLevel">INFORMAZIONI DI SISTEMA</span></li>
+					<p><span class="highlightBoldedGrey">IMPORTANTE: </span> <u>Scarica il plugin "hardwareInfo" per usare questa funzione</u>.</p>
+					<p>
+						In questa sezione trovi molte informazioni sul tuo sistema, sulla versione di Java in uso e sull'utilizzo attuale di CPU e RAM da parte di ScreepT, ma non solo. Qui trovi infatti informazioni su schermi collegati, dischi, RAM e CPU. <br>
+						Nelle prossime versioni di ScreepT potrebbero comparire molte altre opzioni, resta sintonizzato!
+					</p>
+				
+					<li><image class="iconImgTitleSect" src="Images/icons/network.png"/> <span id="subSectTitleNetInfo" class="subMenuthirdLevel">INFORMAZIONI DI RETE</span></li>
+					<p>
+						In questa sezione trovi molte informazioni sulle tue schede di rete e sulle loro principali informazioni di connessione, come IP locale, IP pubblico (solo se connesso a internet), indirizzo MAC, gateway, DNS, MTU e ritardo. <span class="highlightBolded">Scegli semplicemente la tua scheda di rete </span>dall'elenco nell'area centrale in alto :)
+					</p>
+					<p>Sulla destra trovi un pannello con le informazioni sulla velocità della tua connessione, relative alla scheda di rete selezionata nell'elenco qui sopra. Per scoprire la velocità di upload/download e il ritardo della tua scheda di rete, selezionane una con una connessione internet attiva, premi "Calculate connection speed" e attendi la fine del test per leggere i risultati. In base al tipo di test selezionato (Short/medium/large) può richiedere fino a qualche minuto.
+					<br>La <span class="highlightBoldedGrey">velocità di upload </span>viene misurata davvero, inviando dati via HTTP a un server pubblico (con un server di riserva).
+					<br><span class="highlightBoldedGrey">Questo pulsante </span>diventa cliccabile solo quando c'è una connessione attiva dalla scheda di rete selezionata.</p>
+					
+					<li><image class="iconImgTitleSect" src="Images/icons/imageConverter.png"/> <span id="subSectTitleImgConverter" class="subMenuthirdLevel">IMAGE STUDIO (VISUALIZZATORE E CONVERTITORE)</span></li>
+					<p><span class="highlightBoldedGrey">Novità: Image Studio. </span>Il visualizzatore e il convertitore ora sono un unico strumento, <strong>Image Studio</strong>: più immagini in schede, opzioni di conversione in un accordion sulla destra e un selettore <strong>Mode</strong> (Basic: converti e ridimensiona; Classic: + regolazioni, filtri già pronti, rotazione, specchio, copia e incolla; Nerd, il predefinito: + tutti i 54 filtri, istogramma, gamma, tonalità, temperatura, tinta, scelta del ricampionamento, griglia dei pixel, metadati, bordo, angoli arrotondati e filigrana di testo). Il pannello laterale tiene aperta una sola sezione alla volta (un badge su ogni intestazione dice cosa è impostato al suo interno): <strong>Crop</strong> (margini e proporzioni), <strong>Adjustments</strong> (esposizione, ombre, luci, vividezza, Auto enhance), <strong>Effects</strong> (nitidezza, sfocatura, vignettatura, grana), <strong>Filters</strong> (sei gruppi di schede (Color, Looks, Tone, Detail, Art, Wild) che mostrano l'anteprima del filtro sulla tua immagine, con un cursore <strong>Strength</strong>), <strong>Rotate &amp; flip</strong> (con raddrizzamento fine) e dimensioni rapide in <strong>Resize</strong>. Il pulsante <strong>Before</strong> (B) mostra l'immagine senza le modifiche in sospeso. <strong>Metadata</strong> (in Details) mostra cosa contiene un'immagine e può salvare una copia pulita o pulire il file stesso; <strong>Clean metadata...</strong> nell'intestazione della finestra rimuove EXIF, GPS, XMP, IPTC e il resto da molti file JPEG, PNG, WebP e GIF senza ricodificarli (file e cartelle con drag and drop, filtri, copie in una cartella o sostituzione degli originali con backup opzionale, profilo colore e orientamento si possono mantenere, oppure si può rimuovere solo la posizione). In <strong>Presets</strong> e nella finestra Batch, <strong>Import</strong> legge anche i preset di Camera Raw e Lightroom (.xmp, .lrtemplate): i valori che hanno un equivalente vengono tradotti e gli altri sono elencati in un report. Si aprono anche i file Photoshop (.psd): viene mostrata l'immagine unita, con le informazioni sul file e, se presente, un pulsante per leggere le impostazioni Camera Raw memorizzate al suo interno. Nella finestra Batch clicca un'immagine dell'elenco per vedere in anteprima le impostazioni su di essa. Il pulsante <strong>Batch...</strong> applica le stesse impostazioni a molte immagini: sceglile su un campione (integrato o una tua foto), scegli la cartella di destinazione e uno schema di nome con <em>{name}</em>, <em>{n}</em> (contatore) e <em>{date}</em>. Immagini, file .log e .html si aprono anche come <strong>schede del File Editor</strong>: lì un'immagine è un visualizzatore in sola lettura (zoom, dettagli, istogramma, copia, schermo intero) con un pulsante <strong>Edit in Image Studio</strong> che la apre nella finestra completa (e chiede se vuoi chiudere la scheda); un file .log si apre in <strong>LogSearch</strong> dentro la sua scheda, legato a quel file (nessun pulsante Open file, e un file trascinato sulla scheda non lo sostituisce: la finestra completa di LogSearch, con Open file e drag and drop, è quella di Various &gt; LogSearch); il visualizzatore di ogni estensione si sceglie in Graphic preferences &gt; File editor &gt; Viewers (ad esempio per aprire i file .log nel File Editor). Il tasto destro su un file nell'albero dei file &gt; <strong>Open with</strong> lo apre, solo per questa volta, nel File Editor o nel visualizzatore che scegli (quello predefinito per quel tipo è contrassegnato), senza cambiare le associazioni. <strong>Open in a window</strong> nello stesso menu apre il file negli strumenti integrati del menu Various che leggono un file (LogSearch, la finestra di Image Studio per le immagini, il File Hash checker): vengono elencati solo quelli compatibili con quel tipo di file. In Image Studio, <strong>Full screen</strong> (pulsante o [F11], nella finestra e nella scheda) mostra l'immagine su tutto lo schermo: zoom con la rotellina, trascina per spostare, doppio clic per adattare / dimensione reale, e un menu in alto al centro con zoom, adatta, 100% e rotazione (solo visualizzazione, l'immagine non viene modificata). Il menu si nasconde 5 secondi dopo che il mouse lo ha lasciato e ricompare quando il mouse passa sulla sua posizione; la puntina lo tiene sempre visibile. La X in alto a destra, o [Esc], esce.</p>
+					<p>Qui trovi una selezione di utili strumenti di conversione per le immagini. <span class="highlightBoldedGrey">Nota: </span>questa è ancora una versione beta, deve migliorare nelle prossime versioni di ScreepT ;)
+					</p>
+					<p>
+						Vediamo un elenco di alcune cose che questo convertitore sa fare (per ora):
+						<ul>
+							<li class="highLineHeigthList"><span class="highlightBolded">Cambiare la dimensione </span>- Cambia la dimensione di quelle che preferisci. Se vuoi mantenere le proporzioni tra altezza e larghezza, assicurati che "original ratio" sia selezionato.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Cambiare l'estensione </span>- Seleziona l'estensione di output che vuoi ottenere dopo la conversione. Se vuoi mantenere quella originale, assicurati che "original format" sia selezionato.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Scegliere l'algoritmo di ridimensionamento </span>- Un'immagine può essere ridimensionata in modi diversi, ognuno con un diverso carico sulla CPU (e questo può avere un grande impatto sui tempi di conversione e sulla qualità finale): puoi selezionare quello che preferisci dall'elenco a sinistra.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Scegliere la qualità di conversione </span>- Soprattutto con formati di output con perdita come "JPEG/JPG", cambiando la qualità (da 1 a 100) scegli la qualità della compressione con l'algoritmo selezionato. <span class="highlightBoldedGrey">Nota: </span>con i tipi senza perdita il risultato sarà una piccola ottimizzazione o nessuna. Per esempio, il formato PNG è senza perdita, ma permette un piccolo miglioramento in termini di spazio su disco, ottimizzando la rappresentazione dei pixel.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Export/Add to dictionary </span>- quando hai scelto la sorgente dell'immagine (cliccando il pulsante a destra) e i parametri di output, puoi esportarla in una directory esterna oppure aggiungerla al dizionario delle chiavi, per usarla più tardi nella sezione crypter (nota che in questo modo l'immagine verrà salvata nel dizionario in formato PNG, perché screept gestisce solo questa estensione).<br>
+							<strong>Clicca</strong> semplicemente sul relativo pulsante che trovi sul lato destro del pannello.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Reset original size </span>- clicca sul pulsante <strong>reset size</strong> per riportare la dimensione di output a quella originale.
+							</li>
+						</ul>
+					</p>
+					
+					<li><image class="iconImgTitleSect" src="Images/icons/folderActions.png"/> <span id="subSectTitleFilesNFolders" class="subMenuthirdLevel">AZIONI SU FILE E CARTELLE</span></li>
+					<p>
+						In questo sottomenu trovi alcune funzioni utili per gestire i file e le cartelle presenti nel tuo File System.
+						<p><b>NB: </b>tutte le azioni di eliminazione qui presenti non sono reversibili, perché non usano alcun "cestino" o simili. Fai attenzione prima di eliminare un file o una cartella!</p>
+						<p>
+						Puoi scegliere tra:
+						<ul>
+							<li class="highLineHeigthList"><image class="iconImg" src="Images/icons/uppercase.png"/> <span class="highlightBolded">UpperCase files and folders </span>- con questa funzione puoi scegliere un file o una cartella e, dopo la conferma, tutti i file contenuti verranno rinominati in modo che inizino con una lettera maiuscola.
+							</li>
+							
+							<li class="highLineHeigthList"><image class="iconImg" src="Images/icons/createFolder.png"/> <span class="highlightBolded">Create directories from string path </span>- ti verrà chiesto di indicare un percorso valido della cartella che vuoi creare. ScreepT creerà tutte le cartelle mancanti necessarie. 
+							<br> (Es. "C:/folderA/folderB/folderC/newFolder" -> crea tutte le cartelle fino a newFolder nel disco C. Su Linux ovviamente non serve specificare il disco come in Windows).
+							</li>
+							
+							<li class="highLineHeigthList"><image class="iconImg" src="Images/icons/cloneDirectory.png"/> <span class="highlightBolded">Copy directory structure </span>- clicca qui se vuoi ricreare la struttura di una cartella senza copiare i file contenuti. <strong>In questa funzione puoi selezionare solo cartelle.</strong>
+							</li>
+							
+							<li class="highLineHeigthList"><image class="iconImg" src="Images/icons/targetedDelete.png"/> <span class="highlightBolded">Delete files by extension </span>clicca qui se vuoi eliminare tutti i file che terminano con l'estensione indicata, che può includere gli ultimi caratteri del nome del file. Se non indichi nessuna estensione, verranno eliminati tutti i file contenuti. <strong>In questa funzione puoi selezionare solo file.</strong>
+							</li>
+							
+							<li class="highLineHeigthList"><image class="iconImg" src="Images/icons/deleteFolder.png"/> <span class="highlightBolded">Delete all directory's content (all except selected) </span>clicca qui se vuoi eliminare tutto il contenuto (sia file sia cartelle) di una cartella radice indicata. Ti verrà chiesta conferma prima di eliminare il contenuto della cartella. <strong>In questa funzione puoi selezionare solo cartelle.</strong>
+							</li>
+
+							<li class="highLineHeigthList"><image class="iconImg" src="Images/icons/emptyDirectory.png"/> <span class="highlightBolded">Delete all directory's content </span>- questa funzione elimina tutti i file contenuti in una cartella radice che devi specificare, senza eliminare le cartelle contenute. <strong>In questa funzione puoi selezionare solo cartelle.</strong>
+							</li>
+
+						</ul></p>
+						</p>
+
+					<li><span id="subSectFileHasher" class="subMenuthirdLevel">FILE HASHER</span></li>
+						<p>
+						Il <b>File Hash Checker</b> calcola l'hash (checksum) di un file: clicca <b>Select File</b>, scegli l'<b>algoritmo di hash</b> e clicca <b>Calculate Hash</b>. Per verificare un file scaricato, incolla il checksum atteso e clicca <b>Verify Checksum</b>. Le opzioni permettono di mostrare l'hash in maiuscolo e di usare il nome dell'algoritmo come prefisso.
+						</p>
+
+					<li><span id="subSectColorPicker" class="subMenuthirdLevel">COLOR PICKER</span></li>
+						<p>
+						Con il picker attivo, clicca su un elemento qualsiasi per ottenerne il colore, oppure tieni premuto [Shift + Ctrl] mentre muovi il mouse sopra di esso. Il colore selezionato viene mostrato nei formati RGB, HEX, HSB e HSL: tutti i campi sono modificabili, quindi puoi anche convertire un colore che digiti tu. Ogni formato ha il proprio pulsante di copia, il campione grande mostra il codice HEX e apre la tavolozza quando lo clicchi, e il contrasto del testo bianco e nero sul colore ti dice quale dei due è leggibile. Gli ultimi colori selezionati o copiati restano nella riga <b>Recent</b> per tutta la sessione: cliccane uno per riutilizzarlo. La finestra del picker resta sempre in primo piano sopra tutte le altre finestre, anche di altre applicazioni, e [Alt + Tab] cambia applicazione come di consueto.
+						</p>
+
+					<li><span id="subSectClipboardPanel" class="subMenuthirdLevel">CLIPBOARD PANEL</span></li>
+						<p>
+						Un insieme di appunti con nome salvati su disco, disponibile come pannello laterale del file editor o come <b>Clipboard tool</b> autonomo (menu Various). Puoi aggiungere un nuovo appunto, scegliere tra quelli caricati, salvare o ricaricare quello corrente (le modifiche non salvate vanno perse al ricaricamento), ricaricare l'elenco e aprire l'appunto corrente nel file system.
+						</p>
+					
+				</p></ul>
+
+				<hr>
+				<h2 id="funcHelpSubMenu" class="sectionSubTitle"> 2.6 - SOTTOMENU HELP</h2>
+				<hr>
+				<p><ul>
+				<li class="highLineHeigthList"><span class="highlightBolded">Guide viewer</span> - questa guida si apre in un visualizzatore integrato in ScreepT (niente browser, niente JavaFX): sommario a sinistra (pulsante "Index"), ricerca con risultati evidenziati (Ctrl+F, poi Enter / Shift+Enter o F3 per spostarti tra i risultati, Esc per cancellare), zoom (Ctrl + rotellina del mouse, Ctrl + / -, Ctrl+0), testo selezionabile e copiabile. I link esterni si aprono nel tuo browser.</li>
+				<li class="highLineHeigthList"><span class="highlightBolded">Java version label</span> - nella barra in alto, accanto all'uso delle risorse di ScreepT, una piccola etichetta indica quale Java sta eseguendo ScreepT. Appoggia il mouse sopra per vedere in un popup il percorso di Java, la versione, il produttore, la VM e gli argomenti della JVM: seleziona il testo che ti serve oppure premi "Copy all". Esc o allontanare il mouse lo chiude.</li>
+				<li>Visita questa sezione se vuoi saperne di più sulle funzioni di ScreepT, su A.M. Design 'N Development, visitare il sito ufficiale di A.M., o semplicemente tornare alla pagina iniziale. </li>
+				<br><span class="highlightBoldedGrey">IMPORTANTE: </span>Ricorda sempre che cambiando sezione non perdi nessun progresso del lavoro che hai aperto: basta tornare indietro con le scorciatoie o con il menu principale per ritrovare quello che stavi facendo :)
+				<p><span class="highlightBoldedGrey">!!! IN CASO DI PROBLEMI </span> puoi esportare il log con la funzione speciale "Export event log", che può contenere informazioni utili sul problema stesso e aiutare a risolvere il bug, se c'è, o a capire meglio cosa è successo durante l'esecuzione. <u><a href="mailto:bugs@am-design-development.com">Mandamelo</a></u> per un'ulteriore analisi del bug! Se hai problemi ad avviare l'applicazione e non riesci a estrarre il log in questo modo, mandami le cartelle "/application/LOG" e "/application/LAUNCHER/LOG" in formato zip :)</p>
+				Per essere sicuro di registrare il problema, <u>prova a riprodurlo con logLevel impostato su <b>DEBUG</b></u>. Per farlo, seleziona il livello Debug nelle impostazioni del launcher prima di riavviare ScreepT.
+					<li>
+						<image class="iconImgTitleSect" src="Images/icons/turnOff.png"/> <span id="subSectTitleExit" class="subMenuthirdLevel">ESCI</span></li>
+						<p>
+						Chiude il software, eliminando i file temporanei se presenti e salvando la configurazione corrente se l'opzione di salvataggio automatico è attiva.
+						</p>
+					<li class="highLineHeigthList"><span class="highlightBolded">Check for Software Updates </span>- questa funzione si spiega da sola: assicurati solo di avere una connessione a internet funzionante per aggiornare il software. NB: se usi un proxy potresti avere qualche problema ad aggiornare il software. Se ScreepT è già aggiornato, offre di <b>reinstallare la versione corrente</b> dal server: i file dell'applicazione vengono sostituiti con una copia pulita (utile se qualcosa si è rotto), mentre le tue impostazioni e i tuoi dati personali restano intatti.
+					<li class="highLineHeigthList"><span class="highlightBolded">Install plugins </span>- questa funzione si spiega da sola: apre una nuova finestra popup in cui puoi scegliere e installare i plugin per ScreepT. Nelle prime versioni di ScreepT serve soprattutto a ridurre la dimensione base dell'applicazione, perché alcune librerie erano molto pesanti da installare come scelta predefinita, quindi ho deciso di renderle installabili come plugin. 
+					<li class="highLineHeigthList"><span class="highlightBolded">Markdown Viewer plugin </span>- un editor Markdown con anteprima in tempo reale, struttura del documento e sorgente HTML (clic destro su un file .md o sul testo, oppure dal menu dei plugin). Dalla versione 1.2.0 si modifica come "Markdown All in One" di VS Code: Enter continua elenchi, elenchi di attività e citazioni (una voce vuota chiude l'elenco), Tab / Shift+Tab rientrano le voci dell'elenco e le numerano di nuovo, Ctrl+B / Ctrl+I / Alt+S / Ctrl+M attivano o disattivano grassetto, corsivo, barrato e formule matematiche sulla selezione o sulla parola sotto il cursore, Ctrl+Shift+] / [ cambiano il livello del titolo, Alt+C spunta le caselle delle attività, Shift+Alt+F formatta le tabelle, Ctrl+Shift+T inserisce un indice tra i marcatori &lt;!-- TOC --&gt; che viene aggiornato a ogni salvataggio (&lt;!-- omit in toc --&gt; esclude un titolo), digitando "](#" o "](" vengono suggeriti i titoli e i file accanto al documento, e incollare un URL su un testo selezionato crea un link. Le formule tra $ e $$ vengono mostrate nell'anteprima; Ctrl+E esporta una pagina HTML autonoma con le immagini incorporate e le formule rese da KaTeX (serve internet). F1 elenca tutte le scorciatoie.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Update all plugins </span>- cerca versioni più recenti dei plugin installati e prepara tutti i loro aggiornamenti in un colpo solo: le nuove versioni vengono installate al prossimo avvio e ScreepT propone di riavviare. Lo stesso controllo viene eseguito all'avvio quando <i>Auto-check plugin updates</i> è attivo in General Options.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Open current installation folder </span>- apre in Esplora file la cartella che contiene la cartella Application di questa installazione (la radice di ScreepT), comoda per trovare log, backup, plugin e aggiornamenti.</li>
+					<br><b>NB: </b>se usi un proxy potresti avere qualche problema nell'installare plugin o aggiornamenti: in tal caso puoi configurare il proxy da preferences -> generic options, cliccando l'icona del mondo. Qui puoi indicare la combinazione url/porta del tuo proxy ed eventualmente un nome utente/password se ti serve (per motivi di sicurezza, per impostazione predefinita la password non viene salvata e va inserita di nuovo a ogni riavvio).
+				</ul></p>
+				<hr>
+				<h2 id="funcHomeAssistant" class="sectionSubTitle"> 2.7 - ASSISTENTE DELLA HOME PAGE (TERMINALE)</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">Scrivi ovunque nella home page e il terminale si sveglia: l'immagine della home si oscura con un'animazione, così quello che scrivi e le risposte restano leggibili, poi torna visibile dopo qualche secondo di inattività.</li>
+					<li class="highLineHeigthList">Fai domande a parole tue, in inglese o in italiano, su qualsiasi funzione di ScreepT ("how do I encrypt a file", "come cambio il tema"). L'assistente è completamente offline: legge questa guida e il changelog che arrivano con ScreepT, niente cloud, niente chiavi API, nessun costo.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Comandi: </span>help, news (cosa è cambiato nell'ultima versione), shortcuts [parola] (scorciatoie da tastiera, eventualmente filtrate), topics (sezioni della guida), eggs, version, about, whoami, clear. Puoi anche evocare le sorprese nascoste per nome: snake, puppynoid, cats, poem, matrix, bugs, cipher, typing, trivia, fortune, glitch.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Tasti: </span>Enter invia, Su/Giù richiamano le domande precedenti, PgUp/PgDn o la rotellina del mouse scorrono il terminale, Esc o Ctrl+U cancellano la riga, Ctrl+L pulisce lo schermo, Ctrl+V incolla.</li>
+					<li class="highLineHeigthList">Le domande ricevono risposta in background: mentre lavora puoi aprire il file editor, il crypter o qualsiasi altra sezione e, quando torni alla home page, trovi le risposte, la cronologia e il testo che stavi scrivendo.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Come apro...? </span>Chiedi una sezione o una funzione per nome ("file editor", "crypter", "calculator", "quick notes", "home page", anche in italiano e con piccoli errori di battitura): l'assistente risponde con il percorso nella barra dei menu e la scorciatoia da tastiera, letti dai menu reali di questa versione. Quando non capisce lo dice e suggerisce come riformulare la domanda.</li>
+					<li class="highLineHeigthList">Le scorciatoie nascoste della home page (S tre volte, A tre volte, M tre volte) funzionano ancora.</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcQuickNotes" class="sectionSubTitle"> 2.8 - QUICK NOTES</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">Quick notes è un cassetto di cose da fare sul lato destro della finestra. Mostralo o nascondilo con [Ctrl + Alt + N], da Various > Quick notes, o con il pulsante Quick notes della barra degli strumenti del file editor (a destra dell'interruttore del correttore ortografico, segue lo stato del cassetto).</li>
+					<li class="highLineHeigthList">Scrivi una nota e premi Enter per aggiungerla, clicca una nota per modificarla direttamente, usa la casella rotonda (o Ctrl+Enter) per segnarla come fatta: le note completate vengono raggruppate in fondo. La casella di ricerca filtra le note ed evidenzia le corrispondenze.</li>
+					<li class="highLineHeigthList">Le note vengono salvate automaticamente a ogni modifica in Resources_ScreepT/QuickNotes/quick_notes.md, un semplice elenco Markdown con una copia di backup.</li>
+					<li class="highLineHeigthList">Backup e importazione: il pulsante &#8801; in alto nel cassetto apre un menu. "Back up notes to..." salva una copia di tutte le note in una cartella a tua scelta (file quick_notes_backup.md) e ricorda la cartella; "Update backup" riscrive quel file con le note correnti. "Import notes from backup..." sostituisce TUTTE le note correnti con quelle di un file di backup: prima di farlo ScreepT ti avvisa che le note correnti andranno perse e ti propone di salvarne prima un backup in una cartella a tua scelta.</li>
+					<li class="highLineHeigthList">Il cassetto prende i colori dal tema selezionato nelle preferenze grafiche (scuro, chiaro, Nimbus e gli altri), mantenendo l'aspetto moderno a schede.</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcCalculator" class="sectionSubTitle"> 2.9 - TASTIERA E TEMI DELLA CALCOLATRICE</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">La calcolatrice ([Ctrl + Alt + C]) si può usare da tastiera con qualsiasi layout: cifre, tastierino numerico, + - * / ^ ( ), il punto o la virgola decimale. Enter è =, Backspace cancella l'ultimo carattere, Delete è C.</li>
+					<li class="highLineHeigthList">Modalità avanzata e semplice: r è la radice quadrata, m e s sono la memoria, c è clear, a è all clear. Modalità base: le lettere A-F sono cifre esadecimali e Ctrl+B, Ctrl+O, Ctrl+D, Ctrl+H cambiano la base.</li>
+					<li class="highLineHeigthList">Tutte le modalità (semplice, avanzata, base, equazioni, convertitore di unità, calcolatrice di date, numeri primi) seguono il tema scuro e restano leggibili.</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcLogSearch" class="sectionSubTitle"> 2.12 - LOGSEARCH (FILE GRANDI)</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">LogSearch apre un file di testo grande (un log, un dump, un CSV di molti gigabyte) in sola lettura, senza caricarlo in memoria: dal disco viene letta solo la parte visibile, quindi è veloce e leggero qualunque sia la dimensione. Il file non viene mai modificato. Aprilo da Various > LogSearch o con [Ctrl + Alt + L]: la finestra si apre vuota e il pulsante <b>Open file...</b> in alto sceglie il file (puoi anche trascinare un file sulla finestra). Una volta caricato, sotto il nome del file vedi il suo percorso, la dimensione, le date di ultima modifica e di creazione, il numero di righe e se è in sola lettura. C'è una sola finestra LogSearch alla volta, con un solo file: aprire un altro file sostituisce quello corrente. Aprire un file dal file editor lo carica direttamente.</li>
+					<li class="highLineHeigthList">La casella <b>Monitor</b> di LogSearch (attiva per impostazione predefinita) tiene d'occhio il file: ciò che altri programmi vi scrivono, come le nuove righe di un log che continua a crescere, compare da solo nelle righe e nei risultati della ricerca, e la vista segue la fine se era alla fine. Un file riscritto o sostituito (per esempio da una rotazione dei log) viene indicizzato di nuovo. Se disattivi il monitor, un avviso ti dice quando il file è cambiato su disco, perché le righe mostrate potrebbero essere vecchie, e il pulsante <b>Refresh</b> rilegge il file e ripete la ricerca. LogSearch non tiene il file aperto, quindi il programma che scrive il log può ruotarlo, rinominarlo o eliminarlo.</li>
+					<li class="highLineHeigthList">I pulsanti dei livelli (TRACE, DEBUG, INFO, WARN, ERROR) compaiono quando il file ha livelli di log: oltre alle parole consuete (log4j, logback, Python, java.util.logging...) LogSearch riconosce [INF] [WRN] [ERR] (Serilog), fail: / warn: (.NET), E0102 12:00:00 (glog), E/Tag (Android logcat), FINE / FINER / FINEST, NOTICE / ALERT / EMERG (syslog) e righe JSON con "level". Il filtro <b>Dates</b> compare quando le righe hanno una data (2026-11-16 12:00:00, 16/11/2026, 10/Oct/2026:13:55:36, Nov 16 12:00:00, Nov 16, 2026, Unix time): digita il primo e l'ultimo giorno come dd/MM/yyyy o sceglili dal calendario (entrambi inclusi, ciascuno facoltativo). Una data digitata o scelta attiva il filtro; la casella lo disattiva senza perdere le date, e la croce le rimuove. Il filtro presuppone che le righe siano in ordine cronologico, come in un normale log, e funziona sulle righe e sui risultati della ricerca.</li>
+					<li class="highLineHeigthList">Il <b>filtro per data</b> (da / a, entrambi facoltativi, entrambi i giorni inclusi) compare quando le righe riportano una data in uno dei formati più comuni. Digitala come dd/MM/yyyy o sceglila dal piccolo calendario, che è nella tua lingua: clicca sull'<b>anno</b> nel suo titolo per digitarlo, senza scorrere mese per mese.</li>
+					<li class="highLineHeigthList">Quando apri nel file editor un file più grande della dimensione massima (o con troppe righe), ScreepT propone di aprirlo invece con LogSearch. La dimensione massima si imposta in Graphics options > File editor > "Max file size (MB)".</li>
+					<li class="highLineHeigthList">La ricerca parte mentre digiti. Come testo semplice capisce un piccolo linguaggio pensato per i log: <span class="highlightBolded">error timeout</span> (tutte le parole, in qualsiasi ordine), <span class="highlightBolded">"connection reset"</span> (una frase esatta) e <span class="highlightBolded">-healthcheck</span> (righe senza quella parola). Il pulsante Regex trasforma il testo in un'espressione regolare; Aa rispetta maiuscole e minuscole e "ab" cerca parole intere. [F3] / [Shift + F3] (o Enter) vanno alla corrispondenza successiva e precedente, [Ctrl + F] porta il focus sulla casella di ricerca, Stop interrompe una ricerca lunga.</li>
+					<li class="highLineHeigthList"><b>Livelli.</b> ERROR, WARN, INFO, DEBUG e TRACE vengono riconosciuti durante la lettura del file: colorano la striscia a sinistra di ogni riga e la mappa accanto alla barra di scorrimento (rosso per gli errori, arancione per gli avvisi), e uno stack trace segue il livello della sua voce. Le etichette dei livelli nella barra degli strumenti mostrano quante righe ha ogni livello: cliccane una per mostrare o nascondere quel livello tra le corrispondenze, clic destro per vedere solo quello. [F8] / [Shift + F8] saltano all'errore successivo e precedente.</li>
+					<li class="highLineHeigthList"><b>Corrispondenze.</b> L'elenco sotto il file mostra le righe che corrispondono, con il numero di righe di contesto che scegli (menu Context: nessuna, 1, 2, 3, 5 o 8 righe attorno a ogni corrispondenza). Il pulsante di salvataggio scrive le righe corrispondenti in un nuovo file.</li>
+					<li class="highLineHeigthList"><b>Segnalibri e navigazione.</b> Clicca sulla barra laterale o premi [Ctrl + B] per segnare una riga; [F2] / [Shift + F2] si spostano tra i segnalibri e il pulsante dei segnalibri li elenca. [Ctrl + G] va a una riga, [Ctrl + +] / [Ctrl + -] / [Ctrl + 0] ingrandiscono o riducono il testo. Clicca o trascina sulla mappa per spostarti nel file.</li>
+					<li class="highLineHeigthList">Le righe corrispondenti sono colorate nella vista del file (il testo trovato in modo più intenso), elencate nella vista "Matching lines" qui sotto (cliccane una per saltarci) e segnate con tacche arancioni sulla mappa accanto alla barra di scorrimento. Clicca o trascina la mappa per spostarti nel file.</li>
+					<li class="highLineHeigthList">Seleziona delle righe e premi [Ctrl + C] per copiarle (fino a 200000 righe alla volta).</li>
+					<li class="highLineHeigthList"><b>Velocità e memoria.</b> Il file viene letto una sola volta, a blocchi grandi, da più thread contemporaneamente, e le ricerche di testo semplice vengono eseguite direttamente sui byte del file. Un'espressione regolare cerca prima le sue parti fisse (per esempio <span class="highlightBolded">retrying</span> in <span class="highlightBolded">Service1[0-9] .*retrying</span>) e viene eseguita solo sulle righe che le contengono, quindi è quasi veloce quanto il testo semplice; un'espressione senza parti fisse (come <span class="highlightBolded">\d+ms$</span>) o con alternative è più lenta. La memoria non cresce con il numero di corrispondenze: circa 1 bit per riga del file per le corrispondenze e mezzo byte per riga per i livelli.</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcShellInteractive" class="sectionSubTitle"> 2.13 - SHELL: MODALITÀ INTERATTIVA</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">La shell (Various > System Console, [Ctrl + Alt + S], e il pannello comprimibile del file editor) ha due modalità, scelte con la casella Interactive nella sua intestazione.</li>
+					<li class="highLineHeigthList">La modalità testo (casella disattivata) è quella classica: i comandi selezionati, o il blocco corrente, vengono eseguiti e il loro output viene stampato come testo semplice; un campo Live cmd ti permette di rispondere a un comando in esecuzione.</li>
+										<li class="highLineHeigthList">La modalità interattiva (casella attivata) apre un vero terminale dentro il pannello, come se usassi quello nativo: una vera shell con colori, prompt, cronologia, modifica della riga, movimenti del cursore e programmi che richiedono un terminale (editor, barre di avanzamento, prompt, strumenti TUI come Claude Code: scrivi <span class="highlightBolded">claude</span> e usalo come al solito). Scrivi direttamente al suo interno; il pulsante Play digita i comandi selezionati (o il blocco corrente) nel terminale e preme Enter; Stop chiude la shell, e Enter in un terminale chiuso ne avvia una nuova. Tutta la cronologia resta disponibile: scorrila con la rotellina del mouse, la barra di scorrimento o <span class="highlightBolded">Shift+PageUp/PageDown</span> (<span class="highlightBolded">Shift+Home/End</span> per l'inizio e la fine), e cercala con il pulsante della lente o <span class="highlightBolded">Ctrl+Shift+H</span> (<span class="highlightBolded">Cmd+Shift+H</span> su macOS): sopra il terminale si apre una barra di ricerca con le opzioni maiuscole/minuscole, espressione regolare e parola intera, un contatore delle corrispondenze e i pulsanti precedente/successivo (<span class="highlightBolded">Enter</span> va alla corrispondenza precedente, <span class="highlightBolded">Shift+Enter</span> a quella successiva, <span class="highlightBolded">Esc</span> chiude la barra). I programmi a schermo intero ricevono la rotellina quando la richiedono. Il terminale si apre nella cartella dello script caricato, altrimenti nella tua cartella home.</li>
+					<li class="highLineHeigthList">La shell è dello stesso tipo su ogni sistema: su Linux e macOS la tua shell ($SHELL, avviata come login shell); su Windows Git Bash se Git è installato (così sembra di stare su Linux), altrimenti PowerShell, altrimenti cmd. Per usarne un'altra imposta la variabile d'ambiente SCREEPT_SHELL prima di avviare ScreepT, per esempio SCREEPT_SHELL=wsl.exe o SCREEPT_SHELL=pwsh.exe -NoLogo.</li>
+					<li class="highLineHeigthList">Nel terminale: seleziona con il mouse; [Ctrl + C] copia la selezione (senza selezione interrompe il programma in esecuzione); [Ctrl + V], [Shift + Insert] o il clic destro incollano; la rotellina del mouse scorre la cronologia; [Esc] va al programma, non chiude la finestra. Sono supportati grassetto, attenuato, 256 colori e true color, con un font di simboli per i glifi che il font del terminale non ha.</li>
+					<li class="highLineHeigthList">La scelta (modalità testo o interattiva) viene salvata nel file di configurazione alla chiusura di ScreepT e usata la volta successiva. Richiede Windows 10 o successivo, Linux o macOS.</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcOptionHelp" class="sectionSubTitle"> 2.14 - DESCRIZIONI DELLE OPZIONI</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">In Graphic preferences e Generic options, appoggia il mouse su un'opzione (il suo nome, il suo controllo o la sua casella) per vedere una piccola scheda che la spiega.</li>
+					<li class="highLineHeigthList">La scheda si chiude con [Esc], con un clic fuori da essa, o quando il mouse si allontana sia dall'opzione sia dalla scheda. Quando il mouse entra nella scheda, il testo prende il focus e scorre con la rotellina e i tasti. Trascina i bordi o gli angoli della scheda per ridimensionarla; per impostazione predefinita è larga e alta circa un quarto del monitor.</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcAboutAssistant" class="sectionSubTitle"> 2.15 - ABOUT: L'ASSISTENTE IRONICO</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">La riga del terminale nella finestra About (Help > About) è viva: scrivi qualsiasi cosa e premi Enter. L'assistente risponde come un NPC sarcastico, con citazioni iconiche dai film (Star Wars, Il Signore degli Anelli, Il Padrino, Old School, Scary Movie e molti altri) e, quando può, con qualcosa di vero su ScreepT che c'entra con quello che hai detto: funzioni, versione, scorciatoie della guida, file grandi, il terminale, il crypter.</li>
+					<li class="highLineHeigthList">La sua faccia cambia: arrabbiata quando lo insulti, pensierosa in tutti gli altri casi.</li>
+					<li class="highLineHeigthList">Nasconde gli easter egg: ogni due o tre risposte lascia un suggerimento e ti dice quanto la tua frase è vicina a risvegliarne uno, come nel vecchio gioco: "acqua" (freddo), "fuochino" (tiepido), "fuoco" (caldo). Nomina qualcosa di cui parla un egg e quell'egg si risveglia: il lucchetto si apre un po' e compare l'elenco degli egg, con solo quelli che hai nominato avviabili; gli altri mostrano un'anticipazione di cosa fanno. Dì a ScreepT, onestamente, cosa pensi di lui, e si apre tutto il forziere: il lucchetto si apre del tutto e accanto al titolo si schiude un uovo, con Feo e Nano dentro.</li>
+				</ul></p>
+				<hr>
+				<h2 id="funcEasterEggs" class="sectionSubTitle"> 2.11 - EASTER EGG</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList">Giochi ed effetti nascosti: nella home page premi una lettera tre volte di fila (S snake, A Puppynoid, M parata di gatti, B Bug Squasher, C Cipher Breaker, W Code Typist, T Shortcut Trivia, F biscotto della fortuna, G glitch). Ctrl+Alt+U quattro volte apre la poesia di codice nel crypter e nel file editor. Il terminale della home li evoca tutti per nome (scrivi eggs).</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Cats </span>- Feo e Nano, pixel art, giocano nel launcher (sull'immagine di caricamento e sul bordo dei controlli) e visitano la home page dopo 10 secondi di quiete, solo mentre ScreepT è la finestra attiva. Nella home page non coprono mai il testo del prompt: restano accanto ad esso e ogni tanto uno lo tocca con una zampa e se ne va; inoltre rotolano, fanno capriole, sonnecchiano, si stirano, corrono e girano su se stessi a caso. Nella finestra di caricamento gioca solo Nano.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Bug Squasher </span>- clicca i bug per 30 secondi, quelli dorati sono veloci e valgono cinque. <span class="highlightBolded">Cipher Breaker </span>- decifra parole con cifrario di Cesare prima che scada il tempo. <span class="highlightBolded">Code Typist </span>- test di velocità di scrittura, parole al minuto e precisione. <span class="highlightBolded">Shortcut Trivia </span>- dieci domande costruite sulle scorciatoie di questa guida. <span class="highlightBolded">Fortune cookie </span>- una citazione di ScreepT digitata su una console retro sopra la finestra. <span class="highlightBolded">Glitch </span>- la finestra impazzisce, nessuno viene hackerato.</li>
+					<li class="highLineHeigthList">Nella finestra About la riga del terminale accetta testo: dì a ScreepT cosa pensi di lui e potrebbe risponderti con un elenco di tutti gli easter egg, le loro descrizioni e un pulsante Launch.</li>
+				</ul></p>
+
+				<hr>
+				<h2 id="funcRecentOther" class="sectionSubTitle"> 2.10 - TEMA DELL'EDITOR E ALTRE NOVITÀ</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList"><span class="highlightBolded">ScreepT Dark editor theme </span>(screept-dark.xml): un tema di sintassi morbido, profondo e opaco che si abbina all'interfaccia scura, con colori per ogni linguaggio dell'editor. È quello predefinito per le nuove installazioni e si può scegliere nella casella combinata dei temi della barra degli strumenti del file editor.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Theme Editor </span>(Preferences, editor themes): un elenco ricercabile di oltre 60 elementi in gruppi (editor, evidenziazioni, margine e riduzione del codice, opzioni, linguaggi incorporati, token di sintassi). Clicca su un riquadro colore per cambiarlo, clic destro per copiare o incollare un colore hex o rimuoverlo; ogni elemento può essere in grassetto o corsivo. Clicca un pezzo di codice nell'anteprima per saltare al suo elemento. Ctrl+S salva; si possono modificare anche i temi predefiniti, "Save as" conserva la tua versione.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Network info, Deep search </span>: per impostazione predefinita vengono elencati solo gli adattatori fisici; spunta <b>Deep search</b> per vedere anche macchine virtuali, VPN, container, tunnel, IPv6 e indirizzi link-local. F5 ricarica gli adattatori, ogni valore ha il proprio pulsante di copia e <b>Copy all</b> (Ctrl+Shift+C) copia tutto.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Image Studio, crop </span>è in tempo reale: con la sezione Crop aperta viene mostrata l'immagine intera con il ritaglio sopra; trascina gli angoli, i lati o l'intero rettangolo e i cursori seguono.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Puppynoid </span>(easter egg) mostra una guida su come giocare: le frecce sinistra/destra muovono la racchetta, Ctrl lancia la palla, Spazio mette in pausa, Esc esce, Enter riprova, N passa al livello successivo.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Network info </span>si apre senza bloccarsi: adattatori, IP pubblico, DNS e gateway si caricano in background.</li>
+					<li class="highLineHeigthList">Le finestre di avanzamento e le finestre secondarie non fanno più passare l'applicazione al look and feel Nimbus: il tema selezionato nelle preferenze grafiche viene sempre mantenuto.</li>
+					<li class="highLineHeigthList">Le finestre di dialogo, gli easter egg e la richiesta del nome al primo avvio si aprono sul monitor che hai usato per ultimo.</li>
+					<li class="highLineHeigthList"><span class="highlightBolded">Margin, font size, inline tabs e adapt text width </span>ora si impostano nelle preferenze grafiche (sezione File editor: Font, Margin, e le caselle Inline tabs e Adapt text width) invece che nella barra degli strumenti del file editor. Le loro scorciatoie continuano a funzionare: inline tabs [Ctrl + Shift + I], dimensione del font [Ctrl + Shift + MouseWheel].</li>
+				</ul></p>
+
+			
+			</div>
+			
+			<br><hr>
+			
+			<!--  SHORTCUTS  -->
+			<div id="ShortcutsKeyboard">
+				<h1 class="sectionTitle">3 - ELENCO DELLE SCORCIATOIE DA TASTIERA</h1>
+
+				<hr>
+				<h2 id="shctsMainGui" class="sectionSubTitle"> 3.1 - SCORCIATOIE DI USO GENERALE</h2>
+				<hr>
+				<p><ul class="shorctutsList">
+				
+					<h4> 0 - Scorciatoie di emergenza (attive ovunque):</h4>
+					<li> <span class="SHCT_TEXT">CHIUDI FORZATAMENTE L'APPLICAZIONE</span> - [Esc x 4 volte] o [Alt + F4 x 4 volte]</li>
+					<li> <span class="SHCT_TEXT">RIAVVIA L'APPLICAZIONE</span> - [Alt + F5]</li>
+
+					<h4> macOS e Linux:</h4>
+					<li> <span class="SHCT_TEXT">TASTO PRINCIPALE</span> - ogni scorciatoia scritta con [Ctrl] in questo elenco usa [Cmd] su macOS (e [Ctrl] continua a funzionare anche lì); su Windows e Linux è [Ctrl]</li>
+
+					<h4> Finestre e barra in alto a destra:</h4>
+					<li> <span class="SHCT_TEXT">CHIUDI FINESTRA</span> - [Esc] chiude la finestra attiva come la X della sua barra del titolo (non la finestra principale)</li>
+					<li> <span class="SHCT_TEXT">CERCA NELLE OPZIONI (Graphics options)</span> - [Ctrl + F]; [Esc] cancella la ricerca, un secondo [Esc] chiude la finestra</li>
+					<li> <span class="SHCT_TEXT">FISSA L'APPLICAZIONE IN PRIMO PIANO</span> - clicca la puntina in alto a destra: ScreepT e tutte le sue finestre restano sopra le altre applicazioni; quando non è fissata, le finestre di ScreepT si comportano come finestre normali (il color picker resta sempre sopra a tutto)</li>
+					<li> <span class="SHCT_TEXT">USO DELLE RISORSE</span> - accanto agli interruttori in alto a destra ScreepT mostra il proprio uso di CPU e memoria (usata / disponibile), e l'uso di CPU e memoria di tutto il PC (usata / totale), aggiornati ogni secondo: passaci sopra il mouse per vedere più dettagli</li>
+					<li> <span class="SHCT_TEXT">COLOR PICKER</span> - con il picker attivo, clicca un elemento o premi [Shift + Ctrl] mentre muovi il mouse per selezionarne il colore; [Alt + Tab] cambia applicazione come di consueto</li>
+					<li> <span class="SHCT_TEXT">FINESTRE DEI FILE</span> - le finestre di apertura/salvataggio sono quelle native di Windows (barra degli indirizzi modificabile, ricerca, copia/incolla); quando si possono scegliere sia file sia cartelle, usa "Select current folder" per selezionare la cartella in cui ti trovi</li>
+					
+					<h4> 1 - Sottomenu File:</h4>
+					<li> <span class="SHCT_TEXT">APRI CONFIGURATION MANAGER</span> - [Alt + Shift + 1]</li>
+					<li> <span class="SHCT_TEXT">ESPORTA LA CONFIGURAZIONE CORRENTE</span> - [Ctrl + Alt + Shift + E}</li>
+					<li> <span class="SHCT_TEXT">CARICA LA CONFIGURAZIONE CORRENTE</span> - [Ctrl + Alt + Shift + O}</li>
+					<li> <span class="SHCT_TEXT">RICARICA LA CONFIGURAZIONE CORRENTE</span> - [Ctrl + Alt + Shift + R}</li>
+					<li> <span class="SHCT_TEXT">SALVA LA CONFIGURAZIONE CORRENTE</span> - [Ctrl + Alt + Shift + S]</li>
+					<li> <span class="SHCT_TEXT">SALVA LA CONFIGURAZIONE CORRENTE COME PREDEFINITA</span> - [Ctrl + Alt + Shift + W]</li>
+					<li> <span class="SHCT_TEXT">CARICA I VALORI PREDEFINITI INTEGRATI DI SCREEPT</span> - [Ctrl + Alt + Shift + D]</li>
+					<li> <span class="SHCT_TEXT">ESCI DALL'APPLICAZIONE</span> - [Alt + F4]</li>
+					<hr>
+					<h4> 2 - Sottomenu Preferences:</h4>
+					<li> <span class="SHCT_TEXT">APRI GENERAL OPTIONS</span> - [Alt + Shift + 2]</li>
+					<li> <span class="SHCT_TEXT">APRI GRAPHICS OPTIONS</span> - [Alt + Shift + 3]</li>
+					<li> <span class="SHCT_TEXT">ATTIVA/DISATTIVA LO SCHERMO INTERO</span> - [Alt + Shift + Enter]</li>
+					<li> <span class="SHCT_TEXT">MODALITÀ IMMERSIVA ON/OFF</span> - [Alt + Shift + M]</li>
+					<li> <span class="SHCT_TEXT">ESCI DALLA MODALITÀ IMMERSIVA</span> - [ESC]</li>
+					<hr>
+					<h4> 3 - Sottomenu Screept:</h4>
+					<li> <span class="SHCT_TEXT">APRI SCREEPT</span> - [Alt + Shift + S]</li>
+					<li> <span class="SHCT_TEXT">APRI PASSWORD KEYGEN</span> - [Ctrl + Alt + Shift + K]</li>
+					<li> <span class="SHCT_TEXT">APRI IMAGE KEYGEN</span> - [Alt + Shift + K]</li>
+					<li> <span class="SHCT_TEXT">APRI KEY DICTIONARY</span> - [Alt + Shift + D]</li>
+					<hr>
+					<h4> 4 - Sottomenu File editor:</h4>
+					<li> <span class="SHCT_TEXT">APRI FILE EDITOR</span> - [Alt + Shift + T]</li>
+					<li> <span class="SHCT_TEXT">IMPORTA/ESPORTA WORKSPACE CIFRATO</span> - [Ctrl + Alt + Shift + I]</li>
+					<hr>
+					<h4> 5 - Sottomenu Various:</h4>
+					<li> <span class="SHCT_TEXT">APRI SYSTEM INFO</span> - [Alt + Shift + Y]</li>
+					<li> <span class="SHCT_TEXT">APRI NETWORK INFO</span> - [Alt + Shift + N]</li>
+					<li> <span class="SHCT_TEXT">APRI HASH CHECKER</span> - [Alt + Shift + U]</li>
+					<li> <span class="SHCT_TEXT">APRI COLOR PICKER</span> - [Ctrl + Alt + Shift + P]</li>
+					<li> <span class="SHCT_TEXT">APRI CLIPBOARDS-MEMO</span> - [Alt + Shift + P]</li>
+					<li> <span class="SHCT_TEXT">APRI RICERCA NEL CONTENUTO DEI FILE</span> - [Ctrl + Alt + F]</li>
+					<li> <span class="SHCT_TEXT">APRI SHELL</span> - [Ctrl + Alt + S]</li>
+					<li> <span class="SHCT_TEXT">APRI CALCOLATRICE</span> - [Ctrl + Alt + C]</li>
+					<li> <span class="SHCT_TEXT">MOSTRA/NASCONDI QUICK NOTES</span> - [Ctrl + Alt + N]</li>
+					<li> <span class="SHCT_TEXT">APRI LOGSEARCH (file grandi, sola lettura)</span> - [Ctrl + Alt + L]</li>
+					<li> <span class="SHCT_TEXT">APRI PANNELLO CLIPBOARDS-MEMO</span> - [Alt + Shift + P]</li>
+					<hr>
+					<h4> 5.1 - Sottomenu azioni su file e cartelle:</h4>
+					<li><span class="SHCT_TEXT">METTI IN MAIUSCOLO TUTTO IL CONTENUTO DELLA CARTELLA</span> - [Alt + Shift + 0]</li>
+					<li><span class="SHCT_TEXT">CREA CARTELLE DA UN PERCORSO TESTUALE</span> - [Alt + Shift + 9]</li>
+					<li><span class="SHCT_TEXT">COPIA LA STRUTTURA DELLE DIRECTORY</span> - [Alt + Shift + 8]</li>
+					<li><span class="SHCT_TEXT">ELIMINA IL CONTENUTO DELLA CARTELLA PER ESTENSIONE</span> - [Alt + Shift + 7]</li>
+					<li><span class="SHCT_TEXT">ELIMINA TUTTO IL CONTENUTO DELLA DIRECTORY (RICORSIVO)</span> - [Alt + Shift + 6]</li>
+					<li><span class="SHCT_TEXT">ELIMINA SOLO I FILE CONTENUTI NELLA DIRECTORY (RICORSIVO)</span> - [Alt + Shift + 5]</li>
+					<hr>
+					<h4> 5.2 - Convertitori e media:</h4>
+					<li> <span class="SHCT_TEXT">APRI IMAGE STUDIO</span> (visualizzatore e convertitore) - [Alt + Shift + O]</li>
+					<hr>
+					<h4> 6 - Sottomenu Help:</h4>
+					<li> <span class="SHCT_TEXT">APRI PANNELLO INFO</span> - [Alt + Shift + .]</li>
+					<li> <span class="SHCT_TEXT">ESPORTA LOG</span> - [Alt + E + .]</li>
+					<li> <span class="SHCT_TEXT">CANCELLA LOG</span> - [Alt + Canc + .]</li>
+					<li> <span class="SHCT_TEXT">APRI PANNELLO TUTORIAL</span> - [Alt + Shift + Q]</li>
+					<li> <span class="SHCT_TEXT">TORNA ALLA HOMEPAGE</span> - [Alt + Shift + H]</li>
+					<hr>
+					<h4> 6.1 - RIPRISTINA PANNELLI:</h4>
+					<li> <span class="SHCT_TEXT">RIPRISTINA TUTTI I PANNELLI</span> - [Ctrl + Alt + Shift + 0]</li>
+					<li> <span class="SHCT_TEXT">RIPRISTINA FILE EDITOR</span> - [Ctrl + Alt + Shift + 9]</li>
+					<li> <span class="SHCT_TEXT">RIPRISTINA CRYPTER</span> - [Ctrl + Alt + Shift + 8]</li>
+					<li> <span class="SHCT_TEXT">RIPRISTINA CONFIGURATION MANAGER</span> - [Ctrl + Alt + Shift + 7]</li>
+				</ul></p>				
+
+				<hr>
+				<h2 id="shctsTextEditor" class="sectionSubTitle"> 3.2 - SCORCIATOIE DEL FILE EDITOR</h2>
+				<hr>
+				<p><ul class="shorctutsList">
+					
+					<h4> Cambio di vista al volo:</h4>
+					<li> <span class="SHCT_TEXT">MASSIMIZZA L'AREA DI TESTO</span> - [Ctrl + M]</li>
+					<li> <span class="SHCT_TEXT">MOSTRA/NASCONDI L'HEADER DEL FILE EDITOR DI SCREEPT</span> - [Ctrl + Shift + Alt + H]</li>
+					<li> <span class="SHCT_TEXT">MOSTRA/NASCONDI IL SOTTO-HEADER DEL FILE EDITOR DI SCREEPT</span> - [Ctrl + Shift + Alt + U]</li>
+					<li> <span class="SHCT_TEXT">MOSTRA/NASCONDI IL FOOTER DEL FILE EDITOR DI SCREEPT</span> - [Ctrl + Shift + Alt + L]</li>
+					<li> <span class="SHCT_TEXT">APRI/CHIUDI IL PANNELLO ALBERO DEI FILE</span> - [Alt + Q]</li>
+					<li> <span class="SHCT_TEXT">APRI/CHIUDI IL PANNELLO CLIPBOARD</span> - [Alt + A]</li>
+					<li> <span class="SHCT_TEXT">APRI/CHIUDI IL PANNELLO MAPPA DEL DOCUMENTO</span> - [Alt + W]</li>
+					<li> <span class="SHCT_TEXT">MOSTRA LE OPZIONI DI AUTOCOMPLETAMENTO</span> - [Ctrl + Spacebar]</li>
+					<li> <span class="SHCT_TEXT">Apri il file corrente nel File System</span> - [Ctrl + Shift + Enter]</li>
+					<li> <span class="SHCT_TEXT">Apri il file corrente nella Shell/Cmd</span> - [Ctrl + Alt + Enter]</li>
+
+					<hr>
+					<h4> Impostazioni di vista al volo:</h4>
+					<li> <span class="SHCT_TEXT">CAMBIA LA DIMENSIONE DEL FONT</span> - [Ctrl + Shift + MouseWheel]</li>
+					<li> <span class="SHCT_TEXT">MOSTRA/NASCONDI LE GRIGLIE DELLE TAB</span> - [Ctrl + G]</li>
+					<li> <span class="SHCT_TEXT">SINCRONIZZAZIONE AUTOMATICA TRA PANNELLO ALBERO DEI FILE E FILE CORRENTE ON/OFF</span> - [Ctrl + Shift + U]</li>
+					<li> <span class="SHCT_TEXT">SINCRONIZZAZIONE WORKSPACE ON/OFF</span> - [Ctrl + Shift + W]</li>
+					<li> <span class="SHCT_TEXT">SINCRONIZZAZIONE AUTOMATICA DEL LINGUAGGIO IN BASE AL TIPO DI FILE</span> - [Ctrl + Shift + L]</li>
+					<li> <span class="SHCT_TEXT">SELEZIONA UN NUOVO WORKSPACE</span> - [Alt + Shift + W]</li>
+					<li> <span class="SHCT_TEXT">SALI DI UN LIVELLO NELL'ALBERO DEI FILE</span> - [Ctrl + Alt + Shift + Arrow UP]</li>
+					<li> <span class="SHCT_TEXT">SCENDI DI UN LIVELLO NELL'ALBERO DEI FILE</span> - [Ctrl + Alt + Shift + Arrow DOWN]</li>				
+					<li> <span class="SHCT_TEXT">TAB INLINE ON/OFF</span> - [Ctrl + Shift + I]</li>
+					<li> <span class="SHCT_TEXT">ADATTA LA LARGHEZZA ALLO SCHERMO</span> - [Ctrl + Shift + A]</li>
+					
+					<hr>
+					<h4> Pannelli vari e del file editor:</h4>
+					<li> <span class="SHCT_TEXT">APRI IL PANNELLO SPECIALI/ESCAPE</span> - [Ctrl + E]</li>
+					<li> <span class="SHCT_TEXT">APRI IL PANNELLO TEMPLATE</span> - [Ctrl + T]</li>
+					<li> <span class="SHCT_TEXT">APRI CALCOLATRICE</span> - [Ctrl + Alt + C]</li>
+					<li> <span class="SHCT_TEXT">APRI IL SELETTORE DI COLORE</span> - [Ctrl + Alt + Shift + P]</li>
+					<li> <span class="SHCT_TEXT">APRI IL PANNELLO HASH CHECKER</span> - [ Alt + Shift + U]</li>
+					
+					<hr>
+					<h4> Pannelli di ricerca nel testo:</h4>
+					<li> <span class="SHCT_TEXT">APRI IL PANNELLO DI RICERCA</span> - [Ctrl + F]</li>
+					<li> <span class="SHCT_TEXT">APRI IL PANNELLO SOSTITUISCI</span> - [Ctrl + R]</li>
+					<li> <span class="SHCT_TEXT">APRI IL PANNELLO VAI ALLA RIGA</span> - [Ctrl + L]</li>
+					
+					<hr>
+					<h4> Azioni sui file:</h4>
+					<li> <span class="SHCT_TEXT">VEDI LE PROPRIETÀ DEL FILE CORRENTE</span> - [Alt + Enter]</li>
+					<li> <span class="SHCT_TEXT">RICARICA IL FILE DAL DISCO</span> - [Ctrl + Shift + R]</li>
+					<li> <span class="SHCT_TEXT">CARICA FILE</span> - [Ctrl + O]</li>
+					<li> <span class="SHCT_TEXT">SALVA FILE</span> - [Ctrl + S]</li>
+					<li> <span class="SHCT_TEXT">SALVA FILE CON NOME</span> - [Ctrl + Shif + S]</li>
+					
+					<hr>
+					<h4> Funzioni di modifica del testo:</h4>
+					<li> <span class="SHCT_TEXT">ANNULLA</span> - [Ctrl + Z]</li>
+					<li> <span class="SHCT_TEXT">ANNULLA X5</span> - [Ctrl + Alt + Z]</li>
+					<li> <span class="SHCT_TEXT">RIPRISTINA</span> - [Ctrl + Y]</li>
+					<li> <span class="SHCT_TEXT">RIPRISTINA X 5</span> - [Ctrl + Alt + Y]</li>
+					<li> <span class="SHCT_TEXT">COMPRIMI IL BLOCCO CORRENTE </span> - [Ctrl + (Numpad -)]</li>
+					<li> <span class="SHCT_TEXT">ESPANDI IL BLOCCO CORRENTE </span> - [Ctrl + (Numpad +)]</li>
+					<li> <span class="SHCT_TEXT">FONT PIÙ GRANDE ++ </span> - [Ctrl + Shift + (+)]</li>
+					<li> <span class="SHCT_TEXT">FONT PIÙ PICCOLO --</span> - [Ctrl + Shift + (-)]</li>
+					<li> <span class="SHCT_TEXT">METTI IN MAIUSCOLO TUTTA LA SELEZIONE</span> - [Ctrl + ArrowUp]</li>
+					<li> <span class="SHCT_TEXT">MAIUSCOLO DOPO PUNTI/SEPARATORI</span> - [Ctrl + Shift + .]</li>
+					<li> <span class="SHCT_TEXT">ELIMINA RIGA</span> - [Ctrl + D]</li>
+					<li> <span class="SHCT_TEXT">COMMENTA LA SELEZIONE CON IL LINGUAGGIO CORRENTE</span> - [Ctrl + Shift + K]</li>
+					<li> <span class="SHCT_TEXT">RACCHIUDI LA SELEZIONE IN UN TAG</span> - [Ctrl + Alt + T]</li>
+					<li> <span class="SHCT_TEXT">DUPLICA LA RIGA SOPRA</span> - [Ctrl + Alt + Arrow up]</li>
+					<li> <span class="SHCT_TEXT">DUPLICA LA RIGA SOTTO</span> - [Ctrl + Alt + Arrow down]</li>
+					<li> <span class="SHCT_TEXT">RIMUOVI GLI SPAZI NELLA SELEZIONE</span> - [Ctrl + (-)]</li>
+					<li> <span class="SHCT_TEXT">ELIMINA LA RIGA CORRENTE</span> - [Ctrl + D]</li>
+					<li> <span class="SHCT_TEXT">SPOSTA LA RIGA CORRENTE SU/GIÙ</span> - [Alt + Up/Down]</li>
+					<li> <span class="SHCT_TEXT">SELEZIONE RETTANGOLARE</span> - Tieni premuto "Alt" mentre selezioni il testo per selezionare in modalità rettangolare; poi digita: [Backspace], [Canc], [Ctrl + X / C / V] agiscono su tutte le righe selezionate, [Esc] termina la modalità</li>
+					<li> <span class="SHCT_TEXT">COPIA IL TESTO NEGLI APPUNTI DI SISTEMA (mantenendo lo stile con copia/incolla)</span> - [Alt + C]</li>
+					<li> <span class="SHCT_TEXT">FORMATTA IL TESTO SELEZIONATO (se non c'è selezione verrà selezionato tutto) </span> - [Ctrl+Shift+F]</li>
+					
+					<hr>
+					<h4> Funzioni specifiche varie:</h4>
+					<li> <span class="SHCT_TEXT">LEGGI IL TESTO AD ALTA VOCE / FERMA LA LETTURA</span> - [Ctrl + Alt + spacebar]</li>
+					<li> <span class="SHCT_TEXT">CIFRA TESTO</span> - [Ctrl + shift + C]</li>
+					<li> <span class="SHCT_TEXT">DECIFRA TESTO</span> - [Ctrl + shift + D]</li>
+					<li> <span class="SHCT_TEXT">CODIFICA TESTO IN BASE 64:</span> - [Alt + 4]</li>
+					<li> <span class="SHCT_TEXT">DECODIFICA TESTO DA BASE 64:</span> - [Ctrl + 4]</li>
+					
+					<hr>
+					<h4> Navigazione tra tab, testo e cronologia:</h4>
+					<li> <span class="SHCT_TEXT">NUOVA TAB</span> - [Ctrl + N]</li>
+					<li> <span class="SHCT_TEXT">CHIUDI LA TAB CORRENTE</span> - [Ctrl + W]</li>
+					<li> <span class="SHCT_TEXT">CHIUDI TUTTE LE TAB APERTE</span> - [Ctrl + Alt + Shift + (-)]</li>
+					<li> <span class="SHCT_TEXT">TAB SUCCESSIVA</span> - [Ctrl + TAB]</li>
+					<li> <span class="SHCT_TEXT">TAB PRECEDENTE</span> - [Ctrl + Shift + TAB]</li>
+					<li> <span class="SHCT_TEXT">TAB SUCCESSIVA NELLA CRONOLOGIA</span> - [Alt + right Arrow]</li>
+					<li> <span class="SHCT_TEXT">TAB PRECEDENTE NELLA CRONOLOGIA</span> - [Alt + left Arrow]</li>
+					<li> <span class="SHCT_TEXT">AGGIORNA L'ELENCO DEI FILE, SE PRESENTE</span> - [Ctrl + F5]</li>
+					<li> <span class="SHCT_TEXT">SCORRIMENTO VERTICALE SU</span> - [Ctrl + Arrow up]</li>
+					<li> <span class="SHCT_TEXT">SCORRIMENTO VERTICALE GIÙ</span> - [Ctrl + Arrow down]</li>
+					<li> <span class="SHCT_TEXT">VELOCITÀ DI SCORRIMENTO VERTICALE +</span> - [Ctrl + MouseWheel]</li>
+					<li> <span class="SHCT_TEXT">VELOCITÀ DI SCORRIMENTO VERTICALE ++</span> - [Ctrl + Alt + MouseWheel]</li>
+					<li> <span class="SHCT_TEXT">SCORRIMENTO ORIZZONTALE A SINISTRA</span> - [Ctrl + Alt + Arrow left]</li>
+					<li> <span class="SHCT_TEXT">SCORRIMENTO ORIZZONTALE A DESTRA</span> - [Ctrl + Alt + Arrow right]</li>
+					<li> <span class="SHCT_TEXT">SCORRIMENTO ORIZZONTALE</span> - [Shift + MouseWheel]</li>
+					<li> <span class="SHCT_TEXT">VELOCITÀ DI SCORRIMENTO ORIZZONTALE +</span> - [Shift + Alt + MouseWheel]</li>
+					
+				</ul></p>
+			
+			</div>
+			
+			<br><hr>
+			
+			<!--  CREDITS AND LINKS  -->
+			<div id="CreditsNLinks">
+				<h1 class="sectionTitle">4 - CREDITI E LINK</h1>
+				<hr>
+				<p><b>Consiglio bonus: </b> in ScreepT sono nascosti tanti easter egg, attivabili con combinazioni di tasti o ripetizioni. Riuscirai a trovarli tutti? Buona caccia :)</p>
+				<p>
+					<span class="highlightBoldedGrey">ScreepT è un software gratuito</span> creato con passione nel mio tempo libero e nelle mie notti piene di impegni :) Piacere di conoscerti, sono Alessio Moraschini e sono il creatore di ScreepT!<br><br>
+					Il <span class="highlightBoldedGrey">CryptoSTEG</span> (l'algoritmo sperimentale alla base del Crypter) è il risultato di tante notti folli passate a programmare strane idee nate ai tempi dell'università. Devo ringraziare la ricerca di Google: senza di essa non sarebbe stato possibile trovare tutte le informazioni necessarie su molte delle funzioni implementate in questo software :)<br><br>
+					<span class="highlightBolded">ScreepT è nato come esperimento: un crypter che combina AES-128 con un mio algoritmo, "Steg-Crypt"</span>, con modalità opzionali di hash e shuffle. È un progetto personale e il Crypter è ancora in beta: l'algoritmo non è stato sottoposto a revisione da parte di esperti e non sostituisce strumenti consolidati e sottoposti ad audit. 
+					<br>
+					Per creare questo software ho usato diverse librerie open source pubbliche: senza di loro forse questo software non avrebbe mai visto la luce.<br>
+					<br><u>Ci tengo a ringraziare in modo speciale:</u>
+					
+					<ul>
+						<li><span class="highlightBolded">Reflections</span> è usata per rilevare e caricare i plugin installati.<a class="dependencyLink" target="_blank" href="https://github.com/ronmamo/reflections">[https://github.com/ronmamo/reflections]</a></li>
+
+						<li><span class="highlightBolded">OSHI</span> è usata per rilevare l'hardware e alcune informazioni legate alla rete. <a class="dependencyLink" target="_blank" href="https://github.com/oshi/oshi">[https://github.com/oshi/oshi]</a></li>
+												
+						<li><span class="highlightBolded">Ini4J.Org</span> è usata per gestire i file di configurazione ".INI". <a class="dependencyLink" target="_blank" href="http://ini4j.sourceforge.net">[http://ini4j.sourceforge.net]</a></li>
+						
+						<li><span class="highlightBolded">PngTastic</span> è usata per gestire la conversione dei PNG. <a class="dependencyLink" target="_blank" href="https://github.com/depsypher/pngtastic">[https://github.com/depsypher/pngtastic]</a></li>
+						
+						<li><span class="highlightBolded">Apache commons</span> sono ampiamente usate sia per alcune comunicazioni di rete sia per la gestione dei file. <a class="dependencyLink" target="_blank" href="https://commons.apache.org">[https://commons.apache.org]</a></li>
+						
+						<li><span class="highlightBolded">RsyntaxTextArea</span> è ampiamente usata nel file editor, in ScreepT e anche nel configuration manager. <a class="dependencyLink" target="_blank" href="https://github.com/bobbylight/RSyntaxTextArea">[https://github.com/bobbylight/RSyntaxTextArea]</a></li>
+						
+						<li><span class="highlightBolded">Tesseract</span> è usato per la conversione e l'analisi di immagini e PDF in testo <a class="dependencyLink" target="_blank" href="https://github.com/nguyenq/tess4j">[https://github.com/nguyenq/tess4j]</a></li>
+						
+						<li><span class="highlightBolded">FreeTTS</span> è usata per implementare la lettura vocale del testo. <a class="dependencyLink" target="_blank" href="https://freetts.sourceforge.io">[https://freetts.sourceforge.io]</a></li>
+
+						<li><span class="highlightBolded">Minhas Kamal - Ultimate calculator</span> è usata nel file editor. <a class="dependencyLink" target="_blank" href="http://minhaskamal.github.io/UltimateCalculator/">[http://minhaskamal.github.io/UltimateCalculator/]</a></li>
+
+						<li><span class="highlightBolded">Icons8</span> è stato usato per trovare la maggior parte delle icone di ScreepT. <a class="dependencyLink" target="_blank" href="https://icons8.com">[https://icons8.com]</a></li>
+
+						<li><span class="highlightBolded">Smashicons</span> è stato usato per trovare alcune altre icone di ScreepT. <a class="dependencyLink" target="_blank" href="https://www.flaticon.com">[https://www.flaticon.com/]</a></li>
+
+						<li><span class="highlightBolded">JsBeautifier</span> è stato usato per implementare il formattatore di codice del file editor, tramite chiamate esterne a una libreria JS. <a class="dependencyLink" target="_blank" href="https://jsbeautifier.org/">[https://jsbeautifier.org/]</a></li>
+
+						<li><span class="highlightBolded">RXTextUtilities</span> è stata molto utile per alcune operazioni sull'area di testo. Grazie a Rob Camick per questo fantastico codice. <a class="dependencyLink" target="_blank" href="https://tips4java.wordpress.com/2008/10/26/text-utilities/">[https://tips4java.wordpress.com/2008/10/26/text-utilities/]</a></li>
+					</ul>
+				</p>
+				
+				<br><p align="center" class="guideFooter" style="font-size:0.8em; font-weight:bold">ScreepT&#9400; - Alessio Moraschini - A.M. Design &amp; Development - Dalmine(BG) - Italy - 2020 </p>
+			</div>
+			
+		</div>
+	</body>
+
+</html>

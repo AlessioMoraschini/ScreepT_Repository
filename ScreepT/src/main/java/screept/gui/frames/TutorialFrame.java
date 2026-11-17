@@ -58,8 +58,9 @@ public class TutorialFrame extends ParentFrame{
 		GuiUtilsExtended.showOnSameScreen(this, MainGUI.mainFrameScreept);
 
 		mainHtmlReadmePanel = new HtmlPanel(new Integer(40), "indexList");
-		File htmlTutorialFile = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
+		File htmlTutorialFile = guideFile();
 		mainHtmlReadmePanel.loadHtmlFx(htmlTutorialFile.toURI().toString());
+		installLanguageSelector();
 		mainHtmlReadmePanel.setBorder(BorderFactory.createEmptyBorder());
 		add(mainHtmlReadmePanel, "cell 0 0,grow");
 
@@ -69,8 +70,43 @@ public class TutorialFrame extends ParentFrame{
 	}
 	
 	public void reloadHtml() {
-		File f = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
+		File f = guideFile();
 		mainHtmlReadmePanel.loadHtmlFx(f.toURI().toString());
+		// the guide opens in the language of the application, whatever was chosen in the selector before
+		mainHtmlReadmePanel.getViewer().selectLanguage(languageOf(f));
+	}
+
+	private static final String[][] GUIDE_LANGUAGE_NAMES = { { "en", "English" }, { "it", "Italiano" }, { "de", "Deutsch" },
+			{ "es", "Español" }, { "fr", "Français" }, { "pt", "Português" }, { "zh", "中文" } };
+
+	/** The code of the language of a guide file: ReadMe.html is English, ReadMe_xx.html is xx */
+	private static String languageOf(File guide) {
+		String name = guide.getName();
+		return name.startsWith("ReadMe_") && name.length() >= 9 ? name.substring(7, 9) : "en";
+	}
+
+	/** The guide files that exist next to the English one, as {code, name}: the selector of the viewer always lists them */
+	private static String[][] availableGuides() {
+		File english = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
+		java.util.List<String[]> found = new java.util.ArrayList<String[]>();
+		for (String[] language : GUIDE_LANGUAGE_NAMES) {
+			File file = "en".equals(language[0]) ? english : new File(english.getParentFile(), "ReadMe_" + language[0] + ".html");
+			if (file.exists()) {
+				found.add(language);
+			}
+		}
+		return found.toArray(new String[0][]);
+	}
+
+	/** Combo box in the toolbar of the guide: it starts on the language of the application and lets the user change it */
+	private void installLanguageSelector() {
+		final File english = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
+		mainHtmlReadmePanel.getViewer().setLanguages(availableGuides(), languageOf(guideFile()), code -> {
+			File target = "en".equals(code) ? english : new File(english.getParentFile(), "ReadMe_" + code + ".html");
+			if (target.exists()) {
+				mainHtmlReadmePanel.loadHtmlFx(target.toURI().toString());
+			}
+		});
 	}
 	
 	private void addHandlers(){
@@ -99,6 +135,22 @@ public class TutorialFrame extends ParentFrame{
 		});
 	}
 	
+	/**
+	 * The guide in the language of the application: ReadMe_&lt;code&gt;.html when it exists next to the English ReadMe.html, which is
+	 * also the fallback (and the one the home assistant reads). Inside the guide the language can be changed with its selector.
+	 */
+	public static File guideFile() {
+		File english = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
+		String language = various.common.light.i18n.I18n.getLanguage();
+		if (language != null && language.length() >= 2 && !language.startsWith("en")) {
+			File localized = new File(english.getParentFile(), "ReadMe_" + language.substring(0, 2).toLowerCase() + ".html");
+			if (localized.exists()) {
+				return localized;
+			}
+		}
+		return english;
+	}
+
 	public static TutorialFrame getInstance() {
 		return singletonInstance == null ? new TutorialFrame() : singletonInstance;
 	}

@@ -47,7 +47,7 @@ A dark look and feel with a dark title bar, interface size presets (Mini to XXL)
 
 ## What's inside
 
-- **File editor**: tabs, syntax highlighting for many languages, rectangular selection (Alt+drag), search/replace, text transformations, spell checker, auto-completion, minimap, tail -f mode and automatic temp saves.
+- **File editor**: slim tabs, a file tree with a live name filter, syntax highlighting for many languages, rectangular selection (Alt+drag), search/replace, text transformations, spell checker, auto-completion, minimap, tail -f mode and automatic temp saves.
 - **Crypter**: encrypt/decrypt text and files, optionally combined with a *key image* (steganographic second factor).
 - **LogSearch**: read-only viewer and searcher for huge files.
 - **Quick notes**: auto-saving to-do drawer in Markdown.

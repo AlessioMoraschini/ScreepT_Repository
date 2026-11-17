@@ -352,8 +352,16 @@ public final class AssistantKnowledge {
 		return english != null ? english.split(" ")[0] : normalize(word);
 	}
 
+	private static final Pattern LEGACY_EDITOR_NAME = Pattern.compile("(?i)\btext[ -]?editor\b|\beditor di testo\b");
+
+	/** The old names of the File Editor ("text editor", "editor di testo") become its current name, so old habits still find it */
+	static String currentNames(String query) {
+		return query == null ? "" : LEGACY_EDITOR_NAME.matcher(query).replaceAll("file editor");
+	}
+
 	/** Query stems, with the English terms for the Italian words */
-	static Set<String> queryStems(String query) {
+	static Set<String> queryStems(String queryAsTyped) {
+		String query = currentNames(queryAsTyped);
 		Set<String> result = new LinkedHashSet<>();
 		for (String token : normalize(query).split("[^a-z0-9]+")) {
 			if (token.length() < 2) {

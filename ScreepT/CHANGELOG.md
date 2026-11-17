@@ -6,6 +6,20 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.81 - 2026-11-17
+> A quicker and cleaner File editor: slimmer tabs, a filter for the file tree and a calendar where the year can be typed
+
+### New
+- File tree: filter bar above the tree. Type part of a name and only the matching files and the folders that lead to them stay (case insensitive); the x button or Esc clears it and the folders open as they were. On very big folders (over 5000 elements) it asks before going on, because it can take long.
+- Calendar of the date fields (LogSearch): click the year to type it, no more months to scroll by hand.
+
+### Improved
+- File properties window, redesigned: it opens at once and fills in while it reads. Type, MIME, owner, attributes and volume space; image size without decoding the image; for text files encoding, lines and line endings; for folders number of files and total size; checksums MD5, SHA-1, SHA-256 and CRC-32 in a single pass with progress and a Stop button (files over 256 MB wait for Calculate); paste a hash in Compare to check the file. It follows the look and feel in use.
+- File editor tabs: flatter and more compact, with an accent bar on the selected one, a thin divider between the others and colors taken from the look and feel (light or dark). The custom icons are the same.
+- File tree: much faster. Folders are read once instead of on every paint, icons are no longer loaded from disk for each row, and switching tab no longer rebuilds the tree when nothing changed on disk. Folders are now listed before files.
+- The last "Text-Editor" texts are now "File Editor".
+- Guide: updated for the File editor (file tree filter, tabs, calendar), and ready for more languages: when a translated ReadMe_<code>.html is present, the guide opens in the language of the application and shows a language selector.
+
 ## 0.9.80 - 2026-11-16
 > A faster and smarter LogSearch (monitor, date filter, more log formats), Image Studio full screen, "Open with" in the file tree, update all plugins at once, and the Text editor is now the File editor
 

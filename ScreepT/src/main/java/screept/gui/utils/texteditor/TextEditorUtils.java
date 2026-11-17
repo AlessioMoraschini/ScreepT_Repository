@@ -714,11 +714,23 @@ public class TextEditorUtils {
 	}
 
 	public void changeTreeDepth(File newRoot, File toSelect) {
-		String[] expansionStBack = TreeUtils.getExpansionStates(currentTextEditor.leftFileTree);
-		currentTextEditor.leftFileTree.setModel(new FileTreeNamedModel(new FileNamed(newRoot)));
-		TreeUtils.restoreExpansionStates(currentTextEditor.leftFileTree, expansionStBack);
+		javax.swing.tree.TreeModel current = currentTextEditor.leftFileTree.getModel();
+		// same root and nothing changed on disk (the usual case when switching tab): the tree stays as it is, only the selection moves
+		boolean same = current instanceof FileTreeNamedModel
+				&& ((FileNamed) current.getRoot()).getFile().equals(newRoot)
+				&& !((FileTreeNamedModel) current).hasChangedOnDisk();
+		if (!same) {
+			String[] expansionStBack = TreeUtils.getExpansionStates(currentTextEditor.leftFileTree);
+			currentTextEditor.leftFileTree.setModel(new FileTreeNamedModel(new FileNamed(newRoot)));
+			TreeUtils.restoreExpansionStates(currentTextEditor.leftFileTree, expansionStBack);
+			if (currentTextEditor.treeFilterPanel != null) {
+				currentTextEditor.treeFilterPanel.reapply();
+			}
+		}
 
-		if(toSelect != null) {
+		boolean filtered = currentTextEditor.leftFileTree.getModel() instanceof FileTreeNamedModel
+				&& ((FileTreeNamedModel) currentTextEditor.leftFileTree.getModel()).isFiltered();
+		if(toSelect != null && !filtered) {
 			try {
 				TreeUtils.selectFileInNamedFileTree(toSelect, currentTextEditor.leftFileTree, true);
 			} catch (IOException e1) {

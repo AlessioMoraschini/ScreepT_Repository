@@ -140,11 +140,15 @@ public class TextEditor extends ModulePanel {
 	public JSplitPane splitPaneTreetabsAndRightToggle;
 	public JSplitPane splitPaneVerticalAllAndBottomToggle;
 	public JScrollPane leftScrollPane;
+	/** Filter bar + tree scroll pane */
+	public JPanel leftTreeBody;
 	public JScrollPane rightModuleScrollPane;
 	public JPanel leftScrollPaneContainer;
 	public TogglePanelTextArea rightModulePanel;
 	public ShellReadWritePanel bottomModulePanel;
 	public JTree leftFileTree;
+	/** Filter bar above the file tree */
+	public gui.commons.treeutils.TreeFilterPanel treeFilterPanel;
 
 	public JFrame parentFrame; // the frame that instantiate this object
 
@@ -284,6 +288,12 @@ public class TextEditor extends ModulePanel {
 
 		leftScrollPane = new JScrollPane(leftFileTree);
 		leftScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		treeFilterPanel = new gui.commons.treeutils.TreeFilterPanel(leftFileTree,
+				msg -> Boolean.TRUE.equals(dialogHelper.showYNOrNullDialogWarn(msg, I18n.t("tree.filter_too_many_title"))));
+		leftTreeBody = new JPanel(new java.awt.BorderLayout());
+		leftTreeBody.setOpaque(false);
+		leftTreeBody.add(treeFilterPanel, java.awt.BorderLayout.NORTH);
+		leftTreeBody.add(leftScrollPane, java.awt.BorderLayout.CENTER);
 		leftScrollPane.setPreferredSize(new Dimension(200, 500));
 		leftScrollPaneContainer = new JPanel();
 		leftScrollPaneContainer.setBackground(fileNavColorBckg);
@@ -387,7 +397,7 @@ public class TextEditor extends ModulePanel {
 		separator_NO_HIDE.setOpaque(true);
 		separator_NO_HIDE.setForeground(Color.LIGHT_GRAY);
 		leftScrollPaneContainer.add(separator_NO_HIDE, "cell 0 1 9 1,growx");
-		leftScrollPaneContainer.add(leftScrollPane, "cell 0 2 9 1,grow");
+		leftScrollPaneContainer.add(leftTreeBody, "cell 0 2 9 1,grow");
 
 		mainPanel.add(splitPaneTreeAndVerticalSplit, "cell 0 3 37 1,grow");
 
@@ -921,6 +931,7 @@ public class TextEditor extends ModulePanel {
 		getCurrentTabEditor().loadedTabObj.textArea.setLineWrap(txtOptions.isBreaklineActive());
 		leftScrollPaneContainer.setBackground(txtOptions.filePanelBackCol);
 		leftFileTree.setBackground(txtOptions.filePanelBackCol);
+		treeFilterPanel.applyColors(txtOptions.filePanelBackCol);
 		headerPanel.sliderSpokenSpeed.setValue(txtOptions.getVoiceRate());
 
 		// UPDATE DETAIL
