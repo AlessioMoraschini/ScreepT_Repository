@@ -17,7 +17,6 @@ import java.awt.event.KeyEvent;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
@@ -32,10 +31,11 @@ import gui.texteditor.commons.tabbededitor.CustomTabbedEditor;
 import maingUI.MainGUI;
 import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
-import resources.IconsPathConfigurator;
 import screept.gui.panels.TextEditor;
 import screept.gui.panels.quicknotes.QuickNotesDrawer;
 import screept.gui.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
+import screept.gui.panels.subpanels.texteditor.toolbar.EditorIcons;
+import screept.gui.panels.subpanels.texteditor.toolbar.ToolbarStyle;
 import various.common.light.files.FileVarious;
 import various.common.light.gui.GuiUtils;
 import various.common.light.om.ICommonShortcuts;
@@ -727,13 +727,13 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				if (flagCtrlDown.get()) {
 					if(flagHoverBtnBase64.get()) {
 						subHeaderPanel.btnBase64Conversion.setToolTipText(TextEditTooltips.tooltipDecryptBase64);
-						subHeaderPanel.btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_RED));
+						subHeaderPanel.btnBase64Conversion.setIcon(EditorIcons.of(EditorIcons.Kind.BASE64, ToolbarStyle.ICON_SIZE, new java.awt.Color(235, 96, 84)));
 					}
 				}
 
 				if (!flagCtrlDown.get() || !flagHoverBtnBase64.get()) {
 					subHeaderPanel.btnBase64Conversion.setToolTipText(TextEditTooltips.tooltipCryptBase64);
-					subHeaderPanel.btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_PURPLE));
+					subHeaderPanel.btnBase64Conversion.setIcon(EditorIcons.of(EditorIcons.Kind.BASE64, ToolbarStyle.ICON_SIZE));
 				}
 
 			}

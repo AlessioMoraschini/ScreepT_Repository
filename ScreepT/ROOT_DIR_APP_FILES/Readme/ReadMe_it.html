@@ -187,6 +187,9 @@
 									<a href="#funcCalculator">Calcolatrice</a>
 								</div></li>
 								<li><div class="subIndex2">		
+									<a href="#funcEditorToolbar">Barra degli strumenti del file editor</a>
+								</div></li>
+								<li><div class="subIndex2">		
 									<a href="#funcLogSearch">LogSearch (file grandi)</a>
 								</div></li>
 								<li><div class="subIndex2">		
@@ -534,7 +537,7 @@
 				<li><image class="iconImgTitleSect" src="Images/icons/textEditor.png"/> <span id="subSectTitleTxtEditor" class="subMenuthirdLevel">FILE EDITOR</span></li>
 					<p>È un File Editor integrato (nelle versioni precedenti si chiamava Text Editor) con le funzioni di base e anche qualche funzionalità extra, come:
 					<ul>
-						<li class="highLineHeigthList"><span class="highlightBolded">TEXT SPEAKER </span>- puoi usarlo cliccando su <image class="iconImg" src="Images/icons/Speaker.png"/> o con la scorciatoia [Ctrl+spacebar]. In questo modo ascolterai il testo visibile nell'area di testo con pronuncia inglese. Puoi anche scegliere la velocità della voce trascinando il selettore sopra il pulsante dell'altoparlante. (<u>questa funzione è abilitata solo se il relativo plugin è installato in ScreepT</u>)</li>
+						<li class="highLineHeigthList"><span class="highlightBolded">TEXT SPEAKER </span>- puoi usarlo scegliendo Strumenti &gt; Leggi ad alta voce nella barra del file editor o con la scorciatoia [Ctrl+spacebar]. In questo modo ascolterai il testo visibile nell'area di testo con pronuncia inglese. Puoi anche scegliere la velocità della voce trascinando il selettore sopra il pulsante dell'altoparlante. (<u>questa funzione è abilitata solo se il relativo plugin è installato in ScreepT</u>)</li>
 						
 						<li class="highLineHeigthList"><span class="highlightBolded">TEXT CRYPT/DECRYPT </span>- con una password non vuota indicata nel campo password in alto, puoi cifrare/decifrare con AES (128bit) il testo caricato nell'area di testo, semplicemente cliccando su cifra <image class="iconImg" src="Images/icons/Crypt.png"/> o decifra <image class="iconImg" src="Images/icons/Decrypt.png"/> (oppure usando la scorciatoia [Ctrl+shift+C / Ctrl+shift+D]).</li>
 						
@@ -546,7 +549,7 @@
 
 						<li class="highLineHeigthList"><span class="highlightBolded">TEMPLATES INJECTION </span>- cliccando sul pulsante <strong>[Templates]</strong> si apre una nuova finestra che resta in primo piano fino alla chiusura, in cui puoi selezionare un template esistente, crearne uno dal testo attualmente selezionato, o anche definire un tuo template usando il file corrente. <span class="highlightBoldedGrey">Per usare un template</span> selezionalo dall'elenco e clicca su "Inject Template".</li>
 
-						<li class="highLineHeigthList"><span class="highlightBolded">BASE 64 CONVERTER </span>- con questa funzione puoi codificare il testo selezionato (o tutto il testo, se non c'è nulla di selezionato) in base64. Se il tasto Ctrl è premuto, il testo verrà decodificato da base64. Basta cliccare sul pulsante <image class="iconImg" src="Images/icons/64_Purple.png"/> per attivare questa funzione.
+						<li class="highLineHeigthList"><span class="highlightBolded">BASE 64 CONVERTER </span>- con questa funzione puoi codificare il testo selezionato (o tutto il testo, se non c'è nulla di selezionato) in base64. Se il tasto Ctrl è premuto, il testo verrà decodificato da base64. Basta cliccare sul pulsante <b>64</b> del gruppo Testo della barra del file editor per attivare questa funzione.
 
 						<li class="highLineHeigthList"><span class="highlightBolded">EOL ANALYZER </span>- puoi vedere quali terminatori di fine riga sono usati nel testo caricato o nel file corrente. Clicca con il tasto destro sull'area di testo e scegli "View line feeds" per aprire un tooltip pop-up e vedere i terminatori di riga (CR/LF alias "\n" "\r"). È utile per controllare la compatibilità di un file con diversi sistemi operativi. Se devi convertire l'EOL del testo/file corrente, clicca con il tasto destro sull'area di testo e scegli l'opzione desiderata dal sottomenu "Normalize End Of Line".
 
@@ -696,7 +699,7 @@
 				<h2 id="funcQuickNotes" class="sectionSubTitle"> 2.8 - QUICK NOTES</h2>
 				<hr>
 				<p><ul>
-					<li class="highLineHeigthList">Quick notes è un cassetto di cose da fare sul lato destro della finestra. Mostralo o nascondilo con [Ctrl + Alt + N], da Various > Quick notes, o con il pulsante Quick notes della barra degli strumenti del file editor (a destra dell'interruttore del correttore ortografico, segue lo stato del cassetto).</li>
+					<li class="highLineHeigthList">Quick notes è un cassetto di cose da fare sul lato destro della finestra. Mostralo o nascondilo con [Ctrl + Alt + N], da Various > Quick notes, o con il pulsante Quick notes della barra degli strumenti del file editor (nel gruppo Pannelli, dopo l'interruttore della console: segue lo stato del cassetto).</li>
 					<li class="highLineHeigthList">Scrivi una nota e premi Enter per aggiungerla, clicca una nota per modificarla direttamente, usa la casella rotonda (o Ctrl+Enter) per segnarla come fatta: le note completate vengono raggruppate in fondo. La casella di ricerca filtra le note ed evidenzia le corrispondenze.</li>
 					<li class="highLineHeigthList">Le note vengono salvate automaticamente a ogni modifica in Resources_ScreepT/QuickNotes/quick_notes.md, un semplice elenco Markdown con una copia di backup.</li>
 					<li class="highLineHeigthList">Backup e importazione: il pulsante &#8801; in alto nel cassetto apre un menu. "Back up notes to..." salva una copia di tutte le note in una cartella a tua scelta (file quick_notes_backup.md) e ricorda la cartella; "Update backup" riscrive quel file con le note correnti. "Import notes from backup..." sostituisce TUTTE le note correnti con quelle di un file di backup: prima di farlo ScreepT ti avvisa che le note correnti andranno perse e ti propone di salvarne prima un backup in una cartella a tua scelta.</li>
@@ -757,6 +760,16 @@
 					<li class="highLineHeigthList">La riga del terminale nella finestra About (Help > About) è viva: scrivi qualsiasi cosa e premi Enter. L'assistente risponde come un NPC sarcastico, con citazioni iconiche dai film (Star Wars, Il Signore degli Anelli, Il Padrino, Old School, Scary Movie e molti altri) e, quando può, con qualcosa di vero su ScreepT che c'entra con quello che hai detto: funzioni, versione, scorciatoie della guida, file grandi, il terminale, il crypter.</li>
 					<li class="highLineHeigthList">La sua faccia cambia: arrabbiata quando lo insulti, pensierosa in tutti gli altri casi.</li>
 					<li class="highLineHeigthList">Nasconde gli easter egg: ogni due o tre risposte lascia un suggerimento e ti dice quanto la tua frase è vicina a risvegliarne uno, come nel vecchio gioco: "acqua" (freddo), "fuochino" (tiepido), "fuoco" (caldo). Nomina qualcosa di cui parla un egg e quell'egg si risveglia: il lucchetto si apre un po' e compare l'elenco degli egg, con solo quelli che hai nominato avviabili; gli altri mostrano un'anticipazione di cosa fanno. Dì a ScreepT, onestamente, cosa pensi di lui, e si apre tutto il forziere: il lucchetto si apre del tutto e accanto al titolo si schiude un uovo, con Feo e Nano dentro.</li>
+				</ul></p>
+				<hr>
+				<h2 id="funcEditorToolbar" class="sectionSubTitle"> 2.16 - BARRA DEGLI STRUMENTI DEL FILE EDITOR</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList"><b>Una riga di gruppi.</b> Da sinistra: File (nuovo, apri, salva, salva con nome, ricarica, chiudi tutte le tab), Modifica (annulla, ripeti, indietro e avanti nella cronologia), Cerca (trova, sostituisci, vai alla riga, cerca nei file, ricerca rapida file), Testo (formatta, modelli, base 64 e il menu Testo), Pannelli (albero dei file, mappa, appunti, console, quick notes, correttore ortografico: illuminati quando attivi), File corrente (mostra nell'esplora risorse, apri un terminale lì, copia il percorso, proprietà), poi i menu Strumenti e Vista. A destra: linguaggio del file (con Blocca) e tema dell'editor. Appoggia il mouse su un pulsante per vederne nome e scorciatoia.</li>
+					<li class="highLineHeigthList"><b>Finestre piccole.</b> Quando la finestra è più stretta della barra, la barra scorre di lato: trascina la barra sottile sotto i pulsanti o usa la rotellina del mouse sopra la barra. Niente viene tagliato o nascosto.</li>
+					<li class="highLineHeigthList"><b>Menu Testo.</b> Ordina righe A &rarr; Z o Z &rarr; A, rimuovi righe duplicate (resta la prima), rimuovi righe vuote, togli gli spazi a fine riga, MAIUSCOLO, minuscolo, Iniziali Maiuscole, rimuovi spazi, rimuovi contenuto, sostituisci sequenze di escape, svuota testo. Le trasformazioni agiscono sulla selezione o, senza selezione, su tutto il testo, e si possono annullare.</li>
+					<li class="highLineHeigthList"><b>Menu Strumenti.</b> Calcolatrice, selettore colore, immagine in testo (OCR), PDF in testo, leggi ad alta voce (la stessa voce ferma la lettura), segui il file (tail), workspace cifrato (importa / esporta), apri in ScreepT.</li>
+					<li class="highLineHeigthList"><b>Menu Vista.</b> A capo automatico, mostra spazi e tab, mostra fine riga, mostra la griglia dei tab, dimensione tab (2, 3, 4, 6, 8), ingrandisci, riduci e ripristina lo zoom (la dimensione del font si imposta anche nelle preferenze grafiche). Le scelte su spazi e fine riga vengono ricordate.</li>
 				</ul></p>
 				<hr>
 				<h2 id="funcEasterEggs" class="sectionSubTitle"> 2.11 - EASTER EGG</h2>

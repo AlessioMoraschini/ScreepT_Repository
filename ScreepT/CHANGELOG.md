@@ -6,6 +6,20 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.83 - 2026-11-17
+> A new File editor toolbar: one tidy row of icons that scrolls when the window is small, and new text tools
+
+### New
+- File editor toolbar: the two crowded rows of buttons are now a single row of groups (File, Edit, Find, Text, Panels, Current file, then Tools and View), separated by thin lines. When the window is too narrow the toolbar scrolls sideways: use the thin bar under the buttons or the mouse wheel over the toolbar. The language and theme boxes stay on the right.
+- File editor toolbar: all the icons were redrawn in the same line style (sharp at every interface size, they follow hover, pressed, selected and disabled states). The buttons no longer take the keyboard focus away from the text.
+- Text menu of the toolbar: sort lines A-Z / Z-A, remove duplicate lines, remove empty lines, trim spaces at the end of the lines, UPPERCASE / lowercase / Title Case. They work on the selection or, when nothing is selected, on the whole text, and can be undone.
+- Tools menu of the toolbar: calculator, color sampler, image to text (OCR), PDF to text, read aloud, follow file (tail), encrypted workspace and open in ScreepT, now with their name next to the icon.
+- View menu of the toolbar: word wrap, show spaces and tabs, show line ends, show the tab grid, tab size (2, 3, 4, 6, 8) and zoom in / out / reset.
+- New button "Copy path" in the toolbar: copies the full path of the current file.
+
+### Improved
+- File editor toolbar: the panel buttons (file tree, map, clipboard, console, quick notes, spell checker) show clearly when they are on. Remove spaces, remove content, replace escape sequences and clear text moved to the Text menu; their shortcuts do not change.
+
 ## 0.9.82 - 2026-11-17
 > Tabs you can pin and move, the hosts file with its own colors, and the real memory of ScreepT in the menu bar
 

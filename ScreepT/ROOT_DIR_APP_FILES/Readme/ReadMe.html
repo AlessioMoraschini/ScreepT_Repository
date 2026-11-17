@@ -187,6 +187,9 @@
 									<a href="#funcCalculator">Calculator</a>
 								</div></li>
 								<li><div class="subIndex2">		
+									<a href="#funcEditorToolbar">File editor toolbar</a>
+								</div></li>
+								<li><div class="subIndex2">		
 									<a href="#funcLogSearch">LogSearch (big files)</a>
 								</div></li>
 								<li><div class="subIndex2">		
@@ -590,7 +593,7 @@ $link.Save()</code></pre>
 				<li><image class="iconImgTitleSect" src="Images/icons/textEditor.png"/> <span id="subSectTitleTxtEditor" class="subMenuthirdLevel">FILE EDITOR</span></li>
 					<p>This is a built-in file editor (it was called Text Editor in the previous versions) with basic functions, and either some extra functionality such as:
 					<ul>
-						<li class="highLineHeigthList"><span class="highlightBolded">TEXT SPEAKER </span>- you can use this by clicking on <image class="iconImg" src="Images/icons/Speaker.png"/> or using the shortcut [Ctrl+spacebar]. This way you will hear the text visible in text-area with english pronunciation. You can also choose the voice speed rate, dragging the selector over the speaker button. (<u>this function is enabled only if the relative plugin is installed on ScreepT</u>)</li>
+						<li class="highLineHeigthList"><span class="highlightBolded">TEXT SPEAKER </span>- you can use this by choosing Tools &gt; Read aloud in the file editor toolbar or using the shortcut [Ctrl+spacebar]. This way you will hear the text visible in text-area with english pronunciation. You can also choose the voice speed rate, dragging the selector over the speaker button. (<u>this function is enabled only if the relative plugin is installed on ScreepT</u>)</li>
 						
 						<li class="highLineHeigthList"><span class="highlightBolded">TEXT CRYPT/DECRYPT </span>- with a non-empty password specified in the password-field on top, you can encrypt/decrypt with AES (128bit) the text loaded in text-area, just by clicking on crypt <image class="iconImg" src="Images/icons/Crypt.png"/> or decrypt <image class="iconImg" src="Images/icons/Decrypt.png"/> (or using the shortcut [Ctrl+shift+C / Ctrl+shift+D]).</li>
 						
@@ -604,7 +607,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 						<li class="highLineHeigthList"><span class="highlightBolded">TEMPLATES INJECTION </span>- clicking on <strong>[Templates]</strong> button, a new dialog will open staying on top till close, and in which you can select an existing template, create one from your currently selected text, or even define your own template using current file.
 						<span class="highlightBoldedGrey">To use a template</span> just select it from the list and click on "Inject Template".</li>
 
-						<li class="highLineHeigthList"><span class="highlightBolded">BASE 64 CONVERTER </span>- with this function you can encode selected text (or all text, if nothing is selected) using base64 encoding. If Ctrl key is pressed, text will be decoded using base64. Just click on  <image class="iconImg" src="Images/icons/64_Purple.png"/> button to trigger this function.
+						<li class="highLineHeigthList"><span class="highlightBolded">BASE 64 CONVERTER </span>- with this function you can encode selected text (or all text, if nothing is selected) using base64 encoding. If Ctrl key is pressed, text will be decoded using base64. Just click on the <b>64</b> button of the Text group of the file editor toolbar to trigger this function.
 
 						<li class="highLineHeigthList"><span class="highlightBolded">EOL ANALYZER </span>- you can see which end of line terminators are used wither in loaded text, or in current file. Just right click on text area and choose "View line feeds" to open a pop-up tooltip and see the line terminators (CR/LF A.K.A. "\n" "\r"). This is useful when checking compatibility of a file for different operating systems. If you need to convert current text/file EOL, just right click on textArea and select the wanted option from "Normalize End Of Line" subMenu.
 
@@ -768,7 +771,7 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 				<h2 id="funcQuickNotes" class="sectionSubTitle"> 2.8 - QUICK NOTES</h2>
 				<hr>
 				<p><ul>
-					<li class="highLineHeigthList">Quick notes is a to-do drawer on the right side of the window. Show or hide it with [Ctrl + Alt + N], from Various > Quick notes, or with the Quick notes button of the file editor toolbar (right of the spell checker toggle, it follows the state of the drawer).</li>
+					<li class="highLineHeigthList">Quick notes is a to-do drawer on the right side of the window. Show or hide it with [Ctrl + Alt + N], from Various > Quick notes, or with the Quick notes button of the file editor toolbar (in the Panels group, after the console toggle: it follows the state of the drawer).</li>
 					<li class="highLineHeigthList">Type a note and press Enter to add it, click a note to edit it inline, use the round checkbox (or Ctrl+Enter) to mark it as done: completed notes are grouped at the bottom. The search box filters the notes and highlights the matches.</li>
 					<li class="highLineHeigthList">Notes are saved automatically at every change in Resources_ScreepT/QuickNotes/quick_notes.md, a plain Markdown list with a backup copy.</li>
 					<li class="highLineHeigthList">Backup and import: the &#8801; button at the top of the drawer opens a menu. "Back up notes to..." saves a copy of all the notes in a folder of your choice (file quick_notes_backup.md) and remembers the folder; "Update backup" rewrites that file with the current notes. "Import notes from backup..." replaces ALL the current notes with the ones of a backup file: before doing it ScreepT warns you that the current notes will be lost and offers to back them up first in a folder of your choice.</li>
@@ -829,6 +832,16 @@ By clicking on <image class="iconImg" src="Images/icons/uppercase.png"/> you can
 					<li class="highLineHeigthList">The line of the terminal in the About window (Help > About) is alive: type anything and press Enter. The assistant answers like a sarcastic NPC, with iconic movie quotes (Star Wars, The Lord of the Rings, The Godfather, Old School, Scary Movie and many more) and, when it can, with something true about ScreepT that fits what you said: features, version, shortcuts of the guide, big files, the terminal, the crypter.</li>
 					<li class="highLineHeigthList">Its face changes: angry when you swear at it, thinking in every other case.</li>
 					<li class="highLineHeigthList">It hides the easter eggs: every two or three answers it drops a tip, and it tells how close your sentence is to waking one up, like the old game: "acqua" (cold), "fuochino" (warm), "fuoco" (hot). Name something an egg is about and that egg wakes up: the padlock opens a little and the egg list appears, with only the eggs you named launchable; the others show a teaser of what they do. Tell ScreepT how you feel about it, honestly, and the whole vault opens: the padlock opens completely and an egg hatches next to the title, with Feo and Nano inside.</li>
+				</ul></p>
+				<hr>
+				<h2 id="funcEditorToolbar" class="sectionSubTitle"> 2.16 - FILE EDITOR TOOLBAR</h2>
+				<hr>
+				<p><ul>
+					<li class="highLineHeigthList"><b>One row of groups.</b> From the left: File (new, open, save, save as, reload, close all tabs), Edit (undo, redo, back and forward in the history), Find (find, replace, go to line, search in files, quick file search), Text (format, templates, base 64 and the Text menu), Panels (file tree, map, clipboard, console, quick notes, spell checker: lit when on), Current file (show in the file explorer, open a terminal there, copy the path, properties), then the Tools and View menus. On the right: language of the file (with Lock) and editor theme. Rest the mouse on a button to see its name and shortcut.</li>
+					<li class="highLineHeigthList"><b>Small windows.</b> When the window is narrower than the toolbar, the toolbar scrolls sideways: drag the thin bar under the buttons or use the mouse wheel over the toolbar. Nothing is cut or hidden.</li>
+					<li class="highLineHeigthList"><b>Text menu.</b> Sort lines A &rarr; Z or Z &rarr; A, remove duplicate lines (the first one stays), remove empty lines, trim spaces at the end of the lines, UPPERCASE, lowercase, Title Case, remove spaces, remove content, replace escape sequences, clear text. The transformations work on the selection or, with nothing selected, on the whole text, and can be undone.</li>
+					<li class="highLineHeigthList"><b>Tools menu.</b> Calculator, color sampler, image to text (OCR), PDF to text, read aloud (the same entry stops the reading), follow file (tail), encrypted workspace (import / export), open in ScreepT.</li>
+					<li class="highLineHeigthList"><b>View menu.</b> Word wrap, show spaces and tabs, show line ends, show the tab grid, tab size (2, 3, 4, 6, 8), zoom in, zoom out and reset zoom (the font size can also be set in the graphic preferences). The choices for spaces and line ends are remembered.</li>
 				</ul></p>
 				<hr>
 				<h2 id="funcEasterEggs" class="sectionSubTitle"> 2.11 - EASTER EGGS</h2>
