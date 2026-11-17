@@ -6,6 +6,17 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.84 - 2026-11-17
+> A file tree filter that answers while you type, with rules to skip heavy folders, and a clearer memory card
+
+### New
+- File tree filter: the funnel button opens the filter rules. Folders and files to skip (by default .git, .svn, .hg, node_modules, .idea, .gradle, __pycache__ and target), each with a name or wildcard (*.java, TEST*.rar...), the kind it applies to (folder, file, symbolic link, any) and an on/off switch. Add, remove or restore the defaults; the rules are saved.
+
+### Improved
+- File tree filter: the names under the folder are read once in the background into a compact index, and then every letter you type searches memory (a few milliseconds, also with hundreds of thousands of files; a longer text refines the previous result). The question about folders over 5000 elements and the refusal over 200000 are gone. The index is refreshed in the background when the tree is reloaded and released after five minutes without filtering.
+- File tree filter: only the folders that lead to the matches are opened, and the result is prepared in the background, so the tree no longer freezes on big results. Changing tab or folder while filtering never shows the result of the previous one.
+- Memory card of the menu bar: labels in bold and values in plain text, and the entries now add up to the total shown (heap reserved, JVM internals, thread stacks, direct buffers, and the native code and libraries calculated by difference).
+
 ## 0.9.83 - 2026-11-17
 > A new File editor toolbar: one tidy row of icons that scrolls when the window is small, and new text tools
 

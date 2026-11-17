@@ -289,7 +289,11 @@ public class TextEditor extends ModulePanel {
 		leftScrollPane = new JScrollPane(leftFileTree);
 		leftScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		treeFilterPanel = new gui.commons.treeutils.TreeFilterPanel(leftFileTree,
-				msg -> Boolean.TRUE.equals(dialogHelper.showYNOrNullDialogWarn(msg, I18n.t("tree.filter_too_many_title"))));
+				() -> currentConfiguration.getTextEditorOpt().treeFilterRules,
+				serialized -> {
+					currentConfiguration.getTextEditorOpt().treeFilterRules = serialized;
+					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "treeFilterRules", serialized);
+				});
 		leftTreeBody = new JPanel(new java.awt.BorderLayout());
 		leftTreeBody.setOpaque(false);
 		leftTreeBody.add(treeFilterPanel, java.awt.BorderLayout.NORTH);
