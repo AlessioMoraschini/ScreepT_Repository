@@ -26,6 +26,8 @@
 - Every window, plugins included, now opens on the monitor of the main window.
 
 ### Fixed
+- PDF reader window: it opens sized to its content (toolbar and buttons were cut on the right) and grows up to the monitor limit, with scroll bars only when the screen is too small.
+- PDF viewer on Java 19 and 21: text and part of the page content were not drawn (a Java 19 change broke the bundled ICEpdf reader). Fixed with a small compatible patch, checked rendering on Java 8, 17, 19 and 21; Java 8 and older versions work as before.
 - System information (hardware plugin) works again on Java 17, 19 and 21: an old limit disabled it above Java 9 even if it runs fine (checked on Java 8, 17, 19 and 21). The limit is now the supported range, also for installations updated from old versions.
 
 ## 0.9.80 - 2026-11-16
