@@ -1004,11 +1004,23 @@ public class MainGuiUtils {
 		return somethingCleaned;
 	}
 
+	/** Highest JVM (included) on which the plugins based on native libraries (hardware info...) are enabled: 21 is the last supported */
+	private static final String MIN_JVM_LIMIT = "21.99.0";
+
 	public static boolean checkJavaVersionMaxCompatibility() {
 		MainGUI.currentJvmVersion = System.getProperty("java.version");
 
 		String tempCompareJvmCurrent = StringWorker.keepOnlyDotsAndDigits(MainGUI.currentJvmVersion);
-		int compareRes = StringWorker.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
+		// installations updated from old versions keep an old limit (1.9.0) in their mappings file: never go below the supported range (8..21)
+		String limit = GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY;
+		try {
+			if (limit == null || StringWorker.compareVersions(limit, MIN_JVM_LIMIT) < 0) {
+				limit = MIN_JVM_LIMIT;
+			}
+		} catch (IllegalArgumentException e) {
+			limit = MIN_JVM_LIMIT;
+		}
+		int compareRes = StringWorker.compareVersions(tempCompareJvmCurrent, limit);
 
 		return compareRes != 1;
 	}

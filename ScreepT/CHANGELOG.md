@@ -22,6 +22,11 @@
 - The last "Text-Editor" texts are now "File Editor".
 - Guide, index: the "Index" button on the top left shows or hides the index with a sliding animation (the choice is remembered). The index is no longer a floating panel over the text: it opens at the side and the text stays next to it, on a narrow window it covers the text until closed.
 - Guide: updated for the File editor (file tree filter, tabs, calendar), and ready for more languages: when a translated ReadMe_<code>.html is present, the guide opens in the language of the application and shows a language selector.
+- System information window, redesigned: live CPU, memory and ScreepT usage with history graphs and a bar for every logical core, system and Java, processor, motherboard, battery, network speed, disks with read and write speed, volumes with free space and monitors and graphics cards (name, driver, video memory; on NVIDIA also load, memory, temperature and power with "Live NVIDIA data", off by default because on laptops it can keep the GPU awake). It is written for Windows, Linux and macOS too (lspci and system_profiler for the graphics cards, pseudo volumes hidden): only Windows was tried. The "Copy report" button copies every value as text, "Pause" stops the refresh, "Always on top" can be turned off. It fits its content (scroll bars when the screen is not enough), follows the theme and the language, and the refresh no longer touches the window from a background thread.
+- Every window, plugins included, now opens on the monitor of the main window.
+
+### Fixed
+- System information (hardware plugin) works again on Java 17, 19 and 21: an old limit disabled it above Java 9 even if it runs fine (checked on Java 8, 17, 19 and 21). The limit is now the supported range, also for installations updated from old versions.
 
 ## 0.9.80 - 2026-11-16
 > A faster and smarter LogSearch (monitor, date filter, more log formats), Image Studio full screen, "Open with" in the file tree, update all plugins at once, and the Text editor is now the File editor

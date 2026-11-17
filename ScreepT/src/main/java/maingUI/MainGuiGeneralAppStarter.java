@@ -150,6 +150,8 @@ public class MainGuiGeneralAppStarter {
 				various.common.light.i18n.I18n.setLanguage(currentConfiguration.getGenOpt().getLanguage());
 				// every window opens 10% bigger than its content: texts of other languages are longer (see WindowMargin)
 				various.common.light.gui.WindowMargin.install();
+				// every window, plugins included, opens on the monitor of the main window
+				various.common.light.gui.ScreenMemory.keepWindowsOnMainScreen(() -> MainGUI.mainFrameScreept);
 				// the first update to a version with the dark theme as default moves the user to it, once (see DarkThemeMigration)
 				DarkThemeMigration.applyOnce(currentConfiguration);
 				// the ScreepT Dark editor theme must exist for everyone (see EditorThemeInstaller)
