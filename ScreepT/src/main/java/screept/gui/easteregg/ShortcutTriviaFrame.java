@@ -11,6 +11,7 @@
  */
 package screept.gui.easteregg;
 
+import various.common.light.easteregg.scores.EggScores;
 import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -43,7 +44,7 @@ public final class ShortcutTriviaFrame extends EggFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String GAME_ID = "shortcutTrivia";
+	private static final String GAME_ID = EggScores.SHORTCUT_TRIVIA;
 	private static final int QUESTIONS = 10;
 	private static final Pattern SHORTCUT_LINE = Pattern.compile("^(.+?)\\s+-\\s+\\[(.+)\\]\\s*$");
 
@@ -70,7 +71,7 @@ public final class ShortcutTriviaFrame extends EggFrame {
 	private boolean answered;
 
 	private ShortcutTriviaFrame() {
-		super("Shortcut Trivia - ScreepT easter egg", 700, 420);
+		super("Shortcut Trivia - ScreepT easter egg", GAME_ID, 700, 420);
 		loadShortcuts();
 
 		JPanel content = new JPanel(new BorderLayout(0, 12));
@@ -232,7 +233,7 @@ public final class ShortcutTriviaFrame extends EggFrame {
 
 	private void showResult() {
 		setAnswersEnabled(false);
-		boolean record = saveBestScore(GAME_ID, score);
+		boolean record = saveBestScore(GAME_ID, score, score + " of " + QUESTIONS + " correct");
 		best = Math.max(best, score);
 		String verdict = score >= 9 ? "Keyboard wizard" : score >= 6 ? "Solid power user" : score >= 3 ? "Mouse lover" : "Did you read the guide?";
 		questionLabel.setText("<html><div style='text-align:center'>" + score + "/" + QUESTIONS + " - " + verdict + "</div></html>");

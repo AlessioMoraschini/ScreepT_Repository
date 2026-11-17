@@ -639,8 +639,11 @@ body.light .guideFab:hover{
 }
 
 @media print{
-	.guideFab, #guideProgress{
+	.guideFab, #guideProgress, #guideIndexButton, #guideNav{
 		display: none;
+	}
+	body.navOpen{
+		padding-left: 28px;
 	}
 	body, body.light{
 		background: #fff;
@@ -917,38 +920,98 @@ body.light mark.hit.cur{
 	}
 }
 
-/* ---------- side index (appears down the page, goes away when the reader stops) ---------- */
+/* ---------- side index: button "Index" on the top left, the panel slides in and the text stays beside it ---------- */
 
-#guideNav{
+body{
+	-webkit-transition: padding-left .35s ease;
+	transition: padding-left .35s ease;
+}
+
+body.navOpen{
+	padding-left: 348px;
+}
+
+#guideIndexButton{
 	position: fixed;
 	left: 16px;
 	top: 16px;
-	bottom: 16px;
-	width: 312px;
+	height: 42px;
+	padding: 0 18px 0 14px;
 	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
-	padding: 12px 12px 8px 12px;
+	line-height: 40px;
+	font-size: 14px;
+	letter-spacing: .04em;
+	color: #d5dbe3;
+	background: #1d2630;
+	border: 1px solid #2e3b48;
+	border-radius: 21px;
+	cursor: pointer;
+	z-index: 1001;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, .4);
+	-webkit-user-select: none;
+	user-select: none;
+	outline: none;
+	-webkit-transition: background .15s, color .15s;
+	transition: background .15s, color .15s;
+}
+
+#guideIndexButton:hover{
+	background: #26323f;
+}
+
+#guideIndexButton.on{
+	color: #2ec4b6;
+	border-color: #2ec4b6;
+}
+
+#guideIndexButton .idxIcon{
+	display: inline-block;
+	width: 22px;
+	text-align: center;
+	margin-right: 6px;
+}
+
+body.light #guideIndexButton{
+	color: #28313b;
+	background: #ffffff;
+	border-color: #d4dbe5;
+	box-shadow: 0 6px 16px rgba(30, 50, 80, .18);
+}
+
+body.light #guideIndexButton.on{
+	color: #086a60;
+	border-color: #1f7f76;
+}
+
+#guideNav{
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 320px;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	padding: 66px 12px 8px 12px;
 	z-index: 950;
-	background: rgba(24, 30, 37, .97);
-	border: 1px solid #2a3540;
-	border-radius: 16px;
-	box-shadow: 0 14px 44px rgba(0, 0, 0, .55);
+	background: #181e25;
+	border-right: 1px solid #2a3540;
+	border-radius: 0 16px 16px 0;
+	box-shadow: 0 14px 44px rgba(0, 0, 0, .45);
 	overflow: hidden;
-	opacity: 0;
 	visibility: hidden;
-	-webkit-transform: translateX(-340px);
-	transform: translateX(-340px);
-	-webkit-transition: -webkit-transform .35s ease, opacity .3s ease, visibility 0s linear .35s;
-	transition: transform .35s ease, opacity .3s ease, visibility 0s linear .35s;
+	-webkit-transform: translateX(-345px);
+	transform: translateX(-345px);
+	-webkit-transition: -webkit-transform .35s ease, visibility 0s linear .35s;
+	transition: transform .35s ease, visibility 0s linear .35s;
 }
 
 #guideNav.shown{
-	opacity: 1;
 	visibility: visible;
 	-webkit-transform: translateX(0);
 	transform: translateX(0);
-	-webkit-transition: -webkit-transform .35s ease, opacity .3s ease, visibility 0s;
-	transition: transform .35s ease, opacity .3s ease, visibility 0s;
+	-webkit-transition: -webkit-transform .35s ease, visibility 0s;
+	transition: transform .35s ease, visibility 0s;
 }
 
 #guideNav .navHead{
@@ -1092,7 +1155,7 @@ body.light mark.hit.cur{
 }
 
 body.light #guideNav{
-	background: rgba(255, 255, 255, .97);
+	background: #ffffff;
 	border-color: #d4dbe5;
 	box-shadow: 0 14px 38px rgba(30, 50, 80, .24);
 }
@@ -1115,6 +1178,12 @@ body.light #guideNavTree a.active{
 @media (max-width: 720px){
 	#guideNav{
 		width: 270px;
+		-webkit-transform: translateX(-295px);
+		transform: translateX(-295px);
+	}
+	/* too narrow to keep the text beside the index: the index covers it until it is closed */
+	body.navOpen{
+		padding-left: 28px;
 	}
 }
 

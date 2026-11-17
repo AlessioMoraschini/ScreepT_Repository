@@ -27,6 +27,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import various.common.light.easteregg.scores.EggScores;
+
 /**
  * Easter egg: decrypt the Caesar-ciphered words before the time runs out. The shift is shown, the rest is up to you.
  * Words get longer and time shorter at every level, three mistakes end the game.
@@ -35,7 +37,7 @@ public final class CipherBreakerFrame extends EggFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String GAME_ID = "cipherBreaker";
+	private static final String GAME_ID = EggScores.CIPHER_BREAKER;
 	private static final int START_LIVES = 3;
 
 	public static void open() {
@@ -65,7 +67,7 @@ public final class CipherBreakerFrame extends EggFrame {
 	private boolean playing;
 
 	private CipherBreakerFrame() {
-		super("Cipher Breaker - ScreepT easter egg", 640, 360);
+		super("Cipher Breaker - ScreepT easter egg", GAME_ID, 640, 360);
 
 		JPanel content = new JPanel(new BorderLayout(0, 10));
 		content.setBackground(BACKGROUND);
@@ -207,7 +209,7 @@ public final class CipherBreakerFrame extends EggFrame {
 	private void gameOver(String reason) {
 		playing = false;
 		timer.stop();
-		boolean record = saveBestScore(GAME_ID, score);
+		boolean record = saveBestScore(GAME_ID, score, "Level " + level);
 		best = Math.max(best, score);
 		cipherLabel.setText("GAME OVER");
 		hintLabel.setText(reason);

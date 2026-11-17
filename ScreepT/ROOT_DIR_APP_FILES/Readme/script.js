@@ -771,7 +771,7 @@
 
 	////////// side index //////////
 
-	var nav = { el: null, tree: null, shown: false, hover: false, timer: null, spyTimer: null, min: 380, idle: 4000 };
+	var nav = { el: null, tree: null, button: null, shown: false, spyTimer: null, key: 'screept.guide.index' };
 
 	function scrollTopNow() {
 		return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
@@ -815,16 +815,36 @@
 		nav.el = el;
 		nav.tree = tree;
 
-		el.onmouseover = function () {
-			nav.hover = true;
+		var italian = (document.documentElement.lang || 'en').toLowerCase().substring(0, 2) === 'it';
+		nav.label = italian ? 'Indice' : 'Index';
+		var button = make('div');
+		button.id = 'guideIndexButton';
+		button.setAttribute('role', 'button');
+		button.setAttribute('tabindex', '0');
+		button.title = italian ? 'Mostra o nasconde l’indice' : 'Show or hide the index';
+		button.onclick = function () {
+			setNav(!nav.shown, true);
 		};
-		el.onmouseout = function (e) {
-			var to = e.relatedTarget || e.toElement;
-			if (!to || !el.contains(to)) {
-				nav.hover = false;
-				navActivity();
+		button.onkeydown = function (e) {
+			var code = e.keyCode || e.which;
+			if (code === 13 || code === 32) {
+				setNav(!nav.shown, true);
+				return false;
 			}
 		};
+		document.body.appendChild(button);
+		nav.button = button;
+		paintNavButton();
+
+		// on a narrow window the index covers the text: it closes after a choice
+		tree.addEventListener('click', function (e) {
+			var t = e.target || e.srcElement;
+			if (t && t.tagName === 'A' && (window.innerWidth || 1000) <= 720) {
+				setNav(false, false);
+			}
+		}, false);
+
+		setNav(storageGet(nav.key) === '1', false);
 	}
 
 	// the tree starts under the search controls, whatever their height
@@ -836,44 +856,39 @@
 		}
 	}
 
-	function navAllowed() {
-		return scrollTopNow() > nav.min;
+	function paintNavButton() {
+		nav.button.innerHTML = '';
+		nav.button.appendChild(make('span', 'idxIcon', nav.shown ? '✕' : '☰'));
+		nav.button.appendChild(make('span', 'idxLabel', nav.label));
 	}
 
-	function hideNav(force) {
+	// the Controls of the page follow the new width once the slide is over (the hero canvas listens to resize)
+	function fireResize() {
+		try {
+			var ev = document.createEvent('Event');
+			ev.initEvent('resize', true, true);
+			window.dispatchEvent(ev);
+		} catch (e) { /* the hero keeps its size */ }
+	}
+
+	// the index slides in from the left and the text stays beside it (body.navOpen moves the page)
+	function setNav(show, remember) {
 		if (!nav.el) {
 			return;
 		}
-		var busy = nav.hover || (document.activeElement && nav.el.contains(document.activeElement));
-		if (busy && !force) {
-			navActivity();
-			return;
-		}
-		nav.shown = false;
-		removeClass(nav.el, 'shown');
-	}
-
-	// the index appears when the reader is down the page and moves, and goes away after 4 seconds without movement
-	function navActivity() {
-		if (!nav.el) {
-			return;
-		}
-		if (!navAllowed()) {
-			hideNav(true);
-			return;
-		}
-		if (!nav.shown) {
-			nav.shown = true;
-			addClass(nav.el, 'shown');
+		nav.shown = show;
+		setClass(nav.el, 'shown', show);
+		setClass(document.body, 'navOpen', show);
+		setClass(nav.button, 'on', show);
+		paintNavButton();
+		if (show) {
 			layoutNav();
 			scheduleSpy();
 		}
-		if (nav.timer) {
-			clearTimeout(nav.timer);
+		if (remember) {
+			storageSet(nav.key, show ? '1' : '0');
 		}
-		nav.timer = setTimeout(function () {
-			hideNav(false);
-		}, nav.idle);
+		setTimeout(fireResize, 420);
 	}
 
 	// the entry of the section that is on screen is highlighted
@@ -997,14 +1012,9 @@
 			var height = (doc.scrollHeight || body.scrollHeight) - (window.innerHeight || doc.clientHeight);
 			bar.style.width = (height > 0 ? Math.min(100, top * 100 / height) : 0) + '%';
 			setClass(topButton, 'shown', top > 500);
-			navActivity();
 			scheduleSpy();
 		}
 		window.onscroll = onScroll;
-		document.addEventListener('mousemove', navActivity, false);
-		document.addEventListener('mousedown', navActivity, false);
-		document.addEventListener('touchstart', navActivity, false);
-		document.addEventListener('keydown', navActivity, false);
 		onScroll();
 	}
 

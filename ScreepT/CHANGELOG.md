@@ -10,6 +10,8 @@
 > A quicker and cleaner File editor: slimmer tabs, a filter for the file tree and a calendar where the year can be typed
 
 ### New
+- Easter egg leaderboard: Snake, Puppynoid, Bug Squasher, Cipher Breaker, Code Typist and Shortcut Trivia save the score at the end of every run, and the ten best of each game are kept on this installation (nothing is sent anywhere). The "Leaderboard" entry on the top right of every game window opens it, with a list of the games and a button to clear one of them. Only the games you have already played (or the one you are in) show their name: the others stay "???" until you find them. Records saved by older versions are kept.
+- Puppynoid: 25 levels (they were 4) with a measured, growing difficulty: faster ball, narrower paddle, fewer bonuses, more bricks and bricks that need up to 5 hits (blue and purple). From level 2 a level never starts with your last life. The level counter shows "Level 7/25".
 - File tree: filter bar above the tree. Type part of a name and only the matching files and the folders that lead to them stay (case insensitive); the x button or Esc clears it and the folders open as they were. On very big folders (over 5000 elements) it asks before going on, because it can take long.
 - Calendar of the date fields (LogSearch): click the year to type it, no more months to scroll by hand.
 
@@ -18,6 +20,7 @@
 - File editor tabs: flatter and more compact, with an accent bar on the selected one, a thin divider between the others and colors taken from the look and feel (light or dark). The custom icons are the same.
 - File tree: much faster. Folders are read once instead of on every paint, icons are no longer loaded from disk for each row, and switching tab no longer rebuilds the tree when nothing changed on disk. Folders are now listed before files.
 - The last "Text-Editor" texts are now "File Editor".
+- Guide, index: the "Index" button on the top left shows or hides the index with a sliding animation (the choice is remembered). The index is no longer a floating panel over the text: it opens at the side and the text stays next to it, on a narrow window it covers the text until closed.
 - Guide: updated for the File editor (file tree filter, tabs, calendar), and ready for more languages: when a translated ReadMe_<code>.html is present, the guide opens in the language of the application and shows a language selector.
 
 ## 0.9.80 - 2026-11-16

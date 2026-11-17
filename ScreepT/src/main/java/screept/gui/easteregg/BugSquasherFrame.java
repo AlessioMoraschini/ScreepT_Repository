@@ -31,12 +31,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import various.common.light.easteregg.scores.EggScores;
+
 /** Easter egg: squash the bugs crawling over the screen for 30 seconds. Golden bugs are fast and worth five. */
 public final class BugSquasherFrame extends EggFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String GAME_ID = "bugSquasher";
+	private static final String GAME_ID = EggScores.BUG_SQUASHER;
 	private static final int AREA_W = 720;
 	private static final int AREA_H = 480;
 	private static final long ROUND_MS = 30000;
@@ -52,7 +54,7 @@ public final class BugSquasherFrame extends EggFrame {
 	private final Arena arena = new Arena();
 
 	private BugSquasherFrame() {
-		super("Bug Squasher - ScreepT easter egg", AREA_W, AREA_H);
+		super("Bug Squasher - ScreepT easter egg", GAME_ID, AREA_W, AREA_H);
 		add(arena);
 		pack();
 	}
@@ -148,7 +150,7 @@ public final class BugSquasherFrame extends EggFrame {
 					running = false;
 					finished = true;
 					bugs.clear();
-					newRecord = saveBestScore(GAME_ID, score);
+					newRecord = saveBestScore(GAME_ID, score, bugsSquashed + " bugs squashed");
 					best = Math.max(best, score);
 				} else {
 					long interval = Math.max(260, 900 - elapsed / 45);

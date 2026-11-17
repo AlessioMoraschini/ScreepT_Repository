@@ -73,7 +73,7 @@ public final class EasterEggCatalog {
 						+ "Hidden on the home page: press S three times in a row. In the home terminal: type \"snake\".");
 		add("puppynoid", "Puppynoid", "breakout with puppies",
 				"A breakout game: bounce the ball with the paddle, break all the bricks, catch the falling bonuses and move on to the next level. "
-						+ "Pick the difficulty in the start window.\n\n"
+						+ "Pick the difficulty in the start window: there are 25 levels, each one harder than the last. Your scores go to the leaderboard.\n\n"
 						+ "Keys: left and right arrows move the paddle, Ctrl launches the ball, Space pauses, Esc quits, Enter retries, N goes to the next level.\n"
 						+ "Hidden on the home page: press A three times in a row. In the home terminal: type \"puppynoid\".");
 		add("cats", "Feo and Nano", "a cat parade over the window",
@@ -85,7 +85,7 @@ public final class EasterEggCatalog {
 						+ "Hidden in the crypter and in the file editor: press Ctrl+Alt+U four times in a row. In the home terminal: type \"poem\".");
 		add("bugs", "Bug Squasher", "squash the bugs in 30 seconds",
 				"Bugs crawl over the screen and you have 30 seconds to squash as many as you can. Golden bugs are fast and worth five points, "
-						+ "missing costs one. Your best score is remembered.\n\n"
+						+ "missing costs one. Your best scores go to the leaderboard.\n\n"
 						+ "Controls: just click.\n"
 						+ "Hidden on the home page: press B three times in a row. In the home terminal: type \"bugs\".");
 		add("cipher", "Cipher Breaker", "decrypt before time runs out",

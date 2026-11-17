@@ -17,15 +17,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 
+import various.common.light.easteregg.scores.EggLeaderboard;
+import various.common.light.easteregg.scores.EggScores;
 import various.common.light.gui.ScreenMemory;
 
 /**
  * Window of an easter egg game: dark terminal look, opens on the monitor used last, one instance per game,
- * ESC closes it. Subclasses stop their timers in {@link #onClosed()}, so nothing keeps running after the window is gone.
+ * ESC closes it, a "Leaderboard" entry on the top right opens the scores of all the games. Subclasses stop their timers in {@link #onClosed()}, so nothing keeps running after the window is gone.
  */
 abstract class EggFrame extends JFrame {
 
@@ -60,13 +62,18 @@ abstract class EggFrame extends JFrame {
 		return "Consolas".equalsIgnoreCase(consolas.getFamily()) ? consolas : new Font(Font.MONOSPACED, style, size);
 	}
 
-	protected EggFrame(String title, int width, int height) {
+	protected EggFrame(String title, String gameId, int width, int height) {
 		super(title);
 		getContentPane().setBackground(BACKGROUND);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setResizable(false);
 		contentSize = new java.awt.Dimension(width, height);
 		getContentPane().setPreferredSize(contentSize);
+
+		// the leaderboard of all the games, always on the top right
+		JMenuBar menuBar = new JMenuBar();
+		EggLeaderboard.addTo(menuBar, this, gameId);
+		setJMenuBar(menuBar);
 		pack();
 		ScreenMemory.centerOnLastScreen(this);
 
@@ -99,24 +106,11 @@ abstract class EggFrame extends JFrame {
 	////////// BEST SCORES ////////////////
 
 	static int bestScore(String game) {
-		try {
-			return Preferences.userRoot().node("screept/eggs").getInt(game, 0);
-		} catch (RuntimeException e) {
-			return 0;
-		}
+		return EggScores.best(game);
 	}
 
-	/** Saves the score when it beats the stored one, returns true on a new record */
-	static boolean saveBestScore(String game, int score) {
-		try {
-			Preferences node = Preferences.userRoot().node("screept/eggs");
-			if (score > node.getInt(game, 0)) {
-				node.putInt(game, score);
-				return true;
-			}
-		} catch (RuntimeException e) {
-			// the record is only a nicety
-		}
-		return false;
+	/** Saves the score of a finished run in the leaderboard, returns true on a new record */
+	static boolean saveBestScore(String game, int score, String detail) {
+		return EggScores.record(game, score, detail) == 1;
 	}
 }

@@ -25,12 +25,14 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import various.common.light.easteregg.scores.EggScores;
+
 /** Easter egg: typing speed test with five lines of programmer life, words per minute and accuracy at the end. */
 public final class CodeTypistFrame extends EggFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String GAME_ID = "codeTypist";
+	private static final String GAME_ID = EggScores.CODE_TYPIST;
 	private static final int ROUNDS = 5;
 	private static final int AREA_W = 760;
 	private static final int AREA_H = 300;
@@ -45,7 +47,7 @@ public final class CodeTypistFrame extends EggFrame {
 	private final Board board = new Board();
 
 	private CodeTypistFrame() {
-		super("Code Typist - ScreepT easter egg", AREA_W, AREA_H);
+		super("Code Typist - ScreepT easter egg", GAME_ID, AREA_W, AREA_H);
 		add(board);
 		pack();
 		board.requestFocusInWindow();
@@ -142,7 +144,7 @@ public final class CodeTypistFrame extends EggFrame {
 		private void finish() {
 			running = false;
 			finished = true;
-			record = saveBestScore(GAME_ID, wpm());
+			record = saveBestScore(GAME_ID, wpm(), accuracy() + "% accuracy");
 			best = Math.max(best, wpm());
 		}
 
