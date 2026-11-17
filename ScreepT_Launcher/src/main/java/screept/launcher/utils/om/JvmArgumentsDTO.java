@@ -15,6 +15,7 @@ public class JvmArgumentsDTO {
 
 	public String JVM_MEMORY_OPTIONS = ""; 
 	public String JVM_STACK_SIZE = ""; 
+	public String JVM_GC_OPTIONS = ""; // one GC flag, or empty for the JVM default
 	public String MAIN_JAR_FILE = "";
 	public String GUI_SCALE_ARG_VALUE = "";
 	public String JVM_ARGS = "";

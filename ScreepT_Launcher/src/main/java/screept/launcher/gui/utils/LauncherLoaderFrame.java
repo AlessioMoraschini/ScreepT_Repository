@@ -70,11 +70,24 @@ public class LauncherLoaderFrame extends JFrame{
 		return LauncherTheme.apply();
 	}
 	
+	/** Swing components are touched only on the EDT: the launcher calls this from its loading thread (FlatLaf warns otherwise) */
+	private static void onEdt(Runnable action) {
+		if (javax.swing.SwingUtilities.isEventDispatchThread()) {
+			action.run();
+		} else {
+			javax.swing.SwingUtilities.invokeLater(action);
+		}
+	}
+
 	public void setProgBarColor(Color target) {
 		loader.setProgBarColor(target);
 	}
 	
 	public void update(String text, int progressPercent) {
+		onEdt(() -> updateNow(text, progressPercent));
+	}
+
+	private void updateNow(String text, int progressPercent) {
 		if(loader != null) {
 			String updated = (text==null || text.equals(""))? "Loading...": text;
 			loader.progressBar.setIndeterminate(false);
@@ -84,6 +97,10 @@ public class LauncherLoaderFrame extends JFrame{
 	}
 	
 	public void indeterminate(boolean indeterminated, String text) {
+		onEdt(() -> indeterminateNow(indeterminated, text));
+	}
+
+	private void indeterminateNow(boolean indeterminated, String text) {
 		if(loader != null) {
 			loader.setIndeterminatedProgress(indeterminated, text);
 		}
@@ -96,6 +113,10 @@ public class LauncherLoaderFrame extends JFrame{
 	}
 	
 	public void update(String text, int progressPercent, int msDelayIfEnd) {
+		onEdt(() -> updateNow(text, progressPercent, msDelayIfEnd));
+	}
+
+	private void updateNow(String text, int progressPercent, int msDelayIfEnd) {
 		if(loader != null) {
 			String updated = (text==null || text.equals(""))? "Loading...": text;
 			loader.progressBar.setIndeterminate(false);

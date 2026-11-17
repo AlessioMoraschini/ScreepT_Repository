@@ -941,6 +941,16 @@ public class MainGuiUtils {
 		return input;
 	}
 
+	/** A tab without file and without text is the empty one every new editor starts with: it is not work to keep */
+	private static boolean hasText(TabTextEditorObject tab) {
+		return tab.textArea != null && !tab.textArea.getText().isEmpty();
+	}
+
+	/** True when the File Editor is not in view and still holds work (unsaved files, or text in an untitled tab) that blocks its cleanup */
+	public boolean isTextEditorKeptForWork() {
+		return MainGUI.textEditorPanel != null && !isTextEditorActive(false) && !isAllSavedInTextEditor();
+	}
+
 	public boolean isAllSavedInTextEditor() {
 		if (MainGUI.textEditorPanel == null || MainGUI.textEditorPanel.getCurrentTabEditor() == null) {
 			return true;
@@ -957,7 +967,7 @@ public class MainGuiUtils {
 			if (tabElement.unsaved) {
 				thereAreUnsaved = true;
 			}
-			if (tabElement.loadedFile == null) {
+			if (tabElement.loadedFile == null && hasText(tabElement)) {
 				atLeastOneTemp = true;
 			}
 		}

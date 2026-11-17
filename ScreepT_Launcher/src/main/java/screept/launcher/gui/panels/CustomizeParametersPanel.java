@@ -26,6 +26,7 @@ import resources.ImagesPathConfigurator;
 import screept.launcher.utils.IniFileManager;
 import screept.launcher.utils.JreDownloader;
 import screept.launcher.utils.JvmHelper;
+import screept.launcher.utils.JvmProfiles;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.utility.string.StringWorker;
@@ -79,7 +80,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final String TITLE_LAUNCH_AS_JAR = "Launch as .Jar:";
 	private static final String TITLE_LAUNCH_AS_CLASS = "Launch as .Class:";
 	
-	private static final int DEF_FIXED_HEIGHT = 400;
+	private static final int DEF_FIXED_HEIGHT = 460;
 	private static final int DEF_FIXED_WIDTH = 780;
 	public static final Dimension DEF_DIMENSION = new Dimension(DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
 	
@@ -104,9 +105,13 @@ public class CustomizeParametersPanel extends JFrame{
 	private float backupScaleGuiPerc;
 	private String backupPreferredJvm;
 	
-	private static final int defaultMinMemXms = 256;
+	private static final int defaultMinMemXms = (int) IniFileManager.DEFAULT_INITIAL_MEMORY_MB;
 	private static final int defaultMaxMemXmx = 512;
-	private static final int defaultStackSize = 128;
+	private static final int defaultStackSize = IniFileManager.DEFAULT_JVM_STACK_MB;
+	/** Collector flags, in the order of the combo: the same order as GC_NAME_IDS */
+	private static final String[] GC_FLAGS = { JvmProfiles.GC_JVM_DEFAULT, JvmProfiles.GC_SERIAL, JvmProfiles.GC_PARALLEL, JvmProfiles.GC_G1 };
+	private static final String[] GC_NAME_IDS = { "launcher.gc_jvm_default", "launcher.gc_serial", "launcher.gc_parallel", "launcher.gc_g1" };
+	private static final String[] GC_DESC_IDS = { "launcher.gc_jvm_default_desc", "launcher.gc_serial_desc", "launcher.gc_parallel_desc", "launcher.gc_g1_desc" };
 	private static final float defaultScaleGuiPerc = 1.0f;
 	
 	private JLabel lblMaxWarninig;
@@ -128,6 +133,13 @@ public class CustomizeParametersPanel extends JFrame{
 	private java.util.List<String> jvmLabels = new ArrayList<String>();
 	private javax.swing.JEditorPane jvmInfoPane;
 	private JButton btnDownloadJava;
+	private JLabel lblProfile;
+	private JLabel lblGc;
+	private JComboBox<String> comboProfile;
+	private JComboBox<String> comboGc;
+	private javax.swing.JEditorPane gcInfoPane;
+	private String backupGc;
+	private boolean applyingProfile;
 	private JLabel lblPreferredJvm;
 	private JLabel lblJvmInfo;
 	
@@ -160,7 +172,7 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][20px:n][80px,grow]", "[grow][grow][grow][150:150:,grow][][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][20px:n][80px,grow]", "[grow][grow][grow][150:150:,grow][][][grow]"));
 		
 		lblMaxMemory = new JLabel(I18n.t("launcher.max_memory_mb"));
 		lblMaxMemory.setForeground(new Color(220, 220, 220));
@@ -229,7 +241,7 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(lblSTackSizeInfo, "cell 2 2,alignx right");
 		
 		spinnerXssMemory = new JSpinner();
-		spinnerXssMemory.setModel(new SpinnerNumberModel(4, 4, 256, 1));
+		spinnerXssMemory.setModel(new SpinnerNumberModel(defaultStackSize, 1, 256, 1));
 		spinnerXssMemory.setOpaque(true);
 		spinnerXssMemory.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(spinnerXssMemory, "cell 3 2,growx");
@@ -312,6 +324,7 @@ public class CustomizeParametersPanel extends JFrame{
 		jvmBox.add(comboPrefJvm, "growx");
 		jvmBox.add(jvmInfoPane, "grow");
 		getContentPane().add(jvmBox, "cell 3 3 5 1,grow");
+		setupProfileControls();
 		
 		btnDownloadJava = new JButton(I18n.t("launcher.get_java") + JreDownloader.FEATURE_VERSION);
 		btnDownloadJava.setToolTipText(I18n.t("launcher.downloads_the_latest_java") + JreDownloader.FEATURE_VERSION + I18n.t("launcher.eclipse_temurin_jre_checksum_verified_into"));
@@ -319,14 +332,14 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(btnDownloadJava, "cell 8 3");
 		
 		separator = new JSeparator();
-		getContentPane().add(separator, "cell 0 4 9 1,growx");
+		getContentPane().add(separator, "cell 0 5 9 1,growx");
 		
 		btnExitConfiguration = new JButton(I18n.t("common.discard"));
 		btnExitConfiguration.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		btnExitConfiguration.setBackground(new Color(207, 77, 70));
 		btnExitConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
 		btnExitConfiguration.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnExitConfiguration, "cell 0 5,growx");
+		getContentPane().add(btnExitConfiguration, "cell 0 6,growx");
 		
 		btnReloadInitialConfig = new JButton(I18n.t("launcher.reset_to_initial_values"));
 		btnReloadInitialConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
@@ -335,7 +348,7 @@ public class CustomizeParametersPanel extends JFrame{
 		btnReloadInitialConfig.setBackground(Color.DARK_GRAY);
 		btnReloadInitialConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 		btnReloadInitialConfig.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnReloadInitialConfig, "cell 1 5 3 1,growx,aligny center");
+		getContentPane().add(btnReloadInitialConfig, "cell 1 6 3 1,growx,aligny center");
 		
 		btnLoadScreeptDefault = new JButton();
 		btnLoadScreeptDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
@@ -345,14 +358,14 @@ public class CustomizeParametersPanel extends JFrame{
 		btnLoadScreeptDefault.setBackground(Color.DARK_GRAY);
 		btnLoadScreeptDefault.setIcon(new ImageIcon(IconsPathConfigurator.iconRootPath));
 		btnLoadScreeptDefault.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnLoadScreeptDefault, "cell 4 5 3 1,growx,aligny center");
+		getContentPane().add(btnLoadScreeptDefault, "cell 4 6 3 1,growx,aligny center");
 
 		btnSaveConfig = new JButton(I18n.t("launcher.save_launch_options"));
 		btnSaveConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		btnSaveConfig.setBackground(new Color(85, 166, 66));
 		btnSaveConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		btnSaveConfig.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnSaveConfig, "cell 7 5 2 1,growx,aligny center");
+		getContentPane().add(btnSaveConfig, "cell 7 6 2 1,growx,aligny center");
 		
 		// add custom behaviour to frame
 		
@@ -398,6 +411,9 @@ public class CustomizeParametersPanel extends JFrame{
 						spinnerMaxMemoryMB.setValue(GeneralConfig.DEFAULT_JVM_XMX);
 						spinnerMinMemoryMB.setValue(GeneralConfig.DEFAULT_JVM_XMS);
 						spinnerXssMemory.setValue(GeneralConfig.DEFAULT_JVM_XSS);
+							comboGc.setSelectedIndex(gcIndex(IniFileManager.DEFAULT_JVM_GC));
+							refreshGcInfo();
+							detectProfile();
 						sliderGuiScale.setValue(getPercFromScale(GeneralConfig.DEFAULT_JVM_GUI));
 						comboLogLevel.setSelectedItem(GeneralConfig.DEFAULT_LOG_LEVEL);
 						chckBoxLaunchAsJar.setSelected(GeneralConfig.DEFAULT_JVM_JAR_MODE);
@@ -474,6 +490,7 @@ public class CustomizeParametersPanel extends JFrame{
 				String logLevel = (String)comboLogLevel.getSelectedItem();
 				String args = "-Xmx"+maxMemory+"m -Xms"+minMemory+"m";
 				String stackString = " -Xss"+stackSize+"m";
+				String gcFlag = GC_FLAGS[comboGc.getSelectedIndex()];
 				boolean viewShell = chckbxActiveShell.isSelected();
 				String stringGuiPerc = getScaleFromPerc((Integer)sliderGuiScale.getValue());
 				String stringLaunchAsJar = (chckBoxLaunchAsJar.isSelected())? "true" : "false";
@@ -489,6 +506,8 @@ public class CustomizeParametersPanel extends JFrame{
 				// WRITE VALUES ON INI FILE
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_JVM_OPT, "memoryArgs", args);
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_JVM_OPT, "stackSizeArgs", stackSize);
+				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_JVM_OPT, "gcArgs", gcFlag);
+				iniFileManager.JVM_GC_OPTIONS = gcFlag;
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_JVM_OPT, "preferredJvm", checkJvmString(preferredJvm));
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "logLevelSetting", logLevel);
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "viewCmdConsole", String.valueOf(viewShell));
@@ -666,6 +685,105 @@ public class CustomizeParametersPanel extends JFrame{
 		});
 	}
 	
+	/** Profile and collector controls, under the Java box: a profile fills the values, a change of any value makes it "Custom" */
+	private void setupProfileControls() {
+		lblProfile = new JLabel(I18n.t("launcher.profile_label"));
+		lblProfile.setForeground(new Color(220, 220, 220));
+		comboProfile = new JComboBox<String>();
+		for (JvmProfiles.Profile profile : JvmProfiles.ALL) {
+			comboProfile.addItem(I18n.t(profile.nameId));
+		}
+		comboProfile.addItem(I18n.t("launcher.profile_custom"));
+		comboProfile.setCursor(GuiUtils.CURSOR_HAND);
+
+		lblGc = new JLabel(I18n.t("launcher.gc_label"));
+		lblGc.setForeground(new Color(220, 220, 220));
+		comboGc = new JComboBox<String>();
+		for (String nameId : GC_NAME_IDS) {
+			comboGc.addItem(I18n.t(nameId));
+		}
+		comboGc.setCursor(GuiUtils.CURSOR_HAND);
+
+		gcInfoPane = new javax.swing.JEditorPane();
+		gcInfoPane.setContentType("text/html");
+		gcInfoPane.setEditable(false);
+		gcInfoPane.setOpaque(false);
+
+		javax.swing.JPanel profileBox = new javax.swing.JPanel(new MigLayout("insets 0, wrap 4, gapx 6, gapy 2", "[][grow,fill][][grow,fill]", "[][grow,fill]"));
+		profileBox.setOpaque(false);
+		profileBox.add(lblProfile);
+		profileBox.add(comboProfile, "growx");
+		profileBox.add(lblGc);
+		profileBox.add(comboGc, "growx");
+		profileBox.add(gcInfoPane, "span 4, growx, h 34!");
+		getContentPane().add(profileBox, "cell 0 4 9 1,growx");
+
+		comboProfile.addActionListener(e -> {
+			int index = comboProfile.getSelectedIndex();
+			if (!applyingProfile && index >= 0 && index < JvmProfiles.ALL.length) {
+				applyProfile(JvmProfiles.ALL[index]);
+			}
+		});
+		comboGc.addActionListener(e -> {
+			refreshGcInfo();
+			markCustom();
+		});
+		spinnerMinMemoryMB.addChangeListener(e -> markCustom());
+		spinnerXssMemory.addChangeListener(e -> markCustom());
+	}
+
+	/** Fills stack, initial heap and collector with a profile: the maximum heap is never touched */
+	private void applyProfile(JvmProfiles.Profile profile) {
+		boolean before = applyingProfile;
+		applyingProfile = true;
+		try {
+			spinnerMinMemoryMB.setValue((int) profile.initialMb);
+			spinnerXssMemory.setValue(profile.stackMb);
+			comboGc.setSelectedIndex(gcIndex(profile.gc));
+		} finally {
+			applyingProfile = before;
+		}
+		refreshGcInfo();
+	}
+
+	/** A value changed by hand: the combination is no longer a profile */
+	private void markCustom() {
+		if (!applyingProfile) {
+			setProfileIndex(JvmProfiles.ALL.length);
+		}
+	}
+
+	/** Selects the profile whose values match the current ones, or "Custom" */
+	private void detectProfile() {
+		JvmProfiles.Profile found = JvmProfiles.match((Integer) spinnerMinMemoryMB.getValue(), (Integer) spinnerXssMemory.getValue(), GC_FLAGS[comboGc.getSelectedIndex()]);
+		setProfileIndex(found == null ? JvmProfiles.ALL.length : java.util.Arrays.asList(JvmProfiles.ALL).indexOf(found));
+	}
+
+	private void setProfileIndex(int index) {
+		boolean before = applyingProfile;
+		applyingProfile = true;
+		try {
+			comboProfile.setSelectedIndex(index);
+		} finally {
+			applyingProfile = before;
+		}
+	}
+
+	private int gcIndex(String flag) {
+		String value = flag == null ? JvmProfiles.GC_JVM_DEFAULT : flag.trim();
+		for (int i = 0; i < GC_FLAGS.length; i++) {
+			if (GC_FLAGS[i].equals(value)) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	private void refreshGcInfo() {
+		String description = I18n.t(GC_DESC_IDS[comboGc.getSelectedIndex()]);
+		gcInfoPane.setText("<html><body style='color:#dcdcdc;font-family:sans-serif;font-size:9px'>" + description + "</body></html>");
+	}
+
 	private void backupInitialValues() {
 		IniFileManager iniFileManager = ScreepTLauncher.iniFileManager;
 		backupLogLevel = ScreepTLauncher.iniFileManager.iniConfigFile.get(IniFileManager.INI_APP_OPT, "logLevelSetting");
@@ -698,6 +816,7 @@ public class CustomizeParametersPanel extends JFrame{
 		backupLaunchAsJar = Boolean.valueOf(GeneralConfig.linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"))? true : false;
 		backupPreferredJvm  = StringWorker.trimToEmpty(iniFileManager.iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
 		backupPreferredJvm = checkJvmString(backupPreferredJvm);
+		backupGc = iniFileManager.JVM_GC_OPTIONS;
 		
 		// apply to gui elements
 		chckbxActiveShell.setSelected(backupViewShell);
@@ -708,6 +827,9 @@ public class CustomizeParametersPanel extends JFrame{
 		comboLogLevel.setSelectedItem(backupLogLevel);
 		sliderGuiScale.setValue(getPercFromScale(backupScaleGuiPerc));
 		selectComboJVM(backupPreferredJvm);
+		comboGc.setSelectedIndex(gcIndex(backupGc));
+		refreshGcInfo();
+		detectProfile();
 	}
 	
 	private String checkJvmString(String jvmStr) {

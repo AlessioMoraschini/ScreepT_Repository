@@ -16,6 +16,13 @@
 - File tree filter: the names under the folder are read once in the background into a compact index, and then every letter you type searches memory (a few milliseconds, also with hundreds of thousands of files; a longer text refines the previous result). The question about folders over 5000 elements and the refusal over 200000 are gone. The index is refreshed in the background when the tree is reloaded and released after five minutes without filtering.
 - File tree filter: only the folders that lead to the matches are opened, and the result is prepared in the background, so the tree no longer freezes on big results. Changing tab or folder while filtering never shows the result of the previous one.
 - Memory card of the menu bar: labels in bold and values in plain text, and the entries now add up to the total shown (heap reserved, JVM internals, thread stacks, direct buffers, and the native code and libraries calculated by difference).
+- Launcher settings: a Profile combo (Light, Medium, Fast) sets the initial memory and the garbage collector at once; the Garbage collector combo shows what each one means and how much memory it costs. Choosing a value by hand turns the profile into Custom. Saved in the launcher ini
+- Launcher: the default thread stack is 6 MB, the default initial memory is 128 MB (lower than before) and the default garbage collector is G1. Installed launchers get the stack and memory values once after the update (lower values are kept); the collector follows the default unless one was chosen in the launcher
+
+### Fixed
+- Launcher: the loading screen was updated from a background thread, which the interface library reports as a warning at every start: now it is updated on the interface thread
+- Launcher: an ini without the stack size produced an invalid "-Xssnullm" argument: now it falls back to the default
+- File Editor cleanup (broom in the top right corner): an empty untitled tab no longer stops the cleanup, and when the editor is kept because of unsaved work the message says so
 
 ## 0.9.83 - 2026-11-17
 > A new File editor toolbar: one tidy row of icons that scrolls when the window is small, and new text tools

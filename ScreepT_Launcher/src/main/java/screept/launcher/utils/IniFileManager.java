@@ -46,8 +46,15 @@ public class IniFileManager {
 	public String GUI_SCALE_ARG_VALUE = "1";
 	/** Default maximum memory of ScreepT, in MB (1.5 GB) */
 	public static final long DEFAULT_MAX_MEMORY_MB = 1536;
-	public String JVM_MEMORY_OPTIONS = "-Xmx" + DEFAULT_MAX_MEMORY_MB + "m -Xms512m"; // default memory options
-	public String JVM_STACK_SIZE = "-Xss128m"; // default stack size
+	/** Default initial heap, in MB: the JVM grows the heap as needed, so a low start saves memory at launch */
+	public static final long DEFAULT_INITIAL_MEMORY_MB = 128;
+	/** Default thread stack size, in MB (per thread: a small value is enough for ScreepT, see ROADMAP) */
+	public static final int DEFAULT_JVM_STACK_MB = 6;
+	/** Default garbage collector: one flag, or "" for the JVM default */
+	public static final String DEFAULT_JVM_GC = "-XX:+UseG1GC";
+	public String JVM_MEMORY_OPTIONS = "-Xmx" + DEFAULT_MAX_MEMORY_MB + "m -Xms" + DEFAULT_INITIAL_MEMORY_MB + "m"; // default memory options
+	public String JVM_STACK_SIZE = " -Xss" + DEFAULT_JVM_STACK_MB + "m"; // default stack size
+	public String JVM_GC_OPTIONS = DEFAULT_JVM_GC; // garbage collector flag
 	// main application path default
 	public String MAIN_JAR_FILE = "MainAppToLaunch.jar";
 	
@@ -93,8 +100,11 @@ public class IniFileManager {
 			String MEM_JOPTIONS_INI = iniConfigFile.get(INI_JVM_OPT, "memoryArgs");
 			JVM_MEMORY_OPTIONS = (MEM_JOPTIONS_INI != null)? MEM_JOPTIONS_INI : JVM_MEMORY_OPTIONS;
 			migrateMemoryDefault();
-			String MEM_STACK_INI = " -Xss" + iniConfigFile.get(INI_JVM_OPT, "stackSizeArgs")+"m";
-			JVM_STACK_SIZE = (MEM_STACK_INI != null)? MEM_STACK_INI : JVM_STACK_SIZE;
+				migrateJvmDefaults();
+			String stackIni = iniConfigFile.get(INI_JVM_OPT, "stackSizeArgs"); // null-safe: a missing key must not become "-Xssnullm"
+			JVM_STACK_SIZE = (stackIni != null && stackIni.trim().matches("\\d+"))? " -Xss" + stackIni.trim() + "m" : JVM_STACK_SIZE;
+				String gcIni = iniConfigFile.get(INI_JVM_OPT, "gcArgs");
+				JVM_GC_OPTIONS = (gcIni != null)? gcIni.trim() : JVM_GC_OPTIONS;
 			
 			// APPLICATION OPTIONS WITH NULL CHECK
 			String GUI_SCALE = iniConfigFile.get(INI_APP_OPT, "scaleGuiPerc").replace(",", ".");
@@ -165,6 +175,37 @@ public class IniFileManager {
 			logger.info("Maximum memory set once to " + targetMb + " MB: " + args);
 		} catch (Exception e) {
 			logger.error("Cannot apply the default memory", e);
+		}
+	}
+
+	/**
+	 * One time only, at the first start after the update that changed the JVM defaults: initial heap at most 128 MB, stack at most
+	 * 6 MB (lower values are kept). The marker "jvmDefaultsMigrated" is never reset, so later choices made in the launcher stay.
+	 */
+	private void migrateJvmDefaults() {
+		try {
+			String done = iniConfigFile.get(INI_JVM_OPT, "jvmDefaultsMigrated");
+			if (done != null && done.trim().equalsIgnoreCase("true")) {
+				return;
+			}
+			String args = JVM_MEMORY_OPTIONS == null ? "" : JVM_MEMORY_OPTIONS;
+			java.util.regex.Matcher initial = java.util.regex.Pattern.compile("-Xms(\\d+)([mMgG])").matcher(args);
+			if (initial.find()) {
+				long initialMb = Long.parseLong(initial.group(1)) * (initial.group(2).equalsIgnoreCase("g") ? 1024 : 1);
+				if (initialMb > DEFAULT_INITIAL_MEMORY_MB) {
+					args = initial.replaceFirst("-Xms" + DEFAULT_INITIAL_MEMORY_MB + "m");
+				}
+			}
+			String stack = iniConfigFile.get(INI_JVM_OPT, "stackSizeArgs");
+			int stackMb = (stack != null && stack.trim().matches("\\d+")) ? Integer.parseInt(stack.trim()) : Integer.MAX_VALUE;
+			JVM_MEMORY_OPTIONS = args;
+			iniConfigFile.put(INI_JVM_OPT, "memoryArgs", args);
+			iniConfigFile.put(INI_JVM_OPT, "stackSizeArgs", String.valueOf(Math.min(stackMb, DEFAULT_JVM_STACK_MB)));
+			iniConfigFile.put(INI_JVM_OPT, "jvmDefaultsMigrated", "true");
+			iniConfigFile.store();
+			logger.info("JVM defaults applied once: " + args + ", stack " + Math.min(stackMb, DEFAULT_JVM_STACK_MB) + " MB");
+		} catch (Exception e) {
+			logger.error("Cannot apply the JVM defaults", e);
 		}
 	}
 

@@ -601,7 +601,7 @@ public class MainGUI extends MainGuiParent {
 							if (cleanResult)
 								msg = "ScreepT's Resources usage optimized.";
 							else
-								msg = "Resources usage was already optimized, but I've done my best to improve it ;)";
+								msg = mainGuiUtils.isTextEditorKeptForWork() ? I18n.t("app.resources_text_editor_kept") : "Resources usage was already optimized, but I've done my best to improve it ;)";
 						}
 
 						dialogHelper.info(msg);

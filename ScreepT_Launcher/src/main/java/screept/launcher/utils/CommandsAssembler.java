@@ -68,6 +68,12 @@ public class CommandsAssembler {
 		}		
 	}
 	
+	/** The collector has one owner (the launcher setting): a GC flag in the shared custom settings would conflict with it */
+	private static String customSettingsWithoutGc() {
+		String custom = GeneralConfig.JVM_CUSTOM_ADDED_SETTINGS == null ? "" : GeneralConfig.JVM_CUSTOM_ADDED_SETTINGS;
+		return custom.replaceAll("-XX:\\+Use\\w*GC", "").replaceAll("\\s+", " ").trim();
+	}
+
 	/**
 	 * add command to start main application jar with given JVM args
 	 */
@@ -80,7 +86,8 @@ public class CommandsAssembler {
 		StringBuilder builder = new StringBuilder();
 		builder.append(dto.JVM_MEMORY_OPTIONS)
 			   .append(dto.JVM_STACK_SIZE)
-			   .append(" ").append(GeneralConfig.JVM_CUSTOM_ADDED_SETTINGS)
+			   .append(dto.JVM_GC_OPTIONS.trim().isEmpty() ? "" : " " + dto.JVM_GC_OPTIONS.trim())
+			   .append(" ").append(customSettingsWithoutGc())
 			   .append(" -Dsun.java2d.uiScale=")
 			   .append(dto.GUI_SCALE_ARG_VALUE)
 			   .append(dto.JVM_ARGS);

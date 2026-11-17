@@ -406,6 +406,7 @@ public class ScreepTLauncher {
 
 		JvmArgumentsDTO dto = new JvmArgumentsDTO(iniFileManager.JVM_MEMORY_OPTIONS, iniFileManager.JVM_STACK_SIZE, iniFileManager.MAIN_JAR_FILE,
 				iniFileManager.GUI_SCALE_ARG_VALUE, JVM_ARGS, ARGS);
+		dto.JVM_GC_OPTIONS = iniFileManager.JVM_GC_OPTIONS;
 
 		// ADD LAUNCH COMMAND WITH GIVEN ARGUMENTS FROM CONFIGURATION (parsed .ini)
 		commandsAssembler.addLaunchCommand(dto, argumentsFiles, iniFileManager.viewShellAfterStart);
