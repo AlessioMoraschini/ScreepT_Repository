@@ -114,9 +114,30 @@ public enum SupportedFileTextEditor {
 		return syntaxList;
 	}
 
+	/**
+	 * Well known files whose name has no extension (e.g. the hosts file of the OS), so the extension cannot tell their type.
+	 * @return the matching type, or null when the name is not one of the known ones
+	 */
+	public static SupportedFileTextEditor fromKnownFileName(File target) {
+		if (target == null) {
+			return null;
+		}
+		String name = target.getName().trim().toLowerCase();
+		if (name.equals("hosts")) {
+			return HOSTS;
+		}
+		if (name.equals("dockerfile")) {
+			return DOCKER;
+		}
+		return null;
+	}
+
 	public static boolean isSupported(File target) {
 		boolean supported = false;
 		if(target != null && target.exists()) {
+			if (fromKnownFileName(target) != null) {
+				return true;
+			}
 			String extension = FilenameUtils.getExtension(target.getName());
 			for (String supportedExt : getSupportedExtensions()) {
 				if (supportedExt.equalsIgnoreCase(extension)) {

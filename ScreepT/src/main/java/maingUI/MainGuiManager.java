@@ -390,6 +390,9 @@ public class MainGuiManager {
 			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "loadedFilesAtStart",
 					currentConfiguration.listToString(currentConfiguration.getTextEditorOpt().getOpenedFileList()));
 
+			// pinned tabs (only the ones with a file) come back pinned at the next start
+			currentTabEditor.persistPinnedTabs();
+
 			initTxtWriter.updateOpenedFilesCaretPositionMap(true);
 
 			// save current opened if it exists

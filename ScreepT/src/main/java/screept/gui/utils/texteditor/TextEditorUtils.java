@@ -241,6 +241,13 @@ public class TextEditorUtils {
 						chosenType = current;
 					}
 				}
+				// files without extension that are well known by name (e.g. "hosts")
+				if (FilenameUtils.getExtension(source.getName()).trim().isEmpty()) {
+					SupportedFileTextEditor byName = SupportedFileTextEditor.fromKnownFileName(source);
+					if (byName != null) {
+						chosenType = byName;
+					}
+				}
 			}
 
 			// APPLY SELECTED

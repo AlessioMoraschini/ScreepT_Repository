@@ -6,6 +6,22 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.82 - 2026-11-17
+> Tabs you can pin and move, the hosts file with its own colors, and the real memory of ScreepT in the menu bar
+
+### New
+- File editor tabs: right click a tab > Pin tab, or [Ctrl+click] on the tab ([Cmd+click] on macOS). A pinned tab goes to the left, after the other pinned ones, and shows a pin instead of the close button; click the pin, [Ctrl+click] again or right click > Unpin tab to release it. Pinned tabs are remembered: at the next start they are reopened and pinned again. Closing a pinned tab with [Ctrl+W] still works.
+- File editor tabs: drag a tab with the mouse to move it before or after the others (a line shows where it will be dropped). Pinned tabs move only among the pinned ones, the others among the not pinned.
+
+### Improved
+- File editor: files without extension that are well known by name, like the hosts file and Dockerfile, are recognized: they open with their own syntax coloring and without the "type of file not supported" question.
+- Memory in the menu bar: the label shows the total memory used by ScreepT (the working set, the RAM really used, as in the Task Manager) instead of the Java heap only; rest the mouse on the ScreepT part (not on the PC part) to open a card with where it goes: heap (used, reserved, maximum), non-heap with metaspace and code cache, thread stacks and direct buffers. The card updates every second, takes the focus when the mouse enters it (scroll with the wheel, resize from the edges) and closes with Esc, a click outside it or when the mouse leaves.
+
+### Fixed
+- System information window: on PCs where the Windows performance counters are broken (error 0xC0000BBD) it stayed on "Loading..." forever. Now it opens, the processor data show as not available, and if the window cannot be opened an error message is shown.
+- PDF viewer: opening it from the menu without a selected file (for example from a new tab) raised an error. Now the empty viewer opens.
+- File editor: closing the first tab deleted the backup copy of the tab that became the first instead of the closed one.
+
 ## 0.9.81 - 2026-11-17
 > A quicker and cleaner File editor: slimmer tabs, a filter for the file tree and a calendar where the year can be typed
 

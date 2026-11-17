@@ -15,6 +15,7 @@ import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -149,7 +150,15 @@ public class CustomTabbedEditor implements ITabsManager {
 	private void initMainTabList() {
 		// DRAG 'N DROP IMPLEMENTATION FOR TABS
 
-		mainTabList = new JTabbedPane();
+		mainTabList = new JTabbedPane() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void paint(java.awt.Graphics g) {
+				super.paint(g);
+				paintDropIndicator(g);
+			}
+		};
 		fileDrop = new FileDrop(mainTabList, (files)->{SwingUtilities.invokeLater(()->{this.loadFiles(files);});});
 
 		mainTabList.addMouseWheelListener(new TabbedPaneMouseWheelListener());
@@ -841,8 +850,8 @@ public class CustomTabbedEditor implements ITabsManager {
 
 				if (!loadedList.getList().isEmpty()) {
 					releaseViewerOf(loadedList.getList().get(0));
-					loadedList.getList().remove(0);
-					loadedList.getList().get(0).deleteTempFile();
+					// the temp file to delete is the one of the removed tab, not of the one that becomes first
+					loadedList.getList().remove(0).deleteTempFile();
 				}
 				mainTabList.remove(0);
 				mainTabList.setSelectedIndex(0);
@@ -856,6 +865,10 @@ public class CustomTabbedEditor implements ITabsManager {
 						releaseViewerOf(currentTab);
 						currentTab.deleteTempFile();
 						currentTab.resetData();
+						if (currentTab.pinned) {
+							currentTab.pinned = false;
+							applyPinnedLook(currentTab);
+						}
 						getPanelFromTabHeader(0).setToolTipText(I18n.t("editor.unexisting_file"));
 
 						SwingUtilities.invokeLater(new Runnable() {
@@ -928,6 +941,11 @@ public class CustomTabbedEditor implements ITabsManager {
 
 		try {
 			logger.debug("closeCurrentTab() - closing tab: "+mainTabList.getTitleAt(index));
+			if (isPinned(index)) {
+				// the button of a pinned tab unpins it: closing from the keyboard closes it anyway
+				removeTab(index);
+				return;
+			}
 			JButton closeTabButton = (JButton) (getPanelFromTabHeader(index))
 					.getComponent(TabUtils.TAB_BUTTON_CLOSE_ORDER);
 			closeTabButton.doClick();
@@ -1015,7 +1033,289 @@ public class CustomTabbedEditor implements ITabsManager {
 			}
 		});
 
+		installPinAndReorder(customTab, i_component);
+
 		return customTab;
+	}
+
+/////////////////////////////////// PIN AND REORDER ///////////////////////////////////
+
+	/** Pointer movement (in pixels) before a press on a tab header becomes a drag */
+	private static final int DRAG_THRESHOLD = 6;
+	/** Tab being dragged and slot where it would be dropped (-1 = no drag in progress) */
+	private int dragFromIndex = -1;
+	private int dragDropIndex = -1;
+
+	/** Number of pinned tabs: they are always the first ones */
+	public int getPinnedCount() {
+		int pinned = 0;
+		for (TabTextEditorObject tab : loadedList.getList()) {
+			if (tab != null && tab.pinned) {
+				pinned++;
+			}
+		}
+		return pinned;
+	}
+
+	/**
+	 * Moves a tab to a new position (final index, after the move). Pinned tabs stay among the pinned ones and the
+	 * others among the not pinned: the target is corrected if needed. Keeps the tab list and the tabbed pane in sync.
+	 * @return true if the tab was moved
+	 */
+	public boolean moveTab(int from, int to) {
+		int count = mainTabList.getTabCount();
+		if (from < 0 || from >= count || loadedList.getSize() != count) {
+			return false;
+		}
+		TabTextEditorObject tab = loadedList.getList().get(from);
+		int pinnedCount = getPinnedCount();
+		to = tab.pinned ? Math.min(to, pinnedCount - 1) : Math.max(to, pinnedCount);
+		to = Math.max(0, Math.min(to, count - 1));
+		if (to == from) {
+			return false;
+		}
+
+		// the change listener must not react to the selection changes caused by remove / insert
+		boolean wasRefreshing = alreadyrefreshing;
+		alreadyrefreshing = true;
+		try {
+			Component selected = mainTabList.getSelectedComponent();
+			Component content = mainTabList.getComponentAt(from);
+			Component header = mainTabList.getTabComponentAt(from);
+			String title = mainTabList.getTitleAt(from);
+			javax.swing.Icon icon = mainTabList.getIconAt(from);
+			String tip = mainTabList.getToolTipTextAt(from);
+
+			loadedList.getList().remove(from);
+			loadedList.getList().add(to, tab);
+
+			mainTabList.remove(from);
+			mainTabList.insertTab(title, icon, content, tip, to);
+			mainTabList.setTabComponentAt(to, header);
+			mainTabList.setSelectedComponent(selected);
+			lastIndexTabbedPane = mainTabList.getSelectedIndex();
+		} catch (Exception e) {
+			logger.error("Cannot move tab " + from + " to " + to, e);
+			return false;
+		} finally {
+			alreadyrefreshing = wasRefreshing;
+		}
+
+		mainTabList.revalidate();
+		mainTabList.repaint();
+		if (loadedTabObj != null && loadedTabObj.textArea != null) {
+			final JTextArea toFocus = loadedTabObj.textArea;
+			SwingUtilities.invokeLater(() -> GuiUtils.giveFocusToComponent(toFocus));
+		}
+		return true;
+	}
+
+	public boolean isPinned(int index) {
+		return index >= 0 && index < loadedList.getSize() && loadedList.getList().get(index).pinned;
+	}
+
+	/** Pins a tab: it moves after the other pinned tabs and shows a pin instead of the close button */
+	public void pinTab(int index) {
+		pinTab(index, true);
+	}
+
+	private void pinTab(int index, boolean persist) {
+		if (index < 0 || index >= loadedList.getSize() || isPinned(index)) {
+			return;
+		}
+		TabTextEditorObject tab = loadedList.getList().get(index);
+		int pinnedBefore = getPinnedCount();
+		tab.pinned = true;
+		applyPinnedLook(tab);
+		moveTab(index, pinnedBefore);
+		if (persist) {
+			persistPinnedTabs();
+		}
+	}
+
+	/** Unpins a tab: it moves right after the pinned tabs and the close button comes back */
+	public void unpinTab(int index) {
+		if (index < 0 || index >= loadedList.getSize() || !isPinned(index)) {
+			return;
+		}
+		TabTextEditorObject tab = loadedList.getList().get(index);
+		tab.pinned = false;
+		applyPinnedLook(tab);
+		moveTab(index, getPinnedCount());
+		persistPinnedTabs();
+	}
+
+	public void togglePin(int index) {
+		if (isPinned(index)) {
+			unpinTab(index);
+		} else {
+			pinTab(index);
+		}
+	}
+
+	/** Pins the tabs of the given files (at start, they are pinned only after all the tabs are loaded) */
+	public void restorePinnedTabs(java.util.List<String> pinnedPaths) {
+		if (pinnedPaths == null || pinnedPaths.isEmpty()) {
+			return;
+		}
+		// copy: pinning moves the tabs around
+		for (TabTextEditorObject tab : new java.util.ArrayList<TabTextEditorObject>(loadedList.getList())) {
+			if (tab != null && tab.loadedFile != null && pinnedPaths.contains(tab.loadedFile.getAbsolutePath())) {
+				pinTab(geIndexOfTabObj(tab), false);
+			}
+		}
+	}
+
+	/** Writes in the configuration the files of the pinned tabs (tabs without a file cannot be restored) */
+	public void persistPinnedTabs() {
+		try {
+			java.util.ArrayList<String> pinnedPaths = new java.util.ArrayList<String>();
+			for (TabTextEditorObject tab : loadedList.getList()) {
+				if (tab != null && tab.pinned && tab.loadedFile != null && tab.loadedFile.exists()) {
+					pinnedPaths.add(tab.loadedFile.getAbsolutePath());
+				}
+			}
+			currentConfiguration.getTextEditorOpt().setPinnedFileList(pinnedPaths);
+			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "pinnedFilesAtStart", currentConfiguration.listToString(pinnedPaths));
+		} catch (Exception e) {
+			logger.warn("Cannot save the pinned tabs", e);
+		}
+	}
+
+	private void applyPinnedLook(final TabTextEditorObject tab) {
+		JPanel header = getPanelFromTabHeader(geIndexOfTabObj(tab));
+		if (header instanceof gui.commons.tabbedpaneutils.TabHeadPanel_Full) {
+			((gui.commons.tabbedpaneutils.TabHeadPanel_Full) header).setPinned(tab.pinned, () -> unpinTab(geIndexOfTabObj(tab)));
+		}
+	}
+
+	private javax.swing.JPopupMenu buildTabPopup(final JScrollPane component) {
+		final int index = mainTabList.indexOfComponent(component);
+		javax.swing.JPopupMenu popup = new javax.swing.JPopupMenu();
+		javax.swing.JMenuItem pinItem = new javax.swing.JMenuItem(I18n.t(isPinned(index) ? "tabs.unpin" : "tabs.pin"));
+		pinItem.addActionListener(e -> togglePin(mainTabList.indexOfComponent(component)));
+		popup.add(pinItem);
+		return popup;
+	}
+
+	/** Right click (pin / unpin) and drag and drop (reorder) on the header of a tab */
+	private void installPinAndReorder(final JPanel header, final JScrollPane component) {
+		MouseAdapter handler = new MouseAdapter() {
+			private Point pressPoint;
+			private boolean dragging;
+
+			private void maybePopup(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					buildTabPopup(component).show(e.getComponent(), e.getX(), e.getY());
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				maybePopup(e);
+				// Ctrl+click (Cmd+click on macOS) toggles the pin; it is not the start of a drag
+				if (SwingUtilities.isLeftMouseButton(e) && !e.isPopupTrigger() && various.common.light.gui.ShortcutKeys.isCtrlDown(e)) {
+					pressPoint = null;
+					dragging = false;
+					togglePin(mainTabList.indexOfComponent(component));
+					return;
+				}
+				dragging = false;
+				pressPoint = SwingUtilities.isLeftMouseButton(e) && !e.isPopupTrigger()
+						? SwingUtilities.convertPoint(header, e.getPoint(), mainTabList)
+						: null;
+			}
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (pressPoint == null) {
+					return;
+				}
+				Point p = SwingUtilities.convertPoint(header, e.getPoint(), mainTabList);
+				if (!dragging) {
+					if (Math.abs(p.x - pressPoint.x) < DRAG_THRESHOLD && Math.abs(p.y - pressPoint.y) < DRAG_THRESHOLD) {
+						return;
+					}
+					dragging = true;
+					dragFromIndex = mainTabList.indexOfComponent(component);
+					header.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
+				}
+				int target = nearestTabIndex(p);
+				if (dragFromIndex >= 0 && target >= 0) {
+					target = clampDropIndex(dragFromIndex, target);
+				}
+				if (target != dragDropIndex) {
+					dragDropIndex = target;
+					mainTabList.repaint();
+				}
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				maybePopup(e);
+				if (dragging) {
+					int from = dragFromIndex;
+					int to = dragDropIndex;
+					dragging = false;
+					dragFromIndex = -1;
+					dragDropIndex = -1;
+					header.setCursor(java.awt.Cursor.getDefaultCursor());
+					mainTabList.repaint();
+					if (from >= 0 && to >= 0 && from != to) {
+						moveTab(from, to);
+					}
+				}
+				pressPoint = null;
+			}
+		};
+		header.addMouseListener(handler);
+		header.addMouseMotionListener(handler);
+	}
+
+	/** Index of the tab nearest to a point of the tabbed pane (works also with tabs on more rows), -1 if none */
+	private int nearestTabIndex(Point p) {
+		int best = -1;
+		double bestDistance = Double.MAX_VALUE;
+		for (int i = 0; i < mainTabList.getTabCount(); i++) {
+			java.awt.Rectangle r = mainTabList.getBoundsAt(i);
+			if (r == null) {
+				continue;
+			}
+			double dx = Math.max(Math.max(r.x - p.x, 0), p.x - (r.x + r.width));
+			double dy = Math.max(Math.max(r.y - p.y, 0), p.y - (r.y + r.height));
+			double distance = dx * dx + dy * dy;
+			if (distance < bestDistance) {
+				bestDistance = distance;
+				best = i;
+			}
+		}
+		return best;
+	}
+
+	/** Pinned tabs can only go among the pinned ones, the others among the not pinned */
+	private int clampDropIndex(int from, int target) {
+		int pinnedCount = getPinnedCount();
+		return isPinned(from) ? Math.min(target, pinnedCount - 1) : Math.max(target, pinnedCount);
+	}
+
+	/** Vertical line where the dragged tab would be dropped */
+	private void paintDropIndicator(java.awt.Graphics g) {
+		if (dragFromIndex < 0 || dragDropIndex < 0 || dragDropIndex == dragFromIndex || dragDropIndex >= mainTabList.getTabCount()) {
+			return;
+		}
+		java.awt.Rectangle r = mainTabList.getBoundsAt(dragDropIndex);
+		if (r == null) {
+			return;
+		}
+		int x = dragDropIndex > dragFromIndex ? r.x + r.width - 1 : r.x;
+		java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+		try {
+			java.awt.Color accent = javax.swing.UIManager.getColor("Component.accentColor");
+			g2.setColor(accent != null ? accent : new Color(61, 133, 224));
+			g2.fillRect(x - 1, r.y + 2, 3, Math.max(4, r.height - 4));
+		} finally {
+			g2.dispose();
+		}
 	}
 
 	public ActionListener getTabCloseListener(int index) {

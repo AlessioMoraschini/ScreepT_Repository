@@ -412,18 +412,24 @@ public class WindowCreator {
 				prog.getLabel().setText("Loading System informations...");
 				prog.getPb().setString("Loading...");
 
-				final HwInfoFrame panelHwInfo = HwInfoFrame.getInstance();
-				SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						// fits its content (scroll bars if the screen is not enough) and opens on the monitor of the application
-						panelHwInfo.setTitle("Hardware info - " + GeneralConfig.APPLICATION_NAME);
-						panelHwInfo.showOnAppScreen(MainGUI.mainFrameScreept);
-					}
-				});
-
-				prog.forceClose();
+				try {
+					final HwInfoFrame panelHwInfo = HwInfoFrame.getInstance();
+					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							// fits its content (scroll bars if the screen is not enough) and opens on the monitor of the application
+							panelHwInfo.setTitle("Hardware info - " + GeneralConfig.APPLICATION_NAME);
+							panelHwInfo.showOnAppScreen(MainGUI.mainFrameScreept);
+						}
+					});
+				} catch (Throwable e) {
+					logger.error("Cannot open the hardware info window", e);
+					prog.forceClose();
+					new JOptionHelper(MainGUI.mainFrameScreept).error("Cannot read the hardware information of this PC: " + e);
+				} finally {
+					prog.forceClose();
+				}
 			}
 		});
 	}

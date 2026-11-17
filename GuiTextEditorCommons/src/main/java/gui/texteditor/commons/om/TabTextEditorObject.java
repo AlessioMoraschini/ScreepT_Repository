@@ -125,6 +125,9 @@ public class TabTextEditorObject {
 	public CustomUndoManager undoManager;
 //	public FocusListener focusTxtAreaMonitor;
 	public boolean unsaved = false;
+
+	/** Pinned tabs stay on the left of the others and show a pin instead of the close button */
+	public volatile boolean pinned = false;
 	public Parser currentParser;
 
 	public FileDrop fileDrop;

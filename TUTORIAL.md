@@ -585,6 +585,7 @@ IMPORTANT: Always remember that changing section you won't lose any progress of 
 
 *   NEW TAB - \[Ctrl + N\]
 *   CLOSE CURRENT TAB - \[Ctrl + W\]
+*   PIN / UNPIN A TAB - \[Ctrl + click on the tab\] (\[Cmd + click\] on macOS), or right click on the tab
 *   CLOSE ALL OPENED TABS - \[Ctrl + Alt + Shift + (-)\]
 *   NEXT TAB - \[Ctrl + TAB\]
 *   PREVIOUS TAB - \[Ctrl + Shift + TAB\]

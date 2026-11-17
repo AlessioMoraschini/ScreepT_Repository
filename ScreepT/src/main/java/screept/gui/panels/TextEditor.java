@@ -1246,6 +1246,9 @@ public class TextEditor extends ModulePanel {
 			// first remove first tab if at least one file is loaded
 			currentTabbedEditor.removeTab(0);
 
+			// pin again the tabs that were pinned (after removing the empty one: a pinned tab goes to the front)
+			currentTabbedEditor.restorePinnedTabs(currentConfiguration.getTextEditorOpt().getPinnedFileList());
+
 			// now try to select the old opened one
 			String toOpenAtStart = currentConfiguration.getTextEditorOpt().selectedAtStart;
 			try {
