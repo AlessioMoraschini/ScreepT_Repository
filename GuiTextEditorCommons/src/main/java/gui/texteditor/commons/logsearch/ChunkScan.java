@@ -14,24 +14,30 @@ package gui.texteditor.commons.logsearch;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.TreeMap;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 /**
  * Reads a file once, front to back, in big pieces that always end on a line end, and lets several threads work on them at the
- * same time. Results are handed back strictly in file order, so the callers can count lines. Memory is a fixed pool of buffers
- * (a few MB), whatever the file size. Plain sequential reads are used (no memory mapping: on Windows it would lock the log
- * against rotation).
+ * same time. Every worker reads its own piece with a positional read (no shared reader, so the disk and the page cache are used
+ * by all the threads at once) and scans it; results are handed back strictly in file order, so the callers can count lines.
+ * A piece owns the lines that <i>start</i> inside it, so a line is never split nor read twice. Memory is a few buffers per worker
+ * (a few MB), whatever the file size. No memory mapping: on Windows it would lock the log against rotation.
  */
 final class ChunkScan {
 
-	private static final int CHUNK = 2 * 1024 * 1024;
+	/** Size of a piece (the property is only there for tests: tiny pieces exercise the lines that cross a boundary) */
+	private static final int CHUNK = Math.max(16, Integer.getInteger("screept.logsearch.chunk", 2 * 1024 * 1024));
+	/** Extra room after a piece for the end of its last line (grows for longer lines) */
+	private static final int TAIL = 64 * 1024;
+	/** How many pieces a worker may be ahead of the one still to be handed back (limits what waits in memory) */
+	private static final int AHEAD = 16;
 
 	/** Work on one piece; runs on several threads, one {@code Task} instance per thread */
 	interface Task {
@@ -49,48 +55,32 @@ final class ChunkScan {
 		void commit(Object partial, long endOffset);
 	}
 
-	private static final class Chunk {
-		final byte[] data;
-		final int length;
-		final long offset;
-		final long sequence;
-		final boolean unterminated;
-
-		Chunk(byte[] data, int length, long offset, long sequence, boolean unterminated) {
-			this.data = data;
-			this.length = length;
-			this.offset = offset;
-			this.sequence = sequence;
-			this.unterminated = unterminated;
-		}
-	}
-
-	private static final Chunk END = new Chunk(new byte[0], 0, 0, -1, false);
-
 	private ChunkScan() {
 	}
 
 	static int defaultWorkers() {
-		return Integer.getInteger("screept.logsearch.workers", Math.max(1, Math.min(4, Runtime.getRuntime().availableProcessors() - 1)));
+		int cpus = Runtime.getRuntime().availableProcessors();
+		return Integer.getInteger("screept.logsearch.workers", Math.max(1, Math.max(Math.min(4, cpus - 1), Math.min(8, cpus / 2))));
 	}
 
-	/** Runs on the calling thread (which reads) plus worker threads; returns when everything is done or cancelled */
+	/** Runs on worker threads; returns when everything is done or cancelled */
 	static void run(File file, Supplier<Task> tasks, Committer committer, AtomicBoolean cancelled) throws IOException {
 		run(file, 0L, tasks, committer, cancelled);
 	}
 
 	/** Same, but starting at a byte offset that is the beginning of a line: only what a file gained is scanned */
-	static void run(File file, long startOffset, Supplier<Task> tasks, Committer committer, AtomicBoolean cancelled) throws IOException {
-		final int workers = defaultWorkers();
-		final BlockingQueue<byte[]> free = new ArrayBlockingQueue<byte[]>(workers + 3);
-		for (int i = 0; i < workers + 3; i++) {
-			free.add(new byte[CHUNK]);
+	static void run(File file, final long startOffset, Supplier<Task> tasks, final Committer committer, final AtomicBoolean cancelled) throws IOException {
+		final long length = file.length();
+		if (startOffset >= length) {
+			return;
 		}
-		final BlockingQueue<Chunk> full = new LinkedBlockingQueue<Chunk>();
+		final int workers = (int) Math.max(1, Math.min(defaultWorkers(), (length - startOffset + CHUNK - 1) / CHUNK));
+		final AtomicLong claim = new AtomicLong();
 		final Object commitLock = new Object();
 		final TreeMap<Long, Object[]> pending = new TreeMap<Long, Object[]>();
 		final long[] next = { 0 };
 		final AtomicBoolean failed = new AtomicBoolean();
+		final AtomicReference<IOException> ioError = new AtomicReference<IOException>();
 
 		Thread[] threads = new Thread[workers];
 		for (int w = 0; w < workers; w++) {
@@ -98,34 +88,82 @@ final class ChunkScan {
 			threads[w] = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					try {
-						while (true) {
-							Chunk chunk = full.take();
-							if (chunk == END) {
+					try (FileInputStream in = new FileInputStream(file); FileChannel channel = in.getChannel()) {
+						byte[] data = new byte[CHUNK + TAIL];
+						final byte[] probe = new byte[TAIL];
+						while (!cancelled.get() && !failed.get()) {
+							long sequence = claim.getAndIncrement();
+							long position = startOffset + sequence * CHUNK;
+							if (position >= length) {
 								return;
 							}
-							if (cancelled.get() || failed.get()) {
-								recycle(free, chunk.data);
-								continue;
+							// not too far ahead of the piece that is still to be handed back
+							synchronized (commitLock) {
+								while (sequence - next[0] >= AHEAD && !cancelled.get() && !failed.get()) {
+									commitLock.wait(20);
+								}
 							}
-							try {
-								Object partial = task.process(chunk.data, chunk.length, chunk.offset, chunk.unterminated);
-								recycle(free, chunk.data);
-								synchronized (commitLock) {
-									pending.put(chunk.sequence, new Object[] { partial, chunk.offset + chunk.length });
-									Object[] ready;
-									while ((ready = pending.remove(next[0])) != null) {
-										committer.commit(ready[0], (Long) ready[1]);
-										next[0]++;
+							if (cancelled.get() || failed.get()) {
+								return;
+							}
+							long first = position == startOffset ? position : firstLineStart(channel, probe, position, length);
+							Object[] result = null; // null: no line starts in this piece
+							if (first < position + CHUNK && first < length) {
+								int want = (int) (Math.min(position + CHUNK, length) - first);
+								int have = readFully(channel, data, 0, want, first);
+								boolean unterminated = false;
+								if (have > 0 && data[have - 1] != '\n') { // the last line goes on after the piece
+									while (true) {
+										if (data.length - have < TAIL) {
+											data = Arrays.copyOf(data, data.length * 2);
+										}
+										int more = readFully(channel, data, have, Math.min(TAIL, data.length - have), first + have);
+										int cut = -1;
+										for (int i = have; i < have + more; i++) {
+											if (data[i] == '\n') {
+												cut = i + 1;
+												break;
+											}
+										}
+										if (cut >= 0) {
+											have = cut;
+											break;
+										}
+										have += more;
+										if (more <= 0) { // end of the file inside the last line
+											unterminated = true;
+											break;
+										}
 									}
 								}
-							} catch (RuntimeException | Error t) {
-								failed.set(true); // keep draining so the reader never blocks
-								recycle(free, chunk.data);
+								if (have > 0) {
+									Object partial = task.process(data, have, first, unterminated);
+									result = new Object[] { partial, first + have };
+								}
+								if (data.length > 4 * (CHUNK + TAIL)) { // a very long line: the big buffer is not kept
+									data = new byte[CHUNK + TAIL];
+								}
+							}
+							synchronized (commitLock) {
+								pending.put(sequence, result == null ? new Object[0] : result);
+								Object[] ready;
+								while ((ready = pending.remove(next[0])) != null) {
+									if (ready.length > 0) {
+										committer.commit(ready[0], (Long) ready[1]);
+									}
+									next[0]++;
+								}
+								commitLock.notifyAll();
 							}
 						}
+					} catch (IOException e) {
+						ioError.compareAndSet(null, e);
+						failed.set(true);
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
+						failed.set(true);
+					} catch (RuntimeException | Error t) {
+						failed.set(true);
 					}
 				}
 			}, "LogSearch-worker-" + w);
@@ -133,91 +171,47 @@ final class ChunkScan {
 			threads[w].start();
 		}
 
-		try {
-			read(file, startOffset, free, full, cancelled, failed);
-		} finally {
-			for (int w = 0; w < workers; w++) {
-				full.add(END);
+		for (Thread t : threads) {
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				cancelled.set(true);
 			}
-			for (Thread t : threads) {
-				try {
-					t.join();
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-				}
-			}
+		}
+		if (ioError.get() != null) {
+			throw ioError.get();
 		}
 	}
 
-	private static void recycle(BlockingQueue<byte[]> free, byte[] data) {
-		free.offer(data.length == CHUNK ? data : new byte[CHUNK]);
-	}
-
-	private static void read(File file, long startOffset, BlockingQueue<byte[]> free, BlockingQueue<Chunk> full, AtomicBoolean cancelled, AtomicBoolean failed)
-			throws IOException {
-		try (InputStream in = new FileInputStream(file)) {
-			byte[] current = take(free);
-			int have = 0;
-			long skipped = 0;
-			while (skipped < startOffset) {
-				long step = in.skip(startOffset - skipped);
-				if (step <= 0) {
-					break;
-				}
-				skipped += step;
-			}
-			long offset = skipped;
-			long sequence = 0;
-			while (current != null && !cancelled.get() && !failed.get()) {
-				if (have == current.length) {
-					int cut = lastLineEnd(current, have);
-					if (cut < 0) { // a line longer than the buffer: keep growing
-						current = Arrays.copyOf(current, current.length * 2);
-						continue;
-					}
-					full.add(new Chunk(current, cut, offset, sequence++, false));
-					byte[] following = take(free);
-					if (following == null) {
-						return;
-					}
-					int rest = have - cut;
-					if (rest > following.length) {
-						following = new byte[Math.max(rest * 2, CHUNK)];
-					}
-					System.arraycopy(current, cut, following, 0, rest);
-					offset += cut;
-					have = rest;
-					current = following;
-					continue;
-				}
-				int read = in.read(current, have, current.length - have);
-				if (read < 0) {
-					if (have > 0) {
-						full.add(new Chunk(current, have, offset, sequence++, current[have - 1] != '\n'));
-					}
-					return;
-				}
-				have += read;
+	/** Reads until the range is full or the file ends; returns how many bytes were read */
+	private static int readFully(FileChannel channel, byte[] data, int offset, int length, long position) throws IOException {
+		ByteBuffer buffer = ByteBuffer.wrap(data, offset, length);
+		while (buffer.hasRemaining()) {
+			int read = channel.read(buffer, position + (buffer.position() - offset));
+			if (read < 0) {
+				break;
 			}
 		}
+		return buffer.position() - offset;
 	}
 
-	private static byte[] take(BlockingQueue<byte[]> free) throws IOException {
-		try {
-			return free.take();
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			return null;
-		}
-	}
-
-	/** Index after the last line end, or -1 */
-	private static int lastLineEnd(byte[] data, int length) {
-		for (int i = length - 1; i >= 0; i--) {
-			if (data[i] == '\n') {
-				return i + 1;
+	/** Start of the first line that begins at or after {@code position} ({@link Long#MAX_VALUE}: none in this piece) */
+	private static long firstLineStart(FileChannel channel, byte[] probe, long position, long length) throws IOException {
+		long at = position - 1; // the line break just before the piece makes the piece start on a line
+		long limit = Math.min(length, position + CHUNK);
+		while (at < limit) {
+			int read = readFully(channel, probe, 0, probe.length, at);
+			if (read <= 0) {
+				break;
 			}
+			for (int i = 0; i < read; i++) {
+				if (probe[i] == '\n') {
+					return at + i + 1;
+				}
+			}
+			at += read;
 		}
-		return -1;
+		return Long.MAX_VALUE;
 	}
 }

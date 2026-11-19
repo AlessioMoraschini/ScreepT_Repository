@@ -122,6 +122,9 @@ public class LogSearchFrame extends JFrame {
 	private final JLabel lblName = new JLabel(I18n.t("common.logsearch"));
 	private final JLabel lblPath = new JLabel(" ");
 	private final JLabel lblDetails = new JLabel(" ");
+	/** Speed of the last search: click for the details of the last 100 */
+	private final JLabel lblSpeed = new JLabel(" ");
+	private final Runnable statsListener = this::updateSpeedChip;
 	private final javax.swing.JButton btnOpenFile = new javax.swing.JButton(I18n.t("log.open_file"));
 	/** The only LogSearch window: opening a file again reuses it */
 	private static LogSearchFrame current;
@@ -411,6 +414,8 @@ public class LogSearchFrame extends JFrame {
 		status.add(lblStatus, BorderLayout.WEST);
 		JPanel statusRight = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 14, 0));
 		statusRight.setOpaque(false);
+		setupSpeedChip();
+		statusRight.add(lblSpeed);
 		statusRight.add(lblDetails);
 		statusRight.add(lblCaret);
 		status.add(statusRight, BorderLayout.EAST);
@@ -1053,6 +1058,48 @@ public class LogSearchFrame extends JFrame {
 		refresh();
 	}
 
+	private void setupSpeedChip() {
+		lblSpeed.setFont(lblSpeed.getFont().deriveFont(Font.PLAIN, 12f));
+		lblSpeed.setForeground(muted());
+		lblSpeed.setIconTextGap(5);
+		lblSpeed.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+		lblSpeed.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				SearchPerformanceDialog.show(LogSearchFrame.this, index != null ? index.file() : null);
+			}
+		});
+		SearchStats.addListener(statsListener);
+		updateSpeedChip();
+	}
+
+	/** Gauge icon (colored by speed tier) and speed of the last finished search; nothing measured yet: gray icon */
+	private void updateSpeedChip() {
+		try {
+			SearchStats.Sample last = SearchStats.last();
+			int tier = last == null ? SearchStats.TIER_NONE : last.tier();
+			Color color = tier < 0 ? muted() : SearchPerformanceDialog.tierColor(tier);
+			lblSpeed.setIcon(gui.commons.frameutils.frame.arch.ToolIcons.of(gui.commons.frameutils.frame.arch.ToolIcons.Kind.GAUGE, 16, color));
+			if (last == null) {
+				lblSpeed.setText(" ");
+				lblSpeed.setToolTipText(I18n.t("log.perf_chip_none"));
+			} else {
+				// the last search, and the average of the searches of the same kind (plain text, regex, match case...)
+				java.util.List<SearchStats.Sample> same = SearchStats.filter(SearchStats.snapshot(), last.kind);
+				SearchStats.Summary avg = SearchStats.summarize(same);
+				String shown = last.speed() >= 0 ? SearchStats.formatSpeed(last.speed()) + "  ·  " + SearchStats.formatDuration(last.seconds()) : SearchStats.formatDuration(last.seconds());
+				if (avg.average >= 0) {
+					shown += "   " + I18n.fmt("log.perf_chip_avg", SearchStats.formatSpeed(avg.average), SearchStats.formatDuration(avg.averageSeconds));
+				}
+				lblSpeed.setText(shown);
+				lblSpeed.setToolTipText(I18n.fmt("log.perf_chip_tip", SearchStats.kindName(last.kind, false), same.size(), SearchStats.formatDuration(last.seconds()),
+						gui.commons.frameutils.frame.arch.ToolStyle.size(last.bytes), SearchStats.formatSpeed(last.speed())));
+			}
+		} catch (Throwable e) {
+			lblSpeed.setText(" ");
+		}
+	}
+
 	private void stopSearch() {
 		if (search != null) {
 			search.cancel();
@@ -1061,6 +1108,7 @@ public class LogSearchFrame extends JFrame {
 
 	private void release() {
 		UIManager.removePropertyChangeListener(lafListener);
+		SearchStats.removeListener(statsListener);
 		refreshTimer.stop();
 		monitorTimer.stop();
 		debounce.stop();

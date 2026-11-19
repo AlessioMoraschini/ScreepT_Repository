@@ -210,6 +210,7 @@ public class MainGuiGeneralAppStarter {
 		WindowIcons.register("SearchFrame", () -> IconsPathConfigurator.ICON_SEARCH);
 		WindowIcons.register("TreeFilterRulesDialog", () -> IconsPathConfigurator.ICON_SEARCH);
 		WindowIcons.register("LogSearchFrame", () -> IconsPathConfigurator.ICON_FILE_SEARCH);
+		WindowIcons.register("SearchPerformanceDialog", () -> IconsPathConfigurator.ICON_FILE_SEARCH);
 		WindowIcons.register("UiScaleCustomDialog", () -> GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/graphics.png");
 		WindowIcons.register("JFontChooserExtended", () -> IconsPathConfigurator.ICON_TEXT_COLOR);
 	}

@@ -28,6 +28,17 @@ final class LineSet {
 	private int size;
 
 	synchronized void add(int line) {
+		put(line);
+	}
+
+	/** Adds {@code count} lines of a piece of the file (their numbers are relative to {@code base}) under one lock */
+	synchronized void addAll(int base, int[] lines, int count) {
+		for (int i = 0; i < count; i++) {
+			put(base + lines[i]);
+		}
+	}
+
+	private void put(int line) {
 		int w = line >>> 6;
 		if (w >= words.length) {
 			int capacity = Math.max(words.length * 2, w + 1);

@@ -38,6 +38,9 @@ final class LogQuery {
 	/** Union of the required parts, to tint the matching text of a line (null when there is nothing to tint) */
 	final Pattern highlight;
 
+	/** What kind of search this is, for the speed statistics (see {@link SearchStats#KIND_TEXT}) */
+	final int kind;
+
 	LogQuery(String text, boolean regex, boolean matchCase, boolean wholeWord) {
 		int flags = matchCase ? 0 : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
 		List<ByteTerm> reqB = new ArrayList<ByteTerm>();
@@ -66,6 +69,8 @@ final class LogQuery {
 			requiredBytes = reqB.toArray(new ByteTerm[0]);
 			excludedBytes = exB.toArray(new ByteTerm[0]);
 		}
+		int base = regex ? SearchStats.KIND_REGEX : (required.size() > 1 || !excluded.isEmpty()) ? SearchStats.KIND_MULTI : SearchStats.KIND_TEXT;
+		kind = base | (matchCase ? SearchStats.KIND_CASE : 0) | (wholeWord ? SearchStats.KIND_WORD : 0);
 		if (required.isEmpty()) {
 			highlight = null;
 		} else {
@@ -312,6 +317,8 @@ final class LogQuery {
 	private static final class ByteTerm {
 		private final byte[] pattern;
 		private final int[] skip = new int[256];
+		/** Shift for the raw (not yet folded) byte under the last position of the pattern: one table read per step instead of two */
+		private final int[] skipRaw = new int[256];
 		private final byte[] fold = new byte[256];
 		private final boolean wholeWord;
 
@@ -323,6 +330,9 @@ final class LogQuery {
 			java.util.Arrays.fill(skip, m);
 			for (int k = 0; k < m - 1; k++) {
 				skip[pattern[k] & 0xFF] = m - 1 - k;
+			}
+			for (int b = 0; b < 256; b++) {
+				skipRaw[b] = skip[this.fold[b] & 0xFF];
 			}
 		}
 
@@ -354,8 +364,16 @@ final class LogQuery {
 			final byte[] p = pattern;
 			final int m = p.length;
 			final byte[] f = fold;
+			final int[] shift = skipRaw;
+			final byte last = p[m - 1];
 			int i = from + m - 1;
 			while (i < to) {
+				while (i < to && f[data[i] & 0xFF] != last) { // not the last character of the pattern: jump
+					i += shift[data[i] & 0xFF];
+				}
+				if (i >= to) {
+					return false;
+				}
 				int k = m - 1;
 				int j = i;
 				while (k >= 0 && f[data[j] & 0xFF] == p[k]) {
@@ -370,7 +388,7 @@ final class LogQuery {
 					}
 					i++;
 				} else {
-					i += skip[f[data[i] & 0xFF] & 0xFF];
+					i += shift[data[i] & 0xFF];
 				}
 			}
 			return false;

@@ -104,6 +104,8 @@ final class LogSearcher {
 	}
 
 	private void runFrom(long startOffset) {
+		final long began = System.nanoTime();
+		boolean completed = false;
 		try {
 			final boolean bytes = query.bytesCapable();
 			final boolean prefiltered = query.hasPrefilter();
@@ -114,12 +116,11 @@ final class LogSearcher {
 			}, (partial, end) -> {
 				Part part = (Part) partial;
 				int base = linesScanned;
-				for (int i = 0; i < part.count; i++) {
-					results.add(base + part.matches[i]);
-				}
+				results.addAll(base, part.matches, part.count);
 				linesScanned = base + part.lines;
 				bytesRead = end;
 			}, cancelled);
+			completed = true;
 		} catch (IOException e) {
 			// what was found so far stays valid
 		} finally {
@@ -127,6 +128,15 @@ final class LogSearcher {
 				bytesRead = length;
 			}
 			finished = true;
+			// only whole searches that ran to the end tell something about the speed (not stopped ones, nor the growth of a followed file)
+			if (completed && startOffset == 0 && !cancelled.get()) {
+				try {
+					SearchStats.record(new SearchStats.Sample(System.currentTimeMillis(), System.nanoTime() - began, length, linesScanned, results.size(),
+							query.bytesCapable() ? SearchStats.MODE_BYTES : (query.hasPrefilter() ? SearchStats.MODE_PREFILTER : SearchStats.MODE_DECODE), ChunkScan.defaultWorkers(), query.kind));
+				} catch (Throwable e) {
+					// statistics must never disturb the search
+				}
+			}
 		}
 	}
 
