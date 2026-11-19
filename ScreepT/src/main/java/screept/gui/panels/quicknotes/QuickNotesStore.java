@@ -24,8 +24,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,7 +50,9 @@ public class QuickNotesStore {
 
 	private static final String HEADER = "# ScreepT quick notes";
 	private static final String COLLAPSED_FLAG = "<!-- completed-collapsed -->";
-	private static final Pattern NOTE_LINE = Pattern.compile("^- \\[([ xX])\\] (.*?)(?:\\s*<!-- (\\S+) -->)?$");
+	/** Line with the tags of the workspace, also the ones without notes: "<!-- tags: a,b -->" */
+	private static final String TAGS_PREFIX = "<!-- tags:";
+	private static final Pattern NOTE_LINE = Pattern.compile("^- \\[([ xX])\\] (.*?)(?:\\s*<!-- (\\S+)(?: tags=(\\S*))? -->)?$");
 	private static final DateTimeFormatter STAMP = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 	private static final int SAVE_DELAY_MS = 400;
 
@@ -57,9 +62,11 @@ public class QuickNotesStore {
 
 	private final File file;
 	private final List<QuickNote> notes = new ArrayList<>();
+	private final Set<String> knownTags = new TreeSet<>();
 	private final Timer saveTimer;
 	private volatile boolean dirty;
 	private volatile boolean completedCollapsed;
+	private volatile boolean discarded;
 
 	public QuickNotesStore(File file) {
 		this.file = file.getAbsoluteFile();
@@ -68,6 +75,20 @@ public class QuickNotesStore {
 		load();
 		// last edits typed right before closing the application must not be lost
 		Runtime.getRuntime().addShutdownHook(new Thread(this::flush, "QuickNotes-flush"));
+	}
+
+	/** Tags of the workspace, also the ones that no note has (created from the tag bar) */
+	public synchronized List<String> getKnownTags() {
+		return new ArrayList<>(knownTags);
+	}
+
+	/** Adds a tag to the workspace; false when it was already there */
+	public synchronized boolean addKnownTag(String tag) {
+		if (tag == null || tag.isEmpty() || !knownTags.add(tag)) {
+			return false;
+		}
+		changed();
+		return true;
 	}
 
 	/** Snapshot of the notes, in saved order */
@@ -102,6 +123,23 @@ public class QuickNotesStore {
 		}
 	}
 
+	/** Puts a note back at the given position (undo of a deletion) */
+	public synchronized void insert(QuickNote note, int index) {
+		notes.add(Math.max(0, Math.min(index, notes.size())), note);
+		changed();
+	}
+
+	/** Removes every completed note of this workspace; returns how many */
+	public synchronized int removeCompleted() {
+		int before = notes.size();
+		notes.removeIf(QuickNote::isDone);
+		int removed = before - notes.size();
+		if (removed > 0) {
+			changed();
+		}
+		return removed;
+	}
+
 	/** Moves the note up (delta < 0) or down among the notes with the same done state */
 	public synchronized boolean move(QuickNote note, int delta) {
 		int index = notes.indexOf(note);
@@ -133,7 +171,7 @@ public class QuickNotesStore {
 
 	/** Saves now if there are pending changes */
 	public synchronized void flush() {
-		if (!dirty) {
+		if (!dirty || discarded) {
 			return;
 		}
 		saveTimer.stop();
@@ -143,6 +181,13 @@ public class QuickNotesStore {
 		} catch (Exception e) {
 			logger.error("Cannot save quick notes to " + file, e);
 		}
+	}
+
+	/** The workspace was deleted: nothing more is written for it */
+	public synchronized void discard() {
+		discarded = true;
+		dirty = false;
+		saveTimer.stop();
 	}
 
 	public File getFile() {
@@ -172,6 +217,9 @@ public class QuickNotesStore {
 		if (completedCollapsed) {
 			sb.append(COLLAPSED_FLAG).append("\r\n");
 		}
+		if (!knownTags.isEmpty()) {
+			sb.append(TAGS_PREFIX).append(" ").append(String.join(",", knownTags)).append(" -->").append("\r\n");
+		}
 		sb.append("\r\n");
 		for (QuickNote note : notes) {
 			if (note.isBlank()) {
@@ -179,7 +227,11 @@ public class QuickNotesStore {
 			}
 			sb.append("- [").append(note.isDone() ? 'x' : ' ').append("] ")
 				.append(escape(note.getText()))
-				.append("  <!-- ").append(STAMP.format(note.getCreated())).append(" -->\r\n");
+				.append("  <!-- ").append(STAMP.format(note.getCreated()));
+			if (!note.getTags().isEmpty()) {
+				sb.append(" tags=").append(String.join(",", note.getTags()));
+			}
+			sb.append(" -->\r\n");
 		}
 		return sb.toString();
 	}
@@ -195,9 +247,13 @@ public class QuickNotesStore {
 					completedCollapsed = true;
 					continue;
 				}
+				if (line.trim().startsWith(TAGS_PREFIX)) {
+					knownTags.addAll(parseKnownTags(line));
+					continue;
+				}
 				Matcher m = NOTE_LINE.matcher(line);
 				if (m.matches()) {
-					notes.add(new QuickNote(unescape(m.group(2)), !" ".equals(m.group(1)), parseStamp(m.group(3))));
+					notes.add(parseLine(line));
 				}
 			}
 			logger.debug("Quick notes loaded: " + notes.size() + " from " + source);
@@ -276,19 +332,26 @@ public class QuickNotesStore {
 	public synchronized void importFrom(File backup) throws IOException {
 		List<QuickNote> imported = new ArrayList<>();
 		boolean collapsed = false;
+		Set<String> importedKnown = new TreeSet<>();
 		for (String line : Files.readAllLines(backup.toPath(), StandardCharsets.UTF_8)) {
 			if (COLLAPSED_FLAG.equals(line.trim())) {
 				collapsed = true;
 				continue;
 			}
+			if (line.trim().startsWith(TAGS_PREFIX)) {
+				importedKnown.addAll(parseKnownTags(line));
+				continue;
+			}
 			Matcher m = NOTE_LINE.matcher(line);
 			if (m.matches()) {
-				imported.add(new QuickNote(unescape(m.group(2)), !" ".equals(m.group(1)), parseStamp(m.group(3))));
+				imported.add(parseLine(line));
 			}
 		}
 		notes.clear();
 		notes.addAll(imported);
 		completedCollapsed = collapsed;
+		knownTags.clear();
+		knownTags.addAll(importedKnown);
 		changed();
 	}
 
@@ -298,6 +361,22 @@ public class QuickNotesStore {
 
 	private File backupFile() {
 		return new File(file.getParentFile(), file.getName() + ".bak");
+	}
+
+	/** The tags of a "<!-- tags: a,b -->" line */
+	static List<String> parseKnownTags(String line) {
+		String body = line.trim().substring(TAGS_PREFIX.length()).replace("-->", "");
+		return QuickNote.parseTags(body);
+	}
+
+	/** One note from a line of the file, or null when the line is not a note */
+	static QuickNote parseLine(String line) {
+		Matcher m = NOTE_LINE.matcher(line);
+		if (!m.matches()) {
+			return null;
+		}
+		List<String> tags = m.group(4) == null ? Collections.<String>emptyList() : QuickNote.parseTags(m.group(4));
+		return new QuickNote(unescape(m.group(2)), !" ".equals(m.group(1)), parseStamp(m.group(3)), tags);
 	}
 
 	private static LocalDateTime parseStamp(String stamp) {

@@ -6,6 +6,27 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.85 - 2026-11-18
+> Quick notes with tags, workspaces and export, and a global switch for the file tree filter rules
+
+### New
+- Quick notes: the + next to the tag row creates tags before any note uses them; they stay in the workspace. The tags of a note are chips on its row: hover one to see Remove, click it to remove the tag. The # opens a combo right under the tags with the existing ones: picking one adds it. A note with many tags shows them one per line when you press +N.
+- Quick notes: tags on every note. The # button that appears on hover edits them (comma separated, shown under the note). The search finds the tags too.
+- Quick notes: workspaces, separate lists of notes, each one in its own file. Choose one from the combo at the top of the drawer; create, rename or delete them from the menu. A deleted workspace is not erased: its file is moved to the QuickNotes/deleted folder.
+- Quick notes: export the notes of a workspace to a Markdown file, and import a file as a new workspace. The import that replaces the current notes is still there.
+- File tree filter rules: a "Filters on" switch turns all the rules off and on without losing them, and "Select all" enables or disables every rule at once.
+- Interactive terminal: in interactive mode the toolbar and the Live cmd row go away, and the terminal takes the space. Search, the Interactive switch and the pin float over its bottom right corner, so the switch is always there to turn the mode off.
+- Quick notes: the tag row under the header never wraps. Click tags to filter by several at once: a note with any of the chosen tags is shown. The row keeps every tag that fits, side by side and adapting to the width, and the arrow at the end opens the full list with the counts and a Clear filter. With many tags the row shows as many as fit, and the tags of a note are cut with an ellipsis (the full list is in the tooltip).
+- Quick notes: To do and Done check boxes next to the search show or hide open and completed notes, independently of each other and of the search.
+- Quick notes: deleting a note shows Undo in the footer for six seconds, and puts the note back where it was, even after a workspace switch.
+- Quick notes: Clear completed notes... in the menu removes the completed notes of the workspace, after a confirmation.
+
+### Improved
+- Launcher, Customize parameters: a long JVM name in the combo is cut after its first 15 characters with "...", and the end of the name fills the rest of the space (the whole name when it fits). The window fits all its content, the JVM info wraps instead of running off, and the window is no longer resizable (no maximize).
+- File tree filter: the funnel button is faded while the rules are switched off.
+- Open with: only the editors that can open the selected files are listed. The text editor is offered only for text files (no binary bytes), and an HTML or image viewer only for the files it can show.
+- Open in a window: LogSearch is listed only for text files.
+
 ## 0.9.84 - 2026-11-18
 > A file tree filter that answers while you type, a Key Image Vault with previews and links, a password strength checker, and a safer Configuration Manager
 

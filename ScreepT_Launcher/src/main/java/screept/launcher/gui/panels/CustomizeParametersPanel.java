@@ -26,6 +26,7 @@ import resources.ImagesPathConfigurator;
 import screept.launcher.utils.IniFileManager;
 import screept.launcher.utils.JreDownloader;
 import screept.launcher.utils.JvmHelper;
+import screept.launcher.gui.utils.JvmNameRenderer;
 import screept.launcher.utils.JvmProfiles;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
@@ -172,7 +173,7 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][20px:n][80px,grow]", "[grow][grow][grow][150:150:,grow][][][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][20px:n][80px,grow]", "[grow][grow][grow][150:n:,grow][][][grow]"));
 		
 		lblMaxMemory = new JLabel(I18n.t("launcher.max_memory_mb"));
 		lblMaxMemory.setForeground(new Color(220, 220, 220));
@@ -287,20 +288,11 @@ public class CustomizeParametersPanel extends JFrame{
 		// the list shows readable names ("jdk Oracle 21 OpenJDK", with a progressive number when repeated), the value stays the path
 		jvmHomes = new ArrayList<String>(JVMS);
 		jvmLabels = os.commons.utils.JvmInfo.uniqueLabels(jvmHomes);
-		comboPrefJvm.setRenderer(new javax.swing.DefaultListCellRenderer() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-				int position = jvmHomes.indexOf(value);
-				if (position >= 0) {
-					setText(jvmLabels.get(position));
-					setToolTipText((String) value);
-				}
-				return this;
-			}
-		});
+		// the name is cut in the middle to the width of the combo: first 15 characters, "...", then the end of the name
+		comboPrefJvm.setRenderer(new JvmNameRenderer(value -> {
+			int position = jvmHomes.indexOf(value);
+			return position >= 0 ? jvmLabels.get(position) : String.valueOf(value);
+		}));
 
 		// information about the selected Java, shown under the list
 		jvmInfoPane = new javax.swing.JEditorPane();
@@ -322,7 +314,20 @@ public class CustomizeParametersPanel extends JFrame{
 		javax.swing.JPanel jvmBox = new javax.swing.JPanel(new MigLayout("insets 0, wrap 1, gapy 4", "[grow,fill]", "[][grow,fill]"));
 		jvmBox.setOpaque(false);
 		jvmBox.add(comboPrefJvm, "growx");
-		jvmBox.add(jvmInfoPane, "grow");
+		// the text wraps inside the scroll pane: a long path or name never widens the window
+		javax.swing.JScrollPane jvmInfoScroll = new javax.swing.JScrollPane(jvmInfoPane, javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Dimension getPreferredSize() {
+				// width follows the column, height is the whole text wrapped at that width: the window grows to show it
+				return new Dimension(1, super.getPreferredSize().height);
+			}
+		};
+		jvmInfoScroll.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		jvmInfoScroll.setOpaque(false);
+		jvmInfoScroll.getViewport().setOpaque(false);
+		jvmBox.add(jvmInfoScroll, "grow");
 		getContentPane().add(jvmBox, "cell 3 3 5 1,grow");
 		setupProfileControls();
 		
@@ -376,6 +381,7 @@ public class CustomizeParametersPanel extends JFrame{
 		backupInitialValues();
 		
 		this.setMinimumSize(DEF_DIMENSION);
+		this.setResizable(false); // fixed: the window is sized to its content, no maximize
 		this.pack();
 		
 		logger.info(this.getClass().getName() + " Started");

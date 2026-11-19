@@ -45,7 +45,7 @@ public final class QuickNotesDrawer extends JPanel {
 	private static final java.util.List<java.util.function.Consumer<Boolean>> OPEN_LISTENERS = new java.util.concurrent.CopyOnWriteArrayList<>();
 
 	private final JFrame frame;
-	private final QuickNotesStore store;
+	private final QuickNotesWorkspaces workspaces;
 	private final QuickNotesPanel notesPanel;
 	private final Timer animation;
 	private long animationStart;
@@ -54,8 +54,8 @@ public final class QuickNotesDrawer extends JPanel {
 
 	private QuickNotesDrawer(JFrame frame) {
 		this.frame = frame;
-		this.store = new QuickNotesStore(QuickNotesStore.DEFAULT_FILE);
-		this.notesPanel = new QuickNotesPanel(store, this::close);
+		this.workspaces = new QuickNotesWorkspaces(QuickNotesStore.DEFAULT_FILE.getParentFile());
+		this.notesPanel = new QuickNotesPanel(workspaces, this::close);
 
 		setLayout(new BorderLayout());
 		setOpaque(false);
@@ -118,7 +118,7 @@ public final class QuickNotesDrawer extends JPanel {
 	}
 
 	public void close() {
-		store.flush();
+		workspaces.flushAll();
 		opening = false;
 		startAnimation();
 		fireOpenChanged(false);

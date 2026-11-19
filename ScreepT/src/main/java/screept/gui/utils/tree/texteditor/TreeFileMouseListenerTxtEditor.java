@@ -257,13 +257,16 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		Font font = GeneralConfig.DEFAULT_POP_UP_MENUS_FONT;
 		final File first = files.get(0);
 
+		boolean textFiles = allText(files);
 		JMenuItem logSearch = new JMenuItem(I18n.t("common.logsearch"));
 		logSearch.setFont(font);
 		logSearch.addActionListener((e) -> gui.texteditor.commons.logsearch.LogSearchFrame.open(textEditor.mainApplication.getMainFrame(), first));
-		itemOpenInWindow.add(logSearch);
+		if (textFiles) {
+			itemOpenInWindow.add(logSearch);
+		}
 
 		gui.commons.tabs.TabImplementor image = gui.commons.tabs.TabImplementors.byId(gui.commons.imagestudio.ImageStudioTabImplementor.ID);
-		if (image != null && image.getDefaultExtensions().contains(gui.commons.tabs.TabImplementors.extensionOf(first))) {
+		if (image != null && allCanOpen(image, files)) {
 			JMenuItem imageStudio = new JMenuItem(I18n.t("common.image_studio"));
 			imageStudio.setFont(font);
 			imageStudio.addActionListener((e) -> {
@@ -315,10 +318,12 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				currentTabEditor.loadFile(file, false);
 			}
 		});
-		itemOpenWith.add(asText);
+		if (allText(files)) {
+			itemOpenWith.add(asText);
+		}
 
 		for (final gui.commons.tabs.TabImplementor implementor : gui.commons.tabs.TabImplementors.all()) {
-			if (!implementor.canOpen(files.get(0))) {
+			if (!allCanOpen(implementor, files)) {
 				continue;
 			}
 			JMenuItem item = new JMenuItem(implementor.getDisplayName() + (implementor.getId().equals(defaultId) ? suffix : ""));
@@ -332,7 +337,33 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			});
 			itemOpenWith.add(item);
 		}
+		if (itemOpenWith.getMenuComponentCount() == 0) {
+			JMenuItem none = new JMenuItem(I18n.t("app.no_compatible_editor"));
+			none.setFont(font);
+			none.setEnabled(false);
+			itemOpenWith.add(none);
+		}
 		itemOpenWith.setEnabled(true);
+	}
+
+	/** True when every file is text: only then the text editor and the text tools are offered for them */
+	private static boolean allText(List<File> files) {
+		for (File file : files) {
+			if (!gui.commons.tabs.TabImplementors.isTextFile(file)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/** True when the viewer can open every one of the files */
+	private static boolean allCanOpen(gui.commons.tabs.TabImplementor implementor, List<File> files) {
+		for (File file : files) {
+			if (!implementor.canOpen(file)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private JMenuItem addMenuItem(JMenu menu, String label, Font font, boolean separatorBefore, boolean separatorAfter) {
