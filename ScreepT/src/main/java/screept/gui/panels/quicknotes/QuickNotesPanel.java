@@ -86,6 +86,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import gui.commons.dialogutils.NativeFileChooser;
 import various.common.light.i18n.I18n;
+import various.common.light.utility.string.WildcardPattern;
 
 import net.miginfocom.swing.MigLayout;
 import screept.gui.style.CardPalette;
@@ -126,7 +127,9 @@ public class QuickNotesPanel extends JPanel {
 	/** Notes whose tags are shown one per line ("+N" pressed) */
 	private final Set<QuickNote> expandedTags = Collections.newSetFromMap(new IdentityHashMap<QuickNote, Boolean>());
 	private final FlatButton closeBtn = new FlatButton("\u00D7", true);
-	private final RoundTextField searchField = new RoundTextField("Search notes and tags", true, () -> palette);
+	/** Search pop-up: hidden until Ctrl+F or the search button opens it, and Esc closes it (emptying it first) */
+	private final FlatButton searchBtn = new FlatButton("⌕", false);
+	private final RoundTextField searchField = new RoundTextField("Search notes and tags (* and ? wildcards)", true, () -> palette);
 	private final RoundTextField addField = new RoundTextField("Add a note and press Enter", false, () -> palette);
 	private final ScrollableListPanel listPanel = new ScrollableListPanel("4 12 14 12", 6);
 	private final JScrollPane scroll = new JScrollPane(listPanel);
@@ -151,16 +154,18 @@ public class QuickNotesPanel extends JPanel {
 		setLayout(new BorderLayout());
 		setOpaque(true);
 
-		JPanel header = new JPanel(new MigLayout("insets 14 14 8 14, fillx, gapy 8", "[grow][][]", "[][][][][]"));
+		JPanel header = new JPanel(new MigLayout("insets 14 14 8 14, fillx, gapy 8, hidemode 2", "[grow][][]", "[][][][][]"));
 		header.setOpaque(false);
 		header.add(titleLbl, "split 2, gapright 8");
 		header.add(counterLbl, "aligny baseline");
+		header.add(searchBtn);
 		header.add(menuBtn);
 		header.add(closeBtn, "wrap");
 		header.add(workspaceBox, "span 3, growx, wrap");
 		header.add(tagStrip, "span 2, growx");
 		header.add(newTagBtn, "wrap");
 		header.add(searchField, "span 3, growx, wrap");
+		searchField.setVisible(false);
 		header.add(todoToggle, "span 3, split 2, gapleft 2");
 		header.add(doneToggle, "wrap");
 		header.add(addField, "span 3, growx");
@@ -183,6 +188,8 @@ public class QuickNotesPanel extends JPanel {
 		undoBtn.addActionListener(e -> undoDelete());
 		add(footer, BorderLayout.SOUTH);
 
+		searchBtn.setToolTipText("Search notes (Ctrl+F)");
+		searchBtn.addActionListener(e -> toggleSearch());
 		menuBtn.setToolTipText(I18n.t("app.backup_and_import"));
 		menuBtn.addActionListener(e -> showBackupMenu());
 		newTagBtn.setToolTipText("New tag");
@@ -205,7 +212,7 @@ public class QuickNotesPanel extends JPanel {
 		doneToggle.addActionListener(e -> rebuild(null));
 		bindKey(searchField, KeyEvent.VK_ESCAPE, 0, "qn-search-esc", () -> {
 			if (searchField.getText().isEmpty()) {
-				escape();
+				hideSearch();
 			} else {
 				searchField.setText("");
 			}
@@ -227,10 +234,7 @@ public class QuickNotesPanel extends JPanel {
 		bindKey(addField, KeyEvent.VK_DOWN, 0, "qn-add-down", this::focusFirstNote);
 
 		// Ctrl+F and Esc anywhere inside the panel
-		bindKey(this, KeyEvent.VK_F, ShortcutKeys.MENU_DOWN_MASK, "qn-find", () -> {
-			searchField.requestFocusInWindow();
-			searchField.selectAll();
-		});
+		bindKey(this, KeyEvent.VK_F, ShortcutKeys.MENU_DOWN_MASK, "qn-find", this::showSearch);
 		bindKey(this, KeyEvent.VK_ESCAPE, 0, "qn-close", this::escape);
 
 		applyPalette();
@@ -705,7 +709,8 @@ public class QuickNotesPanel extends JPanel {
 	private static boolean matches(QuickNote note, String[] terms) {
 		String text = (note.getText() + " " + String.join(" ", note.getTags())).toLowerCase(Locale.ROOT);
 		for (String term : terms) {
-			if (!text.contains(term)) {
+			boolean found = WildcardPattern.hasWildcard(term) ? WildcardPattern.matchesAnyPart(text, term) : text.contains(term);
+			if (!found) {
 				return false;
 			}
 		}
@@ -755,8 +760,34 @@ public class QuickNotesPanel extends JPanel {
 		if (tagMenu.isVisible() || newTagMenu.isVisible()) {
 			tagMenu.setVisible(false);
 			newTagMenu.setVisible(false);
+		} else if (searchField.isVisible()) {
+			hideSearch();
 		} else {
 			closeAction.run();
+		}
+	}
+
+	/** Shows the search bar and gives it the focus */
+	private void showSearch() {
+		searchField.setVisible(true);
+		revalidate();
+		searchField.requestFocusInWindow();
+		searchField.selectAll();
+	}
+
+	/** Hides the search bar and empties it: no note stays filtered out of sight */
+	private void hideSearch() {
+		searchField.setText("");
+		searchField.setVisible(false);
+		revalidate();
+		addField.requestFocusInWindow();
+	}
+
+	private void toggleSearch() {
+		if (searchField.isVisible()) {
+			hideSearch();
+		} else {
+			showSearch();
 		}
 	}
 

@@ -767,6 +767,8 @@ class ColumnSelectionCaret extends DefaultCaret {
 
     @Override
     public void mousePressed(MouseEvent e){
+        // read before super moves the caret: keyboard selections keep their anchor too
+        int anchor = getAnchor();
         super.mousePressed(e);
         this.altDown = e.isAltDown();
         this.ctrlDown = ShortcutKeys.isCtrlDown(e);
@@ -794,16 +796,8 @@ class ColumnSelectionCaret extends DefaultCaret {
                 		}
 					}
 
-					int start = thisTextArea.getSelectionEnd() > thisTextArea.getCaretPosition()
-							? lastStartPosition
-							: thisTextArea.getSelectionStart();
-
 					// Update last start position, used on key released if shift is pressed
-					if (shiftDown) {
-						lastStartPosition = thisTextArea.getSelectedText() != null ? start : thisTextArea.getCaretPosition();
-					} else {
-						lastStartPosition = thisTextArea.getCaretPosition();
-					}
+					lastStartPosition = shiftDown ? anchor : thisTextArea.getCaretPosition();
 
 //					updateSelectionIfShiftPressed();
 				}
@@ -815,6 +809,13 @@ class ColumnSelectionCaret extends DefaultCaret {
         } else if(e.getClickCount() == 2 || e.getClickCount() == 3 ) {
         	thisTextArea.removeAllLineHighlights();
 		}
+    }
+
+    // anchor = end of the selection opposite to the caret (mouse and keyboard selections)
+    private int getAnchor() {
+        if (thisTextArea == null) return 0;
+        int caret = thisTextArea.getCaretPosition();
+        return caret == thisTextArea.getSelectionStart() ? thisTextArea.getSelectionEnd() : thisTextArea.getSelectionStart();
     }
 
     private void updateSelectionIfShiftPressed() {

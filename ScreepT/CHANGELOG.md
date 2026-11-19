@@ -7,7 +7,7 @@
 -->
 
 ## 0.9.85 - 2026-11-18
-> Quick notes with tags, workspaces and export, and a global switch for the file tree filter rules
+> Quick notes with tags, workspaces and export; the file tree filter and the notes search are pop-up bars with wildcards; the recent workspaces are one click away in the file tree
 
 ### New
 - Quick notes: the + next to the tag row creates tags before any note uses them; they stay in the workspace. The tags of a note are chips on its row: hover one to see Remove, click it to remove the tag. The # opens a combo right under the tags with the existing ones: picking one adds it. A note with many tags shows them one per line when you press +N.
@@ -15,7 +15,11 @@
 - Quick notes: workspaces, separate lists of notes, each one in its own file. Choose one from the combo at the top of the drawer; create, rename or delete them from the menu. A deleted workspace is not erased: its file is moved to the QuickNotes/deleted folder.
 - Quick notes: export the notes of a workspace to a Markdown file, and import a file as a new workspace. The import that replaces the current notes is still there.
 - File tree filter rules: a "Filters on" switch turns all the rules off and on without losing them, and "Select all" enables or disables every rule at once.
-- Interactive terminal: in interactive mode the toolbar and the Live cmd row go away, and the terminal takes the space. Search, the Interactive switch and the pin float over its bottom right corner, so the switch is always there to turn the mode off.
+- Interactive terminal: in interactive mode the toolbar and the Live cmd row go away, and the terminal takes the space. The Interactive switch, the search and the pin stay in the header, in their usual place.
+- File tree: the filter is a pop-up bar, opened with the magnifier in the tree toolbar. Closing it (or Esc with the field empty) clears the filter too.
+- File tree filter: wildcards. * is any text and ? is one character; a text with them must match the whole file name (*.pdf, test?.txt).
+- Quick notes: the search is a pop-up bar, opened with Ctrl+F or the magnifier in the header; Esc clears it and then closes it. Wildcards work in the text and in the tags.
+- File tree toolbar: the down arrow lists the last workspaces. Picking one loads its folder, unless it is the one already loaded; a folder that no longer exists is removed from the list.
 - Quick notes: the tag row under the header never wraps. Click tags to filter by several at once: a note with any of the chosen tags is shown. The row keeps every tag that fits, side by side and adapting to the width, and the arrow at the end opens the full list with the counts and a Clear filter. With many tags the row shows as many as fit, and the tags of a note are cut with an ellipsis (the full list is in the tooltip).
 - Quick notes: To do and Done check boxes next to the search show or hide open and completed notes, independently of each other and of the search.
 - Quick notes: deleting a note shows Undo in the footer for six seconds, and puts the note back where it was, even after a workspace switch.
@@ -26,6 +30,9 @@
 - File tree filter: the funnel button is faded while the rules are switched off.
 - Open with: only the editors that can open the selected files are listed. The text editor is offered only for text files (no binary bytes), and an HTML or image viewer only for the files it can show.
 - Open in a window: LogSearch is listed only for text files.
+
+### Fixed
+- Text editor: Shift + click selects from the caret to the mouse also after a selection made with the keyboard (Shift + arrows, Ctrl + Shift + arrows). It used to select from a point left over from the last mouse click.
 
 ## 0.9.84 - 2026-11-18
 > A file tree filter that answers while you type, a Key Image Vault with previews and links, a password strength checker, and a safer Configuration Manager

@@ -24,6 +24,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,6 +40,10 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.ButtonGroup;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
@@ -127,6 +133,8 @@ public class TextEditor extends ModulePanel {
 	private JLabel lblFiles;
 	public JButton toggleButtonFileTreeNewWorkspace;
 	public JButton toggleButtonFileTreeWorkspace;
+	public JButton btnTreeFilter;
+	public JButton btnRecentWorkspaces;
 	public JButton toggleButtonFileTreeLocked;
 	public JButton btnDepthUp_nostyle;
 	public JButton btnDepthDown_nostyle;
@@ -284,6 +292,7 @@ public class TextEditor extends ModulePanel {
 		leftFileTree.addKeyListener(mouseListenerTreeFilePanel);
 		leftFileTree.addMouseMotionListener(mouseListenerTreeFilePanel.getHoverOnNodesListener());
 		leftFileTree.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
+		leftFileTree.setBorder(new EmptyBorder(0, 10, 0, 0)); // room on the left for the root handle
 		ToolTipManager.sharedInstance().registerComponent(leftFileTree);
 
 		leftScrollPane = new JScrollPane(leftFileTree);
@@ -303,7 +312,7 @@ public class TextEditor extends ModulePanel {
 		leftScrollPaneContainer.setBackground(fileNavColorBckg);
 		leftScrollPaneContainer.setForeground(Color.GRAY);
 		leftScrollPaneContainer.setLayout(new MigLayout("fill, insets 0, hidemode 3",
-				"[20px:25px:25px][2px:4px,grow][20px:25px:25px][20px:25px:25px][20px:25px:25px][25px:25px:25px][18px:20px:20px][18px:20px:20px][18px:20px:20px]",
+				"[20px:25px:25px][2px:4px,grow][20px:25px:25px][20px:25px:25px][20px:25px:25px][25px:25px:25px][18px:20px:20px][18px:20px:20px][18px:20px:20px][18px:20px:20px][20px:25px:25px]",
 				"[25px:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
 
 		initRightPane();
@@ -392,7 +401,26 @@ public class TextEditor extends ModulePanel {
 		toggleButtonFileTreeLocked.setToolTipText(TextEditTooltips.tooltipFileViewLock);
 		toggleButtonFileTreeLocked.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		toggleButtonFileTreeLocked.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNPIN));
-		leftScrollPaneContainer.add(toggleButtonFileTreeLocked, "cell 8 0,alignx center,growy");
+		leftScrollPaneContainer.add(toggleButtonFileTreeLocked, "cell 9 0,alignx center,growy");
+
+		// MINI TOOLBAR, extra columns 8 and 10: last workspaces (combo), filter bar on/off (pop-up)
+		btnTreeFilter = new JButton("");
+		GuiUtilsExtended.makeTransparentJButton(btnTreeFilter);
+		btnTreeFilter.setMaximumSize(new Dimension(20, 12));
+		btnTreeFilter.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		btnTreeFilter.setToolTipText(I18n.t("tree.filter_toggle_tip"));
+		btnTreeFilter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH));
+		btnTreeFilter.addActionListener(e -> toggleTreeFilter());
+		leftScrollPaneContainer.add(btnTreeFilter, "cell 10 0,alignx center,aligny center");
+
+		btnRecentWorkspaces = new JButton("");
+		GuiUtilsExtended.makeTransparentJButton(btnRecentWorkspaces);
+		btnRecentWorkspaces.setMaximumSize(new Dimension(20, 12));
+		btnRecentWorkspaces.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		btnRecentWorkspaces.setToolTipText(I18n.t("tree.recent_workspaces_tip"));
+		btnRecentWorkspaces.setIcon(recentWorkspacesIcon());
+		btnRecentWorkspaces.addActionListener(e -> showRecentWorkspaces());
+		leftScrollPaneContainer.add(btnRecentWorkspaces, "cell 8 0,alignx center,aligny center");
 
 		separator_NO_HIDE = new JSeparator();
 		separator_NO_HIDE.setSize(new Dimension(50, 2));
@@ -400,8 +428,8 @@ public class TextEditor extends ModulePanel {
 		separator_NO_HIDE.setBackground(Color.GRAY);
 		separator_NO_HIDE.setOpaque(true);
 		separator_NO_HIDE.setForeground(Color.LIGHT_GRAY);
-		leftScrollPaneContainer.add(separator_NO_HIDE, "cell 0 1 9 1,growx");
-		leftScrollPaneContainer.add(leftTreeBody, "cell 0 2 9 1,grow");
+		leftScrollPaneContainer.add(separator_NO_HIDE, "cell 0 1 11 1,growx");
+		leftScrollPaneContainer.add(leftTreeBody, "cell 0 2 11 1,grow");
 
 		mainPanel.add(splitPaneTreeAndVerticalSplit, "cell 0 3 37 1,grow");
 
@@ -428,7 +456,7 @@ public class TextEditor extends ModulePanel {
 		separator_NO_HIDE_2.setOpaque(true);
 		separator_NO_HIDE_2.setForeground(Color.GRAY);
 		separator_NO_HIDE_2.setBackground(Color.GRAY);
-		leftScrollPaneContainer.add(separator_NO_HIDE_2, "cell 0 3 9 1,growx");
+		leftScrollPaneContainer.add(separator_NO_HIDE_2, "cell 0 3 11 1,growx");
 
 		lblCurrentDir = new JLabel(ROOT_STANDARD_LBL);
 		lblCurrentDir.setHorizontalTextPosition(SwingConstants.LEFT);
@@ -444,7 +472,7 @@ public class TextEditor extends ModulePanel {
 		dynLblCurrentDir.setHorizontalAlignment(SwingConstants.RIGHT);
 		dynLblCurrentDir.setForeground(SystemColor.menu);
 		dynLblCurrentDir.setFont(new Font("SansSerif", Font.BOLD, 12));
-		leftScrollPaneContainer.add(dynLblCurrentDir, "cell 2 4 7 1,alignx right");
+		leftScrollPaneContainer.add(dynLblCurrentDir, "cell 2 4 9 1,alignx right");
 		splitPaneTreeAndVerticalSplit.setContinuousLayout(true);
 		splitPaneTreetabsAndRightToggle.setContinuousLayout(true);
 
@@ -858,6 +886,82 @@ public class TextEditor extends ModulePanel {
 
 			if(apply)
 				splitPaneTreetabsAndRightToggle.setDividerLocation(newRightPaneValue);
+		}
+	}
+
+	/** Mini toolbar: shows or hides the filter bar of the tree (closing it drops its filter) */
+	private void toggleTreeFilter() {
+		if (treeFilterPanel.isOpen()) {
+			treeFilterPanel.close();
+		} else {
+			treeFilterPanel.open();
+		}
+	}
+
+	/** Folder with a clock: the icon of the recent workspaces */
+	private static ImageIcon recentWorkspacesIcon() {
+		ImageIcon folder = new ImageIcon(IconsPathConfigurator.iconFolderPath);
+		ImageIcon clock = new ImageIcon(IconsPathConfigurator.ICON_CLOCK);
+		int w = folder.getIconWidth();
+		int h = folder.getIconHeight();
+		BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = image.createGraphics();
+		g.drawImage(folder.getImage(), 0, 0, null);
+		int d = Math.max(7, Math.round(h * 0.6f));
+		g.drawImage(clock.getImage(), w - d, h - d, d, d, null);
+		g.dispose();
+		return new ImageIcon(image);
+	}
+
+	/**
+	 * Mini toolbar: the list of the last workspaces (the same as the File menu). The one loaded is marked; picking another one
+	 * loads it, as the File menu does.
+	 */
+	private void showRecentWorkspaces() {
+		FileNamed[] recent = currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces.getList().toArray(new FileNamed[0]);
+		JPopupMenu popup = new JPopupMenu();
+		if (recent.length == 0) {
+			JMenuItem none = new JMenuItem(I18n.t("tree.recent_workspaces_none"));
+			none.setEnabled(false);
+			popup.add(none);
+		} else {
+			File loaded = new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
+			ButtonGroup group = new ButtonGroup();
+			for (FileNamed item : recent) {
+				if (item.mFile == null) {
+					continue;
+				}
+				JRadioButtonMenuItem entry = new JRadioButtonMenuItem(item.mFile.getAbsolutePath(), sameFolder(item.mFile, loaded));
+				entry.setToolTipText(I18n.t("tree.recent_workspaces_tip"));
+				group.add(entry);
+				entry.addActionListener(e -> openRecentWorkspace(item));
+				popup.add(entry);
+			}
+		}
+		popup.show(btnRecentWorkspaces, 0, btnRecentWorkspaces.getHeight());
+	}
+
+	/** Same recovery as the File menu: an existing folder is loaded; a missing one is reported and removed from the list */
+	private void openRecentWorkspace(FileNamed item) {
+		File folder = item.mFile;
+		if (folder == null || sameFolder(folder, new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath))) {
+			return;
+		}
+		logger.info("Recent workspace picked: " + folder.getAbsolutePath());
+		if (folder.exists() && folder.isDirectory()) {
+			setWorkspace(folder);
+			return;
+		}
+		MainGUI.dialogHelper.error(I18n.t("app.file_does_not_exist_anymore"), I18n.t("common.file_does_not_exist"));
+		currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces.removeAllOccurrencesByEquals(item);
+		mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
+	}
+
+	private static boolean sameFolder(File a, File b) {
+		try {
+			return a.getCanonicalFile().equals(b.getCanonicalFile());
+		} catch (IOException e) {
+			return a.getAbsoluteFile().equals(b.getAbsoluteFile());
 		}
 	}
 
