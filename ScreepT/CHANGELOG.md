@@ -6,6 +6,25 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.87 - 2026-11-20
+> Plugins can open as tabs of the file editor (PDF viewer, Markdown viewer), tabs come back as they were at the next start, pin a tab with Alt+Shift+J, quick notes you can move and resize, faster searches with filters and regular expressions
+
+### New
+- Plugins in panel mode: a plugin can also work as a tab of the file editor. The PDF viewer and the Markdown viewer plugin (1.3.0) are listed in Graphic preferences > File editor > Viewers, where you can choose them as the viewer of an extension (for example .md or .pdf), and in "Open with". Plugins installed while ScreepT runs show up too.
+- Tabs that host a viewer (images, LogSearch, HTML, plugins) are reopened as viewer tabs at the next start, not in a separate window.
+- Pin or unpin the current tab with Alt+Shift+J (also in the tab menu).
+- Shift+click on a tab closes it, like its close button.
+- HTML tab: View source / View page switch.
+- Quick notes: drag the title to move the panel, drag its left or right edge to change the width. Width and distance from the right edge are remembered.
+
+### Improved
+- Search in files with file filters is up to 7 times faster on big folders (38,000 files: 13 s to 1.8 s), and regular expressions that contain a fixed text are up to 14 times faster (37 s to 2.7 s on the same folder).
+- Search in files: no "N results found" popup at the end, the results window comes to the front by itself (a message only appears when the results were cut). Cancelling a search shows no popup either.
+- File editor toolbar: while a tab with a viewer is selected, the functions that work on text (search, replace, Base64, undo, font...) are disabled, and they come back on text tabs.
+- Changing the text size changes every open tab at once, so the text no longer resizes when you switch tab.
+- The code map and the clipboard panel open at a fixed width from the right edge, they keep it when the window or the file tree change size, and they no longer jump when you switch tab.
+- "ScreepT has been updated" is shown once per version (it came back at every start when the preferences could not be saved), never at the very first start and never over another dialog. The welcome question keeps the focus while the application finishes loading.
+
 ## 0.9.86 - 2026-11-20
 > Search in files is much faster, with a speed selector, a results filter and lazy highlights; LogSearch can search only on demand; the interactive shell no longer glitches
 

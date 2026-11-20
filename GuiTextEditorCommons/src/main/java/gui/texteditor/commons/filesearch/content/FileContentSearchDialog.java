@@ -399,9 +399,9 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 						thisDialog.setCursor(GuiUtils.CURSOR_WAIT);
 						fileSearchObj.startSearch(true);
 					} catch (Throwable e1) {
-						if(e1 instanceof ProgressBarInterruptedException)
-							dialogHelper.info(I18n.t("editor.search_interrupted_by_user"));
-						else {
+						if(e1 instanceof ProgressBarInterruptedException) {
+							// cancelled by user
+						} else {
 							String errMsg = I18n.t("fsearch.an_error_occurred") + e1.getMessage();
 							dialogHelper.error(errMsg, e1.getClass().getName());
 						}
@@ -410,6 +410,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 						thisDialog.setVisible(true);
 						thisDialog.setCursor(GuiUtils.CURSOR_DEFAULT);
 						thisDialog.setEnabled(true);
+						fileSearchObj.bringResultsToFront(); // the dialog comes back, but the results are what the user wants to see
 					});
 				}, true, false, false);
 			});

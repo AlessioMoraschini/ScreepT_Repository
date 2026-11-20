@@ -20,6 +20,9 @@ import java.io.File;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import initializer.configs.impl.INItializer;
+import maingUI.MainGUI;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -108,10 +111,10 @@ public class WhatsNewDialog extends JDialog {
 	 */
 	public static void showIfNewVersion(Window owner, File releaseNotes, String version, Runnable openFullChangelog) {
 		try {
-			Preferences prefs = Preferences.userRoot().node(PREFS_NODE);
-			if (version == null || version.equals(prefs.get(KEY_LAST_SEEN, null)) || releaseNotes == null || !releaseNotes.isFile()) {
+			if (version == null || alreadySeen(version) || releaseNotes == null || !releaseNotes.isFile()) {
 				return;
 			}
+			markSeen(version); // before showing: if the application ends abnormally it is not shown again
 			List<Release> releases = ReleaseNotes.read(releaseNotes);
 			for (Release release : releases) {
 				if (release.version.equals(version)) {
@@ -119,9 +122,52 @@ public class WhatsNewDialog extends JDialog {
 					break;
 				}
 			}
-			prefs.put(KEY_LAST_SEEN, version);
 		} catch (Exception e) {
 			logger.warn("Cannot show what's new dialog", e);
 		}
+	}
+
+	/**
+	 * The version is remembered in the user preferences and in the configuration file: the preferences alone can fail to be
+	 * stored (registry not writable, other user) and the notes would come back at every start.
+	 */
+	public static boolean alreadySeen(String version) {
+		try {
+			if (version.equals(Preferences.userRoot().node(PREFS_NODE).get(KEY_LAST_SEEN, null))) {
+				return true;
+			}
+		} catch (Exception e) {
+			logger.debug("Cannot read the preferences: " + e.getMessage());
+		}
+		try {
+			return version.equals(MainGUI.currentConfiguration.readFromFile(INItializer.GEN_OPT, KEY_LAST_SEEN));
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public static void markSeen(String version) {
+		try {
+			Preferences prefs = Preferences.userRoot().node(PREFS_NODE);
+			prefs.put(KEY_LAST_SEEN, version);
+			prefs.flush();
+		} catch (Exception e) {
+			logger.debug("Cannot store the preferences: " + e.getMessage());
+		}
+		try {
+			MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, KEY_LAST_SEEN, version);
+		} catch (Exception e) {
+			logger.warn("Cannot store the last seen release notes", e);
+		}
+	}
+
+	/** True while a modal dialog (welcome question, license, name...) is on screen: the notes must wait, not take its focus */
+	public static boolean otherModalDialogShowing() {
+		for (Window w : Window.getWindows()) {
+			if (w.isShowing() && w instanceof java.awt.Dialog && ((java.awt.Dialog) w).isModal()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

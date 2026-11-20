@@ -146,6 +146,12 @@ public class TextEditor extends ModulePanel {
 
 	public JSplitPane splitPaneTreeAndVerticalSplit;
 	public JSplitPane splitPaneTreetabsAndRightToggle;
+	/** Width of the right panel (map / clipboard) when it opens, before UI scaling */
+	private static final int RIGHT_PANE_WIDTH_MAP = 180;
+	private static final int RIGHT_PANE_WIDTH_CLIPBOARD = 320;
+	private boolean rightPaneApplyPending;
+	/** The right pane is already open at its width: a refresh of the editor (tab switch...) must not reset what the user dragged */
+	public boolean rightPaneOpened;
 	public JSplitPane splitPaneVerticalAllAndBottomToggle;
 	public JScrollPane leftScrollPane;
 	/** Filter bar + tree scroll pane */
@@ -726,24 +732,21 @@ public class TextEditor extends ModulePanel {
 						int oldVal = currentConfiguration.getTextEditorOpt().getDividerFileTreePosX();
 						int newVal = splitPaneTreeAndVerticalSplit.getDividerLocation();
 						currentConfiguration.getTextEditorOpt().setDividerFileTreePosX(newVal);
-
-						applyDeltaToRightToggle(newVal - oldVal);
 					}
 				});
 			}
 		});
 
-		// right divisor resize
-		splitPaneTreetabsAndRightToggle.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+		// right pane: it keeps its width when the window or the tree change size (resize weight), and opens at the default one.
+		// The first layout may come after the request to open it: the width is applied as soon as the pane has a size
+		splitPaneTreetabsAndRightToggle.setResizeWeight(1.0);
+		splitPaneTreetabsAndRightToggle.addComponentListener(new java.awt.event.ComponentAdapter() {
 			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						activeRightDivisorCheck(false, false);
-					}
-				});
+			public void componentResized(ComponentEvent e) {
+				if (rightPaneApplyPending && splitPaneTreetabsAndRightToggle.getWidth() > 0) {
+					rightPaneApplyPending = false;
+					rightPaneResizeOnly();
+				}
 			}
 		});
 
@@ -852,42 +855,7 @@ public class TextEditor extends ModulePanel {
 		return openedFiles;
 	}
 
-	public void applyDeltaToRightToggle(int deltaBase){
-		if (currentConfiguration.getTextEditorOpt().clipboardViewActive || currentConfiguration.getTextEditorOpt().mapViewActive) {
-			// Refresh divider location
-			splitPaneTreetabsAndRightToggle.getRightComponent().setVisible(true);
-		}
-		if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
-			// In case of clipboard use ad-hoc option
-			currentConfiguration.getTextEditorOpt().dividerRightPanePosXClipboard += deltaBase;
-		}else {
-			currentConfiguration.getTextEditorOpt().dividerRightPanePosX += deltaBase;
-		}
-		rightPaneResizeOnly();
-	}
-
-
-	public void activeRightDivisorCheck(boolean useConfig, boolean apply) {
-		final TextEditorOption opt = currentConfiguration.getTextEditorOpt();
-		if ((opt.mapViewActive || opt.clipboardViewActive)) {
-			splitPaneTreetabsAndRightToggle.getRightComponent().setVisible(true);
-
-			int newRightPaneValue = parentFrame.getWidth();
-
-			if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
-				// In case of clipboard keep memory in ad-hoc option
-				newRightPaneValue = newRightPaneValue - (useConfig ? opt.dividerFileTreePosX : splitPaneTreetabsAndRightToggle.getDividerLocation());
-				currentConfiguration.getTextEditorOpt().setDividerRightPanePosXClipboard(newRightPaneValue);
-
-			} else {
-				newRightPaneValue = newRightPaneValue - (useConfig ? opt.dividerRightPanePosX : splitPaneTreetabsAndRightToggle.getDividerLocation());
-				currentConfiguration.getTextEditorOpt().setDividerRightPanePosX(newRightPaneValue);
-			}
-
-			if(apply)
-				splitPaneTreetabsAndRightToggle.setDividerLocation(newRightPaneValue);
-		}
-	}
+	// the right pane width is not stored: see rightPaneResizeOnly
 
 	/** Mini toolbar: shows or hides the filter bar of the tree (closing it drops its filter) */
 	private void toggleTreeFilter() {
@@ -1239,19 +1207,28 @@ public class TextEditor extends ModulePanel {
 		if (txtOptions.clipboardViewActive || txtOptions.mapViewActive) {
 
 
-			// Refresh divider location
+			// always opens at the default distance from the right edge (what the user dragged is not kept)
 			splitPaneTreetabsAndRightToggle.getRightComponent().setVisible(true);
-			if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
-				// In case of clipboard use ad-hoc option
-				splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosXClipboard);
-			}else {
-				splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosX);
+			if (rightPaneOpened) {
+				return;
+			}
+			int splitWidth = splitPaneTreetabsAndRightToggle.getWidth();
+			if (splitWidth <= 0) {
+				rightPaneApplyPending = true;
+			} else {
+				rightPaneOpened = true;
+				int rightWidth = com.formdev.flatlaf.util.UIScale.scale(
+						textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL) ? RIGHT_PANE_WIDTH_CLIPBOARD : RIGHT_PANE_WIDTH_MAP);
+				rightWidth = Math.min(rightWidth, splitWidth / 2);
+				splitPaneTreetabsAndRightToggle.setDividerLocation(splitWidth - rightWidth - splitPaneTreetabsAndRightToggle.getDividerSize());
 			}
 
 		} else {
 			// HIDE PANEL
+			rightPaneApplyPending = false;
+			rightPaneOpened = false;
 			splitPaneTreetabsAndRightToggle.getRightComponent().setVisible(false);
-			splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth());
+			splitPaneTreetabsAndRightToggle.setDividerLocation(Math.max(splitPaneTreetabsAndRightToggle.getWidth(), parentFrame.getWidth()));
 			subHeaderPanel.toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 			subHeaderPanel.toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 		}
@@ -1304,6 +1281,11 @@ public class TextEditor extends ModulePanel {
 			for (String pathToOpen : currentConfiguration.getTextEditorOpt().getOpenedFileList()) {
 				File toLoadFile = new File(pathToOpen);
 				if (toLoadFile.exists()) {
+					// tabs that were hosting a viewer (image studio, LogSearch, HTML...) come back as viewer tabs
+					if(currentTabbedEditor.restoreViewerTab(toLoadFile, currentConfiguration.getTextEditorOpt().getViewerTabList())) {
+						loadedAlmostOne = true;
+						continue;
+					}
 					if(!currentTabbedEditor.validateFileToOpen(toLoadFile, true)) {
 						toRemove.add(pathToOpen);
 						continue;

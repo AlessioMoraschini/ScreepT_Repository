@@ -33,6 +33,13 @@ public interface ITabbedEditorOwner {
 	public void doAfterFileLoad();
 	
 	/**
+	 * Called at once when a tab is selected (or its kind changes, e.g. a viewer is closed): the owner can enable or disable
+	 * the functions the tab supports. Unlike {@link #doAfterTabRefresh()} it is not deferred.
+	 */
+	default void onTabSelected(gui.texteditor.commons.om.TabTextEditorObject tab) {
+	}
+
+	/**
 	 * Added method after refresh of tab (switching)
 	 */
 	public void doAfterTabRefresh();

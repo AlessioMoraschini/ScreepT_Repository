@@ -63,6 +63,13 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	}
 
 	@Override
+	public void onTabSelected(TabTextEditorObject tab) {
+		if (textEditor.subHeaderPanel != null) {
+			textEditor.subHeaderPanel.applyTabKind(tab == null || !tab.isEmbeddedViewer() || tab.viewer.supportsTextTools());
+		}
+	}
+
+	@Override
 	public void doAfterTabRefresh() {
 		// create lazy refs for common used objects during current check
 		TextEditorOption txtOpt = textEditor.currentConfiguration.getTextEditorOpt();
@@ -104,6 +111,9 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 		}
 		
 		
+		// the refresh above may have enabled functions the tab (viewer) does not support
+		onTabSelected(loadedTabObj);
+
 		try {
 			// Update last opened files to have current on top of last opened
 			textEditor.currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile, textEditor.currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");

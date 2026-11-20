@@ -80,6 +80,8 @@ public class FileContentSearch {
 	private byte[] needleLo;
 	private byte[] needleUp;
 	private volatile Plan plan;
+	/** Regex only: the literal every match must contain, to discard the lines without it before running the expression */
+	private Pattern literalLinePattern;
 	private final java.util.concurrent.atomic.AtomicLong linesFoundTotal = new java.util.concurrent.atomic.AtomicLong();
 	private final java.util.concurrent.atomic.AtomicBoolean planSampled = new java.util.concurrent.atomic.AtomicBoolean();
 	/** Blocks are cut at line breaks and decoded separately: only valid when a line break is a single byte (UTF-8, ASCII, 8-bit charsets) */
@@ -231,13 +233,13 @@ public class FileContentSearch {
 		resultViewer.finish(occurrencesFound, sourceFiles.size());
 
 		if(interrupted) {
-			// stopped by the user: what was found so far stays in the viewer, one message only (not also "search completed")
-			dialogHelper.info(I18n.t("editor.search_interrupted_by_user"));
+			// cancelled by user: what was found so far stays in the viewer, no popup
 			return results;
 		}
 
-		logger.debug("Advising user!");
-		dialogHelper.info(GuiUtils.encapsulateInHtml(various.common.light.i18n.I18n.fmt("editor.search_completed_with_b_x_b", occurrencesFound, limitedAdvice)), various.common.light.i18n.I18n.fmt("editor.x_results_found", occurrencesFound));
+		// the results window is already in front and shows the totals: a popup only when the results were cut
+		if(!limitedAdvice.isEmpty())
+			dialogHelper.info(GuiUtils.encapsulateInHtml(various.common.light.i18n.I18n.fmt("editor.search_completed_with_b_x_b", occurrencesFound, limitedAdvice)), various.common.light.i18n.I18n.fmt("editor.x_results_found", occurrencesFound));
 
 		logger.info("Finished String search into files");
 		logger.debug("Search results: " + results.size());
@@ -409,10 +411,15 @@ public class FileContentSearch {
 	}
 
 	private boolean hasFileFilters() {
-		if(searchDTO.fileFilters == null || searchDTO.fileFilters.length <= 0)
+		if(searchDTO.fileFilters == null)
 			return false;
 
-		return true;
+		for(String filter : searchDTO.fileFilters) {
+			if(filter != null && !removeExclusionFlag(filter).trim().isEmpty())
+				return true;
+		}
+
+		return false;
 	}
 
 	private void initBytePrefilter() {
@@ -446,6 +453,10 @@ public class FileContentSearch {
 
 		if(needleLo != null)
 			plan = makePlan(null, 0);
+
+		// regex: the lines of a block that has the literal are checked for it first, the (slow) expression runs only on the ones that have it
+		if(needleLo != null && useInternalRegex)
+			literalLinePattern = Pattern.compile(Pattern.quote(literal), searchDTO.matchCase ? 0 : Pattern.CASE_INSENSITIVE);
 	}
 
 	/** How common a byte is in ordinary text/logs (higher = more common): used to pick the rarest anchor */
@@ -931,7 +942,8 @@ public class FileContentSearch {
 		String search = searchDTO.searchString;
 
 		if(useInternalRegex && patternRegex != null) {
-			if(prefilterRegex.matcher(content).find())
+			// with a literal the lines are gated by it (cheap): the whole-block pass of the expression is only for expressions without one
+			if(literalLinePattern != null || prefilterRegex.matcher(content).find())
 				searchContentByLines(content, result, lineOffset);
 			return;
 		}
@@ -982,9 +994,18 @@ public class FileContentSearch {
 		if(useInternalRegex && patternRegex != null) {
 			// one matcher moved line by line: no copy of the lines without matches
 			Matcher matcher = patternRegex.matcher(content);
+			Matcher literalMatcher = literalLinePattern != null ? literalLinePattern.matcher(content) : null;
 			while(start < len) {
 				int end = lineEndOf(content, start);
 				int e = end > start && content.charAt(end - 1) == (char) 13 ? end - 1 : end;
+				if(literalMatcher != null) {
+					literalMatcher.region(start, e);
+					if(!literalMatcher.find()) {
+						line++;
+						start = end + 1;
+						continue;
+					}
+				}
 				matcher.region(start, e);
 				String text = null;
 				while(matcher.find()) {
@@ -1140,15 +1161,19 @@ public class FileContentSearch {
 		if(inclusionFilters.length == 0 && exclusionFilters.length == 0)
 			return new ArrayList<>(sources);
 
+		// the wildcards become patterns once (not once per file), and the path is the one the folder walk gave
+		// (no file system access per file: with tens of thousands of files that was most of the search time)
+		Pattern[] inclusion = compileWildcards(inclusionFilters);
+		Pattern[] exclusion = compileWildcards(exclusionFilters);
+
 		List<File> filtered = new ArrayList<>();
 		for(File source : sources) {
-			// canonical path hits the file system: computed once per file, not once per filter
-			String path = FileVarious.getCanonicalPathSafeNormalized(source, "/");
+			String path = source.getPath().replace(File.separatorChar, '/');
 
-			if(inclusionFilters.length > 0 && !matchesAny(path, inclusionFilters, true))
+			if(inclusion.length > 0 && !matchesAny(path, inclusion))
 				continue;
 
-			if(exclusionFilters.length > 0 && matchesAny(path, exclusionFilters, false))
+			if(exclusion.length > 0 && matchesAny(path, exclusion))
 				continue;
 
 			filtered.add(source);
@@ -1157,15 +1182,36 @@ public class FileContentSearch {
 		return filtered;
 	}
 
-	private static boolean matchesAny(String path, String[] filters, boolean skipEmpty) {
+	/** Same wildcards as {@link StringWorker#checkWildcardMatch}: ? one optional character, * any text, on the whole path */
+	private static Pattern[] compileWildcards(String[] filters) {
+		List<Pattern> patterns = new ArrayList<>();
 		for(String filter : filters) {
-			if(skipEmpty && StringWorker.isEmpty(filter))
-				continue;
+			if(filter == null || filter.trim().isEmpty())
+				continue; // an empty filter matches nothing
+			try {
+				patterns.add(Pattern.compile(filter.trim().replace("?", ".?").replace("*", ".*?")));
+			} catch (RuntimeException e) {
+				logger.warn("File filter ignored (invalid): " + filter);
+			}
+		}
+		return patterns.toArray(new Pattern[0]);
+	}
 
-			if(StringWorker.checkWildcardMatch(path, filter, false))
+	private static boolean matchesAny(String path, Pattern[] patterns) {
+		for(Pattern pattern : patterns) {
+			if(pattern.matcher(path).matches())
 				return true;
 		}
 		return false;
+	}
+
+	/** Puts the results window (if the search found something) above the search dialog */
+	public void bringResultsToFront() {
+		FileSearchResultViewer viewer = resultViewer;
+		if(viewer != null && viewer.isShowing()) {
+			viewer.setAlwaysOnTop(true);
+			viewer.toFront();
+		}
 	}
 
 	public int scannedFilesTotal() {

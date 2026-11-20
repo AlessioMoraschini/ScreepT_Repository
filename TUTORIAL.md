@@ -496,6 +496,7 @@ IMPORTANT: Always remember that changing section you won't lose any progress of 
 *   SHOW/HIDE SCREEPT FILE EDITOR'S SUB-HEADER - \[Ctrl + Shift + Alt + U\]
 *   SHOW/HIDE SCREEPT FILE EDITOR'S FOOTER - \[Ctrl + Shift + Alt + L\]
 *   OPEN/CLOSE FILE TREE PANEL - \[Alt + Q\]
+*   PIN/UNPIN CURRENT TAB - \[Alt + Shift + J\]
 *   OPEN/CLOSE CLIPBOARD PANEL - \[Alt + A\]
 *   OPEN/CLOSE DOCUMENT MAP PANEL - \[Alt + W\]
 *   SHOW AUTOCOMPLETE OPTIONS - \[Ctrl + Spacebar\]

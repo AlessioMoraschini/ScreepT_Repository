@@ -224,6 +224,9 @@ public class TabTextEditorObject {
 	/** Integrated viewer shown instead of the text area (image studio, LogSearch, HTML...), or null for a normal text tab */
 	public gui.commons.tabs.TabContent viewer;
 
+	/** Id of the {@link gui.commons.tabs.TabImplementor} that opened the viewer (saved to reopen the tab at the next start) */
+	public String viewerId;
+
 	public boolean isEmbeddedViewer() {
 		return viewer != null;
 	}
@@ -249,6 +252,7 @@ public class TabTextEditorObject {
 		}
 		viewer.dispose();
 		viewer = null;
+		viewerId = null;
 		currentScrollPane.getViewport().setView(textArea);
 		currentScrollPane.setLineNumbersEnabled(true);
 		currentScrollPane.setFoldIndicatorEnabled(true);

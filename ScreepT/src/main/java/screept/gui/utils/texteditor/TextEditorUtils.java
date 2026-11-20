@@ -265,6 +265,7 @@ public class TextEditorUtils {
 	}
 
 	public void setRightPanelContent(PanelType wantedType) {
+		currentTextEditor.rightPaneOpened = false; // another panel: it opens at its own default width
 		if(wantedType.equals(PanelType.MAP_TXTAREA)) {
 			currentTextEditor.rightModulePanel = MapTextAreaPanel.getSingletonLazy(getDialogManager());
 			currentTextEditor.rightModulePanel.setVisible(true);
@@ -775,10 +776,6 @@ public class TextEditorUtils {
 				if (!currentTextEditor.subHeaderPanel.btnToggleFileView.isSelected() && !currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
 					currentTextEditor.splitPaneTreeAndVerticalSplit.setDividerLocation(0);
 				}
-				if (currentTextEditor.isRightPaneOn()) {
-					currentTextEditor.rightPaneResizeOnly();
-				}
-
 				adaptToSizeResponsive(MainGUI.mainAPP.getMainFrame().getBounds());
 
 				updateBottomDividerLocation();

@@ -625,16 +625,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnToggleFileView.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String oldRightValStr = "";
-				try {
-					oldRightValStr = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX");
-				} catch (IOException e1) {
-					logger.error("OOOOps", e1);
-				}
-				int oldRightVal = StringWorker.isEmpty(oldRightValStr)
-						? currentConfiguration.getTextEditorOpt().dividerFileTreePosX
-						: Integer.valueOf(oldRightValStr);
-
 				if (btnToggleFileView.isSelected()) {
 					btnToggleFileView.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 					currentConfiguration.getTextEditorOpt().fileTreeActive = true;
@@ -645,15 +635,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				parent.fileTreeShowOrHide(currentConfiguration.getTextEditorOpt());
 				textEditorUtils.refreshTree(parent.getCurrentTabEditor().loadedTabObj.loadedFile, false);
 
-				if(!currentConfiguration.getTextEditorOpt().fileTreeActive) {
-					SwingUtilities.invokeLater(() -> {
-						parent.applyDeltaToRightToggle(parent.splitPaneTreeAndVerticalSplit.getDividerLocation() - oldRightVal);
-					});
-				} else {
-					SwingUtilities.invokeLater(() -> {
-						parent.applyDeltaToRightToggle(parent.splitPaneTreeAndVerticalSplit.getDividerLocation());
-					});
-				}
 			}
 		});
 
@@ -1191,6 +1172,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					logger.info("Selected Font : " + chosenFont.toString());
 					RsyntaxUtils.setFont(loadedTabObj.textArea, loadedTabObj.textArea.getFont());
 					loadedTabObj.textArea.setFont(chosenFont);
+					parent.getCurrentTabEditor().applyFontToOtherTabs(chosenFont);
 					sliderFontSize.setValue(loadedTabObj.textArea.getFont().getSize());
 					lblSIZE.setText(String.valueOf(loadedTabObj.textArea.getFont().getSize()) + " Px");
 				}
@@ -1223,6 +1205,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					lblSIZE.setText(String.valueOf(loadedTabObj.textArea.getFont().getSize()) + " Px");
 					currentConfiguration.getTextEditorOpt().setFont(font);
 					loadedTabObj.textArea.setFont(font);
+					parent.getCurrentTabEditor().applyFontToOtherTabs(font);
 
 					Font gutterFont = font.getSize() < 20 ? font.deriveFont(font.getSize()-2) : font.deriveFont(20F);
 					loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
@@ -1697,6 +1680,30 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		enableDependency(btnSpeak, MainGuiGeneralAppStarter.voiceSpeakerAvailable, TextEditTooltips.tooltipSpeak, "TextToSpeech" + koMsg);
 		enableDependency(btnParseImageText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditTooltips.tooltipParseImage, "Tesseract" + koMsg);
 		enableDependency(btnParsePdfText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditTooltips.tooltipParsePdfTxt, "Tesseract" + koMsg);
+	}
+
+	/**
+	 * Enables or disables the functions that work on the text of the current tab: a tab hosting a viewer that has no use for them
+	 * (image, HTML, LogSearch...) shows them disabled, a text tab (or a viewer that supports them) gets them back.
+	 */
+	public void applyTabKind(boolean textTools) {
+		javax.swing.JComponent[] textFunctions = {
+				btnFindText, btnReplaceText, btnReplaceEscapesSeq, btnGoToLine, btnSpeak, btnParseImageText,
+				btnParsePdfText, btnFontChooser, btnTemplates, btnUndo, btnRedo, btnClear, btnRemoveSpaces, btnRemoveWord,
+				btnBase64Conversion, btnReloadFromDisk, btnOpenInScreepT, btnTailMode, toggleBtnMap, toggleButtonSpellCheck,
+				tabSizeSpinner, comboFileFormat, comboStylesScheme, sliderFontSize, slider_margin, chckbxShowTabGrid, chckbxLockLanguage
+		};
+		for (javax.swing.JComponent component : textFunctions) {
+			if (component != null) {
+				component.setEnabled(textTools);
+			}
+		}
+		if (textTools) {
+			enableDependenciesFunctions(); // speech and OCR depend on their libraries too
+			checkFormatterEnabled();       // the formatter depends on the file type
+		} else if (btntTextFormat != null) {
+			btntTextFormat.setEnabled(false);
+		}
 	}
 
 	private static void enableDependency(JButton target, boolean enable, String tooltipY, String tooltipN) {

@@ -603,6 +603,7 @@ public class CustomTabbedEditor implements ITabsManager {
 					tabEditorManager.getShortcutManager());
 			newTabNode.textArea.addFocusListener(getFocusListener());
 			newTabNode.embedViewer(content);
+			newTabNode.viewerId = implementor.getId();
 			newTabNode.textArea.setEditable(false);
 
 			mainTabList.addTab(name, newTabNode.currentScrollPane);
@@ -933,6 +934,8 @@ public class CustomTabbedEditor implements ITabsManager {
 				logger.warn("Cannot release the viewer of " + tab.loadedFile, e);
 			}
 			tab.loadedFile = null;
+			// the tab is a text tab again: the toolbar gets its text functions back
+			SwingUtilities.invokeLater(() -> tabEditorManager.onTabSelected(loadedTabObj));
 		}
 	}
 
@@ -1007,6 +1010,9 @@ public class CustomTabbedEditor implements ITabsManager {
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
+				if(isShiftClose(e)) {
+					return; // Shift+click closes the tab (see installPinAndReorder)
+				}
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -1182,6 +1188,64 @@ public class CustomTabbedEditor implements ITabsManager {
 		}
 	}
 
+	/**
+	 * The other tabs get the new text size at once (not when they are selected: the text would resize in front of the user at the switch).
+	 * The gutter font follows the same rule used when a tab is styled from the configuration.
+	 */
+	public void applyFontToOtherTabs(java.awt.Font font) {
+		java.awt.Font gutterFont = font.getSize() < 20 ? font.deriveFont(font.getSize() - 2) : font.deriveFont(20F);
+		for (TabTextEditorObject tab : loadedList.getList()) {
+			if (tab == null || tab == loadedTabObj || tab.isEmbeddedViewer()) {
+				continue;
+			}
+			if (!font.equals(tab.textArea.getFont())) {
+				tab.textArea.setFont(font);
+			}
+			if (!gutterFont.equals(tab.currentScrollPane.getGutter().getFont())) {
+				tab.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
+			}
+		}
+	}
+
+	/** Writes in the configuration "id|path" of the tabs hosting a viewer, so they come back as viewer tabs at the next start */
+	public void persistViewerTabs() {
+		try {
+			java.util.ArrayList<String> entries = new java.util.ArrayList<String>();
+			for (TabTextEditorObject tab : loadedList.getList()) {
+				if (tab != null && tab.viewerId != null && tab.loadedFile != null && tab.loadedFile.exists()) {
+					entries.add(tab.viewerId + "|" + tab.loadedFile.getAbsolutePath());
+				}
+			}
+			currentConfiguration.getTextEditorOpt().setViewerTabList(entries);
+			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "viewerTabsAtStart", currentConfiguration.listToString(entries));
+		} catch (Exception e) {
+			logger.warn("Cannot save the viewer tabs", e);
+		}
+	}
+
+	/** Opens at start the file in the viewer tab it had; false if it has no saved viewer or the viewer is gone (then it opens as text) */
+	public boolean restoreViewerTab(File file, java.util.List<String> viewerEntries) {
+		if (file == null || viewerEntries == null) {
+			return false;
+		}
+		for (String entry : viewerEntries) {
+			int sep = entry.indexOf('|');
+			if (sep > 0 && entry.substring(sep + 1).equals(file.getAbsolutePath())) {
+				TabImplementor implementor = TabImplementors.byId(entry.substring(0, sep));
+				if (implementor != null && implementor.canOpen(file)) {
+					try {
+						addViewerTab(file, implementor);
+						return true;
+					} catch (Throwable e) {
+						logger.warn("Cannot restore the viewer tab of " + file, e);
+					}
+				}
+				return false;
+			}
+		}
+		return false;
+	}
+
 	private void applyPinnedLook(final TabTextEditorObject tab) {
 		JPanel header = getPanelFromTabHeader(geIndexOfTabObj(tab));
 		if (header instanceof gui.commons.tabbedpaneutils.TabHeadPanel_Full) {
@@ -1194,11 +1258,16 @@ public class CustomTabbedEditor implements ITabsManager {
 		javax.swing.JPopupMenu popup = new javax.swing.JPopupMenu();
 		javax.swing.JMenuItem pinItem = new javax.swing.JMenuItem(I18n.t(isPinned(index) ? "tabs.unpin" : "tabs.pin"));
 		pinItem.addActionListener(e -> togglePin(mainTabList.indexOfComponent(component)));
+		pinItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_J, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.SHIFT_DOWN_MASK));
 		popup.add(pinItem);
 		return popup;
 	}
 
-	/** Right click (pin / unpin) and drag and drop (reorder) on the header of a tab */
+	private static boolean isShiftClose(MouseEvent e) {
+		return SwingUtilities.isLeftMouseButton(e) && e.isShiftDown() && !e.isPopupTrigger() && !various.common.light.gui.ShortcutKeys.isCtrlDown(e);
+	}
+
+	/** Right click (pin / unpin), Shift+click (close) and drag and drop (reorder) on the header of a tab */
 	private void installPinAndReorder(final JPanel header, final JScrollPane component) {
 		MouseAdapter handler = new MouseAdapter() {
 			private Point pressPoint;
@@ -1213,6 +1282,25 @@ public class CustomTabbedEditor implements ITabsManager {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				maybePopup(e);
+				// Shift+click closes the tab, as its close button does
+				if (isShiftClose(e)) {
+					pressPoint = null;
+					dragging = false;
+					SwingUtilities.invokeLater(() -> {
+						// same as the close button: a pinned tab is unpinned, any other is selected and removed
+						int idx = mainTabList.indexOfComponent(component);
+						if (idx < 0) {
+							return;
+						}
+						if (isPinned(idx)) {
+							unpinTab(idx);
+						} else {
+							mainTabList.setSelectedIndex(idx);
+							removeTab(mainTabList.getSelectedIndex());
+						}
+					});
+					return;
+				}
 				// Ctrl+click (Cmd+click on macOS) toggles the pin; it is not the start of a drag
 				if (SwingUtilities.isLeftMouseButton(e) && !e.isPopupTrigger() && various.common.light.gui.ShortcutKeys.isCtrlDown(e)) {
 					pressPoint = null;
@@ -1399,6 +1487,7 @@ public class CustomTabbedEditor implements ITabsManager {
 			}
 			updateSavedLabelNTab(null);
 			tabJustSwitched = false;
+			tabEditorManager.onTabSelected(loadedTabObj);
 			loadedTabObj.textArea.requestFocus();
 			if (isAddingTab) {
 				tabEditorManager.doAfterTabRefresh();

@@ -392,6 +392,7 @@ public class MainGuiManager {
 
 			// pinned tabs (only the ones with a file) come back pinned at the next start
 			currentTabEditor.persistPinnedTabs();
+			currentTabEditor.persistViewerTabs();
 
 			initTxtWriter.updateOpenedFilesCaretPositionMap(true);
 

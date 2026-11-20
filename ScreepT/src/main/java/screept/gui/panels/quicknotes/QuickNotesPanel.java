@@ -121,6 +121,7 @@ public class QuickNotesPanel extends JPanel {
 
 	private final JLabel titleLbl = new JLabel(I18n.t("app.quick_notes"));
 	private final JLabel counterLbl = new JLabel();
+	private JPanel headerPanel;
 	private final FlatButton menuBtn = new FlatButton("\u2261", false);
 	private final FlatButton newTagBtn = new FlatButton("+", false);
 	private final JPopupMenu newTagMenu = new JPopupMenu();
@@ -169,6 +170,7 @@ public class QuickNotesPanel extends JPanel {
 		header.add(todoToggle, "span 3, split 2, gapleft 2");
 		header.add(doneToggle, "wrap");
 		header.add(addField, "span 3, growx");
+		headerPanel = header;
 		add(header, BorderLayout.NORTH);
 
 		scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -568,6 +570,18 @@ public class QuickNotesPanel extends JPanel {
 	}
 
 	/** Re-reads the current look and feel colors (dark or light) */
+	/** The title row is the handle to move the drawer: the listener gets the mouse events of the header and of its title */
+	public void installDragHandle(java.awt.event.MouseAdapter drag) {
+		for (JComponent handle : new JComponent[] { titleLbl, counterLbl, headerPanel }) {
+			if (handle != null) {
+				handle.addMouseListener(drag);
+				handle.addMouseMotionListener(drag);
+			}
+		}
+		titleLbl.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.E_RESIZE_CURSOR));
+		titleLbl.setToolTipText(I18n.t("app.quick_notes_drag_tip"));
+	}
+
 	public void applyPalette() {
 		palette = CardPalette.current();
 		Font base = UIManager.getFont("Label.font");

@@ -38,6 +38,12 @@ public final class QuickNotesDrawer extends JPanel {
 	private static final long serialVersionUID = 6081513979326218420L;
 
 	private static final int SHADOW = 10;
+	/** Transparent strip on the right edge, grabbed to resize the width (the left one is the shadow strip) */
+	private static final int GRIP = 6;
+	private static final int MIN_WIDTH = 300;
+	private static final String WIDTH_KEY = "quickNotesWidth";
+	/** Total width chosen by the user by dragging an edge (0 = the default one) */
+	private int userWidth;
 	private static final int ANIMATION_MS = 160;
 
 	private static QuickNotesDrawer instance;
@@ -50,16 +56,47 @@ public final class QuickNotesDrawer extends JPanel {
 	private final Timer animation;
 	private long animationStart;
 	private boolean opening;
+	/** Distance in pixels between the right edge of the application and the drawer: moved by dragging the title, kept between sessions and resizes */
+	private int rightGap;
+	private static final String GAP_KEY = "quickNotesRightGap";
 	private Component previousFocus;
 
 	private QuickNotesDrawer(JFrame frame) {
 		this.frame = frame;
 		this.workspaces = new QuickNotesWorkspaces(QuickNotesStore.DEFAULT_FILE.getParentFile());
 		this.notesPanel = new QuickNotesPanel(workspaces, this::close);
+		loadRightGap();
+		notesPanel.installDragHandle(new java.awt.event.MouseAdapter() {
+			private int pressScreenX;
+			private int pressGap;
+
+			@Override
+			public void mousePressed(java.awt.event.MouseEvent e) {
+				pressScreenX = e.getXOnScreen();
+				pressGap = rightGap;
+			}
+
+			@Override
+			public void mouseDragged(java.awt.event.MouseEvent e) {
+				if (animation.isRunning() || !isVisible()) {
+					return;
+				}
+				rightGap = Math.max(0, pressGap - (e.getXOnScreen() - pressScreenX));
+				setBounds(targetBounds(1d));
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(java.awt.event.MouseEvent e) {
+				saveRightGap();
+			}
+		});
 
 		setLayout(new BorderLayout());
 		setOpaque(false);
-		setBorder(javax.swing.BorderFactory.createEmptyBorder(0, SHADOW, 0, 0));
+		setBorder(javax.swing.BorderFactory.createEmptyBorder(0, SHADOW, 0, GRIP));
+		installEdgeResize();
 		add(notesPanel, BorderLayout.CENTER);
 		setVisible(false);
 
@@ -148,10 +185,114 @@ public final class QuickNotesDrawer extends JPanel {
 	/** Bounds of the drawer below the menu bar, slid in by the given fraction (0 = hidden, 1 = open) */
 	private Rectangle targetBounds(double shown) {
 		Rectangle content = frame.getContentPane().getBounds();
-		float scale = UIManager.getFont("Label.font") == null ? 1f : UIManager.getFont("Label.font").getSize2D() / 12f;
-		int width = (int) Math.min(content.width * 0.9, Math.max(340 * scale, Math.min(460 * scale, content.width * 0.28))) + SHADOW;
-		int x = content.x + content.width - (int) Math.round(width * shown);
+		float scale = scale();
+		int width = (int) Math.min(content.width * 0.9, Math.max(340 * scale, Math.min(460 * scale, content.width * 0.28))) + SHADOW + GRIP;
+		if (userWidth > 0) {
+			width = Math.max((int) (MIN_WIDTH * scale) + SHADOW + GRIP, Math.min(userWidth, content.width)); // chosen by the user, never wider than the window
+		}
+		rightGap = Math.max(0, Math.min(rightGap, content.width - width)); // never out of the window, also after a resize
+		int x = content.x + content.width - (int) Math.round((width + rightGap) * shown);
 		return new Rectangle(x, content.y, width, content.height);
+	}
+
+	/** Dragging the left or the right edge changes the width: the opposite side stays where it is, the distance from the right edge follows */
+	private void installEdgeResize() {
+		java.awt.event.MouseAdapter edges = new java.awt.event.MouseAdapter() {
+			private int mode; // 0 none, 1 left edge, 2 right edge
+			private int pressScreenX;
+			private int startWidth;
+			private int startGap;
+
+			private int zoneAt(int x) {
+				return x < SHADOW ? 1 : x >= getWidth() - GRIP ? 2 : 0;
+			}
+
+			@Override
+			public void mouseMoved(java.awt.event.MouseEvent e) {
+				setCursor(zoneAt(e.getX()) == 0 ? java.awt.Cursor.getDefaultCursor() : java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.E_RESIZE_CURSOR));
+			}
+
+			@Override
+			public void mousePressed(java.awt.event.MouseEvent e) {
+				mode = zoneAt(e.getX());
+				pressScreenX = e.getXOnScreen();
+				startWidth = getWidth();
+				startGap = rightGap;
+			}
+
+			@Override
+			public void mouseDragged(java.awt.event.MouseEvent e) {
+				if (mode == 0 || animation.isRunning() || !isVisible()) {
+					return;
+				}
+				int dx = e.getXOnScreen() - pressScreenX;
+				int available = frame.getContentPane().getWidth();
+				int minWidth = (int) (MIN_WIDTH * scale()) + SHADOW + GRIP;
+				if (mode == 1) {
+					userWidth = Math.max(minWidth, Math.min(startWidth - dx, available - rightGap));
+				} else {
+					rightGap = Math.max(0, startGap - dx);
+					userWidth = Math.max(minWidth, Math.min(startWidth + (startGap - rightGap), available - rightGap));
+				}
+				setBounds(targetBounds(1d));
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(java.awt.event.MouseEvent e) {
+				if (mode != 0) {
+					saveLayout();
+				}
+				mode = 0;
+			}
+
+			@Override
+			public void mouseExited(java.awt.event.MouseEvent e) {
+				if (mode == 0) {
+					setCursor(java.awt.Cursor.getDefaultCursor());
+				}
+			}
+		};
+		addMouseListener(edges);
+		addMouseMotionListener(edges);
+	}
+
+	private static float scale() {
+		java.awt.Font font = UIManager.getFont("Label.font");
+		return font == null ? 1f : font.getSize2D() / 12f;
+	}
+
+	private void loadRightGap() {
+		try {
+			String width = maingUI.MainGUI.currentConfiguration.readFromFile(initializer.configs.impl.INItializer.GEN_OPT, WIDTH_KEY);
+			userWidth = width == null || width.trim().isEmpty() ? 0 : Math.max(0, Integer.parseInt(width.trim()));
+		} catch (Exception e) {
+			userWidth = 0;
+		}
+		try {
+			String stored = maingUI.MainGUI.currentConfiguration.readFromFile(initializer.configs.impl.INItializer.GEN_OPT, GAP_KEY);
+			rightGap = stored == null || stored.trim().isEmpty() ? 0 : Math.max(0, Integer.parseInt(stored.trim()));
+		} catch (Exception e) {
+			rightGap = 0;
+		}
+	}
+
+	private void saveLayout() {
+		saveRightGap();
+		try {
+			maingUI.MainGUI.currentConfiguration.writeSingleValue(initializer.configs.impl.INItializer.GEN_OPT, WIDTH_KEY, String.valueOf(userWidth));
+		} catch (Exception e) {
+			// not saved: it opens at the previous width next time
+		}
+	}
+
+	private void saveRightGap() {
+		try {
+			maingUI.MainGUI.currentConfiguration.writeSingleValue(initializer.configs.impl.INItializer.GEN_OPT, GAP_KEY, String.valueOf(rightGap));
+		} catch (Exception e) {
+			// not saved: the drawer simply opens at the previous distance next time
+		}
 	}
 
 	@Override

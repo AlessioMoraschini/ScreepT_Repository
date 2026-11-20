@@ -384,6 +384,14 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				}
 
 				/*
+				 * 	PIN / UNPIN CURRENT TAB -> ALT+SHIFT+J (ALT+SHIFT+Q is the documentation)
+				 */
+				else if (e.getKeyCode() == KeyEvent.VK_J && e.isAltDown() && !ShortcutKeys.isCtrlDown(e) && e.isShiftDown()) {
+					gui.texteditor.commons.tabbededitor.CustomTabbedEditor tabs = currentTextEditor.getCurrentTabEditor();
+					tabs.togglePin(tabs.mainTabList.getSelectedIndex());
+				}
+
+				/*
 				 * 	OPEN/CLOSE CLIPBOARD PANEL -> ALT+A
 				 */
 				else if (e.getKeyCode() == KeyEvent.VK_A && e.isAltDown() && !ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {

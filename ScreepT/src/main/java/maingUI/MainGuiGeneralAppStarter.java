@@ -162,6 +162,8 @@ public class MainGuiGeneralAppStarter {
 				gui.commons.tabs.TabImplementors.register(new gui.commons.imagestudio.ImageStudioTabImplementor());
 				gui.commons.tabs.TabImplementors.register(new gui.texteditor.commons.logsearch.LogSearchFrame.Implementor());
 				gui.commons.tabs.TabImplementors.register(new gui.commons.tabs.HtmlViewerTab.Implementor());
+				// plugins with panel mode (Markdown viewer, PDF viewer...) join the viewers at runtime, when the registry asks for them
+				screept.plugins.panel.PluginPanelBridge.install();
 				gui.commons.tabs.TabImplementors.loadOverrides(currentConfiguration.getTextEditorOpt().viewerAssociations);
 				System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
 
@@ -430,8 +432,22 @@ public class MainGuiGeneralAppStarter {
 			GuiUtils.giveFocusToComponent(MainGUI.mainFrameScreept);
 
 			// once per version: show the notes of the running release, after the home animation started
-			Timer whatsNewTimer = new Timer(1500, e -> WhatsNewDialog.showIfNewVersion(MainGUI.mainFrameScreept,
-					GeneralConfig.RELEASE_NOTES_FILE, GeneralConfig.APP_VERSION, () -> MainGUI.mainAPP.windowCreator.newChangeLogFrame()));
+			// (not on the very first start, where the welcome question is the only thing to see, and never over another dialog)
+			final int[] whatsNewRetries = {0};
+			Timer whatsNewTimer = new Timer(1500, null);
+			whatsNewTimer.addActionListener(e -> {
+				if (MainGUI.currentConfiguration.getGenOpt().isFirstAccess()) {
+					WhatsNewDialog.markSeen(GeneralConfig.APP_VERSION);
+					whatsNewTimer.stop();
+				} else if (WhatsNewDialog.otherModalDialogShowing() && ++whatsNewRetries[0] < 30) {
+					whatsNewTimer.setInitialDelay(2000);
+					whatsNewTimer.restart();
+				} else {
+					whatsNewTimer.stop();
+					WhatsNewDialog.showIfNewVersion(MainGUI.mainFrameScreept, GeneralConfig.RELEASE_NOTES_FILE, GeneralConfig.APP_VERSION,
+							() -> MainGUI.mainAPP.windowCreator.newChangeLogFrame());
+				}
+			});
 			whatsNewTimer.setRepeats(false);
 			whatsNewTimer.start();
 			// CATCH ALL ERRORS DURING INITIALIZATION, ADVICE USER AND ASK TO EXIT
