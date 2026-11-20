@@ -11,6 +11,10 @@
  */
 package screept.crypter.impl.manager;
 
+import screept.crypter.engine.CryptoException;
+import screept.crypter.engine.CryptoKey;
+import screept.crypter.engine.CryptoProfile;
+import screept.crypter.engine.FileCrypter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -46,6 +50,9 @@ public class ScreeptManagerFileOrFolder {
 	private boolean hashed = true;
 	
 	private String opInfo = "Nothing to display";
+	private String engineStats = null;
+	private CryptoProfile profileOverride = null;
+	private FileCrypter.OutputMode outputMode = FileCrypter.OutputMode.SINGLE_ENCRYPTED_ARCHIVE;
 	
 	public boolean coderUsed = false;
 	public boolean defaultProgressBarVisible = true;
@@ -78,6 +85,11 @@ public class ScreeptManagerFileOrFolder {
 	
 ////////////////////////// MAIN METHODS ////////////////////////////////
 	public CrypterResultDTO crYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean shuffle) throws Exception{
+
+		engineStats = null;
+		if (mode.profile != null) {
+			return engineCrypt(profileOverride != null ? profileOverride : mode.profile, srcFile, destinationDir, aesKey, srcKeyImageFile);
+		}
 		
 		CrypterResultDTO result = new CrypterResultDTO();
 		
@@ -201,6 +213,12 @@ public class ScreeptManagerFileOrFolder {
 	}
 	
 	public CrypterResultDTO decrYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean shuffle) throws Exception{
+
+		// files made by the authenticated engine are recognised by themselves, whatever the selected mode is
+		engineStats = null;
+		if (FileCrypter.isEngineInput(srcFile)) {
+			return engineDecrypt(srcFile, destinationDir, aesKey, srcKeyImageFile);
+		}
 		
 		CrypterResultDTO result = new CrypterResultDTO();
 		
@@ -309,6 +327,70 @@ public class ScreeptManagerFileOrFolder {
 		return result;
 	}
 	
+	// ---- authenticated engine (AES-GCM, see screept.crypter.engine): no key image, algorithms read from the file header
+
+	private CrypterResultDTO engineCrypt(CryptoProfile profile, File src, File destinationDir, char[] password, File keyImage) {
+		CrypterResultDTO result = new CrypterResultDTO();
+		CryptoKey key = null;
+		try {
+			if (destinationDir != null && !destinationDir.exists()) {
+				destinationDir.mkdirs();
+			}
+			key = CryptoKey.of(password, profile.needsKeyImage() ? keyImage : null);
+			File out = FileCrypter.encrypt(src, destinationDir, key, profile, outputMode);
+			engineStats = "Encrypted " + src.getName() + " -> " + out.getName() + "  [" + profile.describe() + "]\n";
+			result.resultOK = true;
+		} catch (CryptoException | IOException | RuntimeException e) {
+			engineStats = "Encryption failed: " + e.getMessage() + "\n";
+			logger.error("Encryption failed: " + e.getMessage());
+		} finally {
+			if (key != null) {
+				key.clear();
+			}
+		}
+		opInfo = engineStats;
+		return result;
+	}
+
+	private CrypterResultDTO engineDecrypt(File src, File destinationDir, char[] password, File keyImage) {
+		CrypterResultDTO result = new CrypterResultDTO();
+		CryptoKey key = null;
+		try {
+			if (destinationDir != null && !destinationDir.exists()) {
+				destinationDir.mkdirs();
+			}
+			CryptoProfile found = FileCrypter.inspect(src);
+			key = CryptoKey.of(password, keyImage);
+			File out = FileCrypter.decrypt(src, destinationDir, key);
+			engineStats = "Decrypted " + src.getName() + " -> " + out.getName()
+					+ (found != null ? "  [" + found.describe() + "]" : "") + "\n";
+			result.resultOK = true;
+		} catch (CryptoException | IOException | RuntimeException e) {
+			engineStats = "Decryption failed: " + e.getMessage() + "\n";
+			logger.error("Decryption failed: " + e.getMessage());
+		} finally {
+			if (key != null) {
+				key.clear();
+			}
+		}
+		opInfo = engineStats;
+		return result;
+	}
+
+	/** Profile used instead of the one of the selected engine mode (custom protection); null = use the mode's own. */
+	public void setProfileOverride(CryptoProfile profile) {
+		this.profileOverride = profile;
+	}
+
+	public FileCrypter.OutputMode getOutputMode() {
+		return outputMode;
+	}
+
+	/** How folders are exported by the engine modes (default: one encrypted archive per folder). */
+	public void setOutputMode(FileCrypter.OutputMode outputMode) {
+		this.outputMode = outputMode;
+	}
+
 	// exception handler
 	private static boolean resetAfterException(String msg, Exception e) {
 		logger.error(msg, e);
@@ -544,6 +626,9 @@ public class ScreeptManagerFileOrFolder {
 	}
 
 	public String getOutputStats() {
+		if (engineStats != null) {
+			return engineStats;
+		}
 		return (screepTManager != null) ? screepTManager.getOutputStats() : "";
 	}
 	
@@ -552,6 +637,11 @@ public class ScreeptManagerFileOrFolder {
 	 * @return
 	 */
 	public String pollOutputStats() {
+		if (engineStats != null) {
+			String s = engineStats;
+			engineStats = null;
+			return s;
+		}
 		return (screepTManager != null) ? screepTManager.pollOutputStats() : "";
 	}
 

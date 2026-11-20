@@ -173,7 +173,7 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][20px:n][80px,grow]", "[grow][grow][grow][150:n:,grow][][][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][20px:n][80px,grow]", "[grow][grow][grow][][90:n:,grow][][][grow]"));
 		
 		lblMaxMemory = new JLabel(I18n.t("launcher.max_memory_mb"));
 		lblMaxMemory.setForeground(new Color(220, 220, 220));
@@ -269,7 +269,6 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		lblPreferredJvm = new JLabel(I18n.t("launcher.preferred_jvm"));
 		lblPreferredJvm.setForeground(new Color(220, 220, 220));
-		getContentPane().add(lblPreferredJvm, "cell 0 3 2 1,alignx center");
 		
 		String[] jvmArr = new String[1];
 		ArrayList<String> JVMS = SysUtils.findJvmVersionsInstalled(currentOS);
@@ -279,7 +278,6 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		lblJvmInfo = new JLabel("");
 		lblJvmInfo.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(lblJvmInfo, "cell 2 3,alignx trailing");
 		
 		comboPrefJvm = new JComboBox<String>(JVMS.toArray(jvmArr));
 //		comboPrefJvm = new JComboBox<String>(); // Window builder bug workaround for test
@@ -311,40 +309,44 @@ public class CustomizeParametersPanel extends JFrame{
 				}
 			}
 		});
-		javax.swing.JPanel jvmBox = new javax.swing.JPanel(new MigLayout("insets 0, wrap 1, gapy 4", "[grow,fill]", "[][grow,fill]"));
-		jvmBox.setOpaque(false);
-		jvmBox.add(comboPrefJvm, "growx");
-		// the text wraps inside the scroll pane: a long path or name never widens the window
+		// the text wraps inside the scroll pane, over the whole width of the window: a long path or name never widens it
 		javax.swing.JScrollPane jvmInfoScroll = new javax.swing.JScrollPane(jvmInfoPane, javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public Dimension getPreferredSize() {
-				// width follows the column, height is the whole text wrapped at that width: the window grows to show it
-				return new Dimension(1, super.getPreferredSize().height);
+				// width follows the window; fixed height so that the window never changes size when the Java changes (long text scrolls)
+				return new Dimension(1, 120);
 			}
 		};
-		jvmInfoScroll.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		jvmInfoScroll.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 6, 0, 6));
 		jvmInfoScroll.setOpaque(false);
 		jvmInfoScroll.getViewport().setOpaque(false);
-		jvmBox.add(jvmInfoScroll, "grow");
-		getContentPane().add(jvmBox, "cell 3 3 5 1,grow");
+		getContentPane().add(jvmInfoScroll, "cell 0 4 9 1,grow");
 		setupProfileControls();
 		
 		btnDownloadJava = new JButton(I18n.t("launcher.get_java") + JreDownloader.FEATURE_VERSION);
 		btnDownloadJava.setToolTipText(I18n.t("launcher.downloads_the_latest_java") + JreDownloader.FEATURE_VERSION + I18n.t("launcher.eclipse_temurin_jre_checksum_verified_into"));
 		btnDownloadJava.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnDownloadJava, "cell 8 3");
+
+		// one line above the text: label, info icon, list of the Javas and download button
+		javax.swing.JPanel jvmHeader = new javax.swing.JPanel(new MigLayout("insets 0 6 0 6, gapx 8", "[][][grow,fill][]", "[]"));
+		jvmHeader.setOpaque(false);
+		jvmHeader.add(lblPreferredJvm);
+		jvmHeader.add(lblJvmInfo);
+		jvmHeader.add(comboPrefJvm, "growx, wmin 120");
+		jvmHeader.add(btnDownloadJava);
+		getContentPane().add(jvmHeader, "cell 0 3 9 1,growx");
 		
 		separator = new JSeparator();
-		getContentPane().add(separator, "cell 0 5 9 1,growx");
+		getContentPane().add(separator, "cell 0 6 9 1,growx");
 		
 		btnExitConfiguration = new JButton(I18n.t("common.discard"));
 		btnExitConfiguration.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		btnExitConfiguration.setBackground(new Color(207, 77, 70));
 		btnExitConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
 		btnExitConfiguration.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnExitConfiguration, "cell 0 6,growx");
+		getContentPane().add(btnExitConfiguration, "cell 0 7,growx");
 		
 		btnReloadInitialConfig = new JButton(I18n.t("launcher.reset_to_initial_values"));
 		btnReloadInitialConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
@@ -353,7 +355,7 @@ public class CustomizeParametersPanel extends JFrame{
 		btnReloadInitialConfig.setBackground(Color.DARK_GRAY);
 		btnReloadInitialConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 		btnReloadInitialConfig.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnReloadInitialConfig, "cell 1 6 3 1,growx,aligny center");
+		getContentPane().add(btnReloadInitialConfig, "cell 1 7 3 1,growx,aligny center");
 		
 		btnLoadScreeptDefault = new JButton();
 		btnLoadScreeptDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
@@ -363,14 +365,14 @@ public class CustomizeParametersPanel extends JFrame{
 		btnLoadScreeptDefault.setBackground(Color.DARK_GRAY);
 		btnLoadScreeptDefault.setIcon(new ImageIcon(IconsPathConfigurator.iconRootPath));
 		btnLoadScreeptDefault.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnLoadScreeptDefault, "cell 4 6 3 1,growx,aligny center");
+		getContentPane().add(btnLoadScreeptDefault, "cell 4 7 3 1,growx,aligny center");
 
 		btnSaveConfig = new JButton(I18n.t("launcher.save_launch_options"));
 		btnSaveConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		btnSaveConfig.setBackground(new Color(85, 166, 66));
 		btnSaveConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		btnSaveConfig.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnSaveConfig, "cell 7 6 2 1,growx,aligny center");
+		getContentPane().add(btnSaveConfig, "cell 7 7 2 1,growx,aligny center");
 		
 		// add custom behaviour to frame
 		
@@ -722,7 +724,7 @@ public class CustomizeParametersPanel extends JFrame{
 		profileBox.add(lblGc);
 		profileBox.add(comboGc, "growx");
 		profileBox.add(gcInfoPane, "span 4, growx, h 34!");
-		getContentPane().add(profileBox, "cell 0 4 9 1,growx");
+		getContentPane().add(profileBox, "cell 0 5 9 1,growx");
 
 		comboProfile.addActionListener(e -> {
 			int index = comboProfile.getSelectedIndex();

@@ -6,6 +6,25 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.88 - 2026-11-20
+> Crypter with authenticated AES-256/128-GCM, combinable layers and key image as second key; faster spell checker with language menu
+
+### New
+- Crypter: Secure modes (AES-256-GCM, AES-128-GCM, Maximum, Secure + key image, Custom). Wrong passwords, damaged or modified files are always detected, the whole password counts and decryption recognises the algorithms by itself.
+- Crypter: combinable layers (AES-128, AES-256, StegaCREEPT key image, Shuffle) and key derivation PBKDF2-SHA256/512 or scrypt, from the Options... button. A line under the controls shows how the choice protects the data and the password strength.
+- Crypter: folders become one encrypted archive by default (names hidden too); file by file and zip of encrypted files are available. Decrypting also opens zips.
+- Spell checker: language menu when it is turned on (any word list in the SpellChecker folder).
+
+### Improved
+- Spell checker: dictionaries load in the background and checking follows the visible text while you scroll, also in big files.
+- Crypter: the instructions are a rendered page in the selected language (tab Guide); the choice made in the last encryption is remembered; Options... starts from the selected mode.
+- Launcher: in the start options the Java selection (label, list and Get Java button) is one line above the Java details, which now use the whole width of the window.
+
+### Fixed
+- Crypter: the options bar was squeezed and unreadable; it now adapts to the window.
+- Key images added to the vault from the generator now appear immediately in the Crypter tree.
+- Legacy AES decryption with shuffle off returned 16 extra bytes at the start of every block of the file.
+
 ## 0.9.87 - 2026-11-20
 > Plugins can open as tabs of the file editor (PDF viewer, Markdown viewer), tabs come back as they were at the next start, pin a tab with Alt+Shift+J, quick notes you can move and resize, faster searches with filters and regular expressions
 

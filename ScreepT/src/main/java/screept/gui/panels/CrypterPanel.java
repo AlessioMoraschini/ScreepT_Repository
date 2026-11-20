@@ -82,6 +82,10 @@ import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import screept.crypter.impl.aes.AesCipher;
+import screept.gui.panels.crypter.CrypterAdvancedDialog;
+import screept.gui.panels.crypter.CrypterSettings;
+import screept.gui.panels.crypter.SecurityBadge;
+import screept.gui.frames.OptionDescriptions;
 import screept.crypter.impl.manager.CryptoMode;
 import screept.crypter.impl.manager.ScreeptManagerFileOrFolder;
 import screept.crypter.om.CrypterResultDTO;
@@ -131,6 +135,10 @@ public class CrypterPanel extends ModulePanel {
 
 	private static final String hashedTooltip =
 			I18n.t("crypter.when_this_mode_is_active_the");
+
+	private static final String engineModeTooltip =
+			"Authenticated encryption (AES-GCM): any wrong password, damage or tampering is detected, and the password is used in full. "
+			+ "The algorithms are stored in the file header, so decrypting only needs the password. No key image needed.";
 
 	private static final String onlyAesTooltip =
 			I18n.t("crypter.only_aes_mode_uses_aes_algorithm");
@@ -215,6 +223,12 @@ public class CrypterPanel extends ModulePanel {
 	private JCheckBox chckbxShowAesKey;
 	private JCheckBox chckbxShuffle;
 	private JCheckBox chckbxHashKey;
+	private JButton btnProtectionOptions;
+	private JTabbedPane centerTabs;
+	private boolean guideShown = false;
+	private SecurityBadge securityBadge;
+	private final CrypterSettings settings = new CrypterSettings();
+	private boolean customChosen = false;
 
 	private volatile boolean isKilled = false;
 
@@ -299,7 +313,7 @@ public class CrypterPanel extends ModulePanel {
 		panelMainContainer.setLayout(new MigLayout(
 				"fill,insets 0",
 				"[100:200:200][100:205:205][30,grow][100px:250px:250px][100px:120px:120px]",
-				"[40px:40px:40px,top][:30px:30px][30px:30px:34px][100px:150px][100px:200px:200px][100px:200px][:1px:1px]"));
+				"[40px:40px:40px,top][:66px:66px][30px:30px:34px][100px:150px][100px:200px:200px][100px:200px][:1px:1px]"));
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMaximumSize(maxBodySize);
 		mainScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -379,25 +393,18 @@ public class CrypterPanel extends ModulePanel {
 		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 14));
 
 		panelStatus = new JPanel();
-		panelStatus.setMaximumSize(new Dimension(screenSize.width, 30));
+		panelStatus.setMaximumSize(new Dimension(screenSize.width, 70));
 		panelStatus.setPreferredSize(new Dimension(10, 20));
 		panelStatus.setBorder(new LineBorder(new Color(105, 105, 105), 2));
 		panelStatus.setBackground(new Color(112, 128, 144));
 		panelMainContainer.add(panelStatus, "cell 0 1 5 1,grow");
-		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{90, 180, 40, 20, 50, 140, 140, 10, 10, 0};
-		gbl_panelStatus.rowHeights = new int[]{32, 0};
-		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-		panelStatus.setLayout(gbl_panelStatus);
+		// two rows (controls, then the protection line); the fields grow and shrink with the window, hidden controls take no room
+		panelStatus.setLayout(new MigLayout("insets 4 8 2 8, fillx, hidemode 3, gapx 8, gapy 2",
+				"[][grow 40, 90:200:240][][][][grow 60, 120:220:320][][][][]", "[28!][22!]"));
 
 		lblAesKeyStatic = new JLabel("Password:");
 		lblAesKeyStatic.setForeground(new Color(255, 239, 213));
-		GridBagConstraints gbc_lblAesKeyStatic = new GridBagConstraints();
-		gbc_lblAesKeyStatic.insets = new Insets(0, 0, 0, 5);
-		gbc_lblAesKeyStatic.gridx = 0;
-		gbc_lblAesKeyStatic.gridy = 0;
-		panelStatus.add(lblAesKeyStatic, gbc_lblAesKeyStatic);
+		panelStatus.add(lblAesKeyStatic, "cell 0 0");
 		lblAesKeyStatic.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
 		AESKEYtext = new JPasswordField();
@@ -406,12 +413,7 @@ public class CrypterPanel extends ModulePanel {
 		AESKEYtext.setHorizontalAlignment(SwingConstants.CENTER);
 		AESKEYtext.setEchoChar(DEFAULT_PSW_CHAR);
 		AESKEYtext.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-		GridBagConstraints gbc_AESKEYtext = new GridBagConstraints();
-		gbc_AESKEYtext.fill = GridBagConstraints.HORIZONTAL;
-		gbc_AESKEYtext.insets = new Insets(0, 0, 0, 5);
-		gbc_AESKEYtext.gridx = 1;
-		gbc_AESKEYtext.gridy = 0;
-		panelStatus.add(AESKEYtext, gbc_AESKEYtext);
+		panelStatus.add(AESKEYtext, "cell 1 0, growx");
 		AESKEYtext.setColumns(10);
 
 		chckbxShowAesKey = new JCheckBox("");
@@ -422,40 +424,22 @@ public class CrypterPanel extends ModulePanel {
 		chckbxShowAesKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxShowAesKey.setForeground(Color.WHITE);
 		chckbxShowAesKey.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-		GridBagConstraints gbc_chckbxShowAesKey = new GridBagConstraints();
-		gbc_chckbxShowAesKey.anchor = GridBagConstraints.WEST;
-		gbc_chckbxShowAesKey.insets = new Insets(0, 0, 0, 5);
-		gbc_chckbxShowAesKey.gridx = 2;
-		gbc_chckbxShowAesKey.gridy = 0;
-		panelStatus.add(chckbxShowAesKey, gbc_chckbxShowAesKey);
+		panelStatus.add(chckbxShowAesKey, "cell 2 0");
 
 		iconInfoMode = new JLabel("");
 		iconInfoMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_INFO));
-		GridBagConstraints gbc_lblInfoMode= new GridBagConstraints();
-		gbc_lblInfoMode.insets = new Insets(0, 0, 0, 5);
-		gbc_lblInfoMode.gridx = 3;
-		gbc_lblInfoMode.gridy = 0;
-		panelStatus.add(iconInfoMode, gbc_lblInfoMode);
+		panelStatus.add(iconInfoMode, "cell 3 0");
 
 		lblSelectedModeStatic = new JLabel("Mode:");
 		lblSelectedModeStatic.setForeground(new Color(255, 239, 213));
-		GridBagConstraints gbc_lblSelectedModeStatic = new GridBagConstraints();
-		gbc_lblSelectedModeStatic.insets = new Insets(0, 0, 0, 5);
-		gbc_lblSelectedModeStatic.gridx = 4;
-		gbc_lblSelectedModeStatic.gridy = 0;
-		panelStatus.add(lblSelectedModeStatic, gbc_lblSelectedModeStatic);
+		panelStatus.add(lblSelectedModeStatic, "cell 4 0");
 		lblSelectedModeStatic.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
 		comboModeCrypto = new JComboBox<CryptoMode>();
 		comboModeCrypto.setPreferredSize(new Dimension(33, 24));
 		comboModeCrypto.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboModeCrypto.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		GridBagConstraints gbc_comboModeCrypto = new GridBagConstraints();
-		gbc_comboModeCrypto.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboModeCrypto.insets = new Insets(0, 0, 0, 5);
-		gbc_comboModeCrypto.gridx = 5;
-		gbc_comboModeCrypto.gridy = 0;
-		panelStatus.add(comboModeCrypto, gbc_comboModeCrypto);
+		panelStatus.add(comboModeCrypto, "cell 5 0, growx");
 		comboModeCrypto.setModel(new DefaultComboBoxModel<CryptoMode>(CryptoMode.values()));
 
 		chckbxShuffle = new JCheckBox(I18n.t("crypter.shuffle_mode"));
@@ -469,11 +453,7 @@ public class CrypterPanel extends ModulePanel {
 		chckbxShuffle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxShuffle.setForeground(Color.WHITE);
 
-		GridBagConstraints gbc_chckbxShuffle = new GridBagConstraints();
-		gbc_chckbxShuffle.insets = new Insets(0, 0, 0, 5);
-		gbc_chckbxShuffle.gridx = 6;
-		gbc_chckbxShuffle.gridy = 0;
-		panelStatus.add(chckbxShuffle, gbc_chckbxShuffle);
+		panelStatus.add(chckbxShuffle, "cell 7 0");
 
 		chckbxHashKey = new JCheckBox(I18n.t("crypter.hash_key"));
 		chckbxHashKey.setFont(new Font("Segoe UI", Font.PLAIN, 15));
@@ -487,19 +467,35 @@ public class CrypterPanel extends ModulePanel {
 		chckbxHashKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxHashKey.setForeground(Color.WHITE);
 
-		GridBagConstraints gbc_chckbxHashKey = new GridBagConstraints();
-		gbc_chckbxHashKey.insets = new Insets(0, 0, 0, 5);
-		gbc_chckbxHashKey.gridx = 7;
-		gbc_chckbxHashKey.gridy = 0;
-		panelStatus.add(chckbxHashKey, gbc_chckbxHashKey);
+		panelStatus.add(chckbxHashKey, "cell 8 0");
+
+		btnProtectionOptions = new JButton("Options...");
+		btnProtectionOptions.setToolTipText(encapsulateInHtml(OptionDescriptions.crypterOption("Protection") + " " + OptionDescriptions.crypterOption("Folders")));
+		btnProtectionOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnProtectionOptions.setFocusable(false);
+		btnProtectionOptions.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CryptoMode current = (CryptoMode) comboModeCrypto.getSelectedItem();
+				if (current != null && current != CryptoMode.CUSTOM && current.profile != null) {
+					settings.loadFrom(current.profile);
+				}
+				if (CrypterAdvancedDialog.show(thisPanel, settings)) {
+					customChosen = true;
+					comboModeCrypto.setSelectedItem(CryptoMode.CUSTOM);
+					refreshSecurityBadge();
+				}
+			}
+		});
+		btnProtectionOptions.setVisible(false);
+		panelStatus.add(btnProtectionOptions, "cell 6 0");
+
+		securityBadge = new SecurityBadge();
+		panelStatus.add(securityBadge, "cell 0 1 10 1, growx, wmin 0");
 
 		labelFlagCodeReady = new JLabel("");
 		labelFlagCodeReady.setHorizontalAlignment(SwingConstants.CENTER);
-		GridBagConstraints gbc_labelFlagCodeReady = new GridBagConstraints();
-		gbc_labelFlagCodeReady.fill = GridBagConstraints.VERTICAL;
-		gbc_labelFlagCodeReady.gridx = 8;
-		gbc_labelFlagCodeReady.gridy = 0;
-		panelStatus.add(labelFlagCodeReady, gbc_labelFlagCodeReady);
+		panelStatus.add(labelFlagCodeReady, "cell 9 0, alignx right");
 		labelFlagCodeReady.setBorder(null);
 		labelFlagCodeReady.setFont(new Font("SansSerif", Font.BOLD, 14));
 
@@ -615,6 +611,7 @@ public class CrypterPanel extends ModulePanel {
 					try {
 						// check the aes key and set jtextField color
 						AesCipher.check(AESKEYtext);
+						refreshSecurityBadge();
 						// set the label text according to selected mode
 						if(checkIfReadyToCode() && !isCoderUsed()) {
 							enableCoderButtons();
@@ -888,7 +885,17 @@ public class CrypterPanel extends ModulePanel {
 			public void actionPerformed(ActionEvent e) {
 				CryptoMode modality = (CryptoMode)comboModeCrypto.getSelectedItem();
 
-				if (modality.isAES()){
+				boolean engineMode = modality.profile != null;
+				// engine modes have no legacy shuffle/hash switches: their options live in "Protection options"
+				chckbxShuffle.setVisible(!engineMode);
+				chckbxHashKey.setVisible(!engineMode);
+				btnProtectionOptions.setVisible(engineMode);
+				if (modality == CryptoMode.CUSTOM && !customChosen) {
+					customChosen = CrypterAdvancedDialog.show(thisPanel, settings);
+				}
+				refreshSecurityBadge();
+
+				if (modality.isAES() && !engineMode){
 					chckbxHashKey.setEnabled(true);
 					chckbxHashKey.setForeground(Color.white);
 				} else {
@@ -904,6 +911,7 @@ public class CrypterPanel extends ModulePanel {
 			}
 		});
 		CryptoMode mode = CryptoMode.getModeFromBoolean(currentConf.getAesOpt().isFlagAes(), currentConf.getSteganOpt().isFlagSteg());
+		mode = restoreProtectionChoice(mode);
 		comboModeCrypto.setSelectedItem(mode);
 
 		// ULTRA-SECURE - CHECKBOX LISTENER
@@ -1006,6 +1014,9 @@ public class CrypterPanel extends ModulePanel {
 		try {
 			textAreaMain.append(text);
 			textAreaMain.setCaretPosition(textAreaMain.getDocument().getLength()-1);
+			if (guideShown && centerTabs != null) {
+				centerTabs.setSelectedComponent(scrollPaneText); // an operation started: show its output
+			}
 		} catch (Exception e) {
 			logger.warn("Error while trying to append output to main text area", e);
 		}
@@ -1221,7 +1232,12 @@ public class CrypterPanel extends ModulePanel {
 
 						boolean shuffle = chckbxShuffle.isSelected() && chckbxShuffle.isEnabled();
 						try {
+							screeptManagerFoF.setOutputMode(settings.outputMode);
+							screeptManagerFoF.setProfileOverride(mode == CryptoMode.CUSTOM ? settings.buildProfile() : null);
 							result = screeptManagerFoF.crYpt(mode, currentFile, destinationDir, AESKEYtext.getPassword(), srcKeyImageFile, shuffle);
+							if (result.resultOK) {
+								saveProtectionChoice(mode);
+							}
 						} catch (Exception e) {
 							logger.error("There was an exception:", e);
 							result.resultOK = false;
@@ -1369,14 +1385,43 @@ public class CrypterPanel extends ModulePanel {
 		scrollPaneText.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPaneText.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPaneText.setBorder(new LineBorder(new Color(128, 128, 128), 2));
-		mainSplitTextAreaMain.setRightComponent(scrollPaneText);
+		centerTabs = new JTabbedPane(JTabbedPane.TOP);
+		centerTabs.addTab(I18n.t("crypter.tab_guide"), buildGuideScroll());
+		centerTabs.addTab(I18n.t("crypter.tab_output"), scrollPaneText);
+		mainSplitTextAreaMain.setRightComponent(centerTabs);
 //		panelMainContainer.add(scrollPaneText, "cell 2 2 1 4,grow");
 
 		textAreaMain.setText(I18n.t("crypter.welcome_to_screept_are_you_ready_2"));
-		appendMainTextArea("\n\n" + getInstructionsText());
 		textAreaMain.setCaretPosition(0);
+		guideShown = true;
 		textAreaMain.revalidate();
 		textAreaMain.repaint();
+	}
+
+	/** The instructions, as a rendered page in the selected language (text in the i18n packs: crypter.guide_html). */
+	private JScrollPane buildGuideScroll() {
+		javax.swing.JEditorPane guidePane = new javax.swing.JEditorPane();
+		javax.swing.text.html.HTMLEditorKit kit = new javax.swing.text.html.HTMLEditorKit();
+		javax.swing.text.html.StyleSheet css = new javax.swing.text.html.StyleSheet();
+		css.addStyleSheet(kit.getStyleSheet());
+		css.addRule("body { font-family: 'Segoe UI', SansSerif; font-size: 13pt; color: #e6e6e6; margin: 14px 18px 14px 18px; }");
+		css.addRule("h2 { color: #ffffff; font-size: 19pt; margin-bottom: 4px; }");
+		css.addRule("h3 { color: #7fd1ff; font-size: 14pt; margin-top: 14px; margin-bottom: 2px; }");
+		css.addRule("b { color: #ffffff; }");
+		css.addRule("i { color: #c8d8e8; }");
+		css.addRule("li { margin-bottom: 5px; }");
+		css.addRule("p { margin-top: 4px; margin-bottom: 4px; }");
+		kit.setStyleSheet(css);
+		guidePane.setEditorKit(kit);
+		guidePane.setEditable(false);
+		guidePane.setBackground(new Color(30, 30, 30));
+		guidePane.setText("<html><body>" + I18n.t("crypter.guide_html") + "</body></html>");
+		guidePane.setCaretPosition(0);
+		JScrollPane sp = new JScrollPane(guidePane);
+		sp.setBorder(new LineBorder(new Color(128, 128, 128), 2));
+		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		sp.getVerticalScrollBar().setUnitIncrement(18);
+		return sp;
 	}
 
 	private String getInstructionsText() {
@@ -1547,6 +1592,64 @@ public class CrypterPanel extends ModulePanel {
 		updateShuffleTooltip();
 	}
 
+	/** The choice made in the last successful encryption comes back at the next start (never the password or the key image). */
+	private CryptoMode restoreProtectionChoice(CryptoMode fallback) {
+		try {
+			String saved = currentConf.getSafeStringConf(INItializer.AES_OPT, "crypterMode", "");
+			if (saved.isEmpty()) {
+				return fallback;
+			}
+			CryptoMode m = CryptoMode.valueOf(saved);
+			settings.load(currentConf.getSafeStringConf(INItializer.AES_OPT, "crypterLayers", ""),
+					currentConf.getSafeStringConf(INItializer.AES_OPT, "crypterKdf", ""),
+					currentConf.getSafeStringConf(INItializer.AES_OPT, "crypterFolders", ""));
+			customChosen = true; // the saved custom layers are the user's choice: do not ask again
+			return m;
+		} catch (Exception e) {
+			return fallback;
+		}
+	}
+
+	private void saveProtectionChoice(CryptoMode m) {
+		try {
+			currentConf.writeSingleValue(INItializer.AES_OPT, "crypterMode", m.name());
+			currentConf.writeSingleValue(INItializer.AES_OPT, "crypterLayers", settings.layersToString());
+			currentConf.writeSingleValue(INItializer.AES_OPT, "crypterKdf", settings.kdf.name());
+			currentConf.writeSingleValue(INItializer.AES_OPT, "crypterFolders", settings.outputMode.name());
+		} catch (Exception e) {
+			logger.warn("Cannot save the protection choice");
+		}
+	}
+
+	private boolean needsKeyImage(CryptoMode m) {
+		if (m == CryptoMode.CUSTOM) {
+			try {
+				return settings.buildProfile().needsKeyImage();
+			} catch (IllegalArgumentException e) {
+				return false;
+			}
+		}
+		return m.isSTEG();
+	}
+
+	private void refreshSecurityBadge() {
+		if (securityBadge == null || comboModeCrypto == null) {
+			return;
+		}
+		CryptoMode m = (CryptoMode) comboModeCrypto.getSelectedItem();
+		screept.crypter.engine.CryptoProfile profile = null;
+		if (m != null && m.profile != null) {
+			try {
+				profile = m == CryptoMode.CUSTOM ? settings.buildProfile() : m.profile;
+			} catch (IllegalArgumentException e) {
+				profile = null;
+			}
+		}
+		char[] pw = AESKEYtext.getPassword();
+		securityBadge.refresh(profile, pw, m != null && srcKeyImageFile == null && needsKeyImage(m));
+		java.util.Arrays.fill(pw, '\0');
+	}
+
 	private synchronized boolean checkIfReadyToCode() {
 		CryptoMode selectedMode = (CryptoMode)comboModeCrypto.getSelectedItem();
 
@@ -1566,7 +1669,7 @@ public class CrypterPanel extends ModulePanel {
 			lblSrcFileSel.setText(selectedFilesN + I18n.t("crypter.selected"));
 		}
 
-		if(srcKeyImageFile==null && selectedMode.isSTEG()) {
+		if(srcKeyImageFile==null && needsKeyImage(selectedMode)) {
 			// INVALID FILE FORMAT
 			checkEsit += I18n.t("crypter.missing_imgkey");
 			ready = false;
@@ -1603,6 +1706,11 @@ public class CrypterPanel extends ModulePanel {
 				btnCreept.setToolTipText(btnCreept.isEnabled()? I18n.t("crypter.ready_to_encrypt_files") : labelFlagCodeReady.getText());				btnDeCreept.setToolTipText(btnDeCreept.isEnabled()? I18n.t("crypter.ready_to_decrypt_files") : labelFlagCodeReady.getText());			}
 		});
 		return ready;
+	}
+
+	/** Reloads the key image tree now (for example after a new key image was added to the vault). */
+	public void refreshKeyTree() {
+		refreshJTree();
 	}
 
 	private void refreshJTree() {
@@ -1990,7 +2098,10 @@ public class CrypterPanel extends ModulePanel {
 	private void updateModeInfoTooltip() {
 		String tooltip = I18n.t("crypter.no_info_available");
 
-		if (mode.equals(CryptoMode.ONLY_AES)) {
+		if (mode.profile != null) {
+			tooltip = encapsulateInHtml(engineModeTooltip + " Current: " + mode.profile.describe() + ".");
+
+		} else if (mode.equals(CryptoMode.ONLY_AES)) {
 			tooltip = encapsulateInHtml(onlyAesTooltip);
 
 		} else if (mode.equals(CryptoMode.ONLY_STEG)) {

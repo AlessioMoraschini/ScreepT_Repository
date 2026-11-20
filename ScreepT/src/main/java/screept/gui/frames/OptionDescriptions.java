@@ -19,9 +19,34 @@ import java.util.Map;
  * (see {@code gui.commons.panel.options.OptionHelp}). The key is the label of the row or the text of the checkbox.
  * Keep them in sync with the options: they are the only place where the options are explained in the window.
  */
-final class OptionDescriptions {
+public final class OptionDescriptions {
 
 	private OptionDescriptions() {
+	}
+
+	private static final Map<String, String> CRYPTER = crypter();
+
+	/** Explanation of an option of the Crypter window (used as tooltip), by its label. */
+	public static String crypterOption(String label) {
+		String d = CRYPTER.get(label);
+		return d != null ? d : "";
+	}
+
+	static Map<String, String> crypter() {
+		Map<String, String> m = new HashMap<String, String>();
+		m.put("Protection", "How files are protected. The Secure modes use authenticated encryption (AES-GCM): a wrong password, a damaged or modified file is always detected, "
+				+ "and the whole password counts. The Legacy modes are the old crypter: kept to open old files, with no tampering detection and the password limited to 16 characters.");
+		m.put("AES-128", "AES with a 128 bit key in GCM mode. Fast and still very strong. Can be stacked with the other layers.");
+		m.put("AES-256", "AES with a 256 bit key in GCM mode: the recommended default.");
+		m.put("StegaCREEPT key image", "A secret picture becomes a second key: without the same picture the file cannot be decrypted, even with the right password. "
+				+ "Keep the image private and backed up: losing it means losing the files.");
+		m.put("Shuffle", "Scrambles the position of the bytes of the encrypted data with a key. It does not add strength by itself: the AES layers keep protecting and checking the data. "
+				+ "It only hides the structure of the encrypted file.");
+		m.put("Key derivation", "How the password becomes the encryption key. PBKDF2 is the standard and works everywhere. scrypt also needs memory, which makes password guessing on special hardware much more expensive.");
+		m.put("Folders", "How a folder is encrypted. One archive: a single file where names and structure are hidden too. File by file: the same folders with every file encrypted. "
+				+ "Zip: a normal zip that contains the encrypted files. Decryption recognises all of them by itself.");
+		m.put("Password", "The password is used in full (no length limit) and is never stored or written to the log. It is wiped from memory after every operation.");
+		return m;
 	}
 
 	static Map<String, String> graphic() {

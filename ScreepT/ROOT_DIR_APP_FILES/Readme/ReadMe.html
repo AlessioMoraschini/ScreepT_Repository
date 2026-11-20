@@ -75,7 +75,7 @@
 			<p class="whyNote">Also inside: the <b>Crypter</b>, an experimental file encryption module. It is in beta: see the notice below.</p>
 		</div>
 		<div class="betaNotice">
-					<b>Crypter module: beta version.</b> The Crypter (CreepT) is <b>experimental and not yet extensively tested</b>. Its algorithms (AES-128 combined with the custom Steg-Crypt, plus the hash and shuffle options) have not been reviewed by independent experts. Do not rely on it as the only protection of important data, and always keep an independent copy of your original files and of your keys: a bug or a lost key can make crypted files impossible to recover.
+					<b>Crypter module: beta version.</b> The Crypter (CreepT) is <b>experimental and not yet extensively tested</b>. Its algorithms (the new Secure modes use standard AES-GCM, but the custom Steg-Crypt and the Legacy modes) have not been reviewed by independent experts. Do not rely on it as the only protection of important data, and always keep an independent copy of your original files and of your keys: a bug or a lost key can make crypted files impossible to recover.
 					<br>The rest of ScreepT is also under active development. Over the coming weeks and months updates will improve both the Crypter and its integration in the software, and will add new features.
 				</div>
 	
@@ -499,7 +499,18 @@ $link.Save()</code></pre>
 						
 						</ul><br>
 						
-					<h2 class="subList2">CRYPTER MODES: Description</h2>
+					<h2 class="subList2">SECURE MODES (recommended)</h2>
+					<p>
+						<ul>
+							<li><span class="highlightBolded">Secure: AES-256-GCM, AES-128-GCM, Maximum, Secure + key image, Custom.</span>
+							Authenticated encryption: a wrong password, a damaged file or a file changed by someone else is always detected, and the <b>whole password counts</b> (no length limit). The password is never stored or written to the log, and is wiped from memory after each operation.
+							You only need the password to decrypt (and the key image, for the mode that uses one): the algorithms are written in the file header and recognised automatically, whatever mode is selected.<br>
+							<span class="highlightBoldedGrey">Layers:</span> AES-128, AES-256, StegaCREEPT (a secret key image becomes a second key) and Shuffle (scrambles the position of the encrypted bytes: an obfuscation, the AES layers keep protecting the data) can be combined with <b>Options...</b> (Custom). The key derivation can be PBKDF2-SHA256, PBKDF2-SHA512 or scrypt (more expensive to attack with special hardware).<br>
+							<span class="highlightBoldedGrey">Folders:</span> by default a folder becomes <b>one encrypted archive</b> (<i>name.dir.scpt</i>, names and structure are hidden too). In Options... you can choose file by file (structure kept) or a zip of encrypted files. A file becomes <i>name.scpt</i>. Decrypting recognises all of them, also zips.<br>
+							A line under the controls tells how the current choice protects your data and how good the password is.</li>
+						</ul>
+					</p>
+					<h2 class="subList2">LEGACY MODES: Description</h2>
 					<p>
 						<ul>
 							<li><span class="highlightBolded">AES_ONLY</span>

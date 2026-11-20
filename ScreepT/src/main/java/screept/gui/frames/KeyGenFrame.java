@@ -437,6 +437,9 @@ public class KeyGenFrame extends ParentFrame {
 										textLog.setSelectionStart(textLog.getText().length());
 										File result = ImageWorkerScreepT.addKeyImgToDictionary(inputName, IMG, thisFrame);
 										out = result.getName() + I18n.t("keygen.added_to_dictionary");
+										if (MainGUI.mainAPP != null && MainGUI.mainAPP.getPanelCrypter() != null) {
+											MainGUI.mainAPP.getPanelCrypter().refreshKeyTree();
+										}
 										textLog.append(out);
 										logger.debug(out);
 									} catch (Exception e2) {

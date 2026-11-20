@@ -245,9 +245,8 @@ public class AesCipher {
 	    boolean shuffledResult = BitWorker.getBitAtPosition(iv[0], 1);
 //	    System.out.println("shuffledResult: " + shuffledResult);
 	    
-	    if(shuffledResult) {
-			encrypted = shuffleBack(iv, ciphertext);
-		}
+	    // the IV is never part of the data to decrypt (it used to leak into the plaintext when shuffle was off)
+	    byte[] body = shuffledResult ? shuffleBack(iv, ciphertext) : ciphertext;
 	    
 	    // Configure cipher
 		if (hashed) {
@@ -258,7 +257,7 @@ public class AesCipher {
 			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
 		}
 		
-		byte[] decryptedBytes = cipher.doFinal(encrypted);
+		byte[] decryptedBytes = cipher.doFinal(body);
 		return decryptedBytes;
 	}
 	
