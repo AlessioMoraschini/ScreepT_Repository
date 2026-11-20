@@ -237,6 +237,28 @@ final class LogFileIndex implements Closeable {
 		return new int[] {start, Math.max(start, end)};
 	}
 
+	/**
+	 * First line of [from, to) (all of one day) whose time of day is >= ms (> ms when strictly): binary search that reads about
+	 * 20 lines. A line without time (stack trace) takes the one of the next line that has it.
+	 */
+	int timeBoundary(int from, int to, int ms, boolean strictly) {
+		int low = Math.max(0, from);
+		int high = Math.min(to, lineCount);
+		while (low < high) {
+			int mid = (low + high) >>> 1;
+			int time = -1;
+			for (int probe = mid; time < 0 && probe < high && probe < mid + 64; probe++) {
+				time = LogDates.timeOfDay(line(probe));
+			}
+			if (time >= 0 && (strictly ? time > ms : time >= ms)) {
+				high = mid;
+			} else {
+				low = mid + 1;
+			}
+		}
+		return low;
+	}
+
 	/** Day of the first dated line of a block, 0 when none of its lines has a date */
 	private int blockFirstDay(int block) {
 		int last = Math.min(lineCount, (block + 1) * BLOCK);

@@ -58,6 +58,7 @@ import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.SearchContext;
 
 import gui.texteditor.commons.dialogs.AbstractFileSearchDialog;
+import gui.texteditor.commons.dialogs.DialogOpacity;
 import gui.texteditor.commons.filesearch.FileSearchActions;
 import initializer.configs.impl.om.FileOptions;
 import resources.GeneralConfig;
@@ -127,6 +128,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 	protected Window owner;
 
 	private FileOptions options;
+	private JComboBox<String> perfCombo;
 
 	/**
 	 * Creates a new <code>FindDialog</code>.
@@ -136,7 +138,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 	 */
 	public FileContentSearchDialog(Dialog owner, FileSearchActions searchActions) {
 		super(owner);
-		makeOpacityCapable();
+		DialogOpacity.makeCapable(this);
 		this.owner = owner;
 		this.searchActions = searchActions;
 		init(getDefaultListener());
@@ -156,7 +158,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 	 */
 	public FileContentSearchDialog(Frame owner, FileSearchActions searchActions) {
 		super(owner);
-		makeOpacityCapable();
+		DialogOpacity.makeCapable(this);
 		this.owner = owner;
 		this.searchActions = searchActions;
 		init(getDefaultListener());
@@ -192,6 +194,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		includeBinariesCheckBox.setSelected(options.isfSearchBinaries());
 		regexCheckBox.setSelected(options.isfSearchRegex());
 		wholeWordCheckBox.setSelected(options.isfSearchWholeWord());
+		perfCombo.setSelectedIndex(SearchPerformance.fromName(options.getfSearchPerformance()).ordinal());
 	}
 
 	public FileOptions getOptions() {
@@ -317,7 +320,10 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		}
 		contentPane.add(leftPanel);
 		contentPane.add(rightPanel, BorderLayout.LINE_END);
-		contentPane.add(createOpacityPanel(), BorderLayout.SOUTH);
+		JPanel southPanel = new JPanel(new BorderLayout());
+		southPanel.add(createPerformancePanel(), BorderLayout.NORTH);
+		southPanel.add(DialogOpacity.panel(this), BorderLayout.SOUTH);
+		contentPane.add(southPanel, BorderLayout.SOUTH);
 		temp = new ResizableFrameContentPane(new BorderLayout());
 		temp.add(contentPane, BorderLayout.NORTH);
 		setContentPane(temp);
@@ -381,6 +387,10 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 
 			thisDialog.setEnabled(false);
 			fileSearchObj = new FileContentSearch(dto, selectedSearchFiles, searchActions);
+			SearchPerformance performance = SearchPerformance.values()[Math.max(0, perfCombo.getSelectedIndex())];
+			fileSearchObj.setPerformance(performance);
+			if(options != null)
+				options.setfSearchPerformance(performance.name());
 
 			SwingUtilities.invokeLater(()->{
 				GuiUtils.launchRunnable(()->{
@@ -419,56 +429,26 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		setAlwaysOnTop(true);
 
 		// at least the usual size, but never smaller than the content (texts of other languages are longer)
-		GuiUtils.centerComponent(thisDialog, new Dimension(Math.max(710, getWidth()), Math.max(200, getHeight())));
+		pack();
+		GuiUtils.centerComponent(thisDialog, new Dimension(Math.max(710, getRootPane().getPreferredSize().width), Math.max(200, getRootPane().getPreferredSize().height)));
 	}
 
-	private static final int MIN_OPACITY = 20;
-
-	/** Opacity (percent) chosen by the user, kept while ScreepT is open */
-	private static int lastOpacity = 100;
-
-	/**
-	 * A window can be translucent only without the system title bar: the dialog uses the one drawn by the Look and Feel
-	 * (same buttons, drag and resize). Must run before the dialog is displayable.
-	 */
-	private void makeOpacityCapable() {
-		try {
-			if (!isDisplayable()) {
-				setUndecorated(true);
-				getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
-			}
-		} catch (Exception e) {
-			// stays a normal dialog, without the transparency bar effect
-		}
-	}
-
-	private JPanel createOpacityPanel() {
+	/** Speed preset: threads and block size of the search (more speed = more CPU, memory and disk) */
+	private JPanel createPerformancePanel() {
+		int cores = Runtime.getRuntime().availableProcessors();
 		JPanel panel = new JPanel(new BorderLayout(8, 0));
-		panel.setBorder(BorderFactory.createEmptyBorder(4, 8, 6, 8));
-		JLabel title = new JLabel(I18n.t("fsearch.opacity"));
-		JLabel value = new JLabel(lastOpacity + "%");
-		value.setPreferredSize(new Dimension(value.getFontMetrics(value.getFont()).stringWidth("100%") + 6, value.getPreferredSize().height));
-		JSlider slider = new JSlider(MIN_OPACITY, 100, lastOpacity);
-		String tip = I18n.t("fsearch.opacity_tip");
+		panel.setBorder(BorderFactory.createEmptyBorder(4, 8, 0, 8));
+		JLabel title = new JLabel(I18n.t("fsearch.perf"));
+		perfCombo = new JComboBox<>();
+		for(SearchPerformance performance : SearchPerformance.values())
+			perfCombo.addItem(I18n.t(performance.labelId) + " (" + performance.threads(cores) + " " + I18n.t("fsearch.perf_threads") + ")");
+		perfCombo.setSelectedIndex(SearchPerformance.BALANCED.ordinal());
+		String tip = I18n.t("fsearch.perf_tip");
 		title.setToolTipText(tip);
-		slider.setToolTipText(tip);
-		slider.addChangeListener(e -> {
-			lastOpacity = Math.max(MIN_OPACITY, slider.getValue());
-			value.setText(lastOpacity + "%");
-			applyOpacity();
-		});
+		perfCombo.setToolTipText(tip);
 		panel.add(title, BorderLayout.LINE_START);
-		panel.add(slider, BorderLayout.CENTER);
-		panel.add(value, BorderLayout.LINE_END);
+		panel.add(perfCombo, BorderLayout.CENTER);
 		return panel;
-	}
-
-	private void applyOpacity() {
-		try {
-			setOpacity(Math.max(MIN_OPACITY, lastOpacity) / 100f);
-		} catch (Exception e) {
-			// translucency not supported here: the dialog stays opaque
-		}
 	}
 
 	public void setSelectedFiles(List<File> selection) {
@@ -608,7 +588,7 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 
 			// always above every other window of the operating system, with the opacity chosen by the user
 			setAlwaysOnTop(true);
-			applyOpacity();
+			DialogOpacity.prepareToShow(this);
 			super.setVisible(true);
 			setAlwaysOnTop(true);
 			focusFindTextField();

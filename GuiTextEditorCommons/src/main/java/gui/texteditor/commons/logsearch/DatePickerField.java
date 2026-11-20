@@ -49,7 +49,7 @@ import javax.swing.UIManager;
 import various.common.light.i18n.I18n;
 
 /**
- * A date in the form dd/MM/yyyy that can be typed (day, month and year may have one digit; - and . work as /) or picked from a small
+ * A date in the form dd/MM/yyyy, with an optional time (dd/MM/yyyy hh:mm:ss.fff, to the millisecond), that can be typed (day, month and year may have one digit; - and . work as /) or picked from a small
  * calendar. Empty is valid and means "no date". The text is read when Enter is pressed, when the field loses the focus or when a day
  * is picked; a text that is not a date gets a red outline and the field has no date until it is fixed.
  */
@@ -58,11 +58,16 @@ final class DatePickerField extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static final DateTimeFormatter PARSER = DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT);
 	private static final DateTimeFormatter SHOWN = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private static final DateTimeFormatter SHOWN_TIME = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+	/** hh:mm, hh:mm:ss or hh:mm:ss.fff (the fraction is read as a fraction of a second: .5 is 500 ms) */
+	private static final java.util.regex.Pattern TIME = java.util.regex.Pattern.compile("(\\d{1,2}):(\\d{2})(?::(\\d{2})(?:[.,](\\d{1,3}))?)?");
 	private static final Color ACCENT = new Color(58, 124, 214);
 
 	private final JTextField text = new JTextField(8);
 	private final JButton calendar = new JButton();
 	private LocalDate date;
+	/** Time typed after the date, null when the whole day is meant */
+	private java.time.LocalTime time;
 	private boolean invalid;
 	private LocalDate rangeFrom;
 	private LocalDate rangeTo;
@@ -79,7 +84,7 @@ final class DatePickerField extends JPanel {
 		text.putClientProperty("JTextField.placeholderText", placeholder);
 		text.putClientProperty("JTextField.showClearButton", Boolean.TRUE);
 		text.putClientProperty("JTextField.clearCallback", (Runnable) this::clear);
-		text.setPreferredSize(new Dimension(104, 28));
+		text.setPreferredSize(new Dimension(168, 28));
 		text.addActionListener(e -> commit());
 		text.addFocusListener(new FocusAdapter() {
 			@Override
@@ -108,6 +113,15 @@ final class DatePickerField extends JPanel {
 		return date;
 	}
 
+	/** Time of day in milliseconds, -1 when the field has only the date (the whole day) */
+	int getTimeMs() {
+		return time == null ? -1 : (int) (time.toNanoOfDay() / 1000000L);
+	}
+
+	private String shown(LocalDate day, java.time.LocalTime at) {
+		return at == null ? SHOWN.format(day) : SHOWN.format(day) + " " + SHOWN_TIME.format(at);
+	}
+
 	boolean hasText() {
 		return !text.getText().trim().isEmpty();
 	}
@@ -123,14 +137,14 @@ final class DatePickerField extends JPanel {
 	}
 
 	void setDate(LocalDate value) {
-		text.setText(value == null ? "" : SHOWN.format(value));
-		apply(value, false, true);
+		text.setText(value == null ? "" : shown(value, time));
+		apply(value, time, false, true);
 	}
 
 	void clear() {
 		boolean had = hasText();
 		text.setText("");
-		apply(null, false, had);
+		apply(null, null, false, had);
 	}
 
 	@Override
@@ -144,20 +158,32 @@ final class DatePickerField extends JPanel {
 	private void commit() {
 		String raw = text.getText().trim();
 		if (raw.isEmpty()) {
-			apply(null, false, date != null || invalid);
+			apply(null, null, false, date != null || invalid);
 			return;
 		}
 		try {
-			LocalDate parsed = LocalDate.parse(raw.replace('-', '/').replace('.', '/'), PARSER);
-			text.setText(SHOWN.format(parsed));
-			apply(parsed, false, !parsed.equals(date) || invalid);
-		} catch (DateTimeParseException e) {
-			apply(null, true, date != null || !invalid);
+			String[] parts = raw.split("[\\sT]+", 2);
+			LocalDate parsed = LocalDate.parse(parts[0].replace('-', '/').replace('.', '/'), PARSER);
+			java.time.LocalTime parsedTime = null;
+			if (parts.length > 1 && !parts[1].trim().isEmpty()) {
+				java.util.regex.Matcher m = TIME.matcher(parts[1].trim());
+				if (!m.matches()) {
+					throw new DateTimeParseException("time", raw, 0);
+				}
+				String fraction = m.group(4) == null ? "0" : (m.group(4) + "00").substring(0, 3);
+				parsedTime = java.time.LocalTime.of(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)),
+						m.group(3) == null ? 0 : Integer.parseInt(m.group(3)), Integer.parseInt(fraction) * 1000000);
+			}
+			text.setText(shown(parsed, parsedTime));
+			apply(parsed, parsedTime, false, !parsed.equals(date) || !java.util.Objects.equals(parsedTime, time) || invalid);
+		} catch (java.time.DateTimeException | NumberFormatException e) {
+			apply(null, null, true, date != null || !invalid);
 		}
 	}
 
-	private void apply(LocalDate value, boolean wrong, boolean fire) {
+	private void apply(LocalDate value, java.time.LocalTime at, boolean wrong, boolean fire) {
 		this.date = value;
+		this.time = at;
 		this.invalid = wrong;
 		text.putClientProperty("JComponent.outline", wrong ? "error" : null);
 		text.setToolTipText(wrong ? I18n.t("log.date_invalid") : tip);
@@ -309,8 +335,8 @@ final class DatePickerField extends JPanel {
 
 		private void pick(LocalDate day) {
 			popup.setVisible(false);
-			text.setText(SHOWN.format(day));
-			apply(day, false, true);
+			text.setText(shown(day, time));
+			apply(day, time, false, true);
 		}
 
 		private void fill() {

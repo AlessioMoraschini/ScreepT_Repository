@@ -121,7 +121,7 @@ public class LogSearchFrame extends JFrame {
 
 	private final JLabel lblName = new JLabel(I18n.t("common.logsearch"));
 	private final JLabel lblPath = new JLabel(" ");
-	private final JLabel lblDetails = new JLabel(" ");
+	private final JLabel lblDetails = new FooterLabel();
 	/** Speed of the last search: click for the details of the last 100 */
 	private final JLabel lblSpeed = new JLabel(" ");
 	private final Runnable statsListener = this::updateSpeedChip;
@@ -148,8 +148,8 @@ public class LogSearchFrame extends JFrame {
 	private final Strip strip = new Strip();
 	private final Pill pillMatches = new Pill();
 	private final ContextChooser cmbContext = new ContextChooser(CONTEXT_LABELS);
-	private final JLabel lblStatus = new JLabel(" ");
-	private final JLabel lblCaret = new JLabel(" ");
+	private final JLabel lblStatus = new FooterLabel();
+	private final JLabel lblCaret = new FooterLabel();
 
 	private final FileModel fileModel = new FileModel();
 	private final GrepModel grepModel = new GrepModel();
@@ -162,6 +162,33 @@ public class LogSearchFrame extends JFrame {
 	private final Timer monitorTimer;
 	/** Monitor on: the changes made by other programs are read by themselves. Kept while ScreepT is open */
 	private static boolean monitorOn = true;
+	/** On: the search starts while typing. Off: only the Search button or Enter start it. Remembered between sessions */
+	private static boolean liveSearch = readFlag("liveSearch", true);
+	private static final long BIG_FILE_BYTES = 5L * 1024 * 1024 * 1024;
+	private final javax.swing.JCheckBox chkLive = new javax.swing.JCheckBox(I18n.t("log.live_search"), liveSearch);
+	private final javax.swing.JButton btnSearchNow = new javax.swing.JButton(I18n.t("log.search_button"));
+	/** Text of the last search started: Enter searches again only when the text changed */
+	private String lastRunText = "";
+
+	private static java.util.prefs.Preferences prefs() {
+		return java.util.prefs.Preferences.userRoot().node("screept/logsearch");
+	}
+
+	private static boolean readFlag(String key, boolean fallback) {
+		try {
+			return prefs().getBoolean(key, fallback);
+		} catch (RuntimeException e) {
+			return fallback;
+		}
+	}
+
+	private static void writeFlag(String key, boolean value) {
+		try {
+			prefs().putBoolean(key, value);
+		} catch (RuntimeException e) {
+			// not remembered: it is only a convenience
+		}
+	}
 	private final javax.swing.JCheckBox chkMonitor = new javax.swing.JCheckBox(I18n.t("log.monitor"), monitorOn);
 	private final javax.swing.JButton btnRefresh = new javax.swing.JButton(I18n.t("log.refresh"));
 	private final JLabel lblStale = new JLabel(" ");
@@ -411,14 +438,12 @@ public class LogSearchFrame extends JFrame {
 
 		JPanel status = new Surface(new BorderLayout(), true);
 		status.setBorder(BorderFactory.createEmptyBorder(4, 14, 5, 14));
-		status.add(lblStatus, BorderLayout.WEST);
-		JPanel statusRight = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 14, 0));
-		statusRight.setOpaque(false);
+		status.setLayout(new FooterLayout());
 		setupSpeedChip();
-		statusRight.add(lblSpeed);
-		statusRight.add(lblDetails);
-		statusRight.add(lblCaret);
-		status.add(statusRight, BorderLayout.EAST);
+		status.add(lblStatus);
+		status.add(lblSpeed);
+		status.add(lblDetails);
+		status.add(lblCaret);
 
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(north, BorderLayout.NORTH);
@@ -505,6 +530,21 @@ public class LogSearchFrame extends JFrame {
 		btnRefresh.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 		btnRefresh.setVisible(!monitorOn);
 		btnRefresh.addActionListener(e -> reloadFromDisk(false));
+		chkLive.setOpaque(false);
+		chkLive.setFocusable(false);
+		chkLive.setToolTipText(I18n.t("log.live_search_tip"));
+		chkLive.addActionListener(e -> {
+			liveSearch = chkLive.isSelected();
+			writeFlag("liveSearch", liveSearch);
+			updateLiveUi();
+			if (liveSearch) {
+				if (!txtSearch.getText().equals(lastRunText)) {
+					debounce.restart();
+				}
+				warnBigFile();
+			}
+		});
+		pills.add(chkLive);
 		pills.add(chkMonitor);
 		pills.add(btnRefresh);
 		pills.add(btnOpenFile);
@@ -531,6 +571,12 @@ public class LogSearchFrame extends JFrame {
 		bar.add(txtSearch, c);
 		c.weightx = 0;
 		c.fill = GridBagConstraints.NONE;
+		btnSearchNow.setFocusable(false);
+		btnSearchNow.setPreferredSize(new Dimension(btnSearchNow.getPreferredSize().width + 14, 32));
+		btnSearchNow.setVisible(!liveSearch);
+		btnSearchNow.addActionListener(e -> runSearch());
+		c.insets = new Insets(0, 0, 0, 8);
+		bar.add(btnSearchNow, c);
 		c.insets = new Insets(0, 0, 0, 2);
 		bar.add(btnCase, c);
 		bar.add(btnWord, c);
@@ -615,21 +661,27 @@ public class LogSearchFrame extends JFrame {
 		txtSearch.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void insertUpdate(DocumentEvent e) {
-				debounce.restart();
+				typed();
 			}
 
 			@Override
 			public void removeUpdate(DocumentEvent e) {
-				debounce.restart();
+				typed();
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				debounce.restart();
+				typed();
+			}
+
+			private void typed() {
+				if (liveSearch) {
+					debounce.restart();
+				}
 			}
 		});
 		txtSearch.addActionListener(e -> {
-			if (debounce.isRunning()) {
+			if (debounce.isRunning() || (!liveSearch && !txtSearch.getText().equals(lastRunText))) {
 				runSearch();
 			} else {
 				jumpToMatch(true);
@@ -825,6 +877,9 @@ public class LogSearchFrame extends JFrame {
 		dateHintsSet = false;
 		updateDetails();
 		refresh();
+		if (!sameFile) {
+			SwingUtilities.invokeLater(this::warnBigFile);
+		}
 		return true;
 	}
 
@@ -865,7 +920,9 @@ public class LogSearchFrame extends JFrame {
 		String text = html.toString();
 		if (!text.equals(lastDetails)) {
 			lastDetails = text;
-			lblDetails.setText(text);
+			// footer: size and lines only (it shrinks with the window); the rest is in the tooltip
+			lblDetails.setText(humanSize(file.length()) + "  \u00b7  " + lines + " " + I18n.t("log.lines").replace("</span>", "").trim().toLowerCase());
+			lblDetails.setToolTipText(text);
 		}
 	}
 
@@ -919,9 +976,21 @@ public class LogSearchFrame extends JFrame {
 		if (idx != null && dateFilterActive()) {
 			java.time.LocalDate from = dateFrom.getDate();
 			java.time.LocalDate to = dateTo.getDate();
-			int[] range = idx.lineRange(from == null ? 0 : LogDates.fromDate(from), to == null ? 0 : LogDates.fromDate(to));
+			int fromDay = from == null ? 0 : LogDates.fromDate(from);
+			int toDay = to == null ? 0 : LogDates.fromDate(to);
+			int[] range = idx.lineRange(fromDay, toDay);
 			start = range[0];
 			end = to == null ? Integer.MAX_VALUE : range[1];
+			// a time typed after the date narrows the first and the last day to the millisecond
+			if (from != null && dateFrom.getTimeMs() >= 0) {
+				int dayEnd = Math.min(idx.lineRange(fromDay, fromDay)[1], range[1]);
+				start = idx.timeBoundary(start, dayEnd, dateFrom.getTimeMs(), false);
+			}
+			if (to != null && dateTo.getTimeMs() >= 0) {
+				int dayStart = Math.max(start, idx.lineRange(toDay, toDay)[0]);
+				end = idx.timeBoundary(dayStart, range[1], dateTo.getTimeMs(), true);
+			}
+			end = Math.max(start, end);
 			rangeLines = idx.lineCount();
 		}
 		boolean changed = start != dateStart || end != dateEnd;
@@ -1020,8 +1089,43 @@ public class LogSearchFrame extends JFrame {
 	}
 
 	private void rerunIfActive() {
-		if (!txtSearch.getText().isEmpty()) {
+		if (txtSearch.getText().isEmpty()) {
+			return;
+		}
+		// without "search while typing" the options change only a search already made
+		if (liveSearch || query != null) {
 			runSearch();
+		}
+	}
+
+	private void updateLiveUi() {
+		btnSearchNow.setVisible(!liveSearch);
+		if (!liveSearch) {
+			debounce.stop();
+		}
+		if (btnSearchNow.getParent() != null) {
+			btnSearchNow.getParent().revalidate();
+			btnSearchNow.getParent().repaint();
+		}
+	}
+
+	/** A file of more than 5 GB read at every pause in typing is slow: it is suggested to turn "search while typing" off (can be silenced) */
+	private void warnBigFile() {
+		File file = loadedFile;
+		if (!liveSearch || file == null || file.length() <= BIG_FILE_BYTES || readFlag("bigFileWarningHidden", false)) {
+			return;
+		}
+		javax.swing.JCheckBox dontRemind = new javax.swing.JCheckBox(I18n.t("log.big_file_dont_remind"));
+		Object[] content = { I18n.fmt("log.big_file_msg", humanSize(file.length())), dontRemind };
+		int answer = JOptionPane.showConfirmDialog(this, content, I18n.t("common.logsearch"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		if (dontRemind.isSelected()) {
+			writeFlag("bigFileWarningHidden", true);
+		}
+		if (answer == JOptionPane.YES_OPTION) {
+			liveSearch = false;
+			writeFlag("liveSearch", false);
+			chkLive.setSelected(false);
+			updateLiveUi();
 		}
 	}
 
@@ -1037,6 +1141,7 @@ public class LogSearchFrame extends JFrame {
 		txtSearch.repaint();
 		lblStatus.setForeground(muted());
 		String text = txtSearch.getText();
+		lastRunText = text;
 		if (!text.trim().isEmpty()) {
 			try {
 				LogQuery parsed = new LogQuery(text, btnRegex.isSelected(), btnCase.isSelected(), btnWord.isSelected());
@@ -1272,7 +1377,7 @@ public class LogSearchFrame extends JFrame {
 			return;
 		}
 		int level = index.level(line);
-		lblCaret.setText(String.format("Line %,d of %,d%s", line + 1, index.lineCount(), level == LogLevel.NONE ? "" : "   " + LogLevel.NAMES[level]));
+		lblCaret.setText(String.format("Ln %,d / %,d%s", line + 1, index.lineCount(), level == LogLevel.NONE ? "" : "  \u00b7  " + LogLevel.NAMES[level]));
 	}
 
 	private static String percent(double fraction) {
@@ -1879,6 +1984,98 @@ public class LogSearchFrame extends JFrame {
 		}
 	}
 
+	/** Label of the footer: when the window is narrow its text is cut with "...", and the tooltip shows it whole */
+	private static final class FooterLabel extends JLabel {
+		private static final long serialVersionUID = 1L;
+
+		FooterLabel() {
+			super(" ");
+			javax.swing.ToolTipManager.sharedInstance().registerComponent(this);
+		}
+
+		@Override
+		public String getToolTipText() {
+			String tip = super.getToolTipText();
+			String shownText = getText();
+			return tip != null ? tip : shownText == null || shownText.trim().isEmpty() ? null : shownText;
+		}
+	}
+
+	/**
+	 * Footer row: the first label (status) takes what is left, the others keep their size at the right. When the window is narrow the
+	 * labels give way from the left, never below a few characters, so they never overlap.
+	 */
+	private static final class FooterLayout implements java.awt.LayoutManager {
+		private static final int GAP = 14;
+		private static final int MIN_WIDTH = 48;
+
+		@Override
+		public void addLayoutComponent(String name, Component comp) {
+		}
+
+		@Override
+		public void removeLayoutComponent(Component comp) {
+		}
+
+		@Override
+		public Dimension preferredLayoutSize(java.awt.Container parent) {
+			int width = 0;
+			int height = 0;
+			int count = 0;
+			for (Component c : parent.getComponents()) {
+				if (c.isVisible()) {
+					Dimension d = c.getPreferredSize();
+					width += d.width;
+					height = Math.max(height, d.height);
+					count++;
+				}
+			}
+			Insets in = parent.getInsets();
+			return new Dimension(width + Math.max(0, count - 1) * GAP + in.left + in.right, height + in.top + in.bottom);
+		}
+
+		@Override
+		public Dimension minimumLayoutSize(java.awt.Container parent) {
+			Insets in = parent.getInsets();
+			return new Dimension(in.left + in.right + MIN_WIDTH, preferredLayoutSize(parent).height);
+		}
+
+		@Override
+		public void layoutContainer(java.awt.Container parent) {
+			List<Component> items = new ArrayList<Component>();
+			for (Component c : parent.getComponents()) {
+				if (c.isVisible()) {
+					items.add(c);
+				}
+			}
+			int count = items.size();
+			if (count == 0) {
+				return;
+			}
+			Insets in = parent.getInsets();
+			int available = parent.getWidth() - in.left - in.right - (count - 1) * GAP;
+			int[] widths = new int[count];
+			int total = 0;
+			for (int i = 0; i < count; i++) {
+				widths[i] = items.get(i).getPreferredSize().width;
+				total += widths[i];
+			}
+			int over = total - available;
+			for (int i = 0; i < count && over > 0; i++) {
+				int cut = Math.min(over, Math.max(0, widths[i] - MIN_WIDTH));
+				widths[i] -= cut;
+				over -= cut;
+			}
+			int spare = Math.max(0, -over);
+			int height = parent.getHeight() - in.top - in.bottom;
+			int x = in.left;
+			for (int i = 0; i < count; i++) {
+				items.get(i).setBounds(x, in.top, widths[i], height);
+				x += widths[i] + GAP + (i == 0 ? spare : 0);
+			}
+		}
+	}
+
 	/**
 	 * Strip beside the file view: the whole file squeezed in its height. Errors and warnings are coloured on the left, matches are
 	 * ticks, bookmarks are blue flags; the frame is what the file view shows. Click or drag to move around.
@@ -1896,6 +2093,8 @@ public class LogSearchFrame extends JFrame {
 		private int markedBookmarks = -1;
 		private long lastSeverityBuild;
 		private boolean severityStale = true;
+		/** A worker is computing the map: painting only draws what is ready */
+		private boolean building;
 
 		OverviewMap() {
 			setPreferredSize(new Dimension(30, 10));
@@ -1946,59 +2145,89 @@ public class LogSearchFrame extends JFrame {
 					|| bookmarkVersion != markedBookmarks;
 		}
 
-		private void rebuild() {
-			int height = getHeight();
-			int total = fileModel.getSize();
-			LogSearcher current = search;
-			LogFileIndex idx = index;
-			marks = new int[Math.max(0, height)];
-			maxMark = 1;
-			flags = new boolean[Math.max(0, height)];
-			if (height > 0 && total > 0) {
-				if (current != null) {
-					final int[] markRows = marks;
-					final int markHeight = height;
-					final int markTotal = total;
-					current.results.forEach(line -> {
-						int y = (int) ((long) line * markHeight / markTotal);
-						if (y >= 0 && y < markHeight && passes(line)) {
-							markRows[y]++;
-							maxMark = Math.max(maxMark, markRows[y]);
-						}
-					});
-				}
-				for (int line : bookmarks) {
-					int y = (int) ((long) line * height / total);
-					if (y >= 0 && y < height) {
-						flags[y] = true;
-					}
-				}
+		/**
+		 * Computes the marks, the flags and the severity column in a thread of its own (a big file has millions of lines: reading them
+		 * on the screen thread froze the window), then shows them. Called by the painting when something changed.
+		 */
+		private void requestBuild() {
+			final int height = getHeight();
+			final int total = fileModel.getSize();
+			final LogSearcher current = search;
+			final LogFileIndex idx = index;
+			final int[] flagLines = new int[bookmarks.size()];
+			int k = 0;
+			for (int line : bookmarks) {
+				flagLines[k++] = line;
 			}
-			// the severity column is the heavy one (one pass over the levels): refreshed at most twice a second while the file is read
-			long now = System.currentTimeMillis();
-			boolean growing = idx != null && !idx.isComplete();
-			if (idx != null && height > 0 && total > 0 && (severityStale || severity.length != height || (growing && now - lastSeverityBuild > 500))) {
-				byte[] built = new byte[height];
-				Arrays.fill(built, (byte) -1);
-				for (int line = 0; line < total; line++) {
-					byte stored = idx.levelByte(line);
-					int level = LogLevel.level(stored);
-					if (level >= LogLevel.WARN && level < LogLevel.COUNT && !LogLevel.isContinuation(stored)) {
-						int y = (int) ((long) line * height / total);
-						if (y < height && level > built[y]) {
-							built[y] = (byte) level;
-						}
-					}
-				}
-				severity = built;
-				lastSeverityBuild = now;
-				severityStale = false;
-			}
+			final boolean growing = idx != null && !idx.isComplete();
+			final boolean needSeverity = idx != null && idx.hasLevels() && height > 0 && total > 0
+					&& (severityStale || severity.length != height || (growing && System.currentTimeMillis() - lastSeverityBuild > 800));
+			final byte[] oldSeverity = severity;
 			markedSearch = current;
 			markedCount = current == null ? 0 : current.results.size();
 			markedHeight = height;
 			markedTotal = total;
 			markedBookmarks = bookmarkVersion;
+			if (needSeverity) {
+				severityStale = false;
+			}
+			building = true;
+			Thread worker = new Thread(() -> {
+				int[] newMarks = new int[Math.max(0, height)];
+				boolean[] newFlags = new boolean[Math.max(0, height)];
+				int[] peak = { 1 };
+				byte[] newSeverity = oldSeverity;
+				try {
+					if (height > 0 && total > 0) {
+						if (current != null) {
+							current.results.forEach(line -> {
+								int y = (int) ((long) line * height / total);
+								if (y >= 0 && y < height && passes(line)) {
+									newMarks[y]++;
+									peak[0] = Math.max(peak[0], newMarks[y]);
+								}
+							});
+						}
+						for (int line : flagLines) {
+							int y = (int) ((long) line * height / total);
+							if (y >= 0 && y < height) {
+								newFlags[y] = true;
+							}
+						}
+					}
+					if (needSeverity) {
+						byte[] built = new byte[height];
+						Arrays.fill(built, (byte) -1);
+						for (int line = 0; line < total; line++) {
+							byte stored = idx.levelByte(line);
+							int level = LogLevel.level(stored);
+							if (level >= LogLevel.WARN && level < LogLevel.COUNT && !LogLevel.isContinuation(stored)) {
+								int y = (int) ((long) line * height / total);
+								if (y < height && level > built[y]) {
+									built[y] = (byte) level;
+								}
+							}
+						}
+						newSeverity = built;
+					}
+				} catch (RuntimeException e) {
+					severityStale = true; // try again at the next painting
+				}
+				final byte[] readySeverity = newSeverity;
+				SwingUtilities.invokeLater(() -> {
+					marks = newMarks;
+					maxMark = peak[0];
+					flags = newFlags;
+					severity = readySeverity;
+					if (needSeverity) {
+						lastSeverityBuild = System.currentTimeMillis();
+					}
+					building = false;
+					repaint();
+				});
+			}, "LogSearch-map");
+			worker.setDaemon(true);
+			worker.start();
 		}
 
 		@Override
@@ -2008,8 +2237,8 @@ public class LogSearchFrame extends JFrame {
 			Color foreground = uiColor("List.foreground", Color.BLACK);
 			g.setColor(blend(background, foreground, 0.05));
 			g.fillRect(0, 0, getWidth(), getHeight());
-			if (needsRepaint() || severityStale) {
-				rebuild();
+			if (!building && (needsRepaint() || severityStale)) {
+				requestBuild();
 			}
 			for (int y = 0; y < severity.length; y++) {
 				if (severity[y] >= LogLevel.WARN && severity[y] < LogLevel.COUNT) {

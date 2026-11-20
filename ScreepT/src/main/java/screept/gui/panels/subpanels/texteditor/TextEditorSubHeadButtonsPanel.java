@@ -154,7 +154,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JButton btnSpeak;
 	public JButton btnOpenInScreepT;
 
-	public JButton btnTailMode;
+	public JToggleButton btnTailMode;
 	public JButton btnParseImageText;
 	public JButton btnParsePdfText;
 	public JButton btnFontChooser;
@@ -297,7 +297,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnViewInCmd = new ToolbarComponents.Button(EditorIcons.Kind.TERMINAL, TextEditTooltips.tooltipViewInCommandLine);
 		btnCopyPath = new ToolbarComponents.Button(EditorIcons.Kind.COPY, I18n.t("toolbar.copy_path_tip"));
 		btnPropertiesPanel = new ToolbarComponents.Button(EditorIcons.Kind.INFO, TextEditTooltips.tooltipViewPropertiesCurrFile);
-		addGroup(strip, btnViewInExplorer, btnViewInCmd, btnCopyPath, btnPropertiesPanel);
+		// TAIL (eye): follows the file as it grows, on/off for the current tab
+		btnTailMode = new ToolbarComponents.Toggle(EditorIcons.Kind.TAIL, TextEditTooltips.tooltipTailMode);
+		addGroup(strip, btnViewInExplorer, btnViewInCmd, btnCopyPath, btnPropertiesPanel, btnTailMode);
 
 		// TOOLS and VIEW menus
 		ToolbarComponents.MenuButton toolsMenu = new ToolbarComponents.MenuButton(EditorIcons.Kind.TOOLS, I18n.t("toolbar.tools"), I18n.t("toolbar.tools_tip"), this::buildToolsMenu);
@@ -316,7 +318,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnOpenInScreepT = menuOnlyButton(TextEditTooltips.tooltipOpenInScreept);
 		btnCalculator = menuOnlyButton(TextEditTooltips.tooltipBtnCalculator);
 		btnColorSampler = menuOnlyButton(TextEditTooltips.tooltipBtnColorSampler);
-		btnTailMode = menuOnlyButton(TextEditTooltips.tooltipTailMode);
 		btnFontChooser = menuOnlyButton(TextEditTooltips.tooltipFontChooser);
 		// font is chosen in Graphic preferences (Text editor section)
 
@@ -404,6 +405,14 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		}
 	}
 
+	/** Aligns the tail toggle with the tail mode of the current tab */
+	private void syncTailToggle() {
+		TabTextEditorObject obj = parent.getCurrentTabEditor().loadedTabObj;
+		if (obj != null) {
+			btnTailMode.setSelected(obj.getTailMode().get());
+		}
+	}
+
 	/** Button that is not in the toolbar row: it keeps its listeners (shortcuts, menu entries) */
 	private static JButton menuOnlyButton(String tooltip) {
 		JButton button = new JButton("");
@@ -461,7 +470,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		menu.add(buttonItem(EditorIcons.Kind.PDF, I18n.t("toolbar.pdf_to_text"), btnParsePdfText));
 		menu.add(buttonItem(EditorIcons.Kind.SPEAK, objSpeaker != null ? I18n.t("toolbar.stop_speaking") : I18n.t("toolbar.speak"), btnSpeak));
 		menu.addSeparator();
-		menu.add(buttonItem(EditorIcons.Kind.TAIL, I18n.t("toolbar.tail_mode"), btnTailMode));
 		menu.add(buttonItem(EditorIcons.Kind.LOCK, I18n.t("toolbar.crypted_workspace"), btnImpExpCryptedWorkspace));
 		menu.add(buttonItem(EditorIcons.Kind.SCREEPT, I18n.t("toolbar.open_in_screept"), btnOpenInScreepT));
 		return menu;
@@ -1150,7 +1158,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			});
 
 			parent.getCurrentTabEditor().updateSavedLabelNTab(null);
+			syncTailToggle(); // the change can be refused (cancelled, file missing)
 		});
+		// the toggle shows the tail state of the tab in front
+		SwingUtilities.invokeLater(() -> parent.getCurrentTabEditor().mainTabList.addChangeListener(e -> SwingUtilities.invokeLater(this::syncTailToggle)));
 
 		// FOREGROUND TEXT COLOR
 		btnImpExpCryptedWorkspace.addActionListener(new ActionListener() {

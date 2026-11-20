@@ -55,6 +55,41 @@ final class LogDates {
 		return era * 146097 + doe - 719468;
 	}
 
+	/**
+	 * Time of day of a log line in milliseconds (hh:mm:ss with optional fraction, looked for in the first 160 characters, whatever the
+	 * date format is), -1 when the line has none.
+	 */
+	static int timeOfDay(String line) {
+		int limit = Math.min(line.length(), 160) - 7;
+		for (int i = 0; i <= limit; i++) {
+			char c = line.charAt(i);
+			if (c < '0' || c > '9' || (i > 0 && Character.isDigit(line.charAt(i - 1)))) {
+				continue;
+			}
+			if (!Character.isDigit(line.charAt(i + 1)) || line.charAt(i + 2) != ':' || !Character.isDigit(line.charAt(i + 3))
+					|| !Character.isDigit(line.charAt(i + 4)) || line.charAt(i + 5) != ':' || !Character.isDigit(line.charAt(i + 6))
+					|| !Character.isDigit(line.charAt(i + 7))) {
+				continue;
+			}
+			int hour = (c - '0') * 10 + line.charAt(i + 1) - '0';
+			int minute = (line.charAt(i + 3) - '0') * 10 + line.charAt(i + 4) - '0';
+			int second = (line.charAt(i + 6) - '0') * 10 + line.charAt(i + 7) - '0';
+			if (hour > 23 || minute > 59 || second > 60) {
+				continue;
+			}
+			int millis = 0;
+			int at = i + 8;
+			if (at < line.length() && (line.charAt(at) == '.' || line.charAt(at) == ',')) {
+				int scale = 100;
+				for (at++; at < line.length() && scale > 0 && Character.isDigit(line.charAt(at)); at++, scale /= 10) {
+					millis += (line.charAt(at) - '0') * scale;
+				}
+			}
+			return ((hour * 60 + minute) * 60 + second) * 1000 + millis;
+		}
+		return -1;
+	}
+
 	static java.time.LocalDate toDate(int day) {
 		return java.time.LocalDate.ofEpochDay(day);
 	}

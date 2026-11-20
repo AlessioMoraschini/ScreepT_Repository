@@ -6,6 +6,28 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.86 - 2026-11-20
+> Search in files is much faster, with a speed selector, a results filter and lazy highlights; LogSearch can search only on demand; the interactive shell no longer glitches
+
+### New
+- Search in files: Speed combo (Gentle, Balanced, Fast, Maximum). The presets scale with the cores of the PC and the choice is remembered.
+- Search in files: a filter bar on the results (Ignore case, Whole word, Wildcard) with the count of lines and files.
+- Search in files: the files of the results open by themselves while you scroll and close when they go out of view; the ones opened or closed by hand stay as they are. Matches are highlighted.
+- Opacity slider (35% to 100%) in Search in files, Find and Replace.
+- LogSearch: "Search while typing" check box. When it is off, the search starts with the Search button or Enter; on a file over 5 GB a message offers to turn it off.
+- LogSearch: the date filter accepts a time too (dd/MM/yyyy hh:mm:ss.fff).
+- File editor toolbar: the eye follows the file as it grows, on or off for the current tab (it was in the Tools menu).
+
+### Improved
+- Search in files is several times faster: it reads big blocks with several threads, looks for the rarest bytes of the text first, decodes only the lines that match and skips binary files quickly. On a 2 GB set of files a search takes about 0.3 s (measured on the author's PC, files in the system cache).
+- LogSearch: the map on the right is computed in the background; the status bar shrinks with the window and the file details are more compact.
+- Interactive shell: the Interactive switch and the magnifier stay side by side on the left of the header.
+
+### Fixed
+- Interactive shell: switching Interactive on and off several times corrupted the panel (the terminal was left empty). It now works every time.
+- Search in files: the X of the progress bar could freeze the search; the progress is updated at most every 200 ms and a single message follows a stop.
+- Search in files: the dialog could be cut off at the edges of its window.
+
 ## 0.9.85 - 2026-11-18
 > Quick notes with tags, workspaces and export; the file tree filter and the notes search are pop-up bars with wildcards; the recent workspaces are one click away in the file tree
 

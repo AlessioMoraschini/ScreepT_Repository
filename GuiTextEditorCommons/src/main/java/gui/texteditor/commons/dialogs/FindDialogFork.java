@@ -103,6 +103,7 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 	 */
 	public FindDialogFork(Dialog owner, SearchListener listener) {
 		super(owner);
+		DialogOpacity.makeCapable(this);
 		init(listener);
 	}
 
@@ -115,6 +116,7 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 	 */
 	public FindDialogFork(Frame owner, SearchListener listener) {
 		super(owner);
+		DialogOpacity.makeCapable(this);
 		init(listener);
 		if(findTextCombo.getModel() instanceof RComboBoxModel<?>) {
 			((RComboBoxModel<?>) findTextCombo.getModel()).setMaxNumElements(GeneralConfig.MAX_SEARCH_DIAL_LIST_SIZE);
@@ -207,6 +209,7 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 		}
 		contentPane.add(leftPanel);
 		contentPane.add(rightPanel, BorderLayout.LINE_END);
+		contentPane.add(DialogOpacity.panel(this), BorderLayout.SOUTH);
 		temp = new ResizableFrameContentPane(new BorderLayout());
 		temp.add(contentPane, BorderLayout.NORTH);
 		setContentPane(temp);
@@ -313,6 +316,7 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 
 			checkComboWithText();
 			
+			DialogOpacity.prepareToShow(this);
 			super.setVisible(true);
 			focusFindTextField();
 
