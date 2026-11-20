@@ -38,6 +38,8 @@ import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.parser.Parser;
+import org.fife.com.swabunga.spell.engine.SpellDictionary;
+import org.fife.com.swabunga.spell.engine.SpellDictionaryHashMap;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 
 import gui.commons.utils.ImageWorkerExtended;
@@ -380,52 +382,100 @@ public class RsyntaxUtils {
 	}
 
 	// SPELL CHECKER FUNCTIONS
-	public static SpellingParser createSpellingParser(String dictionaryPath) throws IOException {
+	private static final java.util.Map<String, SpellDictionary> SPELL_DICT_CACHE = new java.util.HashMap<String, SpellDictionary>();
 
-		String originalDict = new String(dictionaryPath);
-
-		if (!new File(dictionaryPath).exists()) {
-			dictionaryPath = GeneralConfig.SPELLCHECKER_DICT_FOLDER + GeneralConfig.SPELLCHECKER_DEFAULT_DICT;
+	/** Loads (once, then cached) the dictionary: .zip = English (Jazzy), anything else = plain UTF-8 word list. */
+	private static synchronized SpellDictionary loadSpellDictionary(String dictionaryPath) throws IOException {
+		File file = new File(dictionaryPath);
+		if (!file.isFile()) {
+			file = new File(GeneralConfig.SPELLCHECKER_DICT_FOLDER + GeneralConfig.SPELLCHECKER_DEFAULT_DICT);
+		}
+		String key = file.getAbsolutePath();
+		SpellDictionary dict = SPELL_DICT_CACHE.get(key);
+		if (dict != null) {
+			return dict;
 		}
 
-		if (!dictionaryPath.equals(GeneralConfig.SPELLCHECKER_DICT_FOLDER + GeneralConfig.SPELLCHECKER_DEFAULT_DICT)) {
-			dictionaryPath = GeneralConfig.SPELLCHECKER_DICT_FOLDER + GeneralConfig.SPELLCHECKER_DEFAULT_DICT;
-		}
-
-		File zip = new File(dictionaryPath);
-		SpellingParser parser = SpellingParser.createEnglishSpellingParser(zip, true);
-
-		if (!originalDict.equals(GeneralConfig.SPELLCHECKER_DICT_FOLDER + GeneralConfig.SPELLCHECKER_DEFAULT_DICT)) {
-			parser.setUserDictionary(new File(originalDict));
+		if (file.getName().toLowerCase().endsWith(".zip")) {
+			try (java.util.zip.ZipFile zip = new java.util.zip.ZipFile(file)) {
+				SpellDictionaryHashMap map = null;
+				for (String entryName : new String[] { "eng_com.dic", "color.dic" }) {
+					java.util.zip.ZipEntry entry = zip.getEntry(entryName);
+					if (entry == null) {
+						continue;
+					}
+					try (java.io.Reader r = new java.io.InputStreamReader(zip.getInputStream(entry), "UTF-8")) {
+						if (map == null) {
+							map = new SpellDictionaryHashMap(r);
+						} else {
+							map.addDictionary(r);
+						}
+					}
+				}
+				if (map == null) {
+					throw new IOException("No dictionary found in " + file);
+				}
+				dict = map;
+			}
 		} else {
-			File userDict = checkUserDirExistance();
-
-			parser.setUserDictionary(userDict);
-			logger.info("User dictionary: " + userDict.getAbsolutePath());
+			try (java.io.Reader r = new java.io.InputStreamReader(new java.io.FileInputStream(file), "UTF-8")) {
+				dict = new SpellDictionaryHashMap(r);
+			}
 		}
+
+		// Only one dictionary stays in RAM (dictionaries must stay within ~2% of the allocated heap)
+		SPELL_DICT_CACHE.clear();
+		SPELL_DICT_CACHE.put(key, dict);
+		return dict;
+	}
+
+	public static SpellingParser createSpellingParser(String dictionaryPath, RSyntaxTextArea textArea) throws IOException {
+
+		SpellingParser parser = new ViewportSpellingParser(loadSpellDictionary(dictionaryPath), textArea);
+
+		File userDict = checkUserDirExistance();
+		parser.setUserDictionary(userDict);
+		logger.info("User dictionary: " + userDict.getAbsolutePath());
 
 		parser.setSquiggleUnderlineColor(spellCheckerUnderlineCol);
 
 		return parser;
 	}
 
-	public static SpellingParser createNapplySpellingParser(String dictionaryPath, RSyntaxTextArea textArea) throws IOException {
+	/** Loads the dictionary off the EDT, then adds the parser on the EDT if {@code stillValid} still holds. */
+	public static void createNapplySpellingParserAsync(String dictionaryPath, RSyntaxTextArea textArea,
+			java.util.function.BooleanSupplier stillValid, java.util.function.Consumer<SpellingParser> onApplied) {
 
-		SpellingParser parser = createSpellingParser(dictionaryPath);
+		Thread t = new Thread(() -> {
+			try {
+				SpellingParser parser = createSpellingParser(dictionaryPath, textArea);
+				SwingUtilities.invokeLater(() -> {
+					if (stillValid.getAsBoolean()) {
+						((ViewportSpellingParser) parser).attach();
+						textArea.addParser(parser);
+						onApplied.accept(parser);
+						logger.info(dictionaryPath + " -> Parser Applied! ");
+					}
+				});
+			} catch (Exception e) {
+				logger.error("Error creating spellchecker parser: ", e);
+			}
+		}, "SpellChecker-loader");
+		t.setDaemon(true);
+		t.start();
+	}
 
-		if (parser != null) {
-			SwingUtilities.invokeLater(() -> {
-				textArea.addParser(parser);
-				logger.info(dictionaryPath + " -> Parser Applied! ");
-			});
-		}
-
-		return parser;
+	public static String getDictionaryLanguage(File dict) {
+		String n = dict.getName();
+		int dot = n.lastIndexOf('.');
+		n = dot > 0 ? n.substring(0, dot) : n;
+		n = n.replace("_dic", "").replace('_', ' ').trim();
+		return n.isEmpty() ? dict.getName() : Character.toUpperCase(n.charAt(0)) + n.substring(1);
 	}
 
 	public static void applySpellingParser(String dictionaryPath, RSyntaxTextArea textArea) throws IOException {
 
-		SpellingParser parser = createSpellingParser(dictionaryPath);
+		SpellingParser parser = createSpellingParser(dictionaryPath, textArea);
 		if (parser != null) {
 			SwingUtilities.invokeLater(() -> {
 				textArea.addParser(parser);

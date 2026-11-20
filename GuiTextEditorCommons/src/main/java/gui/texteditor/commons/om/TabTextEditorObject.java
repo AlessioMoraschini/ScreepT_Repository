@@ -73,6 +73,7 @@ import gui.texteditor.commons.TextEditTooltips;
 import gui.texteditor.commons.tabbededitor.IChangeMonManager;
 import gui.texteditor.commons.tabbededitor.ITabsManager;
 import gui.texteditor.commons.utils.RsyntaxUtils;
+import gui.texteditor.commons.utils.ViewportSpellingParser;
 import initializer.configs.impl.INItializer;
 import initializer.configs.impl.om.TextEditorOption;
 import os.commons.utils.SysUtils;
@@ -321,25 +322,27 @@ public class TabTextEditorObject {
 		}
 	}
 
-	public void updateSpellCheckerParser(String newDictionaryPath, boolean forceReload) {
-		RsyntaxUtils.removeAllParsers(textArea);
-		try {
-			if (forceReload || lastLazyInitParser == null || !lastLazyInitParserDict.equals(newDictionaryPath)) {
-				try {
-					currentParser = RsyntaxUtils.createNapplySpellingParser(newDictionaryPath, textArea);
-				} catch (IOException e) {
-					logger.error("Error refreshing current spellChecker parser: ", e);
-				}
-			}else {
-				try {
-					RsyntaxUtils.applySpellingParser((SpellingParser)lastLazyInitParser, textArea);
-				} catch (IOException e) {
-					logger.error("Error refreshing current lazyInitialized spellChecker parser: ", e);
-				}
-			}
-		} catch (Exception e) {
-		}
+	private int spellRequestId = 0;
 
+	public void updateSpellCheckerParser(String newDictionaryPath, boolean forceReload) {
+		detachSpellParser();
+		RsyntaxUtils.removeAllParsers(textArea);
+		final int id = ++spellRequestId;
+		lastLazyInitParserDict = newDictionaryPath;
+		RsyntaxUtils.createNapplySpellingParserAsync(newDictionaryPath, textArea, () -> id == spellRequestId, p -> currentParser = p);
+	}
+
+	public void disableSpellChecker() {
+		spellRequestId++;
+		detachSpellParser();
+		RsyntaxUtils.removeAllParsers(textArea);
+	}
+
+	private void detachSpellParser() {
+		if (currentParser instanceof ViewportSpellingParser) {
+			((ViewportSpellingParser) currentParser).detach();
+		}
+		currentParser = null;
 	}
 
 	public boolean storeSelectionDto(boolean onlyCaretPsition) {

@@ -76,6 +76,7 @@ import gui.texteditor.commons.om.TabTextEditorObject;
 import gui.texteditor.commons.om.themes.Themes;
 import gui.texteditor.commons.om.themes.ThemesWrapper;
 import gui.texteditor.commons.utils.RsyntaxUtils;
+import various.common.light.files.om.FileNamed;
 import gui.texteditor.commons.utils.panels.arch.PanelType;
 import initializer.configs.impl.INItializer;
 import initializer.configs.impl.om.TextEditorOption;
@@ -702,9 +703,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							currentConfiguration.getTextEditorOpt().spellChecker = true;
 							currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "spellChecker", true);
 							toggleButtonSpellCheck.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
+							showSpellCheckerLanguageMenu();
 
 						} else {
-							RsyntaxUtils.removeAllParsers(loadedTabObj.textArea);
+							loadedTabObj.disableSpellChecker();
 							currentConfiguration.getTextEditorOpt().spellChecker = false;
 							currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "spellChecker", false);
 							toggleButtonSpellCheck.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
@@ -1796,4 +1798,30 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		return (SupportedFileTextEditor)comboFileFormat.getSelectedItem();
 	}
 
+	/** Pop-up with the available spellchecker languages, shown right after enabling the spellchecker. */
+	private void showSpellCheckerLanguageMenu() {
+		FileNamed[] dicts = RsyntaxUtils.getSpellCheckerDIctionaries();
+		if (dicts == null || dicts.length < 2) {
+			return;
+		}
+
+		String current = new File(currentConfiguration.getTextEditorOpt().prefDictspellChecker).getAbsolutePath();
+		JPopupMenu menu = new JPopupMenu();
+		ButtonGroup group = new ButtonGroup();
+
+		for (FileNamed dict : dicts) {
+			JRadioButtonMenuItem item = new JRadioButtonMenuItem(RsyntaxUtils.getDictionaryLanguage(dict.mFile));
+			item.setSelected(dict.mFile.getAbsolutePath().equals(current));
+			item.addActionListener(ev -> {
+				String path = GeneralConfig.SPELLCHECKER_DICT_FOLDER + dict.mFile.getName();
+				currentConfiguration.getTextEditorOpt().prefDictspellChecker = path;
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "prefDictspellChecker", path);
+				parent.getCurrentTabEditor().loadedTabObj.updateSpellCheckerParser(path, true);
+			});
+			group.add(item);
+			menu.add(item);
+		}
+
+		menu.show(toggleButtonSpellCheck, 0, toggleButtonSpellCheck.getHeight());
+	}
 }
