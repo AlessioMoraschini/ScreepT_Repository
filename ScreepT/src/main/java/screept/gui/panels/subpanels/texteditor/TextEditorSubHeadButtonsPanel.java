@@ -407,7 +407,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	}
 
 	/** Aligns the tail toggle with the tail mode of the current tab */
-	private void syncTailToggle() {
+	public void syncTailToggle() {
 		TabTextEditorObject obj = parent.getCurrentTabEditor().loadedTabObj;
 		if (obj != null) {
 			btnTailMode.setSelected(obj.getTailMode().get());

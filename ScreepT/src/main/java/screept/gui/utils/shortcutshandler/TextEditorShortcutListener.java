@@ -28,6 +28,7 @@ import gui.commons.dialogutils.GenericFileChooserDialog;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.texteditor.commons.TextEditTooltips;
 import gui.texteditor.commons.tabbededitor.CustomTabbedEditor;
+import gui.texteditor.commons.om.TabTextEditorObject;
 import maingUI.MainGUI;
 import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
@@ -54,7 +55,10 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	public AtomicBoolean flagHoverBtnBase64 = new AtomicBoolean(false);
 
 	private TextEditor currentTextEditor;
-	private CustomTabbedEditor currentTabEditor;
+	/** The panel of the editor that has the commands (a second panel can be open beside the first) */
+	private CustomTabbedEditor currentTabEditor() {
+		return currentTextEditor.getCurrentTabEditor();
+	}
 	private TextEditorSubHeadButtonsPanel subHeaderPanel;
 
 	private ShortcutsEnabler enabler;
@@ -71,11 +75,27 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	public TextEditorShortcutListener(TextEditor currentTextEdit) {
 		this.currentTextEditor = currentTextEdit;
 		this.subHeaderPanel = currentTextEditor.subHeaderPanel;
-		this.currentTabEditor = currentTextEditor.getCurrentTabEditor();
+		// the window lost the focus (Alt+Tab...): the release of the keys is never seen, nothing must stay "pressed"
+		java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("activeWindow", ev -> {
+			flagCtrlDown.set(false);
+			flagAltDown.set(false);
+			flagShiftDown.set(false);
+			resetAltCursor();
+		});
 	}
 
 	@Override
 	  public boolean dispatchKeyEvent(final KeyEvent e) {
+
+		// whatever the state of the shortcuts, a released key must never leave the editor in a "pressed" mode (cross cursor, scroll...)
+		if (e.getID() == KeyEvent.KEY_RELEASED) {
+			flagCtrlDown.set(ShortcutKeys.isCtrlDown(e));
+			flagAltDown.set(e.isAltDown());
+			flagShiftDown.set(e.isShiftDown());
+			if (!e.isAltDown()) {
+				resetAltCursor();
+			}
+		}
 
 		// a terminal with the focus owns the keyboard: no shortcut of the other panels
 		if(ShortcutKeys.isFocusOwnerCapturingKeys()) {
@@ -106,20 +126,20 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 
 				// SCROLL UP -> Ctrl + arrow up
 				if (e.getKeyCode()==38 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {
-					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, - GeneralConfig.KEY_SCROLL_SPEED, true);
+					GuiUtils.scrollJscrollPane(currentTabEditor().loadedTabObj.currentScrollPane, - GeneralConfig.KEY_SCROLL_SPEED, true);
 				}
 				// SCROLL DOWN -> Ctrl + arrow down
 				if (e.getKeyCode()==40 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {
-					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, GeneralConfig.KEY_SCROLL_SPEED, true);
+					GuiUtils.scrollJscrollPane(currentTabEditor().loadedTabObj.currentScrollPane, GeneralConfig.KEY_SCROLL_SPEED, true);
 				}
 
 				// SCROLL RIGHT -> Ctrl + Alt + arrow right
 				if (e.getKeyCode()==39 && e.isAltDown() && ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {
-					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, 2*GeneralConfig.KEY_SCROLL_SPEED, false);
+					GuiUtils.scrollJscrollPane(currentTabEditor().loadedTabObj.currentScrollPane, 2*GeneralConfig.KEY_SCROLL_SPEED, false);
 				}
 				// SCROLL LEFT -> Ctrl + Alt + arrow left
 				if (e.getKeyCode()==37 && e.isAltDown() && ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {
-					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, - 2*GeneralConfig.KEY_SCROLL_SPEED, false);
+					GuiUtils.scrollJscrollPane(currentTabEditor().loadedTabObj.currentScrollPane, - 2*GeneralConfig.KEY_SCROLL_SPEED, false);
 				}
 
 				/*
@@ -131,8 +151,8 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 
 						if (e.isAltDown()) {
 							for (int i = 0; i < 5; i++) {
-								if (currentTabEditor.loadedTabObj.textArea.canUndo()) {
-									currentTabEditor.loadedTabObj.textArea.undoLastAction();
+								if (currentTabEditor().loadedTabObj.textArea.canUndo()) {
+									currentTabEditor().loadedTabObj.textArea.undoLastAction();
 								}
 							}
 						} else {
@@ -151,8 +171,8 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					try {
 						if (e.isAltDown()) {
 							for (int i = 0; i < 5; i++) {
-								if (currentTabEditor.loadedTabObj.textArea.canRedo()) {
-									currentTabEditor.loadedTabObj.textArea.redoLastAction();
+								if (currentTabEditor().loadedTabObj.textArea.canRedo()) {
+									currentTabEditor().loadedTabObj.textArea.redoLastAction();
 								}
 							}
 						} else {
@@ -230,28 +250,28 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 *  RELOAD FROM DISK -> CTRL+Shift+R
 				 */
 				//case Ctrl+shift+R -> reload current file from Disk
-				else if (!currentTabEditor.alreadySaving && e.getKeyCode() == 82 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e)
+				else if (!currentTabEditor().alreadySaving && e.getKeyCode() == 82 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e)
 						&& e.isShiftDown()) {
 					subHeaderPanel.btnReloadFromDisk.doClick();
 				}
 				/*
 				 *  SAVE FILE AS NEW -> CTRL+Shift+S
 				 */
-				else if (!currentTabEditor.alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e)
+				else if (!currentTabEditor().alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e)
 						&& e.isShiftDown()) {
 					subHeaderPanel.btnSaveTextFileAs.doClick();
 				}
 				/*
 				 *  SAVE FILE -> CTRL+S
 				 */
-				else if (!currentTabEditor.alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e)
+				else if (!currentTabEditor().alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e)
 						&& !e.isShiftDown()) {
 					subHeaderPanel.btnSaveTextFile.doClick();
 				}
 				/*
 				 *  LOAD FILE -> CTRL+O
 				 */
-				else if (!currentTabEditor.alreadyLoading && e.getKeyCode() == 79 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e)
+				else if (!currentTabEditor().alreadyLoading && e.getKeyCode() == 79 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e)
 						&& !e.isShiftDown()) {
 					subHeaderPanel.btnLoadTextFile.doClick();
 				}
@@ -508,28 +528,28 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 * 	NEXT TAB -> CTRL+TAB
 				 */
 				else if (e.getKeyCode() == 9 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {
-					currentTabEditor.goToNextTab();
+					currentTabEditor().goToNextTab();
 				}
 
 				/*
 				 * 	PREVIOUS TAB -> CTRL+Shift+TAB
 				 */
 				else if (e.getKeyCode() == 9 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e) && e.isShiftDown()) {
-					currentTabEditor.goToPreviousTab();
+					currentTabEditor().goToPreviousTab();
 				}
 				/*
 				 * 	NEW TAB -> CTRL+N
 				 */
 				else if (e.getKeyCode() == 78 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {
 					if (!currentTextEditor.leftFileTree.hasFocus()) {
-						currentTabEditor.addTab(null);
+						currentTabEditor().addTab(null);
 					}
 				}
 				/*
 				 * 	CLOSE CURRENT TAB -> CTRL+W
 				 */
 				else if (e.getKeyCode() == 87 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {
-					currentTabEditor.closeCurrentTab();
+					currentTabEditor().closeCurrentTab();
 				}
 				/*
 				 * 	CLOSE ALL TABS -> CTRL+ALT+SHIFT+ [-]
@@ -749,6 +769,21 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 
 	}
 
+	/** Gives back the text cursor to every text area left with the cross of the rectangular selection (tab changed or window left while Alt was down) */
+	private void resetAltCursor() {
+		try {
+			for (CustomTabbedEditor panel : currentTextEditor.tabbedEditorsList) {
+				for (TabTextEditorObject tab : panel.loadedList.getList()) {
+					if (tab.textArea != null && tab.textArea.getCursor().getType() == java.awt.Cursor.CROSSHAIR_CURSOR) {
+						tab.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.debug("Cannot reset the cursor of the text areas", e);
+		}
+	}
+
 	private void updateCtrlAltShiftPressed(final KeyEvent e) {
 
 		/*
@@ -766,9 +801,9 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		if (e.isAltDown()) {
 			flagAltDown.set(true);
 			if (!ShortcutKeys.isCtrlDown(e) && !e.isShiftDown()) {
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_CROSS);
+				currentTabEditor().loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_CROSS);
 			}else {
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
+				currentTabEditor().loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 			}
 		}else {
 			flagAltDown.set(false);
@@ -804,7 +839,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 			flagAltDown.set(true);
 		}else {
 			flagAltDown.set(false);
-			currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
+			currentTabEditor().loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 		}
 
 		/*

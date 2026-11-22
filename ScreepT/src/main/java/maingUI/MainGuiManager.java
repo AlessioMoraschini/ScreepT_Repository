@@ -381,12 +381,19 @@ public class MainGuiManager {
 
 			// save list of non null and existing files in tabs
 			currentConfiguration.getTextEditorOpt().getOpenedFileList().clear();
-			for (TabTextEditorObject currentObj : currentTabEditor.loadedList.getList()) {
-				if (currentObj.loadedFile != null && currentObj.loadedFile.exists()) {
-					currentConfiguration.getTextEditorOpt().getOpenedFileList()
-							.add(currentObj.loadedFile.getAbsolutePath());
+			// the files of the first panel, and apart the ones of the second panel (empty = only one panel)
+			java.util.ArrayList<String> secondPanelFiles = new java.util.ArrayList<String>();
+			for (int panelIndex = 0; panelIndex < initTxtWriter.tabbedEditorsList.size(); panelIndex++) {
+				for (TabTextEditorObject currentObj : initTxtWriter.tabbedEditorsList.get(panelIndex).loadedList.getList()) {
+					if (currentObj.loadedFile != null && currentObj.loadedFile.exists()) {
+						(panelIndex == 0 ? currentConfiguration.getTextEditorOpt().getOpenedFileList() : secondPanelFiles)
+								.add(currentObj.loadedFile.getAbsolutePath());
+					}
 				}
 			}
+			currentConfiguration.getTextEditorOpt().setSecondPanelFileList(secondPanelFiles);
+			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "secondPanelFilesAtStart",
+					currentConfiguration.listToString(secondPanelFiles));
 			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "loadedFilesAtStart",
 					currentConfiguration.listToString(currentConfiguration.getTextEditorOpt().getOpenedFileList()));
 

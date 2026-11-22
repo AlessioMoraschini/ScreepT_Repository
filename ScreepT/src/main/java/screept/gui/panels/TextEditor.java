@@ -189,6 +189,8 @@ public class TextEditor extends ModulePanel {
 	public TreeFileMouseListenerTxtEditor mouseListenerTreeFilePanel;
 
 	public ArrayList<CustomTabbedEditor> tabbedEditorsList;
+	/** Holds the tabs and, when the user drags a tab to the right, a second panel beside them */
+	public screept.gui.utils.texteditor.TabSplitManager tabSplit;
 	public int currentTabbedEditorSelected = 0;
 
 	public boolean isPreloading = false;
@@ -269,6 +271,7 @@ public class TextEditor extends ModulePanel {
 		tabbedEditorsList = new ArrayList<CustomTabbedEditor>();
 		CustomTabbedEditor initialTabbedEditor = new CustomTabbedEditor(this, currentConfiguration, new TabbedEditorOwnerScreepT(this));
 		tabbedEditorsList.add(initialTabbedEditor);
+		tabSplit = new screept.gui.utils.texteditor.TabSplitManager(this, initialTabbedEditor);
 
 		getCurrentTabEditor().applyStyleToTabs();
 		getCurrentTabEditor().mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -447,7 +450,7 @@ public class TextEditor extends ModulePanel {
 
 		// Sub-Parent container split components
 		splitPaneTreetabsAndRightToggle.setRightComponent(rightModuleScrollPane);
-		splitPaneTreetabsAndRightToggle.setLeftComponent(getCurrentTabEditor().mainTabList);
+		splitPaneTreetabsAndRightToggle.setLeftComponent(tabSplit.getComponent());
 //		splitPaneTreetabsAndRightToggle.setLeftComponent(splitPaneVerticalAllAndBottomToggle);
 		splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth()-100);
 		splitPaneTreetabsAndRightToggle.setBorder(BorderFactory.createEmptyBorder());
@@ -1354,6 +1357,9 @@ public class TextEditor extends ModulePanel {
 			} catch (Exception e) {
 				logger.warn("Cannot select default file " + toOpenAtStart, e);
 			}
+
+			// the second panel, if there was one, with its own files
+			tabSplit.restoreSecondPanel(currentConfiguration.getTextEditorOpt().getSecondPanelFileList(), currentConfiguration.getTextEditorOpt().getViewerTabList());
 		} else if(currentConfiguration.getTextEditorOpt().firstTimeOpened){
 
 			currentTabbedEditor.loadedTabObj.textArea.setText(" Welcome to ScreepT's File Editor!\n\n\n"

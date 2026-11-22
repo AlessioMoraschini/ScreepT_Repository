@@ -6,6 +6,20 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.89 - 2026-11-22
+> Second panel in the file editor (drag a tab to the right), pinned tabs in their own row, viewer icons on tabs, Esc cancels the close question
+
+### New
+- File editor: drag a tab onto the right part of the text and it opens in a second panel beside the first one; the area where it would land lights up while you drag, the move cursor shows during the drag and Esc cancels it. With two panels, drag a tab onto the other one to move it. Toolbar, shortcuts, file tree and mouse wheel follow the panel you click, and at the next start both panels come back with their own files.
+- File editor: pinned tabs have their own row above the other tabs, with the same pin, menu, drag and mouse wheel as the tabs; the Various menu is now called Tools.
+- Tabs of viewers (image studio, LogSearch, HTML, Markdown, PDF) show the icon of their viewer.
+
+### Improved
+- Escape or the X on the "save the changes?" question now cancels it (before it closed the tab without saving).
+
+### Fixed
+- The cross cursor of the rectangular selection and the scroll mode could stay active after releasing Alt or the scroll keys (also after leaving the window with Alt+Tab).
+
 ## 0.9.88 - 2026-11-20
 > Crypter with authenticated AES-256/128-GCM, combinable layers and key image as second key; faster spell checker with language menu
 

@@ -39,6 +39,32 @@ public interface ITabbedEditorOwner {
 	default void onTabSelected(gui.texteditor.commons.om.TabTextEditorObject tab) {
 	}
 
+	/** All the tab editors of the window (a second panel can be open beside the first): null = only this one */
+	default java.util.List<CustomTabbedEditor> getAllEditors() {
+		return null;
+	}
+
+	/**
+	 * A tab is being dragged and the pointer is over the content area (not the tab strip): the owner can show where the tab
+	 * would land. Returns true if a drop here would be handled by the owner (then the editor shows no reorder mark).
+	 */
+	default boolean onTabDrag(CustomTabbedEditor source, int tabIndex, java.awt.Point screenPoint) {
+		return false;
+	}
+
+	/** The tab was released over the content area: true if the owner moved it elsewhere */
+	default boolean onTabDrop(CustomTabbedEditor source, int tabIndex, java.awt.Point screenPoint) {
+		return false;
+	}
+
+	/** The drag of a tab ended (dropped, released or cancelled): the owner clears what it showed */
+	default void onTabDragEnd() {
+	}
+
+	/** The last tab of the editor was closed (it stays as an empty tab): the owner may close the panel */
+	default void onLastTabClosed(CustomTabbedEditor editor) {
+	}
+
 	/**
 	 * Added method after refresh of tab (switching)
 	 */

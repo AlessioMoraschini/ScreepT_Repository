@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -112,6 +113,9 @@ public class CustomTabbedEditor implements ITabsManager {
 
 	/* THIS IS THE MAIN COMPONENT CONTAINING TABS */
 	public JTabbedPane mainTabList;
+	/* THE COMPONENT TO PLACE IN THE WINDOW: THE ROW OF THE PINNED TABS ABOVE mainTabList */
+	private JPanel tabsHolder;
+	private PinnedTabStrip pinnedStrip;
 
 	/* THEESE ARE THE LOADED TABS, AND A REFERENCE TO THE CURRENT SELECTED */
 	public LimitedConcurrentList<HistoryNode> navigationHistory;
@@ -160,6 +164,11 @@ public class CustomTabbedEditor implements ITabsManager {
 			}
 		};
 		fileDrop = new FileDrop(mainTabList, (files)->{SwingUtilities.invokeLater(()->{this.loadFiles(files);});});
+		pinnedStrip = new PinnedTabStrip(this);
+		tabsHolder = new JPanel(new java.awt.BorderLayout());
+		tabsHolder.setOpaque(false);
+		tabsHolder.add(pinnedStrip, java.awt.BorderLayout.NORTH);
+		tabsHolder.add(mainTabList, java.awt.BorderLayout.CENTER);
 
 		mainTabList.addMouseWheelListener(new TabbedPaneMouseWheelListener());
 		mainTabList.setBorder(new EmptyBorder(0,0,0,0));
@@ -216,6 +225,11 @@ public class CustomTabbedEditor implements ITabsManager {
 		});
 	}
 
+	/** What goes in the window: the tabs with the row of the pinned ones above them */
+	public JComponent getTabsComponent() {
+		return tabsHolder;
+	}
+
 	// TABBED PAIN - RELATED FUNCTIONS
 
 	public TabTextEditorObject getTabObjByIndex(Integer index) {
@@ -243,6 +257,15 @@ public class CustomTabbedEditor implements ITabsManager {
 		try {
 			JLabel tabHeadIcon = (JLabel) (getPanelFromTabHeader(index)).getComponent(TabUtils.TAB_ICON_ORDER);
 			TabTextEditorObject indexTabObj = getTabObjByIndex(index);
+
+			// a viewer tab shows the icon of its viewer (the unsaved mark stays)
+			if (indexTabObj.viewerId != null && !indexTabObj.unsaved && !iconPath.equals(IconsPathConfigurator.ICON_DOC_UNSAVED)) {
+				javax.swing.Icon viewerIcon = gui.commons.tabs.ViewerIcons.forViewer(indexTabObj.viewerId);
+				if (viewerIcon != null) {
+					tabHeadIcon.setIcon(viewerIcon);
+					return true;
+				}
+			}
 
 			if (indexTabObj.loadedFile == null
 					|| indexTabObj.unsaved
@@ -276,6 +299,10 @@ public class CustomTabbedEditor implements ITabsManager {
 
 		try {
 			JLabel tabHeadIcon = (JLabel) (getPanelFromTabHeader(index)).getComponent(TabUtils.TAB_ICON_ORDER);
+			TabTextEditorObject tab = getTabObjByIndex(index);
+			if (tab != null && tab.viewerId != null && gui.commons.tabs.ViewerIcons.forViewer(tab.viewerId) != null) {
+				return true; // the tab of a viewer keeps the icon of its viewer
+			}
 			tabHeadIcon.setIcon(icon);
 			return true;
 		} catch (Exception e) {
@@ -876,6 +903,7 @@ public class CustomTabbedEditor implements ITabsManager {
 							@Override
 							public void run() {
 								resetTabHeaderString(0);
+								tabEditorManager.onLastTabClosed(CustomTabbedEditor.this);
 							}
 						});
 					}
@@ -1049,8 +1077,8 @@ public class CustomTabbedEditor implements ITabsManager {
 	/** Pointer movement (in pixels) before a press on a tab header becomes a drag */
 	private static final int DRAG_THRESHOLD = 6;
 	/** Tab being dragged and slot where it would be dropped (-1 = no drag in progress) */
-	private int dragFromIndex = -1;
-	private int dragDropIndex = -1;
+	int dragFromIndex = -1;
+	int dragDropIndex = -1;
 
 	/** Number of pinned tabs: they are always the first ones */
 	public int getPinnedCount() {
@@ -1109,6 +1137,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 		mainTabList.revalidate();
 		mainTabList.repaint();
+		pinnedStrip.refresh();
 		if (loadedTabObj != null && loadedTabObj.textArea != null) {
 			final JTextArea toFocus = loadedTabObj.textArea;
 			SwingUtilities.invokeLater(() -> GuiUtils.giveFocusToComponent(toFocus));
@@ -1176,9 +1205,11 @@ public class CustomTabbedEditor implements ITabsManager {
 	public void persistPinnedTabs() {
 		try {
 			java.util.ArrayList<String> pinnedPaths = new java.util.ArrayList<String>();
-			for (TabTextEditorObject tab : loadedList.getList()) {
-				if (tab != null && tab.pinned && tab.loadedFile != null && tab.loadedFile.exists()) {
-					pinnedPaths.add(tab.loadedFile.getAbsolutePath());
+			for (CustomTabbedEditor editor : allEditors()) {
+				for (TabTextEditorObject tab : editor.loadedList.getList()) {
+					if (tab != null && tab.pinned && tab.loadedFile != null && tab.loadedFile.exists()) {
+						pinnedPaths.add(tab.loadedFile.getAbsolutePath());
+					}
 				}
 			}
 			currentConfiguration.getTextEditorOpt().setPinnedFileList(pinnedPaths);
@@ -1207,13 +1238,30 @@ public class CustomTabbedEditor implements ITabsManager {
 		}
 	}
 
+	/** The editors whose tabs are saved together (with a second panel open, both panels) */
+	private java.util.List<CustomTabbedEditor> allEditors() {
+		java.util.List<CustomTabbedEditor> all = tabEditorManager.getAllEditors();
+		return all != null && !all.isEmpty() ? all : java.util.Collections.singletonList(this);
+	}
+
+	/** Screen bounds of the content of the selected tab (below the tab strip), null if not showing: where a dragged tab can be dropped */
+	public java.awt.Rectangle getContentScreenBounds() {
+		Component selected = mainTabList.getSelectedComponent();
+		if (selected == null || !selected.isShowing()) {
+			return null;
+		}
+		return new java.awt.Rectangle(selected.getLocationOnScreen(), selected.getSize());
+	}
+
 	/** Writes in the configuration "id|path" of the tabs hosting a viewer, so they come back as viewer tabs at the next start */
 	public void persistViewerTabs() {
 		try {
 			java.util.ArrayList<String> entries = new java.util.ArrayList<String>();
-			for (TabTextEditorObject tab : loadedList.getList()) {
-				if (tab != null && tab.viewerId != null && tab.loadedFile != null && tab.loadedFile.exists()) {
-					entries.add(tab.viewerId + "|" + tab.loadedFile.getAbsolutePath());
+			for (CustomTabbedEditor editor : allEditors()) {
+				for (TabTextEditorObject tab : editor.loadedList.getList()) {
+					if (tab != null && tab.viewerId != null && tab.loadedFile != null && tab.loadedFile.exists()) {
+						entries.add(tab.viewerId + "|" + tab.loadedFile.getAbsolutePath());
+					}
 				}
 			}
 			currentConfiguration.getTextEditorOpt().setViewerTabList(entries);
@@ -1251,6 +1299,9 @@ public class CustomTabbedEditor implements ITabsManager {
 		if (header instanceof gui.commons.tabbedpaneutils.TabHeadPanel_Full) {
 			((gui.commons.tabbedpaneutils.TabHeadPanel_Full) header).setPinned(tab.pinned, () -> unpinTab(geIndexOfTabObj(tab)));
 		}
+		// a pinned tab has no width in the tabbed pane: it is shown in the strip above
+		mainTabList.revalidate();
+		pinnedStrip.refresh();
 	}
 
 	private javax.swing.JPopupMenu buildTabPopup(final JScrollPane component) {
@@ -1268,10 +1319,21 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 
 	/** Right click (pin / unpin), Shift+click (close) and drag and drop (reorder) on the header of a tab */
-	private void installPinAndReorder(final JPanel header, final JScrollPane component) {
+	private void installPinAndReorder(final JComponent header, final JScrollPane component) {
 		MouseAdapter handler = new MouseAdapter() {
 			private Point pressPoint;
 			private boolean dragging;
+			/** The pointer is over the content area and the owner shows where the tab would land there (e.g. a second panel) */
+			private boolean ownerZone;
+			private boolean cancelled;
+			private java.awt.KeyEventDispatcher escapeKey;
+
+			private void stopEscapeListener() {
+				if (escapeKey != null) {
+					java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(escapeKey);
+					escapeKey = null;
+				}
+			}
 
 			private void maybePopup(MouseEvent e) {
 				if (e.isPopupTrigger()) {
@@ -1327,14 +1389,48 @@ public class CustomTabbedEditor implements ITabsManager {
 					dragging = true;
 					dragFromIndex = mainTabList.indexOfComponent(component);
 					header.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
+					beginMoveCursor(header);
+					cancelled = false;
+					// Esc cancels the drag: nothing moves
+					escapeKey = ev -> {
+						if (ev.getID() == java.awt.event.KeyEvent.KEY_PRESSED && ev.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
+							cancelled = true;
+							endMoveCursor();
+							ownerZone = false;
+							dragDropIndex = -1;
+							tabEditorManager.onTabDragEnd();
+							mainTabList.repaint();
+							pinnedStrip.repaint();
+							return true;
+						}
+						return false;
+					};
+					java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(escapeKey);
 				}
-				int target = nearestTabIndex(p);
+				if (cancelled) {
+					return;
+				}
+				// over the content area the owner can offer other destinations (a second panel) instead of the reorder
+				ownerZone = tabEditorManager.onTabDrag(CustomTabbedEditor.this, mainTabList.indexOfComponent(component), e.getLocationOnScreen());
+				if (ownerZone) {
+					if (dragDropIndex != -1) {
+						dragDropIndex = -1;
+						mainTabList.repaint();
+						pinnedStrip.repaint();
+					}
+					return;
+				}
+				// the cells of the pinned tabs are in the strip, not in the tabbed pane
+				int target = header.getParent() == pinnedStrip
+						? pinnedStrip.nearestIndex(SwingUtilities.convertPoint(header, e.getPoint(), pinnedStrip))
+						: nearestTabIndex(p);
 				if (dragFromIndex >= 0 && target >= 0) {
 					target = clampDropIndex(dragFromIndex, target);
 				}
 				if (target != dragDropIndex) {
 					dragDropIndex = target;
 					mainTabList.repaint();
+					pinnedStrip.repaint();
 				}
 			}
 
@@ -1344,12 +1440,23 @@ public class CustomTabbedEditor implements ITabsManager {
 				if (dragging) {
 					int from = dragFromIndex;
 					int to = dragDropIndex;
+					boolean handled = false;
+					if (ownerZone && !cancelled) {
+						handled = tabEditorManager.onTabDrop(CustomTabbedEditor.this, mainTabList.indexOfComponent(component), e.getLocationOnScreen());
+					}
+					stopEscapeListener();
+					endMoveCursor();
+					tabEditorManager.onTabDragEnd();
+					boolean skipReorder = handled || cancelled;
+					ownerZone = false;
+					cancelled = false;
 					dragging = false;
 					dragFromIndex = -1;
 					dragDropIndex = -1;
 					header.setCursor(java.awt.Cursor.getDefaultCursor());
 					mainTabList.repaint();
-					if (from >= 0 && to >= 0 && from != to) {
+					pinnedStrip.repaint();
+					if (!skipReorder && from >= 0 && to >= 0 && from != to) {
 						moveTab(from, to);
 					}
 				}
@@ -1358,6 +1465,37 @@ public class CustomTabbedEditor implements ITabsManager {
 		};
 		header.addMouseListener(handler);
 		header.addMouseMotionListener(handler);
+	}
+
+	/** The glass pane shows the move cursor over the whole window while a tab is dragged (the cursor of the header would not follow the pointer) */
+	private java.awt.Component moveCursorGlass;
+	private boolean moveCursorGlassWasVisible;
+	private java.awt.Cursor moveCursorGlassOldCursor;
+
+	private void beginMoveCursor(JComponent from) {
+		endMoveCursor();
+		javax.swing.JRootPane root = SwingUtilities.getRootPane(from);
+		if (root == null) {
+			return;
+		}
+		moveCursorGlass = root.getGlassPane();
+		moveCursorGlassWasVisible = moveCursorGlass.isVisible();
+		moveCursorGlassOldCursor = moveCursorGlass.getCursor();
+		moveCursorGlass.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
+		moveCursorGlass.setVisible(true);
+	}
+
+	private void endMoveCursor() {
+		if (moveCursorGlass != null) {
+			moveCursorGlass.setCursor(moveCursorGlassOldCursor);
+			moveCursorGlass.setVisible(moveCursorGlassWasVisible);
+			moveCursorGlass = null;
+		}
+	}
+
+	/** Gives a cell of the strip of the pinned tabs the same mouse handling (menu, shift, ctrl, drag) as a tab header */
+	void installStripCell(JComponent cell, JScrollPane component) {
+		installPinAndReorder(cell, component);
 	}
 
 	/** Index of the tab nearest to a point of the tabbed pane (works also with tabs on more rows), -1 if none */
@@ -1388,7 +1526,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 	/** Vertical line where the dragged tab would be dropped */
 	private void paintDropIndicator(java.awt.Graphics g) {
-		if (dragFromIndex < 0 || dragDropIndex < 0 || dragDropIndex == dragFromIndex || dragDropIndex >= mainTabList.getTabCount()) {
+		if (dragFromIndex < 0 || dragDropIndex < 0 || dragDropIndex == dragFromIndex || dragDropIndex >= mainTabList.getTabCount() || isPinned(dragFromIndex)) {
 			return;
 		}
 		java.awt.Rectangle r = mainTabList.getBoundsAt(dragDropIndex);

@@ -963,7 +963,7 @@ public class MainGuiUtils {
 
 		thereAreUnsaved = false;
 		atLeastOneTemp = false;
-		for (TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
+		for (TabTextEditorObject tabElement : allTabs()) {
 			if (tabElement.unsaved) {
 				thereAreUnsaved = true;
 			}
@@ -1039,6 +1039,15 @@ public class MainGuiUtils {
 	 * return false if not exit, true if has to exit;
 	 * @return
 	 */
+	/** The tabs of every panel of the file editor (a second panel can be open beside the first) */
+	private static List<TabTextEditorObject> allTabs() {
+		List<TabTextEditorObject> all = new ArrayList<>();
+		for (CustomTabbedEditor panel : MainGUI.textEditorPanel.tabbedEditorsList) {
+			all.addAll(panel.loadedList.getList());
+		}
+		return all;
+	}
+
 	public static boolean askUnsavedTextFiles() {
 
 		TextEditor initTxtWriter = MainGUI.textEditorPanel;
@@ -1051,7 +1060,7 @@ public class MainGuiUtils {
 		CustomTabbedEditor currentTabEditor = initTxtWriter.getCurrentTabEditor();
 
 		// integrated viewers (image studio...) with edits not saved: they ask by themselves
-		for (TabTextEditorObject viewerTab : currentTabEditor.loadedList.getList()) {
+		for (TabTextEditorObject viewerTab : allTabs()) {
 			if (viewerTab.isEmbeddedViewer() && viewerTab.viewer.isModified() && !viewerTab.viewer.confirmClose(currentTabEditor.mainTabList)) {
 				return false;
 			}
@@ -1061,7 +1070,7 @@ public class MainGuiUtils {
 		boolean atLeastOneTemp = false;
 		List<File> tempFiles = new ArrayList<>();
 
-		for (TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
+		for (TabTextEditorObject tabElement : allTabs()) {
 			if (tabElement.unsaved) {
 				askCondition =
 						askCondition ||
@@ -1095,7 +1104,9 @@ public class MainGuiUtils {
 
 		}else if(choiceY) {
 			try {
-				currentTabEditor.saveAllUnsavedExisting();
+				for (CustomTabbedEditor panel : MainGUI.textEditorPanel.tabbedEditorsList) {
+					panel.saveAllUnsavedExisting();
+				}
 			} catch (IOException e) {
 				logger.error("", e);
 				if(!MainGUI.dialogHelper.yesOrNo(I18n.t("app.oooops_an_error_occurred_continue_anyway"))) {
@@ -1106,9 +1117,14 @@ public class MainGuiUtils {
 			}
 			if(atLeastOneTemp) {
 				MainGUI.mntmTextEditor.doClick();
-				for(TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
+				for(TabTextEditorObject tabElement : allTabs()) {
 					if(tabElement.unsaved && tabElement.loadedFile == null) {
-						currentTabEditor.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
+						for (CustomTabbedEditor panel : MainGUI.textEditorPanel.tabbedEditorsList) {
+							if (panel.loadedList.getList().contains(tabElement)) {
+								MainGUI.textEditorPanel.currentTabbedEditorSelected = MainGUI.textEditorPanel.tabbedEditorsList.indexOf(panel);
+								panel.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
+							}
+						}
 						MainGUI.textEditorPanel.subHeaderPanel.btnSaveTextFile.requestFocus();
 						return false; // don't exit
 					}

@@ -25,17 +25,36 @@ import screept.gui.utils.shortcutshandler.TextEditorShortcutListener;
 public class TextEditorMouseWheelListener implements MouseWheelListener{
 
 	private TextEditor currentEditor;
-	private CustomTabbedEditor currentTabEditor;
+	/** Panel under the pointer for the wheel being handled, null = the one that has the commands */
+	private CustomTabbedEditor wheelEditor;
+
+	private CustomTabbedEditor currentTabEditor() {
+		return wheelEditor != null ? wheelEditor : currentEditor.getCurrentTabEditor();
+	}
 
 	public TextEditorMouseWheelListener(TextEditor currentEditor) {
 		super();
 		GeneralConfig.initLazyGeneralConfig();
 		this.currentEditor = currentEditor;
-		this.currentTabEditor = currentEditor.getCurrentTabEditor();
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
+		// the wheel acts on the panel under the pointer, which is not always the one that has the commands
+		wheelEditor = null;
+		for (CustomTabbedEditor panel : currentEditor.tabbedEditorsList) {
+			if (e.getComponent() != null && javax.swing.SwingUtilities.isDescendingFrom(e.getComponent(), panel.getTabsComponent())) {
+				wheelEditor = panel;
+			}
+		}
+		try {
+			handleWheel(e);
+		} finally {
+			wheelEditor = null;
+		}
+	}
+
+	private void handleWheel(MouseWheelEvent e) {
 		if(!MainGUI.mainGuiUtils.isTextEditorActive(true))
 			return;
 
@@ -86,9 +105,9 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(getVerticalScrollAmount());
+				currentTabEditor().loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(getVerticalScrollAmount());
 				// trigger scroll event on target
-				currentTabEditor.loadedTabObj.currentScrollPane.getListeners(MouseWheelListener.class)[0].mouseWheelMoved(e);
+				currentTabEditor().loadedTabObj.currentScrollPane.getListeners(MouseWheelListener.class)[0].mouseWheelMoved(e);
 			}
 		});
 	}
@@ -100,20 +119,20 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 				if (TextEditorShortcutListener.flagAltDown.get() && TextEditorShortcutListener.flagShiftDown.get()
 						&& !TextEditorShortcutListener.flagCtrlDown.get()) {
 					// alt+shift-> more speed
-					currentTabEditor.loadedTabObj.currentScrollPane.getHorizontalScrollBar().setUnitIncrement(GeneralConfig.FAST_WHEEL_SPEED);
+					currentTabEditor().loadedTabObj.currentScrollPane.getHorizontalScrollBar().setUnitIncrement(GeneralConfig.FAST_WHEEL_SPEED);
 				} else if (!TextEditorShortcutListener.flagAltDown.get() && TextEditorShortcutListener.flagShiftDown.get()
 						&& !TextEditorShortcutListener.flagCtrlDown.get()) {
 					// only shift normal
-					currentTabEditor.loadedTabObj.currentScrollPane.getHorizontalScrollBar().setUnitIncrement(GeneralConfig.NORMAL_WHEEL_SPEED);
+					currentTabEditor().loadedTabObj.currentScrollPane.getHorizontalScrollBar().setUnitIncrement(GeneralConfig.NORMAL_WHEEL_SPEED);
 				}
 				// trigger scroll event on target
-				currentTabEditor.loadedTabObj.currentScrollPane.getListeners(MouseWheelListener.class)[0].mouseWheelMoved(e);
+				currentTabEditor().loadedTabObj.currentScrollPane.getListeners(MouseWheelListener.class)[0].mouseWheelMoved(e);
 			}
 		});
 	}
 
 	private void adjustFontSize(int delta) {
-		if(currentTabEditor.loadedTabObj != null) {
+		if(currentTabEditor().loadedTabObj != null) {
 			currentEditor.subHeaderPanel.sliderFontSize.setValue(currentEditor.subHeaderPanel.sliderFontSize.getValue() - (delta*2));
 		}
 	}

@@ -97,7 +97,7 @@ INDEX
         *   [KEY IMAGE GENERATOR](#subSectTitleKeyGenImg)
         *   [KEY DICTIONARY](#subSectTitleKeyDict)
         
-    *   [Various](#funcVariousSubMenu)
+    *   [Tools](#funcVariousSubMenu)
         
         *   [FILE EDITOR](#subSectTitleTxtEditor)
         *   [SYSTEM INFORMATIONS](#subSectTitleSysInfo)
@@ -440,7 +440,7 @@ IMPORTANT: Always remember that changing section you won't lose any progress of 
 
 * * *
 
-#### 5 - Various submenu:
+#### 5 - Tools submenu:
 
 *   OPEN SYSTEM INFO - \[Alt + Shift + Y\]
 *   OPEN NETWORK INFO - \[Alt + Shift + N\]
@@ -496,7 +496,8 @@ IMPORTANT: Always remember that changing section you won't lose any progress of 
 *   SHOW/HIDE SCREEPT FILE EDITOR'S SUB-HEADER - \[Ctrl + Shift + Alt + U\]
 *   SHOW/HIDE SCREEPT FILE EDITOR'S FOOTER - \[Ctrl + Shift + Alt + L\]
 *   OPEN/CLOSE FILE TREE PANEL - \[Alt + Q\]
-*   PIN/UNPIN CURRENT TAB - \[Alt + Shift + J\]
+*   PIN/UNPIN CURRENT TAB - \[Alt + Shift + J\] (pinned tabs have their own row above the others)
+*   SECOND PANEL - drag a tab onto the right part of the text (Esc cancels); with two panels, drag a tab onto the other one
 *   OPEN/CLOSE CLIPBOARD PANEL - \[Alt + A\]
 *   OPEN/CLOSE DOCUMENT MAP PANEL - \[Alt + W\]
 *   SHOW AUTOCOMPLETE OPTIONS - \[Ctrl + Spacebar\]
@@ -520,7 +521,7 @@ IMPORTANT: Always remember that changing section you won't lose any progress of 
 
 * * *
 
-#### Various and file editor panels:
+#### Tools and file editor panels:
 
 *   OPEN SPECIAL/ESCAPES PANEL - \[Ctrl + E\]
 *   OPEN TEMPLATES PANEL - \[Ctrl + T\]
@@ -572,7 +573,7 @@ IMPORTANT: Always remember that changing section you won't lose any progress of 
 
 * * *
 
-#### Specific Various functions:
+#### Specific Tools functions:
 
 *   SPEAK TEXT / STOP SPEAKER - \[Ctrl + Alt + spacebar\]
 *   CRYPT TEXT - \[Ctrl + shift + C\]

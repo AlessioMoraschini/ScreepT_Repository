@@ -63,9 +63,40 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	}
 
 	@Override
+	public java.util.List<gui.texteditor.commons.tabbededitor.CustomTabbedEditor> getAllEditors() {
+		return textEditor.tabbedEditorsList;
+	}
+
+	@Override
+	public boolean onTabDrag(gui.texteditor.commons.tabbededitor.CustomTabbedEditor source, int tabIndex, java.awt.Point screenPoint) {
+		return textEditor.tabSplit != null && textEditor.tabSplit.onDrag(source, tabIndex, screenPoint);
+	}
+
+	@Override
+	public boolean onTabDrop(gui.texteditor.commons.tabbededitor.CustomTabbedEditor source, int tabIndex, java.awt.Point screenPoint) {
+		return textEditor.tabSplit != null && textEditor.tabSplit.onDrop(source, tabIndex, screenPoint);
+	}
+
+	@Override
+	public void onTabDragEnd() {
+		if (textEditor.tabSplit != null) {
+			textEditor.tabSplit.onDragEnd();
+		}
+	}
+
+	@Override
+	public void onLastTabClosed(gui.texteditor.commons.tabbededitor.CustomTabbedEditor editor) {
+		if (textEditor.tabSplit != null) {
+			textEditor.tabSplit.onLastTabClosed(editor);
+		}
+	}
+
+	@Override
 	public void onTabSelected(TabTextEditorObject tab) {
 		if (textEditor.subHeaderPanel != null) {
 			textEditor.subHeaderPanel.applyTabKind(tab == null || !tab.isEmbeddedViewer() || tab.viewer.supportsTextTools());
+			// the toggle shows the tail state of the tab in front, in whichever panel it is
+			javax.swing.SwingUtilities.invokeLater(textEditor.subHeaderPanel::syncTailToggle);
 		}
 	}
 
