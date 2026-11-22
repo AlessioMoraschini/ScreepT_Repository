@@ -1521,6 +1521,16 @@ public class TextEditor extends ModulePanel {
 		return currentTextEditor.tabbedEditorsList.get(currentTabbedEditorSelected);
 	}
 
+	/** Font changed in the active panel: the other panel (if open) follows, all its tabs */
+	public void applyFontToOtherPanels(java.awt.Font font) {
+		CustomTabbedEditor active = getCurrentTabEditor();
+		for (CustomTabbedEditor editor : tabbedEditorsList) {
+			if (editor != active) {
+				editor.applyFontToAllTabs(font);
+			}
+		}
+	}
+
 	/** Main panel that always takes the viewport size, so the outer scroll pane never scrolls */
 	private static class ViewportFillingPanel extends JPanel implements Scrollable {
 

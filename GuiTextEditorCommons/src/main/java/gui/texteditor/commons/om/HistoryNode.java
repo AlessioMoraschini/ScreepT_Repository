@@ -54,6 +54,9 @@ public class HistoryNode {
 	@Override
 	public boolean equals(Object otherNode) {
 		
+		if (otherNode == this) {
+			return true;
+		}
 		if (otherNode != null && otherNode instanceof HistoryNode) {
 			HistoryNode other = (HistoryNode) otherNode;
 			boolean fileMatch = false;

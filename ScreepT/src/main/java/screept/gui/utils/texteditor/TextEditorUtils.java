@@ -595,9 +595,10 @@ public class TextEditorUtils {
 				return false;
 			}
 
+			final File renamedFile = newFile; // the file may not be open in a tab
 			SwingUtilities.invokeLater(()->{
 				currentTextEditor.getCurrentTabEditor().tabRefreshAfterUpdate();
-				refreshTree(tabObj.loadedFile, true);
+				refreshTree(renamedFile, true);
 			});
 			return true;
 		} else
@@ -1246,6 +1247,17 @@ public class TextEditorUtils {
 
 		// retore unsaved info backup
 		loadedTabObj.unsaved = unsaved;
+
+		// the other panel (if open) shows the same theme: its tab in front now, the others when selected
+		for (CustomTabbedEditor other : currentTextEditor.tabbedEditorsList) {
+			TabTextEditorObject otherTab = other.loadedTabObj;
+			if (other == currentTextEditor.getCurrentTabEditor() || otherTab == null || otherTab.isEmbeddedViewer()) {
+				continue;
+			}
+			boolean otherUnsaved = otherTab.unsaved;
+			loadTheme(otherTab.textArea, otherTab.currentScrollPane.getGutter(), txtOpt, forceThemeReload);
+			otherTab.unsaved = otherUnsaved;
+		}
 
 		// Retrieve current pane type and call standard method to sync position and content
 		getTypedIRightPanel().sync();

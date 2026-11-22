@@ -1175,6 +1175,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					RsyntaxUtils.setFont(loadedTabObj.textArea, loadedTabObj.textArea.getFont());
 					loadedTabObj.textArea.setFont(chosenFont);
 					parent.getCurrentTabEditor().applyFontToOtherTabs(chosenFont);
+					parent.applyFontToOtherPanels(chosenFont);
 					sliderFontSize.setValue(loadedTabObj.textArea.getFont().getSize());
 					lblSIZE.setText(String.valueOf(loadedTabObj.textArea.getFont().getSize()) + " Px");
 				}
@@ -1208,6 +1209,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					currentConfiguration.getTextEditorOpt().setFont(font);
 					loadedTabObj.textArea.setFont(font);
 					parent.getCurrentTabEditor().applyFontToOtherTabs(font);
+					parent.applyFontToOtherPanels(font);
 
 					Font gutterFont = font.getSize() < 20 ? font.deriveFont(font.getSize()-2) : font.deriveFont(20F);
 					loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);

@@ -56,11 +56,18 @@ public enum KdfAlgorithm {
 	public byte[] derive(char[] password, byte[] salt, int cost, int outBytes) throws CryptoException {
 		try {
 			if (this == SCRYPT) {
+				// the file header decides the cost: refuse what the heap cannot hold (128 * r(8) bytes per 2^cost) instead of dying
+				long needed = 1024L << cost;
+				if (needed > Runtime.getRuntime().maxMemory() / 2) {
+					throw new CryptoException("Not enough memory for this key derivation (" + (needed >> 20) + " MB needed)");
+				}
 				return Scrypt.derive(password, salt, 1 << cost, 8, 1, outBytes);
 			}
 			return pbkdf2(jdkName, password, salt, cost, outBytes);
 		} catch (GeneralSecurityException e) {
 			throw new CryptoException("Key derivation failed", e);
+		} catch (OutOfMemoryError e) {
+			throw new CryptoException("Not enough memory for this key derivation", e);
 		}
 	}
 

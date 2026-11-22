@@ -60,7 +60,7 @@ final class LogDates {
 	 * date format is), -1 when the line has none.
 	 */
 	static int timeOfDay(String line) {
-		int limit = Math.min(line.length(), 160) - 7;
+		int limit = Math.min(line.length(), 160) - 8;
 		for (int i = 0; i <= limit; i++) {
 			char c = line.charAt(i);
 			if (c < '0' || c > '9' || (i > 0 && Character.isDigit(line.charAt(i - 1)))) {
@@ -263,8 +263,11 @@ final class LogDates {
 
 	/** Nov 16, 2026 12:00:00 PM */
 	private static int jul(byte[] b, int from, int limit) {
+		if (limit - from < 12) {
+			return 0;
+		}
 		int month = month(b, from);
-		if (month == 0 || limit - from < 12) {
+		if (month == 0) {
 			return 0;
 		}
 		int i = from + 3;

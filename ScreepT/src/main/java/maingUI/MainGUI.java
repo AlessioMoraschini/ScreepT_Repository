@@ -1490,6 +1490,8 @@ public class MainGUI extends MainGuiParent {
 		logger.debug("Initializing main menuBar...");
 		MainGuiGeneralAppStarter.loaderGraphics.update("Structuring menu...", 60);
 		structureMenuBar();
+		// menus (also the nested ones) open on hover, without a click
+		screept.gui.utils.MenuHoverOpener.install(menuBar);
 
 		// check non compatible options with current JVM
 		checkVersionAndDisableUnsupportedOpt();

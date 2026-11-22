@@ -99,6 +99,9 @@ public final class CryptoEngine {
 
 	/** Reads the profile from the first bytes of the data (no password needed). */
 	public static CryptoProfile readProfile(byte[] head) throws CryptoException {
+		if (head == null) {
+			throw new CryptoException("Not a ScreepT encrypted file");
+		}
 		try {
 			return Header.read(new ByteArrayInputStream(head)).profile;
 		} catch (IOException e) {

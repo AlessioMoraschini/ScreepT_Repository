@@ -35,7 +35,6 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 
 import gui.commons.tabbedpaneutils.CustomTabbedPaneUI_v1;
-import gui.commons.tabbedpaneutils.TabUtils;
 import gui.commons.tabs.TabImplementor;
 import gui.commons.tabs.TabImplementors;
 import gui.texteditor.commons.om.TabTextEditorObject;
@@ -204,14 +203,10 @@ public class TabSplitManager {
 			return secondary;
 		}
 		CustomTabbedEditor editor = new CustomTabbedEditor(textEditor, textEditor.currentConfiguration, new TabbedEditorOwnerScreepT(textEditor));
-		editor.mainTabList.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
-		try {
-			editor.mainTabList.setUI(new CustomTabbedPaneUI_v1(null, null, null, editor.mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
-		} catch (Exception e) {
-			logger.warn("Cannot style the second panel", e);
-		}
+		// same order of the first panel (style, then scroll layout), so the tab strip sits at the same height
 		editor.mainTabList.setBackground(primary.mainTabList.getBackground());
 		editor.applyStyleToTabs();
+		editor.mainTabList.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
 		textEditor.tabbedEditorsList.add(editor);
 		secondary = editor;
 

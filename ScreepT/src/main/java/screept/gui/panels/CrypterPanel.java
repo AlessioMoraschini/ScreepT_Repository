@@ -110,7 +110,8 @@ public class CrypterPanel extends ModulePanel {
 	// dateFormatter
 	private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd @ HH-mm-ss");
 
-	private static final Dimension screenSize = GuiUtilsExtended.getScreenSize();
+	// no cap tied to one monitor: the window can be moved to a bigger (or smaller) screen and the layout follows it
+	private static final Dimension screenSize = new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
 	private static final Dimension screenSizeLess = new Dimension(screenSize.width - 5, screenSize.height - 45);
 	private static final Dimension maxBodySize = new Dimension(screenSize.width - 5, screenSize.height - 90);
 	private static final Dimension maxSplitPaneSize = new Dimension(screenSize.width - 10, screenSize.height - 190);
@@ -1836,7 +1837,7 @@ public class CrypterPanel extends ModulePanel {
 
 	public void addNewSourceFile(File selected) {
 		logger.debug("Adding file to selection...");
-		boolean alreadyLoaded = isFileAlreadyLoadedInRoot(selected);
+		boolean alreadyLoaded = selected != null && isFileAlreadyLoadedInRoot(selected); // null = chooser cancelled
 		if (selected!=null && selected.exists() && !alreadyLoaded) {
 			srcFile = selected;
 			panelVDragNDropPane.addFileToTree(selected);

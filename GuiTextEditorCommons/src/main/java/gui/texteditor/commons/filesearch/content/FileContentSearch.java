@@ -102,14 +102,14 @@ public class FileContentSearch {
 		results = new ArrayList<SearchResult>();
 		dialogHelper = new JOptionHelper(resultViewer);
 
-		if(searchDTO.regex || searchDTO.wholeWord) {
+		if(this.searchDTO.regex || this.searchDTO.wholeWord) {
 
 			useInternalRegex = true;
-			String searchString = searchDTO.wholeWord
-					? "\\b" + searchDTO.searchString + "\\b"
-					: searchDTO.searchString;
+			String searchString = this.searchDTO.wholeWord
+					? "\\b" + wholeWordBody(this.searchDTO) + "\\b"
+					: this.searchDTO.searchString;
 
-			patternRegex = searchDTO.matchCase
+			patternRegex = this.searchDTO.matchCase
 					? Pattern.compile(searchString)
 					: Pattern.compile(searchString, Pattern.CASE_INSENSITIVE);
 			prefilterRegex = Pattern.compile(patternRegex.pattern(), patternRegex.flags() | Pattern.MULTILINE);
@@ -129,6 +129,22 @@ public class FileContentSearch {
 				? searchActions
 				: new FileSearchActions() {};
 
+	}
+
+	/** Body of a whole word search: the text is literal (every character escaped) unless it is a regex, whose alternatives are grouped */
+	private static String wholeWordBody(FileContentSearchDTO dto) {
+		String text = dto.searchString;
+		if(dto.regex)
+			return text.indexOf('|') >= 0 ? "(?:" + text + ")" : text;
+
+		StringBuilder escaped = new StringBuilder(text.length() + 8);
+		for(int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			if(c < 128 && !Character.isLetterOrDigit(c))
+				escaped.append('\\');
+			escaped.append(c);
+		}
+		return escaped.toString();
 	}
 
 	public void setPerformance(SearchPerformance performance) {

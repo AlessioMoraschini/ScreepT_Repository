@@ -1224,9 +1224,18 @@ public class CustomTabbedEditor implements ITabsManager {
 	 * The gutter font follows the same rule used when a tab is styled from the configuration.
 	 */
 	public void applyFontToOtherTabs(java.awt.Font font) {
+		applyFontToTabs(font, false);
+	}
+
+	/** Same as {@link #applyFontToOtherTabs} but also the selected tab (for a panel that is not the one being edited) */
+	public void applyFontToAllTabs(java.awt.Font font) {
+		applyFontToTabs(font, true);
+	}
+
+	private void applyFontToTabs(java.awt.Font font, boolean includeSelected) {
 		java.awt.Font gutterFont = font.getSize() < 20 ? font.deriveFont(font.getSize() - 2) : font.deriveFont(20F);
 		for (TabTextEditorObject tab : loadedList.getList()) {
-			if (tab == null || tab == loadedTabObj || tab.isEmbeddedViewer()) {
+			if (tab == null || (tab == loadedTabObj && !includeSelected) || tab.isEmbeddedViewer()) {
 				continue;
 			}
 			if (!font.equals(tab.textArea.getFont())) {

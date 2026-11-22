@@ -463,6 +463,9 @@ public class GeneralOptionsFrame extends ParentFrame{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Locale locale = (Locale) comboLocale.getSelectedItem();
+					if (locale.getLanguage().equals(various.common.light.i18n.I18n.normalize(currentConfiguration.getGenOpt().getLanguage()))) {
+						return; // the combo was only refreshed from the configuration: nothing to remember (and nothing to write to the file)
+					}
 					currentConfiguration.getGenOpt().setLanguage(locale.getLanguage());
 					various.common.light.i18n.I18n.setLanguage(locale.getLanguage());
 					currentConfiguration.writeCurrentConfigIniFile(); // the language is remembered at once

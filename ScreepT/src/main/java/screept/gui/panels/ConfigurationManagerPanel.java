@@ -39,7 +39,6 @@ import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import gui.commons.dialogutils.JOptionHelperExtended;
@@ -71,7 +70,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 	// INItializer logger creation
 	static Logger logger = Logger.getLogger(ConfigurationManagerPanel.class);
 
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_hh:mm:ss");
+	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HH:mm:ss");
 
 	public TreeFileMouseListenerIni menuMouseListener;
 
@@ -368,6 +367,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 						MainGuiUtils.askNameAtStartIfNotDefined(MainGUI.mainAPP.getMainFrame());
 						dialogHelper.info(I18n.t("cfg.file") + config.getIniFile().getFile().getName() + I18n.t("cfg.loaded"), "");
 						config.readConfigIniFile();
+						markSaved(); // the memory has just been replaced: the snapshot taken by afterLoad() is stale
 						MainGUI.updateGuiFromCurrConfig();
 					} catch (IOException exc) {
 						dialogHelper.error(I18n.t("cfg.error_resetting_standard_configuration_it_do"), "");
@@ -396,7 +396,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 					if (dialogHelper.yesOrNo(I18n.t("app.really_want_to_overwrite_default_configurati"),	I18n.t("cfg.warning_overwrite_default_configuration"))) {
 
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
-						config.setIniReadFile(new Ini(new File(GeneralConfig.DEFAULT_INI)));
+						config.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						config.writeCurrentConfigIniFile();
 						markSaved();
 						lblAvviso.setText(I18n.t("cfg.status_saved_default"));
@@ -409,7 +409,8 @@ public class ConfigurationManagerPanel extends ModulePanel {
 						dialogHelper.info(I18n.t("app.configuration_not_saved"), "");
 					}
 					config.setIniFile(new Wini(backupIni));
-					config.setIniReadFile(new Ini(backupIni));
+					config.setIniReadFile(new Wini(backupIni));
+					config_PATH.setText(config.getIniFile().getFile().getPath());
 					MainGUI.updateGuiFromCurrConfig();
 					lblAvviso.setForeground(ToolStyle.BLUE);
 				} catch (IOException e1) {

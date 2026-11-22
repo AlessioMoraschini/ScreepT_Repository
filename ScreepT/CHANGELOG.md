@@ -6,6 +6,23 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.90 - 2026-11-22
+> Menus open on hover, Crypter that follows the monitor, theme and font in both editor panels, Italian guide up to date, hardened Crypter and a large new test suite
+
+### New
+- The menus of the main menu bar (and the sub menus inside them, at any level) open as soon as the mouse is over them, without a click.
+
+### Improved
+- File editor: with two panels, the font (slider and font chooser) and the theme apply to both panels, not only to the active one.
+- Crypter: the panel no longer has size limits tied to the first monitor, so it fills the window also when moved to a bigger screen.
+- The Italian guide is aligned with the English one (Crypter Secure modes, Tools menu, Search in files, Quick notes, second panel, LogSearch).
+
+### Fixed
+- Crypter: a damaged or hostile file asking for a huge scrypt memory cost now gives a clear error instead of an out-of-memory crash; reading the profile of an empty input no longer fails with a null error.
+- Crypter (legacy key image modes): the pixel sampling of the key image read outside the image for some sizes (for example 100x100 or 40x40) and made the operation fail; files already created are not affected.
+- Crypter: cancelling the file chooser when adding a source file logged a spurious error.
+- Several small corrections found by the new automated tests in text, file and conversion helpers, LogSearch, search in files, PSD reading and metadata cleaning.
+
 ## 0.9.89 - 2026-11-22
 > Second panel in the file editor (drag a tab to the right), pinned tabs in their own row, viewer icons on tabs, Esc cancels the close question
 

@@ -243,11 +243,13 @@ final class LogFileIndex implements Closeable {
 	 */
 	int timeBoundary(int from, int to, int ms, boolean strictly) {
 		int low = Math.max(0, from);
-		int high = Math.min(to, lineCount);
+		int end = Math.min(to, lineCount);
+		int high = end;
 		while (low < high) {
 			int mid = (low + high) >>> 1;
 			int time = -1;
-			for (int probe = mid; time < 0 && probe < high && probe < mid + 64; probe++) {
+			// the look-ahead of a line without time is limited by the end of the range, not by the narrowing search window
+			for (int probe = mid; time < 0 && probe < end && probe < mid + 64; probe++) {
 				time = LogDates.timeOfDay(line(probe));
 			}
 			if (time >= 0 && (strictly ? time > ms : time >= ms)) {
@@ -291,16 +293,16 @@ final class LogFileIndex implements Closeable {
 				low = mid + 1;
 			}
 		}
-		// the line is in the block before the first one that qualifies (the lines of the day before come first) or at its start
+		// the line is in the block before the first one that qualifies (the lines of the day before come first) or at its start;
+		// a stack trace of more than a block has no dated line, so the scan goes on until the first dated line that qualifies
 		int scanFrom = Math.max(0, (low - 1) * BLOCK);
-		int scanTo = Math.min(lineCount, (low + 1) * BLOCK);
-		for (int line = scanFrom; line < scanTo; line++) {
+		for (int line = scanFrom; line < lineCount; line++) {
 			int value = dayOf(line);
 			if (value != 0 && (strictly ? value > day : value >= day)) {
 				return line;
 			}
 		}
-		return low >= blocks ? lineCount : scanTo;
+		return lineCount;
 	}
 
 	/** Raw verdict of one line, before the inheritance of the stack trace levels is applied */

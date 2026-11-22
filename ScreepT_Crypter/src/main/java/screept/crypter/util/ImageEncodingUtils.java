@@ -81,6 +81,10 @@ public class ImageEncodingUtils {
 					col=0;
 					row++;
 				}
+				if(row > H-1) {
+					// wrapping the column moved past the last row: it used to read outside the image (such sizes never produced a file)
+					row = 0;
+				}
 				
 				read[i] = image.getRGB(col, row);
 				col += interval % W;

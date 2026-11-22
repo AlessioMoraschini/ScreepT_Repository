@@ -172,6 +172,9 @@ public class TreeFileMouseListenerIni extends gui.commons.mouseutils.TreeFileMou
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (selectedNode == null) {
+					return; // right click on the empty area of the tree
+				}
 				// update textArea with preview of content
 		        confManagerPanel.textArea.setText(I18n.t("cfg.previewing") + " ["+selectedNode.getAbsolutePath()+"]\n\n");
 		        FileWorker.appendFileTxtArea(selectedNode, confManagerPanel.textArea, false);
