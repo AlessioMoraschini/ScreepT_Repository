@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.UnaryOperator;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -95,6 +96,7 @@ import various.common.light.gui.dnd.FileDrop;
 import various.common.light.om.ICommonShortcuts;
 import various.common.light.om.SelectionDtoFull;
 import various.common.light.utility.primitive.DynaBoolean;
+import various.common.light.utility.string.CaseConverter;
 import various.common.light.utility.string.StringWorker;
 import various.common.light.utility.string.StringWorker.EOL;
 import various.common.light.utility.string.TextAreaStringEditor;
@@ -666,6 +668,11 @@ public class TabTextEditorObject {
 				final JMenuItem uppercaseItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>TT</b> - Uppercase/Lowercase text"));
 				uppercaseItem.setToolTipText(TextEditTooltips.tooltipTT);
 				uppercaseItem.addActionListener(getUppercaseListener());
+				uppercaseItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, ShortcutKeys.MENU_MASK | SHIFT_MASK));
+
+				final JMenuItem lowercaseItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>tt</b> - Lowercase text"));
+				lowercaseItem.addActionListener(getLowercaseListener());
+				lowercaseItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, ShortcutKeys.MENU_MASK | SHIFT_MASK));
 
 				final JMenuItem uppercaseFirstItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>Tt Tt</b> - Uppercase first letters"));
 				uppercaseFirstItem.setToolTipText(TextEditTooltips.tooltipTtTt);
@@ -674,12 +681,14 @@ public class TabTextEditorObject {
 				final JMenuItem uppercasePostDotsItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>.Tt</b> - Uppercase after significant brokers"));
 				uppercasePostDotsItem.setToolTipText(TextEditTooltips.tooltipUpperPostDots);
 				uppercasePostDotsItem.addActionListener(getPostDotsUppercaseListener());
+				uppercasePostDotsItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, ShortcutKeys.MENU_MASK | SHIFT_MASK));
 
 				final JMenuItem lowercasePostDotsItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>.tt</b> - Lowercase after significant brokers"));
-				uppercasePostDotsItem.setToolTipText(TextEditTooltips.tooltipLowerPostDots);
+				lowercasePostDotsItem.setToolTipText(TextEditTooltips.tooltipLowerPostDots);
 				lowercasePostDotsItem.addActionListener(getPostDotsLowercaseListener());
 
-				final JMenuItem encapsulateTag = new JMenuItem(GuiUtils.encapsulateInHtml("<b>Sorround with tag</b> - Ctrl+Alt+T"));
+				final JMenuItem encapsulateTag = new JMenuItem(GuiUtils.encapsulateInHtml("<b>Surround with tag</b>"));
+				encapsulateTag.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ShortcutKeys.MENU_MASK | ALT_MASK));
 				encapsulateTag.addActionListener(getEncapsulateTagListener());
 
 				String tabHint = "(See tabSize in textEditor subHead panel)";
@@ -705,9 +714,19 @@ public class TabTextEditorObject {
 					});
 
 				stringActions.add(uppercaseItem);
+				stringActions.add(lowercaseItem);
 				stringActions.add(uppercaseFirstItem);
+				stringActions.add(caseItem("Sentence case", CaseConverter::sentence));
+				stringActions.add(caseItem("iNVERT cASE", CaseConverter::invert));
 				stringActions.add(uppercasePostDotsItem);
 				stringActions.add(lowercasePostDotsItem);
+				stringActions.add(new JSeparator());
+				stringActions.add(caseItem("camelCase", CaseConverter::camel));
+				stringActions.add(caseItem("PascalCase", CaseConverter::pascal));
+				stringActions.add(caseItem("snake_case", CaseConverter::snake));
+				stringActions.add(caseItem("kebab-case", CaseConverter::kebab));
+				stringActions.add(caseItem("CONSTANT_CASE", CaseConverter::constant));
+				stringActions.add(new JSeparator());
 				stringActions.add(encapsulateTag);
 				stringActions.add(new JSeparator());
 				stringActions.add(replaceTabsWithSpaces);
@@ -717,6 +736,18 @@ public class TabTextEditorObject {
 				MenuSetter.setFont(stringActions, new Font("Segoe UI", Font.PLAIN, 16));
 			}
 		});
+	}
+
+	/** Menu entry that applies a case conversion to the selection (or to the whole text) */
+	private JMenuItem caseItem(String label, UnaryOperator<String> operation) {
+		JMenuItem item = new JMenuItem(label);
+		item.addActionListener(e -> {
+			int linePosition = textArea.getCaretLineNumber();
+			TextAreaStringEditor.transformSelectionOrAll(textArea, operation);
+			resetPositionAndRevalidate(linePosition);
+			shortcutsManager.revalidateUnsaved();
+		});
+		return item;
 	}
 
 	private void resetPositionAndRevalidate(int linePosition) {
