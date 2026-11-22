@@ -25,7 +25,7 @@ public enum KdfAlgorithm {
 
 	PBKDF2_SHA256(1, "PBKDF2WithHmacSHA256", 600000, "PBKDF2-HMAC-SHA256"),
 	PBKDF2_SHA512(2, "PBKDF2WithHmacSHA512", 600000, "PBKDF2-HMAC-SHA512"),
-	SCRYPT(3, null, 15, "scrypt (memory-hard)");
+	SCRYPT(3, null, 17, "scrypt (memory-hard)");
 
 	public final int id;
 	public final String jdkName;
@@ -50,7 +50,7 @@ public enum KdfAlgorithm {
 
 	/** Bounds, so that a tampered header cannot make the program burn CPU or memory. */
 	public boolean isCostAcceptable(int cost) {
-		return this == SCRYPT ? (cost >= 10 && cost <= 22) : (cost >= 1000 && cost <= 20000000);
+		return this == SCRYPT ? (cost >= 10 && cost <= 22) : (cost >= 1000 && cost <= 5000000);
 	}
 
 	public byte[] derive(char[] password, byte[] salt, int cost, int outBytes) throws CryptoException {

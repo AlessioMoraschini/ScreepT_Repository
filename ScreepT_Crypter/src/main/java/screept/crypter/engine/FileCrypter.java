@@ -360,7 +360,39 @@ public final class FileCrypter {
 		}
 	}
 
-	private static void decryptArchiveToFolder(final File archive, File destDir, CryptoKey password)
+	/** Extracts into a temporary folder first: a damaged or truncated archive leaves nothing behind. */
+	private static void decryptArchiveToFolder(File archive, File destDir, CryptoKey password)
+			throws CryptoException, IOException {
+		File tmp = new File(destDir, ".scpt_extract_" + System.nanoTime());
+		if (!tmp.mkdirs()) {
+			throw new IOException("Cannot create a temporary folder in the destination");
+		}
+		try {
+			decryptArchiveInto(archive, tmp, password);
+			File[] top = tmp.listFiles();
+			if (top != null) {
+				for (File f : top) {
+					if (!f.renameTo(free(new File(destDir, f.getName())))) {
+						throw new IOException("Cannot move " + f.getName());
+					}
+				}
+			}
+		} finally {
+			deleteRecursive(tmp);
+		}
+	}
+
+	private static void deleteRecursive(File f) {
+		File[] children = f.listFiles();
+		if (children != null) {
+			for (File c : children) {
+				deleteRecursive(c);
+			}
+		}
+		f.delete();
+	}
+
+	private static void decryptArchiveInto(final File archive, File destDir, CryptoKey password)
 			throws CryptoException, IOException {
 		final PipedInputStream pipeIn = new PipedInputStream(1 << 16);
 		final PipedOutputStream pipeOut = new PipedOutputStream(pipeIn);

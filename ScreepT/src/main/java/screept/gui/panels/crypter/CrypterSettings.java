@@ -79,6 +79,6 @@ public final class CrypterSettings {
 	}
 
 	public static String kdfLabel(KdfAlgorithm k) {
-		return k == KdfAlgorithm.SCRYPT ? k.label + " - 32 MB of RAM while deriving" : k.label + " - " + k.defaultCost + " iterations";
+		return k == KdfAlgorithm.SCRYPT ? k.label + " - 128 MB of RAM while deriving" : k.label + " - " + k.defaultCost + " iterations";
 	}
 }
