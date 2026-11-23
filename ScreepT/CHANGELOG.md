@@ -6,6 +6,24 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.91 - 2026-11-24
+> Encrypted text tabs, full screen for PDF and Markdown, case conversions in the editor menu, stronger Crypter defaults and more than 1200 automated tests
+
+### New
+- File editor: files encrypted with the Crypter Secure modes (.scpt) open in a normal tab after asking the password; Save re-encrypts on the same file. New "Save encrypted..." button and a status bar above the text.
+- PDF and Markdown viewers: full screen button and [F11]; [Esc] or the round X leaves it, on the monitor where the application is.
+- Editor right click menu: shortcuts shown next to the commands, lowercase, sentence case, inverted case, camelCase, PascalCase, snake_case, kebab-case and CONSTANT_CASE.
+
+### Improved
+- Crypter: scrypt default raised to 2^17; the cost accepted from a file header is capped (PBKDF2 at 5 million rounds); folders (.dir.scpt) are extracted through a temporary folder, so an error does not leave partial files.
+- Quick notes: hint for empty tags. File tree filter: bigger funnel icon.
+- A very large automated test suite (functional tests of plugin manager, updater, FTP, assistant, calculators, Markdown, configuration) now guards the application.
+
+### Fixed
+- Unit converter: wrong factors for nanometer/micron, milligram/tonne, Kelvin offsets, square inch/square mile (negative result) and katha/bigha.
+- Editor: text transformations applied to the selection only when one exists, the whole text otherwise.
+- Update window: the progress dialog no longer blocks the download, and a missing graphics context no longer raises an error.
+
 ## 0.9.90 - 2026-11-22
 > Menus open on hover, Crypter that follows the monitor, theme and font in both editor panels, Italian guide up to date, hardened Crypter and a large new test suite
 
