@@ -245,7 +245,59 @@ public class TabTextEditorObject {
 		currentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		currentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		// RTextScrollPane.setViewportView accepts only text areas: the viewport itself has no such limit
-		currentScrollPane.getViewport().setView(new ViewerHolder(content.getComponent()));
+		viewerHolder = new ViewerHolder(content.getComponent());
+		currentScrollPane.getViewport().setView(viewerHolder);
+	}
+
+	private ViewerHolder viewerHolder;
+	private gui.commons.tabs.ViewerFullScreen fullScreen;
+
+	/** Not null for a tab opened from (or saved to) an encrypted file: the text is encrypted again at every save */
+	public gui.texteditor.commons.encrypted.EncryptedFileSupport.Binding encrypted;
+
+	public boolean isEncrypted() {
+		return encrypted != null;
+	}
+
+	/** Wipes the secrets of an encrypted tab (the tab is closed) */
+	public void closeEncrypted() {
+		if (encrypted != null) {
+			encrypted.close();
+			encrypted = null;
+		}
+	}
+
+	public boolean supportsFullscreen() {
+		return viewer != null && viewerHolder != null && viewer.supportsFullscreen();
+	}
+
+	public boolean isFullscreen() {
+		return fullScreen != null;
+	}
+
+	/** Moves the viewer to a full screen window (on the screen of the application) and back; false if this tab has no such viewer */
+	public boolean toggleFullscreen() {
+		if (fullScreen != null) {
+			fullScreen.dispose();
+			return true;
+		}
+		if (!supportsFullscreen()) {
+			return false;
+		}
+		final javax.swing.JComponent component = (javax.swing.JComponent) viewer.getComponent();
+		final ViewerHolder holder = viewerHolder;
+		final gui.commons.tabs.TabContent content = viewer;
+		holder.remove(component);
+		holder.revalidate();
+		holder.repaint();
+		fullScreen = gui.commons.tabs.ViewerFullScreen.open(javax.swing.SwingUtilities.getWindowAncestor(currentScrollPane), component, () -> {
+			fullScreen = null;
+			holder.add(component, java.awt.BorderLayout.CENTER);
+			holder.revalidate();
+			holder.repaint();
+			javax.swing.SwingUtilities.invokeLater(content::onSelected);
+		});
+		return true;
 	}
 
 	/** Gives the tab back to the text editor (used when the last tab is closed: it stays as an empty text tab) */
@@ -253,8 +305,12 @@ public class TabTextEditorObject {
 		if (viewer == null) {
 			return;
 		}
+		if (fullScreen != null) {
+			fullScreen.dispose(); // the component goes back to its tab before it is released
+		}
 		viewer.dispose();
 		viewer = null;
+		viewerHolder = null;
 		viewerId = null;
 		currentScrollPane.getViewport().setView(textArea);
 		currentScrollPane.setLineNumbersEnabled(true);
@@ -299,6 +355,9 @@ public class TabTextEditorObject {
 	}
 
 	public File saveTempFile() throws IOException {
+		if (encrypted != null) {
+			throw new IOException("The text of an encrypted tab is never written in plain form");
+		}
 		if(tempFile == null || !tempFile.exists() || !tempFile.canWrite())
 			tempFile = AbstractPluginApplicationApi.getAvailableProviders().get(0).saveTempFileInApplicationFolder("tempFile.txt", true, "COMMON_DATA/TXT/");
 

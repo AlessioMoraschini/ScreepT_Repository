@@ -107,7 +107,8 @@ public class IniFileManager {
 				JVM_GC_OPTIONS = (gcIni != null)? gcIni.trim() : JVM_GC_OPTIONS;
 			
 			// APPLICATION OPTIONS WITH NULL CHECK
-			String GUI_SCALE = iniConfigFile.get(INI_APP_OPT, "scaleGuiPerc").replace(",", ".");
+			String guiScaleIni = iniConfigFile.get(INI_APP_OPT, "scaleGuiPerc");
+			String GUI_SCALE = guiScaleIni == null ? null : guiScaleIni.replace(",", "."); // a missing key must not stop the launcher
 			GUI_SCALE_ARG_VALUE = (GUI_SCALE == null || GUI_SCALE.equals(""))? GUI_SCALE_ARG_VALUE : GUI_SCALE;
 			String viewShell = iniConfigFile.get(INI_APP_OPT, "viewCmdConsole");
 			viewShellAfterStart = (!"".equals(viewShell) && Boolean.parseBoolean(viewShell))? true : false;

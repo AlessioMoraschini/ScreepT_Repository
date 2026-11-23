@@ -431,6 +431,11 @@ public class CustomTabbedEditor implements ITabsManager {
 			return;
 		}
 
+		// encrypted file: opened decrypted in memory (or not at all: the encrypted bytes are never shown as text)
+		if(openEncryptedFile(fileToLoad)) {
+			return;
+		}
+
 		// integrated viewers (image studio, LogSearch, HTML...) open in their own tab, as chosen in the preferences
 		TabImplementor viewerImplementor = allowViewers && fileToLoad != null && fileToLoad.isFile() ? TabImplementors.resolve(fileToLoad) : null;
 		if(viewerImplementor != null && openInViewerTab(fileToLoad, viewerImplementor)) {
@@ -488,6 +493,52 @@ public class CustomTabbedEditor implements ITabsManager {
 				loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 			}
 		});
+	}
+
+	/** True if the file is encrypted and has been handled here (opened decrypted, cancelled or refused) */
+	private boolean openEncryptedFile(File file) {
+		gui.texteditor.commons.encrypted.EncryptedFileSupport support = tabEditorManager.getEncryptedFileSupport();
+		if (support == null || file == null || !file.isFile() || !support.isEncrypted(file)) {
+			return false;
+		}
+		gui.texteditor.commons.encrypted.EncryptedFileSupport.Opened opened = support.open(file);
+		if (opened == null) {
+			return true; // cancelled or not editable as text: nothing is opened
+		}
+		addTab(null);
+		final TabTextEditorObject tab = loadedTabObj;
+		alreadyLoading = true;
+		try {
+			tab.textArea.setText(opened.text);
+			tab.textArea.discardAllEdits();
+			tab.textArea.setCaretPosition(0);
+			tab.loadedFile = file;
+			tab.encrypted = opened.binding;
+			tab.unsaved = false;
+		} finally {
+			alreadyLoading = false;
+		}
+		currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(file, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
+		tabEditorManager.doAfterFileLoad();
+		updateSavedLabelNTab(null);
+		return true;
+	}
+
+	/**
+	 * Writes the text of the tab over its file: encrypted again for an encrypted tab, plain otherwise.
+	 * Returns false (tab left unsaved, file untouched) on failure.
+	 */
+	public boolean writeTabToFile(TabTextEditorObject tab, String text, File target) {
+		try {
+			if (tab.encrypted != null) {
+				tab.encrypted.write(text, target);
+				return true;
+			}
+			return FileWorker.writeStringToFile(text, target, true);
+		} catch (Exception e) {
+			logger.error("Cannot save " + target + (tab.encrypted != null ? " (encrypted)" : ""), e);
+			return false;
+		}
 	}
 
 	public void applyStyleToTabs() {
@@ -651,6 +702,12 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 
 	public TabTextEditorObject addTab(File file) {
+		// the encrypted bytes are never loaded as text (a save would write them back mangled): they open only through loadFile, decrypted
+		gui.texteditor.commons.encrypted.EncryptedFileSupport encryptedSupport = tabEditorManager.getEncryptedFileSupport();
+		if (file != null && encryptedSupport != null && file.isFile() && encryptedSupport.isEncrypted(file)) {
+			logger.warn("Encrypted file not loaded as plain text: " + file);
+			return null;
+		}
 		try {
 			isAddingTab = true;
 
@@ -745,6 +802,11 @@ public class CustomTabbedEditor implements ITabsManager {
 
 		// an integrated viewer has no text to reload: it keeps showing its own content
 		if (loadedTabObj.isEmbeddedViewer()) {
+			return;
+		}
+		// an encrypted tab holds the decrypted text: reading the file would show the encrypted bytes
+		if (loadedTabObj.isEncrypted()) {
+			dialogHelper.warn(I18n.t("editor.encrypted_no_reload"), "Reload file");
 			return;
 		}
 
@@ -864,6 +926,7 @@ public class CustomTabbedEditor implements ITabsManager {
 			if (index > 0 && mainTabList.getTabCount() > 1) {
 
 				releaseViewerOf(loadedList.getList().get(index));
+				loadedList.getList().get(index).closeEncrypted();
 				loadedList.getList().get(index).deleteTempFile();
 				loadedList.getList().remove(index);
 				mainTabList.remove(index);
@@ -878,6 +941,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 				if (!loadedList.getList().isEmpty()) {
 					releaseViewerOf(loadedList.getList().get(0));
+					loadedList.getList().get(0).closeEncrypted();
 					// the temp file to delete is the one of the removed tab, not of the one that becomes first
 					loadedList.getList().remove(0).deleteTempFile();
 				}
@@ -891,6 +955,7 @@ public class CustomTabbedEditor implements ITabsManager {
 					if (!loadedList.getList().isEmpty()) {
 						TabTextEditorObject currentTab = loadedList.getList().get(0);
 						releaseViewerOf(currentTab);
+						currentTab.closeEncrypted();
 						currentTab.deleteTempFile();
 						currentTab.resetData();
 						if (currentTab.pinned) {
@@ -1569,7 +1634,7 @@ public class CustomTabbedEditor implements ITabsManager {
 		boolean done = true;
 		for (TabTextEditorObject element : loadedList.getList()) {
 			if (element.unsaved && !element.isEmbeddedViewer() && element.loadedFile != null && element.loadedFile.exists()) {
-				if (!FileWorker.writeStringToFile(element.textArea.getText(), element.loadedFile, true)) {
+				if (!writeTabToFile(element, element.textArea.getText(), element.loadedFile)) {
 					done = false;
 				} else {
 					element.unsaved = false;

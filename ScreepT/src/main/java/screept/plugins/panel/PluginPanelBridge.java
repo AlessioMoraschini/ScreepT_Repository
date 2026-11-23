@@ -183,5 +183,10 @@ public final class PluginPanelBridge {
 		public boolean supportsTextTools() {
 			return panel.supportsTextTools();
 		}
+
+		@Override
+		public boolean supportsFullscreen() {
+			return !panel.supportsTextTools(); // viewers (PDF, Markdown...), not the plugins that work like the text editor
+		}
 	}
 }

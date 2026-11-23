@@ -156,6 +156,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JButton btnOpenInScreepT;
 
 	public JToggleButton btnTailMode;
+	public JButton btnFullscreen;
 	public JButton btnParseImageText;
 	public JButton btnParsePdfText;
 	public JButton btnFontChooser;
@@ -300,7 +301,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnPropertiesPanel = new ToolbarComponents.Button(EditorIcons.Kind.INFO, TextEditTooltips.tooltipViewPropertiesCurrFile);
 		// TAIL (eye): follows the file as it grows, on/off for the current tab
 		btnTailMode = new ToolbarComponents.Toggle(EditorIcons.Kind.TAIL, TextEditTooltips.tooltipTailMode);
-		addGroup(strip, btnViewInExplorer, btnViewInCmd, btnCopyPath, btnPropertiesPanel, btnTailMode);
+		// FULL SCREEN of the viewer in front (PDF, Markdown...): enabled only on those tabs, F11 does the same
+		btnFullscreen = new ToolbarComponents.Button(EditorIcons.Kind.FULLSCREEN, I18n.t("toolbar.fullscreen_tip"));
+		btnFullscreen.setEnabled(false);
+		btnFullscreen.addActionListener(e -> toggleViewerFullscreen());
+		addGroup(strip, btnViewInExplorer, btnViewInCmd, btnCopyPath, btnPropertiesPanel, btnTailMode, btnFullscreen);
 
 		// TOOLS and VIEW menus
 		ToolbarComponents.MenuButton toolsMenu = new ToolbarComponents.MenuButton(EditorIcons.Kind.TOOLS, I18n.t("toolbar.tools"), I18n.t("toolbar.tools_tip"), this::buildToolsMenu);
@@ -1505,8 +1510,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			try {
 				String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), EOL.defaultEol);
 
-				done = FileWorker.writeStringToFile(outString, loadedTabObj.loadedFile, true);
-			} catch (IOException e1) {
+				done = parent.getCurrentTabEditor().writeTabToFile(loadedTabObj, outString, loadedTabObj.loadedFile);
+			} catch (Exception e1) {
 				dialogHelper.error(I18n.t("common.error_saving_the_selected_file"));
 				logger.error("Exception happened!", e1);
 			}
@@ -1571,14 +1576,18 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 				if (selectedFile != null) {
 					skipRefresh = false;
-					selectedFile = textEditorUtils.adaptFileExt(selectedFile);
+					if (!loadedTabObj.isEncrypted()) {
+						selectedFile = textEditorUtils.adaptFileExt(selectedFile); // an encrypted file keeps the name chosen by the user
+					}
 
 					String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), lineSeparator == null ? EOL.defaultEol : lineSeparator);
 
 					if (selectedFile.exists()) {
 						if (dialogHelper.yesOrNo(various.common.light.i18n.I18n.fmt("app.file_x_exists_overwrite_it", selectedFile.getName()), I18n.t("common.overwrite"))) {
-							done = FileWorker.writeStringToFile(outString, selectedFile, true);
+							done = parent.getCurrentTabEditor().writeTabToFile(loadedTabObj, outString, selectedFile);
 						}
+					} else if (loadedTabObj.isEncrypted()) {
+						done = parent.getCurrentTabEditor().writeTabToFile(loadedTabObj, outString, selectedFile); // encrypted again, never plain
 					} else {
 						done = selectedFile.createNewFile();
 						PrintWriter out = new PrintWriter(selectedFile.getAbsolutePath());
@@ -1589,6 +1598,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						String msgOk = "File " + selectedFile.getName() + " succesfully saved!";
 						dialogHelper.info(msgOk, "File Saved!");
 
+						if (loadedTabObj.isEncrypted()) {
+							loadedTabObj.loadedFile = selectedFile; // the next saves go to the new encrypted file
+							loadedTabObj.unsaved = false;
+						}
 						if (loadedTabObj.loadedFile == null) {
 							// Set as current tabObject's file
 							loadedTabObj.loadedFile = selectedFile;
@@ -1707,6 +1720,21 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			checkFormatterEnabled();       // the formatter depends on the file type
 		} else if (btntTextFormat != null) {
 			btntTextFormat.setEnabled(false);
+		}
+	}
+
+	/** Full screen button: enabled only when the tab in front holds a viewer that supports it */
+	public void applyFullscreenAvailable(boolean available) {
+		if (btnFullscreen != null) {
+			btnFullscreen.setEnabled(available);
+		}
+	}
+
+	/** Full screen on/off for the viewer of the current tab (F11 and the toolbar button) */
+	public void toggleViewerFullscreen() {
+		TabTextEditorObject tab = parent.getCurrentTabEditor().loadedTabObj;
+		if (tab != null) {
+			tab.toggleFullscreen();
 		}
 	}
 

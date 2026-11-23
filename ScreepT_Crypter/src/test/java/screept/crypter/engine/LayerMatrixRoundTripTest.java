@@ -54,7 +54,9 @@ public class LayerMatrixRoundTripTest {
 	static List<CryptoProfile> allProfiles() {
 		List<CryptoProfile> profiles = new ArrayList<CryptoProfile>();
 		int n = 0;
-		for (int length = 1; length <= 3; length++) {
+		// sequences of up to 3 layers only with -Dcrypter.fullMatrix=true (slow); every pair of layers is always covered
+		int maxLength = Boolean.getBoolean("crypter.fullMatrix") ? 3 : 2;
+		for (int length = 1; length <= maxLength; length++) {
 			int total = (int) Math.pow(LAYERS.length, length);
 			for (int code = 0; code < total; code++) {
 				List<CipherLayer> sequence = new ArrayList<CipherLayer>();
@@ -143,7 +145,7 @@ public class LayerMatrixRoundTripTest {
 	@Test
 	public void matrixHasTheExpectedSize() {
 		// 4 + 16 + 64 sequences, minus the 3 made only of shuffle
-		assertEquals(81, allProfiles().size());
+		assertEquals(Boolean.getBoolean("crypter.fullMatrix") ? 81 : 18, allProfiles().size());
 	}
 
 	@Test

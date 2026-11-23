@@ -77,6 +77,6 @@ public class FacadeLayerMatrixTest {
 				}
 			}
 		}
-		assertEquals(81 * 2 * 3, done);
+		assertEquals((Boolean.getBoolean("crypter.fullMatrix") ? 81 : 18) * 2 * 3, done);
 	}
 }

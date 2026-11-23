@@ -1394,11 +1394,23 @@ public class QuickNotesPanel extends JPanel {
 			CardPalette.antialias(g2);
 			g2.setFont(getFont());
 			FontMetrics fm = g2.getFontMetrics();
+			List<Slot> chips = layout(getWidth());
 			if (counts.isEmpty()) {
-				g2.setColor(palette.muted);
-				g2.drawString("Tags: add one with the # button on a note", 0, (getHeight() + fm.getAscent() - fm.getDescent()) / 2);
+				// the hint starts after the last chip ("All"): drawn from the left edge it would sit behind it
+				int hintX = 0;
+				for (Slot chip : chips) {
+					hintX = Math.max(hintX, chip.bounds.x + chip.bounds.width + 10);
+				}
+				String hint = "Tags: add one with the # button on a note";
+				if (hintX + fm.stringWidth(hint) > getWidth()) {
+					hint = "Add tags with # on a note";
+				}
+				if (hintX + fm.stringWidth(hint) <= getWidth()) {
+					g2.setColor(palette.muted);
+					g2.drawString(hint, hintX, (getHeight() + fm.getAscent() - fm.getDescent()) / 2);
+				}
 			}
-			for (Slot slot : layout(getWidth())) {
+			for (Slot slot : chips) {
 				Rectangle r = slot.bounds;
 				g2.setColor(slot.selected ? palette.accent : palette.card);
 				g2.fillRoundRect(r.x, r.y, r.width - 1, r.height - 1, r.height, r.height);

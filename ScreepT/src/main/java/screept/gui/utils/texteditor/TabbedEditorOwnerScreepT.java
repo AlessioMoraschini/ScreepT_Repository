@@ -91,10 +91,25 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 		}
 	}
 
+	private EncryptedFilesScreepT encryptedFiles;
+
+	/** Encrypted text files (Crypter format) open decrypted in memory and are encrypted again at every save */
+	@Override
+	public EncryptedFilesScreepT getEncryptedFileSupport() {
+		if (encryptedFiles == null) {
+			encryptedFiles = new EncryptedFilesScreepT(textEditor.parentFrame, () -> textEditor.isPreloading);
+		}
+		return encryptedFiles;
+	}
+
 	@Override
 	public void onTabSelected(TabTextEditorObject tab) {
 		if (textEditor.subHeaderPanel != null) {
 			textEditor.subHeaderPanel.applyTabKind(tab == null || !tab.isEmbeddedViewer() || tab.viewer.supportsTextTools());
+			textEditor.subHeaderPanel.applyFullscreenAvailable(tab != null && tab.supportsFullscreen());
+			if (textEditor.headerPanel != null) {
+				textEditor.headerPanel.refreshEncryptionState(tab);
+			}
 			// the toggle shows the tail state of the tab in front, in whichever panel it is
 			javax.swing.SwingUtilities.invokeLater(textEditor.subHeaderPanel::syncTailToggle);
 		}

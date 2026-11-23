@@ -39,6 +39,11 @@ public interface ITabbedEditorOwner {
 	default void onTabSelected(gui.texteditor.commons.om.TabTextEditorObject tab) {
 	}
 
+	/** Opening and saving of encrypted text files as normal tabs; null if the application has none */
+	default gui.texteditor.commons.encrypted.EncryptedFileSupport getEncryptedFileSupport() {
+		return null;
+	}
+
 	/** All the tab editors of the window (a second panel can be open beside the first): null = only this one */
 	default java.util.List<CustomTabbedEditor> getAllEditors() {
 		return null;

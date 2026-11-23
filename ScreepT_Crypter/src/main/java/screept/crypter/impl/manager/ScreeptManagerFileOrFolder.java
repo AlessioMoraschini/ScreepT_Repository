@@ -206,8 +206,10 @@ public class ScreeptManagerFileOrFolder {
 		}
 		
 		coderUsed=false;
-		opInfo = screepTManager.getOutputStats();
-		screepTManager.killOpenStreams();
+		if (screepTManager != null) { // null when nothing was started (missing source or destination)
+			opInfo = screepTManager.getOutputStats();
+			screepTManager.killOpenStreams();
+		}
 		
 		return result;
 	}
@@ -321,8 +323,10 @@ public class ScreeptManagerFileOrFolder {
 		}
 		
 		coderUsed=false;
-		opInfo = screepTManager.getOutputStats();
-		screepTManager.killOpenStreams();
+		if (screepTManager != null) { // null when nothing was started (missing source or destination)
+			opInfo = screepTManager.getOutputStats();
+			screepTManager.killOpenStreams();
+		}
 
 		return result;
 	}

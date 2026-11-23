@@ -415,7 +415,7 @@ public class TextEditor extends ModulePanel {
 		// MINI TOOLBAR, extra columns 8 and 10: last workspaces (combo), filter bar on/off (pop-up)
 		btnTreeFilter = new JButton("");
 		GuiUtilsExtended.makeTransparentJButton(btnTreeFilter);
-		btnTreeFilter.setMaximumSize(new Dimension(20, 12));
+		btnTreeFilter.setMaximumSize(new Dimension(20, 20)); // as tall as the 16 px icon plus its margin: at 12 the icon was cut at the top
 		btnTreeFilter.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnTreeFilter.setToolTipText(I18n.t("tree.filter_toggle_tip"));
 		btnTreeFilter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH));
@@ -424,7 +424,7 @@ public class TextEditor extends ModulePanel {
 
 		btnRecentWorkspaces = new JButton("");
 		GuiUtilsExtended.makeTransparentJButton(btnRecentWorkspaces);
-		btnRecentWorkspaces.setMaximumSize(new Dimension(20, 12));
+		btnRecentWorkspaces.setMaximumSize(new Dimension(20, 20)); // as tall as the 16 px icon plus its margin: at 12 the icon was cut at the top
 		btnRecentWorkspaces.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnRecentWorkspaces.setToolTipText(I18n.t("tree.recent_workspaces_tip"));
 		btnRecentWorkspaces.setIcon(recentWorkspacesIcon());

@@ -13,6 +13,7 @@ package screept.gui.panels.subpanels.texteditor;
 
 import various.common.light.i18n.I18n;
 import java.awt.Color;
+import java.io.File;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -47,7 +48,14 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import screept.crypter.impl.aes.AesCipher;
 import screept.crypter.util.ScreeptUtils;
+import gui.texteditor.commons.encrypted.EncryptedFileSupport;
+import gui.texteditor.commons.om.SupportedFileTextEditor;
+import maingUI.MainGuiGeneralAppStarter;
+import various.common.light.files.FileVarious;
+import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker.EOL;
 import screept.gui.panels.TextEditor;
+import screept.gui.utils.texteditor.EncryptedFilesScreepT;
 import screept.gui.utils.texteditor.TextEditorUtils;
 import various.common.light.gui.RXTextUtilities;
 import various.common.light.om.SelectionDtoFull;
@@ -69,7 +77,8 @@ public class TextEditorHeaderPanel extends JPanel{
 	public INItializer currentConfiguration;
 	
 	private JLabel lblVoiceSpeed;
-	private JLabel lblCrypter;
+	private JLabel lblEncState;
+	public JButton btnSaveEncrypted;
 	public JSlider sliderSpokenSpeed;
 	public JCheckBox checkBoxInlineTabs;
 	public JCheckBox chkCutWordsTo;
@@ -89,45 +98,15 @@ public class TextEditorHeaderPanel extends JPanel{
 		this.parentUtils = parent.textEditorUtils;
 		this.currentConfiguration = parent.currentConfiguration;
 		
-		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("insets 6, fill, hidemode 3",
-				"[left][][][][100px:240px:300px,trailing][::35px][100px:240px:300px,trailing][40px:45px:45px][40px:45px:45px][10px:10px,grow][::20px][::20px][10px:10px:10px][::120px][:130px:140px][:130px:130px]",
-				"[:0px:40px,grow]"));
+		// Slim crypto bar: what the tab in front is (plain / encrypted file), the password and the encryption of the selection.
+		setLayout(new MigLayout("insets 4 10 4 10, fillx, hidemode 3", "[grow,fill][][::220px,grow 0][][][][]", "[:0px:40px,grow]"));
 		setForeground(SystemColor.menu);
 		setBorder(new LineBorder(Color.BLACK, 1));
 		setBackground(new Color(30,30,30));
-		
-		lblVoiceSpeed = new JLabel(I18n.t("app.voice_rate_text_speaker_plugin"));
-		lblVoiceSpeed.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblVoiceSpeed.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-		lblVoiceSpeed.setForeground(SystemColor.control);
-		add(lblVoiceSpeed, "cell 0 0,alignx right,aligny center");
-		
-		sliderSpokenSpeed = new JSlider();
-		sliderSpokenSpeed.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
-		sliderSpokenSpeed.setValue(currentConfiguration.getTextEditorOpt().getVoiceRate());
-		sliderSpokenSpeed.setMaximum(400);
-		add(sliderSpokenSpeed, "cell 1 0 2 1,growy");
-		
-		btnCrypt = new JButton();
-		btnCrypt.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		btnCrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
-		btnCrypt.setToolTipText(TextEditTooltips.tooltipCrypt);
-		btnCrypt.setForeground(SystemColor.inactiveCaption);
-		add(btnCrypt, "cell 7 0,alignx center,grow");
 
-		btnDecrypt = new JButton("");
-		btnDecrypt.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		btnDecrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DECRYPT));
-		btnDecrypt.setToolTipText(TextEditTooltips.tooltipDecrypt);
-		btnDecrypt.setForeground(SystemColor.inactiveCaption);
-		add(btnDecrypt, "cell 8 0,alignx center,grow");
-		
-		lblCrypter = new JLabel("Crypt/Decrypt selected or all text ");
-		lblCrypter.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCrypter.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-		lblCrypter.setForeground(SystemColor.control);
-		add(lblCrypter, "cell 4 0,alignx center,aligny center");
+		lblEncState = new JLabel(" ");
+		lblEncState.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		add(lblEncState, "cell 0 0,growx,aligny center");
 
 		chckbxAesShowKey = new JCheckBox("");
 		chckbxAesShowKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_INVISIBLE));
@@ -139,23 +118,56 @@ public class TextEditorHeaderPanel extends JPanel{
 		chckbxAesShowKey.setHorizontalAlignment(SwingConstants.LEFT);
 		chckbxAesShowKey.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		chckbxAesShowKey.setFont(new Font("SansSerif", Font.BOLD, 12));
-		add(chckbxAesShowKey, "cell 5 0,alignx center,aligny center");
+		add(chckbxAesShowKey, "cell 1 0,alignx center,aligny center");
 		chckbxAesShowKey.setSelected(false);
-		
+
 		txtAesKey = new JPasswordField();
 		txtAesKey.putClientProperty("JPasswordField.cutCopyAllowed",true);
 		txtAesKey.setMinimumSize(new Dimension(12, 25));
 		txtAesKey.setHorizontalAlignment(SwingConstants.CENTER);
 		txtAesKey.setEchoChar((char) 0);
 		txtAesKey.setText(AES_KEY_PLACEHOLDER);
-		add(txtAesKey, "cell 6 0,growx");
+		txtAesKey.setToolTipText(I18n.t("enc.key_field_tip"));
+		add(txtAesKey, "cell 2 0,growx");
 		txtAesKey.setColumns(10);
 		txtAesKey.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(Font.PLAIN).deriveFont(15f));
 		txtAesKey.setEchoChar(DEFAULT_PSW_CHAR);
-		AesCipher.check(txtAesKey);	
+		AesCipher.check(txtAesKey);
 		// set default placeholder visible
 		txtAesKey.setEchoChar((char) 0);
-		
+
+		btnCrypt = new JButton();
+		btnCrypt.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		btnCrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
+		btnCrypt.setToolTipText(TextEditTooltips.tooltipCrypt);
+		btnCrypt.setForeground(SystemColor.inactiveCaption);
+		add(btnCrypt, "cell 3 0,alignx center,width 45!,grow");
+
+		btnDecrypt = new JButton("");
+		btnDecrypt.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		btnDecrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DECRYPT));
+		btnDecrypt.setToolTipText(TextEditTooltips.tooltipDecrypt);
+		btnDecrypt.setForeground(SystemColor.inactiveCaption);
+		add(btnDecrypt, "cell 4 0,alignx center,width 45!,grow");
+
+		btnSaveEncrypted = new JButton(I18n.t("enc.save_encrypted"));
+		btnSaveEncrypted.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		btnSaveEncrypted.setToolTipText(I18n.t("enc.save_encrypted_tip"));
+		add(btnSaveEncrypted, "cell 5 0,growy");
+
+		// voice speed of the speaker (toolbar): small, at the end of the bar
+		lblVoiceSpeed = new JLabel(I18n.t("app.voice_rate_text_speaker_plugin"));
+		lblVoiceSpeed.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		lblVoiceSpeed.setForeground(Color.GRAY);
+		add(lblVoiceSpeed, "cell 6 0,gapleft 16,split 2,aligny center");
+
+		sliderSpokenSpeed = new JSlider();
+		sliderSpokenSpeed.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+		sliderSpokenSpeed.setValue(currentConfiguration.getTextEditorOpt().getVoiceRate());
+		sliderSpokenSpeed.setMaximum(400);
+		sliderSpokenSpeed.setOpaque(false);
+		add(sliderSpokenSpeed, "width 90!,growy");
+
 		checkBoxInlineTabs = new JCheckBox("Inline Tabs  ");
 		checkBoxInlineTabs.setOpaque(false);
 		checkBoxInlineTabs.setSelected(true);
@@ -179,6 +191,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		// shown in the graphic preferences: the checkbox only holds the state (and the shortcut still toggles it)
 		
 		addHandlers();
+		refreshEncryptionState(null);
 		
 		startAesKeyCheckThread();
 		
@@ -336,6 +349,9 @@ public class TextEditorHeaderPanel extends JPanel{
 			}
 		});
 
+		// SAVE THE TAB AS ENCRYPTED FILE (an encrypted tab: Save As, always encrypted)
+		btnSaveEncrypted.addActionListener(e -> saveEncrypted());
+
 		// SET SPEAKER'S VOICE SPEED
 		sliderSpokenSpeed.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -379,6 +395,59 @@ public class TextEditorHeaderPanel extends JPanel{
 		
 	}
 	
+	/** Shows what the tab in front is: an encrypted file (saved encrypted at every Ctrl+S) or a plain tab */
+	public void refreshEncryptionState(TabTextEditorObject tab) {
+		boolean encrypted = tab != null && tab.isEncrypted();
+		boolean viewer = tab != null && tab.isEmbeddedViewer();
+		lblEncState.setForeground(encrypted ? new Color(120, 200, 140) : Color.GRAY);
+		lblEncState.setText(encrypted ? I18n.fmt("enc.status_on", tab.encrypted.describe()) : I18n.t("enc.status_off"));
+		btnSaveEncrypted.setEnabled(!viewer);
+		btnSaveEncrypted.setText(I18n.t(encrypted ? "enc.save_encrypted_as" : "enc.save_encrypted"));
+	}
+
+	/** Plain tab: asks the file and the password, writes the text encrypted and keeps the tab bound to that file. Encrypted tab: Save As. */
+	private void saveEncrypted() {
+		final TabTextEditorObject tab = parent.getCurrentTabEditor().loadedTabObj;
+		if (tab == null || tab.isEmbeddedViewer()) {
+			return;
+		}
+		if (tab.isEncrypted()) {
+			parent.subHeaderPanel.saveCurrentFileAs(null);
+			refreshEncryptionState(tab);
+			return;
+		}
+		try {
+			String base = tab.loadedFile != null ? tab.loadedFile.getName() : "NewFile.txt";
+			File target = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(parent.parentFrame, base + ".scp2",
+					FileVarious.getParent(tab.loadedFile), SupportedFileTextEditor.getMultipleFileFilter());
+			if (target == null) {
+				return; // cancelled by user
+			}
+			if (target.exists() && !parent.dialogHelper.yesOrNo(I18n.fmt("app.file_x_exists_overwrite_it", target.getName()), I18n.t("common.overwrite"))) {
+				return;
+			}
+			EncryptedFileSupport support = parent.getCurrentTabEditor().tabEditorManager.getEncryptedFileSupport();
+			EncryptedFileSupport.Binding binding = support instanceof EncryptedFilesScreepT ? ((EncryptedFilesScreepT) support).newBinding(target.getName()) : null;
+			if (binding == null) {
+				return; // cancelled by user
+			}
+			String text = StringWorker.normalizeStringToEol(tab.textArea.getText(), EOL.defaultEol);
+			tab.encrypted = binding;
+			if (!parent.getCurrentTabEditor().writeTabToFile(tab, text, target)) {
+				tab.closeEncrypted();
+				parent.dialogHelper.error(I18n.t("common.error_saving_the_selected_file"));
+				return;
+			}
+			tab.loadedFile = target;
+			tab.unsaved = false;
+			parent.getCurrentTabEditor().updateSavedLabelNTab(null);
+			refreshEncryptionState(tab);
+		} catch (Exception e) {
+			logger.error("Cannot save the tab as encrypted file", e);
+			parent.dialogHelper.error(I18n.t("common.error_saving_the_selected_file"));
+		}
+	}
+
 	public void doInlinedCheck() {
 		if (checkBoxInlineTabs.isSelected()) {
 			currentConfiguration.getTextEditorOpt().inlinedTabs = true;

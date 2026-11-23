@@ -1,0 +1,352 @@
+/**
+ *
+ * =========================================================================================
+ *  Copyright (C) 2019-2020
+ *
+ *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
+ * =========================================================================================
+ *
+ * You should have received a copy of the license with this file.
+ * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
+ */
+package gui.texteditor.commons.tabbededitor;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.awt.GraphicsEnvironment;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import org.junit.Assume;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import gui.commons.dialogutils.JOptionHelperExtended;
+import gui.texteditor.commons.encrypted.EncryptedFileSupport;
+import gui.texteditor.commons.om.TabTextEditorObject;
+import initializer.configs.impl.INItializer;
+
+/**
+ * The tabbed editor driven with a stand-in owner: tabs, text, saving and the rules of the encrypted tabs (never written in plain
+ * form, never reloaded from the encrypted bytes, secrets wiped on close).
+ */
+public class CustomTabbedEditorTest {
+
+	@Rule
+	public TemporaryFolder tmp = new TemporaryFolder();
+
+	private CustomTabbedEditor editor;
+	private EncryptedFileSupport support;
+	private final List<String> warnings = new ArrayList<String>();
+
+	/** Every method answers with the default of its return type (false, 0, null): enough for an owner that does nothing */
+	@SuppressWarnings("unchecked")
+	private static <T> T stub(Class<T> type, final InvocationHandler special) {
+		return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type }, (proxy, method, args) -> {
+			if (special != null) {
+				Object r = special.invoke(proxy, method, args);
+				if (r != NO_ANSWER) {
+					return r;
+				}
+			}
+			Class<?> rt = method.getReturnType();
+			if (rt == boolean.class) {
+				return false;
+			} else if (rt == int.class) {
+				return 0;
+			} else if (rt == long.class) {
+				return 0L;
+			}
+			return null;
+		});
+	}
+
+	private static final Object NO_ANSWER = new Object();
+
+	private static class FakeBinding implements EncryptedFileSupport.Binding {
+		final List<String> writes = new ArrayList<String>();
+		boolean closed;
+		boolean failNext;
+
+		@Override
+		public void write(String text, File target) throws IOException {
+			if (failNext) {
+				failNext = false;
+				throw new IOException("disk full");
+			}
+			writes.add(text);
+			// a real binding encrypts: here the file gets a marker that is not the text
+			Files.write(target.toPath(), ("ENC:" + new StringBuilder(text).reverse()).getBytes(StandardCharsets.UTF_8));
+		}
+
+		@Override
+		public String describe() {
+			return "fake";
+		}
+
+		@Override
+		public void close() {
+			closed = true;
+		}
+	}
+
+	private FakeBinding lastBinding;
+	private final AtomicInteger opened = new AtomicInteger();
+
+	@Before
+	public void setUp() throws Exception {
+		Assume.assumeFalse(GraphicsEnvironment.isHeadless());
+		// the limits are filled at start-up: at 0 every file would count as "too big" and the LogSearch question would appear
+		resources.GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB = 1024 * 20;
+		resources.GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES = 1000000;
+		support = new EncryptedFileSupport() {
+			@Override
+			public boolean isEncrypted(File file) {
+				try {
+					return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8).startsWith("ENC:");
+				} catch (IOException e) {
+					return false;
+				}
+			}
+
+			@Override
+			public Opened open(File file) {
+				opened.incrementAndGet();
+				lastBinding = new FakeBinding();
+				return new Opened("decrypted text of " + file.getName(), lastBinding);
+			}
+		};
+		final JTextField target = new JTextField();
+		ITabbedEditorOwner owner = stub(ITabbedEditorOwner.class, (proxy, method, args) -> {
+			switch (method.getName()) {
+			case "getNewFileStringTarget":
+				return target;
+			case "getEncryptedFileSupport":
+				return support;
+			case "askBeforeRemove":
+				return true;
+			case "getShortcutManager":
+				return stub(various.common.light.om.ICommonShortcuts.class, null);
+			case "getAdditionalConditionBeforeUpdateOnDocumentEvent":
+				return true;
+			default:
+				return NO_ANSWER;
+			}
+		});
+		SwingUtilities.invokeAndWait(() -> {
+			editor = new CustomTabbedEditor(new javax.swing.JFrame(), conf(), owner);
+			editor.dialogHelper = new JOptionHelperExtended(null, false) {
+				@Override
+				public void warn(String msg, String title) {
+					warnings.add(msg);
+				}
+			};
+			editor.addTab(null); // the application always starts with one empty tab
+		});
+	}
+
+	/** A configuration bound to a temporary ini: the user's one is never touched */
+	private INItializer conf() {
+		try {
+			File ini = new File(tmp.newFolder(), "test.ini");
+			ini.createNewFile();
+			INItializer conf = new INItializer();
+			conf.setIniFile(new org.ini4j.Wini(ini));
+			conf.setIniReadFile(new org.ini4j.Wini(ini));
+			return conf;
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	private TabTextEditorObject open(File f) throws Exception {
+		SwingUtilities.invokeAndWait(() -> editor.loadFile(f));
+		SwingUtilities.invokeAndWait(() -> { });
+		return editor.loadedTabObj;
+	}
+
+	private File write(String name, String content) throws Exception {
+		File f = new File(tmp.newFolder(), name);
+		Files.write(f.toPath(), content.getBytes(StandardCharsets.UTF_8));
+		return f;
+	}
+
+	// ------------------------------------------------------------------ plain tabs
+
+	@Test
+	public void plainFileOpensWithItsText() throws Exception {
+		File f = write("plain.txt", "hello\nworld");
+		TabTextEditorObject tab = open(f);
+		assertEquals(f, tab.loadedFile);
+		assertEquals("hello\nworld", tab.textArea.getText().replace("\r\n", "\n").trim());
+		assertFalse(tab.isEncrypted());
+		assertFalse(tab.unsaved);
+	}
+
+	@Test
+	public void newEmptyTabHasNoFile() throws Exception {
+		int before = editor.mainTabList.getTabCount();
+		SwingUtilities.invokeAndWait(() -> editor.addTab(null));
+		assertEquals(before + 1, editor.mainTabList.getTabCount());
+		assertNull(editor.loadedTabObj.loadedFile);
+		assertEquals("", editor.loadedTabObj.textArea.getText());
+	}
+
+	@Test
+	public void writeTabToFileWritesPlainTextForAPlainTab() throws Exception {
+		File f = write("p.txt", "old");
+		TabTextEditorObject tab = open(f);
+		assertTrue(editor.writeTabToFile(tab, "new content", f));
+		assertEquals("new content", new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8));
+	}
+
+	// ------------------------------------------------------------------ encrypted tabs
+
+	@Test
+	public void encryptedFileOpensDecryptedAndBound() throws Exception {
+		File f = write("secret.scp2", "ENC:garbage");
+		TabTextEditorObject tab = open(f);
+		assertEquals(1, opened.get());
+		assertTrue(tab.isEncrypted());
+		assertEquals(f, tab.loadedFile);
+		assertEquals("decrypted text of secret.scp2", tab.textArea.getText());
+		assertFalse("just opened: nothing to save", tab.unsaved);
+	}
+
+	@Test
+	public void encryptedFileIsNeverShownAsText() throws Exception {
+		File f = write("again.scp2", "ENC:garbage");
+		int before = editor.mainTabList.getTabCount();
+		final TabTextEditorObject[] t = new TabTextEditorObject[1];
+		SwingUtilities.invokeAndWait(() -> t[0] = editor.addTab(f));
+		assertNull("addTab refuses the encrypted bytes", t[0]);
+		assertEquals(before, editor.mainTabList.getTabCount());
+		assertEquals(0, opened.get());
+	}
+
+	@Test
+	public void encryptedSaveGoesThroughTheBindingNeverPlain() throws Exception {
+		File f = write("s.scp2", "ENC:garbage");
+		TabTextEditorObject tab = open(f);
+		tab.textArea.setText("top secret MARKER");
+		assertTrue(editor.writeTabToFile(tab, tab.textArea.getText(), tab.loadedFile));
+		assertEquals(1, lastBinding.writes.size());
+		String onDisk = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
+		assertFalse("the plain text never reaches the file", onDisk.contains("top secret"));
+		assertTrue(onDisk.startsWith("ENC:"));
+	}
+
+	@Test
+	public void failedEncryptedSaveReportsFalseAndKeepsTheFile() throws Exception {
+		File f = write("f.scp2", "ENC:original");
+		TabTextEditorObject tab = open(f);
+		lastBinding.failNext = true;
+		assertFalse(editor.writeTabToFile(tab, "x", f));
+		assertEquals("ENC:original", new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8));
+	}
+
+	@Test
+	public void saveAllUnsavedWritesEncryptedTabsEncrypted() throws Exception {
+		File f = write("all.scp2", "ENC:garbage");
+		TabTextEditorObject tab = open(f);
+		tab.textArea.setText("changed secret");
+		tab.unsaved = true;
+		assertTrue(editor.saveAllUnsavedExisting());
+		assertEquals(1, lastBinding.writes.size());
+		assertEquals("changed secret", lastBinding.writes.get(0));
+		assertFalse(tab.unsaved);
+		assertFalse(new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8).contains("changed secret"));
+	}
+
+	@Test
+	public void reloadFromDiskIsRefusedForEncryptedTabs() throws Exception {
+		File f = write("r.scp2", "ENC:garbage");
+		TabTextEditorObject tab = open(f);
+		tab.textArea.setText("edited");
+		SwingUtilities.invokeAndWait(() -> editor.reloadCurrentTab(false));
+		assertEquals("the decrypted text stays", "edited", tab.textArea.getText());
+		assertEquals(1, warnings.size());
+	}
+
+	@Test
+	public void tempFileOfAnEncryptedTabIsNeverWritten() throws Exception {
+		File f = write("t.scp2", "ENC:garbage");
+		TabTextEditorObject tab = open(f);
+		try {
+			tab.saveTempFile();
+			org.junit.Assert.fail("plain text must not go to the temp folder");
+		} catch (IOException expected) {
+			// refused
+		}
+	}
+
+	@Test
+	public void closingTheTabWipesTheSecrets() throws Exception {
+		File f = write("c.scp2", "ENC:garbage");
+		open(f);
+		FakeBinding b = lastBinding;
+		final TabTextEditorObject tab = editor.loadedTabObj;
+		SwingUtilities.invokeAndWait(() -> tab.closeEncrypted());
+		assertTrue(b.closed);
+		assertFalse(tab.isEncrypted());
+	}
+
+	@Test
+	public void cancelledOpenOpensNothing() throws Exception {
+		support = new EncryptedFileSupport() {
+			@Override
+			public boolean isEncrypted(File file) {
+				return true;
+			}
+
+			@Override
+			public Opened open(File file) {
+				return null; // cancelled by user
+			}
+		};
+		// the owner returns the field value at call time: rebuild the editor with the new support
+		setUp2();
+		File f = write("n.scp2", "ENC:garbage");
+		int before = editor.mainTabList.getTabCount();
+		SwingUtilities.invokeAndWait(() -> editor.loadFile(f));
+		assertEquals(before, editor.mainTabList.getTabCount());
+	}
+
+	private void setUp2() throws Exception {
+		final JTextField target = new JTextField();
+		final EncryptedFileSupport s = support;
+		ITabbedEditorOwner owner = stub(ITabbedEditorOwner.class, (proxy, method, args) -> {
+			switch (method.getName()) {
+			case "getNewFileStringTarget":
+				return target;
+			case "getEncryptedFileSupport":
+				return s;
+			case "getShortcutManager":
+				return stub(various.common.light.om.ICommonShortcuts.class, null);
+			default:
+				return NO_ANSWER;
+			}
+		});
+		SwingUtilities.invokeAndWait(() -> {
+			editor = new CustomTabbedEditor(new javax.swing.JFrame(), conf(), owner);
+			editor.addTab(null);
+		});
+	}
+}

@@ -97,6 +97,9 @@ public class TabSplitManager {
 		if (tab.isEmbeddedViewer() && tab.viewer.isModified()) {
 			return null; // a viewer with edits not saved stays where it is
 		}
+		if (tab.isEncrypted()) {
+			return null; // reopening would read the encrypted bytes as text (and a save would write them back in plain form)
+		}
 		Rectangle full = screenBounds(tabsArea);
 		if (!full.contains(screenPoint)) {
 			return null;
