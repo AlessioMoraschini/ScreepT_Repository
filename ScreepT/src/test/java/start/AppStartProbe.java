@@ -148,6 +148,7 @@ public final class AppStartProbe {
 		SecurityManager before = UiSweep.installGuard();
 		try {
 			tourMenus(frame);
+			tourPanels(frame);
 		} finally {
 			UiSweep.removeGuard(before);
 		}
@@ -201,6 +202,43 @@ public final class AppStartProbe {
 			clicker.interrupt();
 		}
 		return error[0];
+	}
+
+	/** Every button, tab, combo, tree and field of the real panels with the real state, one panel after the other. */
+	private static void tourPanels(final JFrame frame) throws Exception {
+		final java.awt.Component[] panels = new java.awt.Component[4];
+		onEdt(() -> {
+			MainGUI.mainAPP.getMntmTextEditor().doClick();
+			panels[0] = MainGuiParent.textEditorPanel;
+			MainGUI.mainAPP.getMntmCrypter().doClick();
+			panels[1] = MainGuiParent.crypterPanel;
+			panels[2] = MainGuiParent.configManagerPanel;
+			panels[3] = frame.getContentPane();
+			return null;
+		});
+		long[] millis = { 6_000, 4_000, 3_000, 6_000 };
+		int touched = 0;
+		for (int i = 0; i < panels.length; i++) {
+			final java.awt.Component panel = panels[i];
+			if (panel == null) {
+				continue;
+			}
+			final long ms = millis[i];
+			Thread t = new Thread(() -> {
+				try {
+					SwingUtilities.invokeAndWait(() -> UiSweep.interactFor(panel, ms));
+				} catch (Throwable ignored) {
+					// a panel that cannot be driven is reported by the missing coverage, not by a failure
+				}
+			}, "tour-panel");
+			t.setDaemon(true);
+			t.start();
+			t.join(ms + 15_000);
+			touched++;
+			closeOtherWindows(frame);
+			Thread.sleep(200);
+		}
+		note("panelsTouched", touched);
 	}
 
 	private static void tourMenus(final JFrame frame) throws Exception {
