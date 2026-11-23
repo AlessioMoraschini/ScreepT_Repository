@@ -23,7 +23,7 @@ public class UiSweepTest {
 	@Test
 	public void everyWindowAndPanelThatCanBeBuiltRenders() throws Exception {
 		UiSweep.Result r = UiSweep.run(screept.gui.panels.CrypterPanel.class, null);
-		UiSweep.runMethods(screept.gui.panels.CrypterPanel.class, null);
+		UiSweep.runMethods(screept.gui.panels.CrypterPanel.class, null, null, 25_000L);
 		java.nio.file.Files.write(java.nio.file.Paths.get("target", "uisweep.txt"), (r + " BUILT " + r.builtNames + " FAILED " + r.failedNames).getBytes("UTF-8"));
 		assertTrue("the interface thread got stuck on " + r.hung, r.hung.isEmpty());
 	}
