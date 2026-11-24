@@ -114,6 +114,8 @@ public class CustomTabbedEditorTest {
 	public void setUp() throws Exception {
 		Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 		// the limits are filled at start-up: at 0 every file would count as "too big" and the LogSearch question would appear
+		// filled at start-up too: the tab header needs it
+		resources.GeneralConfig.BUTTON_TAB_HEAD_FONT = new java.awt.Font("Dialog", java.awt.Font.PLAIN, 12);
 		resources.GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB = 1024 * 20;
 		resources.GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES = 1000000;
 		support = new EncryptedFileSupport() {
@@ -186,6 +188,82 @@ public class CustomTabbedEditorTest {
 		File f = new File(tmp.newFolder(), name);
 		Files.write(f.toPath(), content.getBytes(StandardCharsets.UTF_8));
 		return f;
+	}
+
+	// ------------------------------------------------------------------ tabs restored at start (lazy)
+
+	@Test
+	public void lazyTabReadsItsFileOnlyWhenShown() throws Exception {
+		File f = write("lazy.txt", "late\ncontent");
+		final TabTextEditorObject[] lazy = new TabTextEditorObject[1];
+		int before = editor.mainTabList.getSelectedIndex();
+		SwingUtilities.invokeAndWait(() -> lazy[0] = editor.addLazyTab(f, null));
+		assertNotNull(lazy[0]);
+		assertEquals("added, but the one in front does not change", before, editor.mainTabList.getSelectedIndex());
+		assertTrue(lazy[0].isLazyPending());
+		assertEquals("", lazy[0].textArea.getText());
+		assertEquals(f, lazy[0].loadedFile);
+		assertEquals(f.getName(), editor.mainTabList.getTitleAt(editor.mainTabList.getTabCount() - 1));
+
+		SwingUtilities.invokeAndWait(() -> editor.mainTabList.setSelectedIndex(editor.mainTabList.getTabCount() - 1));
+		assertFalse(lazy[0].isLazyPending());
+		assertEquals("late\ncontent", lazy[0].textArea.getText().replace("\r\n", "\n").trim());
+		assertFalse("loading a file is not an edit", lazy[0].unsaved);
+		assertEquals(f, lazy[0].loadedFile);
+	}
+
+	@Test
+	public void lazyTabStaysEmptyWhileTheRestoreIsDeferred() throws Exception {
+		File f = write("deferred.txt", "x");
+		final TabTextEditorObject[] lazy = new TabTextEditorObject[1];
+		SwingUtilities.invokeAndWait(() -> {
+			editor.lazyLoadDeferred = true;
+			lazy[0] = editor.addLazyTab(f, null);
+			editor.mainTabList.setSelectedIndex(editor.mainTabList.getTabCount() - 1);
+		});
+		assertTrue("shown during the restore: still not read", lazy[0].isLazyPending());
+		SwingUtilities.invokeAndWait(() -> {
+			editor.lazyLoadDeferred = false;
+			editor.loadLazyContent(editor.mainTabList.getSelectedIndex());
+		});
+		assertFalse(lazy[0].isLazyPending());
+		assertEquals("x", lazy[0].textArea.getText().replace("\r\n", "\n").trim());
+	}
+
+	@Test
+	public void lazyTabCanBeClosedWithoutEverReadingIt() throws Exception {
+		File f = write("never.txt", "never read");
+		final TabTextEditorObject[] lazy = new TabTextEditorObject[1];
+		SwingUtilities.invokeAndWait(() -> lazy[0] = editor.addLazyTab(f, null));
+		int tabs = editor.mainTabList.getTabCount();
+		SwingUtilities.invokeAndWait(() -> editor.removeTab(tabs - 1));
+		SwingUtilities.invokeAndWait(() -> { });
+		assertEquals(tabs - 1, editor.mainTabList.getTabCount());
+		assertTrue("never loaded", lazy[0].isLazyPending());
+	}
+
+	@Test
+	public void lazyImageTabOpensInThePanelNotInTheImageWindow() throws Exception {
+		gui.commons.tabs.TabImplementors.register(new gui.commons.imagestudio.ImageStudioTabImplementor());
+		java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(40, 30, java.awt.image.BufferedImage.TYPE_INT_RGB);
+		File f = new File(tmp.newFolder(), "pic.png");
+		javax.imageio.ImageIO.write(img, "png", f);
+		final TabTextEditorObject[] lazy = new TabTextEditorObject[1];
+		// the viewer of the tab was not saved (null): the image still goes to the viewer chosen for images
+		SwingUtilities.invokeAndWait(() -> lazy[0] = editor.addLazyTab(f, null));
+		SwingUtilities.invokeAndWait(() -> editor.mainTabList.setSelectedIndex(editor.mainTabList.getTabCount() - 1));
+		assertTrue("the image is shown by the viewer panel of the tab", lazy[0].isEmbeddedViewer());
+		assertEquals(gui.commons.imagestudio.ImageStudioTabImplementor.ID, lazy[0].viewerId);
+	}
+
+	@Test
+	public void encryptedFileIsNotAddedAsLazyTab() throws Exception {
+		File f = write("secret.scp", "ENC:abc");
+		int tabs = editor.mainTabList.getTabCount();
+		final TabTextEditorObject[] lazy = new TabTextEditorObject[1];
+		SwingUtilities.invokeAndWait(() -> lazy[0] = editor.addLazyTab(f, null));
+		assertNull(lazy[0]);
+		assertEquals(tabs, editor.mainTabList.getTabCount());
 	}
 
 	// ------------------------------------------------------------------ plain tabs

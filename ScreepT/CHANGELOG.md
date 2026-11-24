@@ -6,6 +6,16 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.92 - 2026-11-24
+> Full screen that really works: a button inside PDF, Markdown and LogSearch, in the window and in the tab, and F11 now answers
+
+### Fixed
+- Full screen of PDF and Markdown: [F11] did nothing (the key was never delivered) and the button was easy to miss. Now every viewer has its own full screen button and [F11] works while the viewer has the focus.
+
+### Improved
+- PDF reader, Markdown viewer and LogSearch: full screen button in their own toolbar, both as a window and as a tab. The round X in the corner shows up when the mouse gets close, so it never covers the toolbar buttons.
+- Markdown viewer plugin 1.5.0 (full screen); it needs ScreepT 0.9.92 or newer for this feature, older versions simply ignore the button.
+
 ## 0.9.91 - 2026-11-24
 > Encrypted text tabs, full screen for PDF and Markdown, case conversions in the editor menu, stronger Crypter defaults and more than 1200 automated tests
 

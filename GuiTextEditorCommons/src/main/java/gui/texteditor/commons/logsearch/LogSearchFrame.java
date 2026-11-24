@@ -144,6 +144,7 @@ public class LogSearchFrame extends JFrame {
 	private final IconButton btnMarks = new IconButton(IconButton.Kind.MARKS, false, I18n.t("log.bookmarks_ctrl_b_adds_or_removes"));
 	private final IconButton btnGoto = new IconButton(IconButton.Kind.GOTO, false, I18n.t("log.go_to_line_ctrl_g"));
 	private final IconButton btnExport = new IconButton(IconButton.Kind.EXPORT, false, I18n.t("log.save_the_matching_lines_to_a"));
+	private final IconButton btnFullScreen = new IconButton(IconButton.Kind.FULLSCREEN, false, I18n.t("gui.full_screen_tip"));
 	private final LevelChip[] chips = new LevelChip[LogLevel.COUNT];
 	private final Strip strip = new Strip();
 	private final Pill pillMatches = new Pill();
@@ -323,6 +324,11 @@ public class LogSearchFrame extends JFrame {
 			public void setChangeListener(Runnable listener) {
 				// LogSearch is read only: nothing changes
 			}
+
+			@Override
+			public boolean supportsFullscreen() {
+				return true;
+			}
 		};
 	}
 
@@ -450,6 +456,7 @@ public class LogSearchFrame extends JFrame {
 		getContentPane().add(split, BorderLayout.CENTER);
 		getContentPane().add(status, BorderLayout.SOUTH);
 		((JComponent) getContentPane()).setTransferHandler(dropHandler());
+		gui.commons.tabs.ViewerFullScreen.installKey((JComponent) getContentPane()); // F11, in the window and in the tab
 		matchScrollRef = matchScroll;
 		splitRef = split;
 		applyTheme(matchScroll, split);
@@ -592,6 +599,7 @@ public class LogSearchFrame extends JFrame {
 		c.insets = new Insets(0, 0, 0, 2);
 		bar.add(btnGoto, c);
 		bar.add(btnExport, c);
+		bar.add(btnFullScreen, c);
 
 		// second line, only when the file has levels or dates: the level chips and the date filter
 		filters = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
@@ -699,6 +707,7 @@ public class LogSearchFrame extends JFrame {
 		btnPrev.onClick(() -> jumpToMatch(false));
 		btnGoto.onClick(this::goToLine);
 		btnExport.onClick(this::exportMatches);
+		btnFullScreen.onClick(() -> gui.commons.tabs.ViewerFullScreen.toggle((JComponent) getContentPane()));
 		btnMarks.onClick(() -> showBookmarksMenu(btnMarks));
 		dateFrom.setOnChange(() -> onDateEdited(dateFrom));
 		dateTo.setOnChange(() -> onDateEdited(dateTo));
@@ -2725,7 +2734,7 @@ public class LogSearchFrame extends JFrame {
 	private static final class IconButton extends JComponent {
 		private static final long serialVersionUID = 1L;
 
-		enum Kind { OPEN, CASE, WORD, REGEX, PREV, NEXT, STOP, MARKS, GOTO, EXPORT }
+		enum Kind { OPEN, CASE, WORD, REGEX, PREV, NEXT, STOP, MARKS, GOTO, EXPORT, FULLSCREEN }
 
 		private final Kind kind;
 		private final boolean toggle;
@@ -2879,6 +2888,18 @@ public class LogSearchFrame extends JFrame {
 			case GOTO:
 				text(g, "#", cx, cy, 15f);
 				break;
+			case FULLSCREEN: { // four corners
+				for (int sx = -1; sx <= 1; sx += 2) {
+					for (int sy = -1; sy <= 1; sy += 2) {
+						Path2D corner = new Path2D.Float();
+						corner.moveTo(cx + sx * 7, cy + sy * 3);
+						corner.lineTo(cx + sx * 7, cy + sy * 7);
+						corner.lineTo(cx + sx * 3, cy + sy * 7);
+						g.draw(corner);
+					}
+				}
+				break;
+			}
 			default: { // EXPORT: arrow into a tray
 				g.draw(new Line2D.Float(cx, cy - 7, cx, cy + 2));
 				Path2D head = new Path2D.Float();

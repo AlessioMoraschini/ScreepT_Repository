@@ -93,6 +93,8 @@ public final class OptionDescriptions {
 		m.put("Round selection edges", "The selection of text has rounded corners instead of square ones.");
 		m.put("Hyperlinks enabled", "Links found in the text (web addresses, file paths) become clickable with Ctrl + click.");
 		m.put("Focusable tips", "Tips and auto-completion hints can take the focus, so you can scroll and select inside them.");
+		m.put("Lazy tab loading (open tabs when shown)", "At start only the tab in front is loaded; every other tab of the last session reads its file (or opens its viewer) when you first show it. "
+				+ "Keeps the start fast and light with many files open. When off, all the tabs are loaded at start. Takes effect at the next start.");
 		m.put("Inline tabs (one scrolling line)", "[Ctrl + Shift + I] The tabs of the open files stay on one scrolling line. "
 				+ "When off, they are organized in rows and all of them are always visible.");
 		m.put("Adapt text width (word wrap)", "Long lines wrap at the edge of the editor instead of running out of the window, so no horizontal scrolling is needed. "

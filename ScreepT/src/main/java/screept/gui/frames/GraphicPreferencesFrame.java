@@ -192,10 +192,12 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private JSlider sliderInterline;
 	private JPanel panelSpacing;
 	private JCheckBox chckbxInlineTabs;
+	private JCheckBox chckbxLazyTabs;
 	private JCheckBox chckbxAdaptTextWidth;
 	private boolean BACKUP_ADAPT_TEXT_WIDTH;
 	private int BACKUP_EDITOR_MARGIN;
 	private boolean BACKUP_INLINE_TABS;
+	private boolean BACKUP_LAZY_TABS;
 	private boolean updatingMargin;
 	private JCheckBox checkBoxAutosaveTempFiles;
 	private JPanel footerPanel;
@@ -293,6 +295,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		panelSpacing = createSpacingPanel();
 		chckbxInlineTabs = newCheckBox(I18n.t("app.inline_tabs_one_scrolling_line"));
 		chckbxAdaptTextWidth = newCheckBox(I18n.t("app.adapt_text_width_word_wrap"));
+		chckbxLazyTabs = newCheckBox(I18n.t("app.lazy_tab_loading"));
 		chckbxAdaptTextWidth.setToolTipText(TextEditTooltips.tooltipCutWordsTo);
 		chckbxInlineTabs.setToolTipText("[Ctrl + Shift + I] If selected the tabs of the file editor are on one line, else they are organized in rows and always visible");
 		comboSpellcheckerDictionary = new JComboBox<FileNamed>(RsyntaxUtils.getSpellCheckerDIctionaries());
@@ -386,7 +389,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				.addRow(I18n.t("app.viewers"), createViewerAssociationsButton());
 		textEditor.addSubsection(I18n.t("common.editing"), I18n.t("app.typing_helpers_tabs_and_files"))
 				.addCheckBoxes(chckbxAutoindentation, chckbxCloseCurlybraces, chckbxCloseMarkuptags, chckbxEmulatedTabsWith,
-						chckbxClearWhitespaceLines, checkBoxAutosaveTempFiles, chckbxAutoCheckFiles, chckbxSyncClipboardStyle);
+						chckbxClearWhitespaceLines, checkBoxAutosaveTempFiles, chckbxAutoCheckFiles, chckbxSyncClipboardStyle, chckbxLazyTabs);
 		textEditor.addSubsection(I18n.t("app.display"), I18n.t("app.how_text_is_rendered_and_highlighted"))
 				.addCheckBoxes(chckBoxAntiAliasingON, chckbxAllowFractionalFonts, chckbxCodeFolding, chckbxFadeHighlight,
 						chckbxHighlightndLanguages, chckbxShowWhitespaces, chckbxMarkEOL, chckbxRoundSelectionEdges,
@@ -822,6 +825,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			}
 		});
 		chckbxInlineTabs.addActionListener(e -> applyInlineTabs(chckbxInlineTabs.isSelected()));
+		// read at the next start: nothing to show live
+		chckbxLazyTabs.addActionListener(e -> currentConfiguration.getTextEditorOpt().lazyTabLoading = chckbxLazyTabs.isSelected());
 		chckbxAdaptTextWidth.addActionListener(e -> applyAdaptTextWidth(chckbxAdaptTextWidth.isSelected()));
 
 		spinnerInterline.addChangeListener((e) -> {
@@ -1073,6 +1078,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		spinnerEditorMargin.setValue(txtOpt.getMargin());
 		updatingMargin = false;
 		chckbxInlineTabs.setSelected(txtOpt.isInlinedTabs());
+		chckbxLazyTabs.setSelected(txtOpt.lazyTabLoading);
 		chckbxAdaptTextWidth.setSelected(txtOpt.isBreaklineActive());
 
 		// TEXT AREA
@@ -1182,6 +1188,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		BACKUP_MAX_FILE_SIZE_MB = txtOpt.getMaxFileSizeMb();
 		BACKUP_EDITOR_MARGIN = txtOpt.getMargin();
 		BACKUP_INLINE_TABS = txtOpt.isInlinedTabs();
+		BACKUP_LAZY_TABS = txtOpt.lazyTabLoading;
 		BACKUP_ADAPT_TEXT_WIDTH = txtOpt.isBreaklineActive();
 		BACKUP_SYNC_CLIPBOARD_STYLE = txtOpt.clipboardSyncStyle;
 		BACKUP_AUTOSAVE_TEMP_FILES = txtOpt.autosaveTempFiles;
@@ -1231,6 +1238,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		txtOpt.setMaxFileSizeMb(BACKUP_MAX_FILE_SIZE_MB);
 		applyEditorMargin(BACKUP_EDITOR_MARGIN);
 		applyInlineTabs(BACKUP_INLINE_TABS);
+		txtOpt.lazyTabLoading = BACKUP_LAZY_TABS;
 		applyAdaptTextWidth(BACKUP_ADAPT_TEXT_WIDTH);
 		txtOpt.setClipboardSyncStyle(BACKUP_SYNC_CLIPBOARD_STYLE);
 		txtOpt.setAutosaveTempFiles(BACKUP_AUTOSAVE_TEMP_FILES);

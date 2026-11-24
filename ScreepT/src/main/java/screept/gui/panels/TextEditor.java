@@ -809,7 +809,7 @@ public class TextEditor extends ModulePanel {
 		Map<String, String> openedCarets = currentConfiguration.getTextEditorOpt().getOpenedFileListCaretPosition();
 
 		for(TabTextEditorObject obj : getCurrentTabEditor().loadedList.getList()) {
-			if(obj.loadedFile != null &&
+			if(obj.loadedFile != null && !obj.isLazyPending() &&
 					openedCarets != null &&
 					!openedCarets.isEmpty() &&
 					openedCarets.containsKey(obj.loadedFile.getAbsolutePath())) {
@@ -834,7 +834,12 @@ public class TextEditor extends ModulePanel {
 			String val = null;
 			try {
 				key = obj.loadedFile.getAbsolutePath();
-				val = String.valueOf(obj.textArea.getCaretPosition());
+				// a tab never shown in this session has no caret yet: it keeps the one saved before
+				val = obj.isLazyPending() ? currentConfiguration.getTextEditorOpt().getOpenedFileListCaretPosition().get(key)
+						: String.valueOf(obj.textArea.getCaretPosition());
+				if (val == null) {
+					val = "";
+				}
 			} catch(Exception e) {
 				val = "";
 			}
@@ -1267,6 +1272,22 @@ public class TextEditor extends ModulePanel {
 		return toLoadFile != null && toLoadFile.exists() && !exceedsLength && !exceedsLines;
 	}
 
+	/** The file of the last session that is shown first: the selected one if it is still open, else the last one that exists */
+	private static String pickFrontTab(List<String> openedFiles, String selectedAtStart) {
+		String last = null;
+		if (openedFiles != null) {
+			for (String path : openedFiles) {
+				if (new File(path).exists()) {
+					if (path.equals(selectedAtStart)) {
+						return path;
+					}
+					last = path;
+				}
+			}
+		}
+		return last;
+	}
+
 	private void loadOpenedFilesAtStart() {
 
 		final CustomTabbedEditor currentTabbedEditor = getCurrentTabEditor();
@@ -1276,6 +1297,14 @@ public class TextEditor extends ModulePanel {
 		boolean loadedAlmostOne = false;
 		currentTabbedEditor.alreadyLoading = true;
 		List<String> toRemove = new ArrayList<>();
+		final long restoreStart = System.currentTimeMillis();
+		int lazyTabs = 0;
+
+		// only the tab that comes in front is loaded now: the others are added empty and read their file (or open their viewer)
+		// when they are first shown, so the start does not depend on how many files were open
+		currentTabbedEditor.lazyLoadDeferred = true;
+		final boolean lazyLoading = currentConfiguration.getTextEditorOpt().lazyTabLoading;
+		String frontPath = pickFrontTab(currentConfiguration.getTextEditorOpt().getOpenedFileList(), currentConfiguration.getTextEditorOpt().selectedAtStart);
 
 		// Load previous opened files
 		if (currentConfiguration.getTextEditorOpt().getOpenedFileList() != null
@@ -1284,6 +1313,13 @@ public class TextEditor extends ModulePanel {
 			for (String pathToOpen : currentConfiguration.getTextEditorOpt().getOpenedFileList()) {
 				File toLoadFile = new File(pathToOpen);
 				if (toLoadFile.exists()) {
+					if (lazyLoading && !pathToOpen.equals(frontPath)) {
+						if (currentTabbedEditor.addLazyTab(toLoadFile, currentTabbedEditor.savedViewerOf(toLoadFile, currentConfiguration.getTextEditorOpt().getViewerTabList())) != null) {
+							lazyTabs++;
+							loadedAlmostOne = true;
+						}
+						continue;
+					}
 					// tabs that were hosting a viewer (image studio, LogSearch, HTML...) come back as viewer tabs
 					if(currentTabbedEditor.restoreViewerTab(toLoadFile, currentConfiguration.getTextEditorOpt().getViewerTabList())) {
 						loadedAlmostOne = true;
@@ -1342,8 +1378,8 @@ public class TextEditor extends ModulePanel {
 			// pin again the tabs that were pinned (after removing the empty one: a pinned tab goes to the front)
 			currentTabbedEditor.restorePinnedTabs(currentConfiguration.getTextEditorOpt().getPinnedFileList());
 
-			// now try to select the old opened one
-			String toOpenAtStart = currentConfiguration.getTextEditorOpt().selectedAtStart;
+				// now try to select the old opened one (the one loaded above: the others stay empty until shown)
+			String toOpenAtStart = frontPath != null ? frontPath : currentConfiguration.getTextEditorOpt().selectedAtStart;
 			try {
 				int i = 0;
 				for (TabTextEditorObject iteratorObj : currentTabbedEditor.loadedList.getList()) {
@@ -1357,6 +1393,7 @@ public class TextEditor extends ModulePanel {
 			} catch (Exception e) {
 				logger.warn("Cannot select default file " + toOpenAtStart, e);
 			}
+			currentTabbedEditor.lastIndexTabbedPane = currentTabbedEditor.mainTabList.getSelectedIndex();
 
 			// the second panel, if there was one, with its own files
 			tabSplit.restoreSecondPanel(currentConfiguration.getTextEditorOpt().getSecondPanelFileList(), currentConfiguration.getTextEditorOpt().getViewerTabList());
@@ -1374,6 +1411,10 @@ public class TextEditor extends ModulePanel {
 			currentConfiguration.getTextEditorOpt().setFirstTimeOpened(false);
 			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "firstTimeOpened", false);
 		}
+
+		currentTabbedEditor.lazyLoadDeferred = false;
+		currentTabbedEditor.loadLazyContent(currentTabbedEditor.mainTabList.getSelectedIndex());
+		logger.info("Restored the tabs of the last session in " + (System.currentTimeMillis() - restoreStart) + " ms (" + lazyTabs + " of them load when shown)");
 
 		// From now document listener will be active
 		currentTabbedEditor.alreadyLoading = false;

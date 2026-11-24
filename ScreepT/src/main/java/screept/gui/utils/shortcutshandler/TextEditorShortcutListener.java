@@ -288,13 +288,6 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					subHeaderPanel.btnClear.doClick();
 				}
 				/*
-				 * 	FULL SCREEN of the PDF / Markdown viewer in front -> F11
-				 */
-				else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_F11 && e.getModifiersEx() == 0 && currentTabEditor().loadedTabObj != null
-						&& currentTabEditor().loadedTabObj.supportsFullscreen()) {
-					subHeaderPanel.btnFullscreen.doClick(0);
-				}
-				/*
 				 * 	CRYPT-DECRYPT -> CTRL+Shift+C  ## CTRL+Shift+D
 				 */
 				else if (e.getKeyCode() == 67 && !e.isAltDown() && ShortcutKeys.isCtrlDown(e) && e.isShiftDown()) {

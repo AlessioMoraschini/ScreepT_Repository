@@ -224,6 +224,13 @@ public class TabTextEditorObject {
 		});
 	}
 
+	/** Not null while the content of the tab (text of the file or its viewer) is still to be loaded: it is loaded when the tab is first shown */
+	public volatile Runnable lazyLoader;
+
+	public boolean isLazyPending() {
+		return lazyLoader != null;
+	}
+
 	/** Integrated viewer shown instead of the text area (image studio, LogSearch, HTML...), or null for a normal text tab */
 	public gui.commons.tabs.TabContent viewer;
 
@@ -250,7 +257,6 @@ public class TabTextEditorObject {
 	}
 
 	private ViewerHolder viewerHolder;
-	private gui.commons.tabs.ViewerFullScreen fullScreen;
 
 	/** Not null for a tab opened from (or saved to) an encrypted file: the text is encrypted again at every save */
 	public gui.texteditor.commons.encrypted.EncryptedFileSupport.Binding encrypted;
@@ -272,31 +278,16 @@ public class TabTextEditorObject {
 	}
 
 	public boolean isFullscreen() {
-		return fullScreen != null;
+		return viewer != null && gui.commons.tabs.ViewerFullScreen.isActive((javax.swing.JComponent) viewer.getComponent());
 	}
 
 	/** Moves the viewer to a full screen window (on the screen of the application) and back; false if this tab has no such viewer */
 	public boolean toggleFullscreen() {
-		if (fullScreen != null) {
-			fullScreen.dispose();
-			return true;
-		}
 		if (!supportsFullscreen()) {
 			return false;
 		}
-		final javax.swing.JComponent component = (javax.swing.JComponent) viewer.getComponent();
-		final ViewerHolder holder = viewerHolder;
 		final gui.commons.tabs.TabContent content = viewer;
-		holder.remove(component);
-		holder.revalidate();
-		holder.repaint();
-		fullScreen = gui.commons.tabs.ViewerFullScreen.open(javax.swing.SwingUtilities.getWindowAncestor(currentScrollPane), component, () -> {
-			fullScreen = null;
-			holder.add(component, java.awt.BorderLayout.CENTER);
-			holder.revalidate();
-			holder.repaint();
-			javax.swing.SwingUtilities.invokeLater(content::onSelected);
-		});
+		gui.commons.tabs.ViewerFullScreen.toggle((javax.swing.JComponent) content.getComponent(), content::onSelected);
 		return true;
 	}
 
@@ -305,9 +296,7 @@ public class TabTextEditorObject {
 		if (viewer == null) {
 			return;
 		}
-		if (fullScreen != null) {
-			fullScreen.dispose(); // the component goes back to its tab before it is released
-		}
+		gui.commons.tabs.ViewerFullScreen.exit((javax.swing.JComponent) viewer.getComponent()); // back in its tab before it is released
 		viewer.dispose();
 		viewer = null;
 		viewerHolder = null;

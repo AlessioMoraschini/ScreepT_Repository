@@ -108,6 +108,9 @@ public class CustomTabbedEditor implements ITabsManager {
 	public int breakRemoveLoopIndex = 0;
 	private AtomicBoolean historyActionChanging = new AtomicBoolean(false);
 
+	/* While true (restore at start) showing a tab does not load its content: the caller loads the tab in front with loadLazyContent */
+	public volatile boolean lazyLoadDeferred = false;
+
 	/* THIS WILL REPRESENT THE PREVIOUS INDEX */
 	public int lastIndexTabbedPane = 0;
 
@@ -210,6 +213,14 @@ public class CustomTabbedEditor implements ITabsManager {
 						GuiUtils.giveFocusToComponent(loadedTabObj.textArea);
 					});
 				}
+			}
+		});
+
+		// a tab restored at start loads its content when it is shown for the first time (added last: Swing notifies it first,
+		// so the refresh above already finds the content)
+		mainTabList.addChangeListener(e -> {
+			if (!lazyLoadDeferred) {
+				loadLazyContent(mainTabList.getSelectedIndex());
 			}
 		});
 
@@ -680,9 +691,7 @@ public class CustomTabbedEditor implements ITabsManager {
 					changeMonManager,
 					tabEditorManager.getShortcutManager());
 			newTabNode.textArea.addFocusListener(getFocusListener());
-			newTabNode.embedViewer(content);
-			newTabNode.viewerId = implementor.getId();
-			newTabNode.textArea.setEditable(false);
+			bindViewer(newTabNode, content, implementor);
 
 			mainTabList.addTab(name, newTabNode.currentScrollPane);
 			loadedList.add(newTabNode);
@@ -690,8 +699,6 @@ public class CustomTabbedEditor implements ITabsManager {
 			mainTabList.setTabComponentAt(newIndex, getCustomClosableTab(name, newIndex));
 			mainTabList.setSelectedIndex(newIndex);
 			newTabNode.unsaved = false;
-			content.setChangeListener(() -> SwingUtilities.invokeLater(() -> updateSavedLabelNTab(geIndexOfTabObj(newTabNode))));
-			content.setCloseHandler(() -> SwingUtilities.invokeLater(() -> removeTab(geIndexOfTabObj(newTabNode))));
 			addToHystory(loadedTabObj);
 			updateSavedLabelNTab(newIndex);
 			content.onSelected();
@@ -699,6 +706,169 @@ public class CustomTabbedEditor implements ITabsManager {
 		} finally {
 			isAddingTab = false;
 		}
+	}
+
+	/** Puts the viewer in the tab and connects it to the editor (title changes, close request) */
+	private void bindViewer(final TabTextEditorObject tab, TabContent content, TabImplementor implementor) {
+		tab.embedViewer(content);
+		tab.viewerId = implementor.getId();
+		tab.textArea.setEditable(false);
+		content.setChangeListener(() -> SwingUtilities.invokeLater(() -> updateSavedLabelNTab(geIndexOfTabObj(tab))));
+		content.setCloseHandler(() -> SwingUtilities.invokeLater(() -> removeTab(geIndexOfTabObj(tab))));
+	}
+
+	/**
+	 * Adds a tab for a file of the previous session WITHOUT reading it: the tab (header, icon, name) is there at once, its
+	 * content (the text, or the viewer) is loaded when the tab is first shown. It is not selected. Null for a file that
+	 * cannot be added (encrypted: it opens only decrypted).
+	 * @param viewer the viewer the tab had (shown at the first display), or null for a text tab
+	 */
+	public TabTextEditorObject addLazyTab(final File file, final TabImplementor viewer) {
+		gui.texteditor.commons.encrypted.EncryptedFileSupport encryptedSupport = tabEditorManager.getEncryptedFileSupport();
+		if (file == null || (encryptedSupport != null && file.isFile() && encryptedSupport.isEncrypted(file))) {
+			return null;
+		}
+		try {
+			isAddingTab = true;
+			int newIndex = mainTabList.getTabCount();
+			final TabTextEditorObject tab = new TabTextEditorObject(this, file, "", getChangeListener(), currentConfiguration,
+					changeMonManager, tabEditorManager.getShortcutManager());
+			installTextAreaListeners(tab);
+			tab.textArea.addMouseWheelListener(tabEditorManager.getMouseWheelTabbedAreaListener());
+			if (viewer != null) {
+				tab.viewerId = viewer.getId(); // saved at exit even if the tab is never shown
+				tab.textArea.setEditable(false);
+			}
+			tab.unsaved = false;
+			tab.lazyLoader = () -> loadLazyTab(tab, file, viewer);
+
+			mainTabList.addTab(file.getName(), tab.currentScrollPane);
+			loadedList.add(tab);
+			mainTabList.setTabComponentAt(newIndex, getCustomClosableTab(file.getName(), newIndex));
+			setIconToTab(IconsPathConfigurator.ICON_DOC_SAVED, newIndex);
+			return tab;
+		} catch (Exception e) {
+			logger.error("Cannot add the tab of " + file, e);
+			return null;
+		} finally {
+			isAddingTab = false;
+		}
+	}
+
+	/** Loads the content of a tab added with {@link #addLazyTab}, if still pending (the tab becomes a normal one) */
+	public void loadLazyContent(int index) {
+		TabTextEditorObject tab = (index >= 0 && index < loadedList.getSize()) ? loadedList.getList().get(index) : null;
+		if (tab == null || tab.lazyLoader == null) {
+			return;
+		}
+		Runnable loader = tab.lazyLoader;
+		tab.lazyLoader = null;
+		TabTextEditorObject previous = loadedTabObj;
+		boolean wasLoading = alreadyLoading;
+		loadedTabObj = tab; // the change monitor and the text listeners work on the current tab
+		alreadyLoading = true;
+		try {
+			loader.run();
+		} catch (Throwable e) {
+			logger.error("Cannot load the content of " + tab.loadedFile, e);
+		} finally {
+			alreadyLoading = wasLoading;
+			loadedTabObj = previous;
+		}
+	}
+
+	private void loadLazyTab(final TabTextEditorObject tab, File file, TabImplementor viewer) {
+		// an image whose viewer was not saved goes to the viewer chosen for it, in the tab: as text it would open the image window
+		if (viewer == null && isImageFileSupported(file) && file.isFile()) {
+			viewer = TabImplementors.resolve(file);
+		}
+		if (viewer != null) {
+			try {
+				bindViewer(tab, viewer.open(file), viewer);
+				SwingUtilities.invokeLater(() -> {
+					if (tab.viewer != null) {
+						int index = geIndexOfTabObj(tab);
+						updateSavedLabelNTab(index);
+						setIconToTab(IconsPathConfigurator.ICON_DOC_SAVED, index);
+						tab.viewer.onSelected();
+					}
+				});
+				return;
+			} catch (Throwable e) {
+				logger.warn("Cannot restore the viewer tab of " + file + ", it opens as text", e);
+				tab.viewerId = null;
+				tab.textArea.setEditable(true);
+			}
+		}
+		if (!file.exists()) {
+			logger.warn("File of the restored tab is gone: " + file);
+			return;
+		}
+		// the same check of the immediate load: too big a file asks what to do, and its tab goes away if it is not loaded here
+		if (!validateFileToOpen(file, true)) {
+			SwingUtilities.invokeLater(() -> removeTab(geIndexOfTabObj(tab)));
+			return;
+		}
+		FileWorker.appendFileTxtArea(file, tab.textArea, true);
+		tab.textArea.discardAllEdits();
+		tab.unsaved = false;
+		changeMonManager.updateCurrMonitor(file);
+		tab.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
+		try {
+			String savedCaret = currentConfiguration.getTextEditorOpt().getOpenedFileListCaretPosition().get(file.getAbsolutePath());
+			if (savedCaret != null && !savedCaret.isEmpty()) {
+				tab.textArea.setCaretPosition(Math.min(Integer.parseInt(savedCaret), tab.textArea.getDocument().getLength()));
+			}
+		} catch (Exception e) {
+			logger.debug("No saved caret position for " + file);
+		}
+	}
+
+	/** Focus, mouse and notification listeners that every text tab needs (the text area of a viewer tab gets them too: it can become a text tab) */
+	private void installTextAreaListeners(final TabTextEditorObject newTabNode) {
+		newTabNode.textArea.addFocusListener(getFocusListener());
+		newTabNode.textArea.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				if(!tabEditorManager.getShortcutManager().isAltDown())
+					newTabNode.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+			}
+		});
+		newTabNode.textArea.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						tabEditorManager.doAdditionalStuffOnDocMouseReleased(newTabNode.textArea);
+					}
+				});
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						changeMonManager.checkChanges();
+						tabEditorManager.doAdditionalStuffOnDocMousePressed(newTabNode.textArea);
+					}
+				});
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
 	}
 
 	public TabTextEditorObject addTab(File file) {
@@ -724,49 +894,7 @@ public class CustomTabbedEditor implements ITabsManager {
 					changeMonManager, // file monitor reference
 					tabEditorManager.getShortcutManager() // shortcut listener implementation
 			);
-			newTabNode.textArea.addFocusListener(getFocusListener());
-			newTabNode.textArea.addMouseMotionListener(new MouseMotionAdapter() {
-				@Override
-				public void mouseMoved(MouseEvent e) {
-					if(!tabEditorManager.getShortcutManager().isAltDown())
-						newTabNode.textArea.setCursor(GuiUtils.CURSOR_TEXT);
-				}
-			});
-			newTabNode.textArea.addMouseListener(new MouseListener() {
-
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							tabEditorManager.doAdditionalStuffOnDocMouseReleased(newTabNode.textArea);
-						}
-					});
-				}
-
-				@Override
-				public void mousePressed(MouseEvent e) {
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							changeMonManager.checkChanges();
-							tabEditorManager.doAdditionalStuffOnDocMousePressed(newTabNode.textArea);
-						}
-					});
-				}
-
-				@Override
-				public void mouseExited(MouseEvent e) {
-				}
-
-				@Override
-				public void mouseEntered(MouseEvent e) {
-				}
-
-				@Override
-				public void mouseClicked(MouseEvent e) {
-				}
-			});
+			installTextAreaListeners(newTabNode);
 
 			mainTabList.addTab(name, newTabNode.currentScrollPane);
 			loadedList.add(newTabNode);
@@ -1080,8 +1208,9 @@ public class CustomTabbedEditor implements ITabsManager {
 		String tooltip = "";
 		final JScrollPane i_component = loadedList.getList().get(index).currentScrollPane;
 
-		if (loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
-			tooltip = loadedTabObj.loadedFile.getAbsolutePath();
+		File tabFile = loadedList.getList().get(index).loadedFile;
+		if (tabFile != null && tabFile.exists()) {
+			tooltip = tabFile.getAbsolutePath();
 		} else {
 			tooltip = title;
 		}
@@ -1345,27 +1474,34 @@ public class CustomTabbedEditor implements ITabsManager {
 		}
 	}
 
-	/** Opens at start the file in the viewer tab it had; false if it has no saved viewer or the viewer is gone (then it opens as text) */
-	public boolean restoreViewerTab(File file, java.util.List<String> viewerEntries) {
+	/** The viewer the file had at the last exit; null if it had none or the viewer is gone (then it opens as text) */
+	public TabImplementor savedViewerOf(File file, java.util.List<String> viewerEntries) {
 		if (file == null || viewerEntries == null) {
-			return false;
+			return null;
 		}
 		for (String entry : viewerEntries) {
 			int sep = entry.indexOf('|');
 			if (sep > 0 && entry.substring(sep + 1).equals(file.getAbsolutePath())) {
 				TabImplementor implementor = TabImplementors.byId(entry.substring(0, sep));
-				if (implementor != null && implementor.canOpen(file)) {
-					try {
-						addViewerTab(file, implementor);
-						return true;
-					} catch (Throwable e) {
-						logger.warn("Cannot restore the viewer tab of " + file, e);
-					}
-				}
-				return false;
+				return (implementor != null && implementor.canOpen(file)) ? implementor : null;
 			}
 		}
-		return false;
+		return null;
+	}
+
+	/** Opens at start the file in the viewer tab it had; false if it has no saved viewer or the viewer is gone (then it opens as text) */
+	public boolean restoreViewerTab(File file, java.util.List<String> viewerEntries) {
+		TabImplementor implementor = savedViewerOf(file, viewerEntries);
+		if (implementor == null) {
+			return false;
+		}
+		try {
+			addViewerTab(file, implementor);
+			return true;
+		} catch (Throwable e) {
+			logger.warn("Cannot restore the viewer tab of " + file, e);
+			return false;
+		}
 	}
 
 	private void applyPinnedLook(final TabTextEditorObject tab) {

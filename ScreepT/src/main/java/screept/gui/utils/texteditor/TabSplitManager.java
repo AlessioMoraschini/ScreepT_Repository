@@ -174,6 +174,13 @@ public class TabSplitManager {
 			return;
 		}
 		CustomTabbedEditor editor = null;
+		// like the first panel: the last tab (the one in front) loads now, the others when they are first shown
+		String frontPath = null;
+		for (String path : paths) {
+			if (new File(path).isFile()) {
+				frontPath = path;
+			}
+		}
 		for (String path : paths) {
 			File file = new File(path);
 			if (!file.isFile()) {
@@ -181,11 +188,14 @@ public class TabSplitManager {
 			}
 			if (editor == null) {
 				editor = openSecondPanel();
+				editor.lazyLoadDeferred = true;
 			}
 			setCurrent(editor);
 			editor.alreadyLoading = true;
 			try {
-				if (!editor.restoreViewerTab(file, viewerEntries)) {
+				if (textEditor.currentConfiguration.getTextEditorOpt().lazyTabLoading && !path.equals(frontPath)) {
+					editor.addLazyTab(file, editor.savedViewerOf(file, viewerEntries));
+				} else if (!editor.restoreViewerTab(file, viewerEntries)) {
 					editor.addTab(file);
 				}
 			} catch (Exception e) {
@@ -193,6 +203,10 @@ public class TabSplitManager {
 			} finally {
 				editor.alreadyLoading = false;
 			}
+		}
+		if (editor != null) {
+			editor.lazyLoadDeferred = false;
+			editor.loadLazyContent(editor.mainTabList.getSelectedIndex());
 		}
 		if (editor != null && editor.loadedList.getSize() == 0) {
 			closeSecondPanel();
