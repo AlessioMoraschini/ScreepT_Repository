@@ -7,12 +7,17 @@
 -->
 
 ## 0.9.92 - 2026-11-24
-> Full screen that really works: a button inside PDF, Markdown and LogSearch, in the window and in the tab, and F11 now answers
+> Fast start with many tabs (only the tab in front is loaded, the others when shown) and full screen that really works for PDF, Markdown and LogSearch
+
+### New
+- Lazy tab loading: at start only the tab in front is read; the other tabs of the last session (text, logs, PDF, Markdown, images...) load when you first select them. Dozens of open files no longer slow down or weigh on the start. Option in Graphic preferences > File editor > Editing (on by default).
 
 ### Fixed
 - Full screen of PDF and Markdown: [F11] did nothing (the key was never delivered) and the button was easy to miss. Now every viewer has its own full screen button and [F11] works while the viewer has the focus.
 
 ### Improved
+- PDF viewer in a tab: only the PDF is shown (no text extraction area and buttons), the full screen button sits in the status bar next to the page counter and the PDF has its own scroll bar only.
+- Images of a restored tab open in the viewer panel and no longer in the separate image window.
 - PDF reader, Markdown viewer and LogSearch: full screen button in their own toolbar, both as a window and as a tab. The round X in the corner shows up when the mouse gets close, so it never covers the toolbar buttons.
 - Markdown viewer plugin 1.5.0 (full screen); it needs ScreepT 0.9.92 or newer for this feature, older versions simply ignore the button.
 
