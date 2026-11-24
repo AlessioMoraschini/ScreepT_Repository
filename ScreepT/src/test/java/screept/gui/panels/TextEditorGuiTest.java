@@ -514,6 +514,12 @@ public class TextEditorGuiTest {
 		assertEquals(2, editor.tabbedEditorsList.size());
 		CustomTabbedEditor second = editor.tabbedEditorsList.get(1);
 		assertEquals(2, second.mainTabList.getTabCount());
+		// the tabs behind the front one load when they are first shown (lazy loading): show the first one
+		select(second, 0);
+		for (int i = 0; i < 100 && txt(second.loadedList.getList().get(0)).isEmpty(); i++) {
+			Thread.sleep(50);
+			flushEdt();
+		}
 		assertEquals("in the second panel\n", txt(second.loadedList.getList().get(0)));
 
 		Font font = new Font("Monospaced", Font.PLAIN, 23);

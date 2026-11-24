@@ -495,6 +495,10 @@ public class TextEditor extends ModulePanel {
 		 */
 		shortcutsListener = new TextEditorShortcutListener(currentTextEditor, enabler);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(shortcutsListener);
+		// the first tab was created before the listener existed
+		for (gui.texteditor.commons.om.TabTextEditorObject tab : getCurrentTabEditor().loadedList.getList()) {
+			tab.shortcutsManager = shortcutsListener;
+		}
 
 		try {
 			textEditorUtils.applyStyleToButtons(currentTextEditor);

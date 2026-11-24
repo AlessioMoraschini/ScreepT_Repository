@@ -3,10 +3,13 @@ package jarcall;
 import java.io.IOException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import os.commons.utils.SysUtils;
 
+// manual test: needs the external tool launcher next to the working directory
+@Ignore
 public class ExternalJarCallTest {
 
 	Runtime runtime;
