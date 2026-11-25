@@ -77,6 +77,7 @@ public class TextEditorInteractionGuiTest {
 	private static EdtErrors edtErrors;
 	private static TextEditor editor;
 	private static MainGuiUtils oldUtils;
+	private static String oldTempDir;
 	private static TextEditorShortcutListener listener;
 	private static final List<String> hits = new ArrayList<String>();
 
@@ -86,6 +87,9 @@ public class TextEditorInteractionGuiTest {
 	public static void build() throws Exception {
 		Assume.assumeFalse("needs a display server (windows are never shown)", GraphicsEnvironment.isHeadless());
 		Assume.assumeTrue(AbstractPluginApplicationApi.getAvailableProviders().isEmpty());
+		// copies and backups of the application go to the temporary folder, not to the project
+		oldTempDir = resources.GeneralConfig.TEMP_DIRECTORY;
+		resources.GeneralConfig.TEMP_DIRECTORY = classTmp.newFolder("apptemp").getAbsolutePath() + File.separator;
 		fx = GuiTestSupport.open(classTmp.newFolder("editor"));
 		edtErrors = EdtErrors.plug();
 		editor = edt(new Callable<TextEditor>() {
@@ -125,6 +129,8 @@ public class TextEditorInteractionGuiTest {
 	@AfterClass
 	public static void close() throws Exception {
 		MainGUI.mainGuiUtils = oldUtils;
+		if (oldTempDir != null)
+			resources.GeneralConfig.TEMP_DIRECTORY = oldTempDir;
 		if (edtErrors != null)
 			edtErrors.unplug();
 		if (fx != null)

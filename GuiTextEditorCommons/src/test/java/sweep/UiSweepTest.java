@@ -13,12 +13,28 @@ package sweep;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import test.util.gui.UiSweep;
 
 /** Builds, lays out, paints and disposes every window and panel of the module (never shown): see {@link UiSweep} */
 public class UiSweepTest {
+
+	private String panelFiles;
+
+	/** The clipboard panel creates its Clipboard.txt in the clipboards folder of the application: here that is a folder of target, not of the project */
+	@Before
+	public void redirectPanelFiles() {
+		panelFiles = resources.GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER;
+		resources.GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER = new java.io.File("target", "sweep-panel-files").getAbsolutePath() + java.io.File.separator;
+	}
+
+	@After
+	public void restorePanelFiles() {
+		resources.GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER = panelFiles;
+	}
 
 	@Test
 	public void everyWindowAndPanelThatCanBeBuiltRenders() throws Exception {
