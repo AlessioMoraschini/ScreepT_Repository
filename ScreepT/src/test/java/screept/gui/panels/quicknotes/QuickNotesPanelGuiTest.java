@@ -192,6 +192,29 @@ public class QuickNotesPanelGuiTest {
 		});
 	}
 
+	/** A mouse event of the left button, as the card receives it while the user drags */
+	private static void drag(final Component c, final int id, final int x, final int y) throws Exception {
+		edt(new Runnable() {
+			@Override
+			public void run() {
+				int modifiers = id == MouseEvent.MOUSE_RELEASED ? 0 : java.awt.event.InputEvent.BUTTON1_MASK;
+				c.dispatchEvent(new MouseEvent(c, id, System.currentTimeMillis(), modifiers, x, y, 1, false, MouseEvent.BUTTON1));
+			}
+		});
+		flushEdt();
+	}
+
+	/** Y, in the coordinates of card `from`, of a point at the given fraction of the height of card `to` */
+	private int yOver(int from, int to, double fraction) throws Exception {
+		List<JComponent> cards = cards();
+		JComponent target = cards.get(to);
+		return target.getY() + (int) (target.getHeight() * fraction) - cards.get(from).getY();
+	}
+
+	private boolean dragging() throws Exception {
+		return (Boolean) call(panel, "isDragging");
+	}
+
 	private static void paint(final Component c) throws Exception {
 		edt(new Runnable() {
 			@Override
@@ -333,6 +356,118 @@ public class QuickNotesPanelGuiTest {
 		});
 		key(a, "qn-backspace");
 		assertEquals("ab", workspaces.current().getNotes().get(0).getText());
+	}
+
+	// ------------------------------------------------------------------ drag and drop
+
+	private void threeNotes() throws Exception {
+		add("first");
+		add("second");
+		add("third");
+		assertEquals(Arrays.asList("third", "second", "first"), shownTexts());
+		layoutNow();
+	}
+
+	/** The window is never shown: lay the panel out as a screen would */
+	private void layoutNow() throws Exception {
+		edt(new Runnable() {
+			@Override
+			public void run() {
+				panel.setSize(380, 640);
+				layoutTree(panel);
+			}
+		});
+	}
+
+	private static void layoutTree(java.awt.Container c) {
+		c.doLayout();
+		for (Component k : c.getComponents()) {
+			if (k instanceof java.awt.Container)
+				layoutTree((java.awt.Container) k);
+		}
+	}
+
+	@Test
+	public void dragAndDropMovesACardBelowAnother() throws Exception {
+		threeNotes();
+		JComponent card = cards().get(0);
+		drag(card, MouseEvent.MOUSE_PRESSED, 8, card.getHeight() / 2);
+		assertTrue("the grip starts a drag", dragging());
+		JComponent list = (JComponent) get(panel, "listPanel");
+		drag(card, MouseEvent.MOUSE_DRAGGED, 8, yOver(0, 2, 0.8));
+		Rectangle mark = (Rectangle) call(list, "getDropMark");
+		assertNotNull("a drop mark is shown while dragging", mark);
+		assertTrue("the mark is under the last card", mark.y >= cards().get(2).getY() + cards().get(2).getHeight());
+		drag(card, MouseEvent.MOUSE_RELEASED, 8, yOver(0, 2, 0.8));
+		assertFalse(dragging());
+		layoutNow();
+		assertEquals(Arrays.asList("second", "first", "third"), shownTexts());
+		assertEquals("the new order is in the store", Arrays.asList("second", "first", "third"), noteTexts());
+		assertFalse("the mark is gone", (Boolean) call(list, "isDragOverlayShown"));
+	}
+
+	@Test
+	public void dragAndDropMovesACardAboveAnother() throws Exception {
+		threeNotes();
+		JComponent card = cards().get(2);
+		drag(card, MouseEvent.MOUSE_PRESSED, 6, card.getHeight() / 2);
+		drag(card, MouseEvent.MOUSE_DRAGGED, 6, yOver(2, 0, 0.2));
+		Rectangle mark = (Rectangle) call(get(panel, "listPanel"), "getDropMark");
+		assertTrue("the mark is above the first card", mark.y <= cards().get(0).getY());
+		drag(card, MouseEvent.MOUSE_RELEASED, 6, yOver(2, 0, 0.2));
+		assertEquals(Arrays.asList("first", "third", "second"), shownTexts());
+	}
+
+	@Test
+	public void dragFromOutsideTheGripOrDroppedWhereItWasChangesNothing() throws Exception {
+		threeNotes();
+		JComponent card = cards().get(0);
+		drag(card, MouseEvent.MOUSE_PRESSED, 120, card.getHeight() / 2);
+		assertFalse("only the grip strip starts a drag", dragging());
+		drag(card, MouseEvent.MOUSE_RELEASED, 120, card.getHeight() / 2);
+
+		drag(card, MouseEvent.MOUSE_PRESSED, 8, card.getHeight() / 2);
+		assertTrue(dragging());
+		drag(card, MouseEvent.MOUSE_DRAGGED, 8, card.getHeight() / 2 + 2);
+		drag(card, MouseEvent.MOUSE_RELEASED, 8, card.getHeight() / 2 + 2);
+		assertEquals(Arrays.asList("third", "second", "first"), shownTexts());
+	}
+
+	@Test
+	public void gripAndGhostArePaintedWhileDragging() throws Exception {
+		threeNotes();
+		final JComponent list = (JComponent) get(panel, "listPanel");
+		JComponent card = cards().get(1);
+		drag(card, MouseEvent.MOUSE_PRESSED, 8, card.getHeight() / 2);
+		drag(card, MouseEvent.MOUSE_DRAGGED, 40, yOver(1, 0, 0.1));
+		final BufferedImage[] shot = new BufferedImage[1];
+		edt(new Runnable() {
+			@Override
+			public void run() {
+				list.setSize(380, Math.max(list.getHeight(), list.getPreferredSize().height));
+				shot[0] = new BufferedImage(list.getWidth(), list.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				list.paint(shot[0].createGraphics());
+			}
+		});
+		java.awt.Color accent = screept.gui.style.CardPalette.current().accent;
+		int hits = 0;
+		for (int y = 0; y < shot[0].getHeight(); y++)
+			for (int x = 0; x < shot[0].getWidth(); x++)
+				if ((shot[0].getRGB(x, y) & 0xFFFFFF) == (accent.getRGB() & 0xFFFFFF))
+					hits++;
+		assertTrue("the mark and the border of the ghost use the accent color: " + hits, hits > 300);
+		if (new File("target/qn.dump").exists()) {
+			javax.imageio.ImageIO.write(shot[0], "png", new File("target/qn_drag.png"));
+		}
+		drag(card, MouseEvent.MOUSE_RELEASED, 40, yOver(1, 0, 0.1));
+		assertEquals(Arrays.asList("second", "third", "first"), shownTexts());
+	}
+
+	private List<String> noteTexts() throws Exception {
+		List<String> out = new ArrayList<String>();
+		for (QuickNote n : workspaces.current().getNotes())
+			out.add(n.getText());
+		return out;
 	}
 
 	@Test

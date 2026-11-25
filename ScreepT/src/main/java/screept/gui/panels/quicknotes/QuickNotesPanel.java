@@ -12,6 +12,7 @@
 package screept.gui.panels.quicknotes;
 
 import various.common.light.gui.ShortcutKeys;
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -36,6 +37,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.font.TextAttribute;
 import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -65,6 +67,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -116,6 +119,11 @@ public class QuickNotesPanel extends JPanel {
 	private boolean refreshingCombos;
 	private final Runnable closeAction;
 	private final Map<QuickNote, NoteCard> cards = new IdentityHashMap<>();
+	/** The card being dragged to another place (null when no drag is going on) */
+	private DragState drag;
+	private final Map<Component, Cursor> cursorsBeforeDrag = new IdentityHashMap<>();
+	/** Scrolls the list while a card is dragged near its top or bottom edge */
+	private final Timer dragScroll = new Timer(35, e -> autoScrollDrag());
 
 	private CardPalette palette = CardPalette.current();
 
@@ -668,6 +676,153 @@ public class QuickNotesPanel extends JPanel {
 		}
 	}
 
+	// ------------------------------------------------------------------ drag and drop of the cards
+
+	/** Width of the grip strip at the left of a card: the card is dragged from there */
+	static final int GRIP_ZONE = 20;
+
+	/** State of a drag: the card, its picture, where inside the card it was taken and where it would be dropped */
+	private final class DragState {
+		final NoteCard source;
+		final BufferedImage ghost;
+		final int grabY;
+		Point lastInList = new Point();
+		QuickNote target;
+		boolean after;
+
+		DragState(NoteCard source, BufferedImage ghost, int grabY) {
+			this.source = source;
+			this.ghost = ghost;
+			this.grabY = grabY;
+		}
+	}
+
+	boolean isDragging() {
+		return drag != null;
+	}
+
+	private void startDrag(NoteCard card, MouseEvent e) {
+		if (drag != null || card.getWidth() <= 0 || card.getHeight() <= 0) {
+			return;
+		}
+		BufferedImage image = new BufferedImage(card.getWidth(), card.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = image.createGraphics();
+		card.paint(g);
+		g.dispose();
+		drag = new DragState(card, image, e.getY());
+		card.dragging = true;
+		card.repaint();
+		setDragCursor(true);
+		dragScroll.start();
+		moveDrag(e);
+	}
+
+	private void moveDrag(MouseEvent e) {
+		if (drag == null) {
+			return;
+		}
+		refreshDrop(SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), listPanel));
+	}
+
+	/** Finds where the card would go for a pointer at p (coordinates of the list) and shows the ghost and the drop mark */
+	private void refreshDrop(Point p) {
+		drag.lastInList = p;
+		List<NoteCard> peers = new ArrayList<>();
+		for (Component c : listPanel.getComponents()) {
+			if (c instanceof NoteCard && c != drag.source && ((NoteCard) c).note.isDone() == drag.source.note.isDone()) {
+				peers.add((NoteCard) c);
+			}
+		}
+		drag.target = null;
+		Rectangle mark = null;
+		if (!peers.isEmpty()) {
+			NoteCard best = null;
+			for (NoteCard c : peers) {
+				if (p.y < c.getY() + c.getHeight() / 2) {
+					best = c;
+					break;
+				}
+			}
+			drag.after = best == null;
+			if (best == null) {
+				best = peers.get(peers.size() - 1);
+			}
+			drag.target = best.note;
+			int y = Math.max(3, drag.after ? best.getY() + best.getHeight() + 3 : best.getY() - 3);
+			mark = new Rectangle(best.getX() + 6, y - 2, best.getWidth() - 12, 4);
+		}
+		Point at = new Point(drag.source.getX(), Math.max(0, Math.min(p.y - drag.grabY, Math.max(0, listPanel.getHeight() - drag.ghost.getHeight()))));
+		listPanel.setDragOverlay(drag.ghost, at, mark, palette.accent);
+	}
+
+	private void autoScrollDrag() {
+		if (drag == null) {
+			return;
+		}
+		Rectangle visible = scroll.getViewport().getViewRect();
+		int dy = 0;
+		if (drag.lastInList.y < visible.y + 32) {
+			dy = -14;
+		} else if (drag.lastInList.y > visible.y + visible.height - 32) {
+			dy = 14;
+		}
+		if (dy != 0) {
+			JScrollBar bar = scroll.getVerticalScrollBar();
+			int before = bar.getValue();
+			bar.setValue(before + dy);
+			int moved = bar.getValue() - before;
+			if (moved != 0) {
+				refreshDrop(new Point(drag.lastInList.x, drag.lastInList.y + moved));
+			}
+		}
+	}
+
+	/** Drops the card where the mark is (commit) or leaves everything as it was */
+	private void endDrag(boolean commit) {
+		DragState d = drag;
+		if (d == null) {
+			return;
+		}
+		drag = null;
+		dragScroll.stop();
+		setDragCursor(false);
+		listPanel.clearDragOverlay();
+		d.source.dragging = false;
+		d.source.repaint();
+		if (commit && d.target != null && store.moveRelative(d.source.note, d.target, d.after)) {
+			rebuild(null);
+		}
+	}
+
+	/** The "move" pointer on the whole panel (and window) for the time of the drag: the text fields would show the text one */
+	private void setDragCursor(boolean on) {
+		if (on) {
+			Cursor move = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
+			List<Component> targets = new ArrayList<>();
+			targets.add(this);
+			targets.add(listPanel);
+			targets.add(scroll.getViewport());
+			targets.add(SwingUtilities.getWindowAncestor(this));
+			for (Component c : listPanel.getComponents()) {
+				targets.add(c);
+				if (c instanceof NoteCard) {
+					targets.add(((NoteCard) c).area);
+				}
+			}
+			for (Component c : targets) {
+				if (c != null) {
+					cursorsBeforeDrag.put(c, c.isCursorSet() ? c.getCursor() : null);
+					c.setCursor(move);
+				}
+			}
+		} else {
+			for (Map.Entry<Component, Cursor> e : cursorsBeforeDrag.entrySet()) {
+				e.getKey().setCursor(e.getValue());
+			}
+			cursorsBeforeDrag.clear();
+		}
+	}
+
 	private void addCard(QuickNote note, String[] terms) {
 		NoteCard card = new NoteCard(note, terms);
 		cards.put(note, card);
@@ -918,6 +1073,10 @@ public class QuickNotesPanel extends JPanel {
 		private final JComboBox<String> tagPick = new JComboBox<String>();
 		private boolean filling;
 		private boolean hover;
+		/** The pointer is over the grip strip (the card can be dragged from there) */
+		private boolean gripHover;
+		/** This card is the one being dragged: it stays in place, faded, while its ghost follows the pointer */
+		boolean dragging;
 
 		NoteCard(QuickNote note, String[] terms) {
 			this.note = note;
@@ -925,7 +1084,7 @@ public class QuickNotesPanel extends JPanel {
 			tagLine.setVisible(!note.getTags().isEmpty());
 			installTagPicker();
 			setOpaque(false);
-			setLayout(new MigLayout("insets 8 8 7 6, fillx, gap 6 2", "[][grow,fill][]", "[top][]"));
+			setLayout(new MigLayout("insets 8 " + (GRIP_ZONE + 2) + " 7 6, fillx, gap 6 2", "[][grow,fill][]", "[top][]"));
 
 			check.setSelected(note.isDone());
 			check.setOpaque(false);
@@ -999,6 +1158,81 @@ public class QuickNotesPanel extends JPanel {
 			for (Component c : new Component[] { this, check, area, tagBtn, deleteBtn, dateLbl, tagLine, tagPick }) {
 				c.addMouseListener(hoverTracker);
 			}
+
+			// drag and drop: the card is taken from its grip strip
+			MouseAdapter dragHandler = new MouseAdapter() {
+				@Override
+				public void mouseMoved(MouseEvent e) {
+					setGripHover(drag == null && e.getX() < GRIP_ZONE);
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					if (drag == null) {
+						setGripHover(false);
+					}
+				}
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					if (SwingUtilities.isLeftMouseButton(e) && e.getX() < GRIP_ZONE) {
+						startDrag(NoteCard.this, e);
+					}
+				}
+
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					if (drag != null && drag.source == NoteCard.this) {
+						moveDrag(e);
+					}
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					if (drag != null && drag.source == NoteCard.this) {
+						endDrag(true);
+					}
+				}
+			};
+			addMouseListener(dragHandler);
+			addMouseMotionListener(dragHandler);
+		}
+
+		private void setGripHover(boolean over) {
+			if (gripHover != over) {
+				gripHover = over;
+				setCursor(over ? Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR) : null);
+				setToolTipText(over ? "Drag to move this note" : null);
+				repaint();
+			}
+		}
+
+		/** Six dots, the usual "you can take it here": faint, strong when the pointer is over them or while dragging */
+		private void paintGrip(Graphics2D g2) {
+			Color base = gripHover || dragging ? palette.accent : palette.muted;
+			g2.setColor(new Color(base.getRed(), base.getGreen(), base.getBlue(), gripHover || dragging ? 255 : hover ? 200 : 150));
+			int cx = 9, cy = getHeight() / 2;
+			for (int row = -1; row <= 1; row++) {
+				for (int col = 0; col < 2; col++) {
+					g2.fillOval(cx - 4 + col * 6, cy + row * 6 - 1, 3, 3);
+				}
+			}
+			if (gripHover || dragging) {
+				g2.setColor(new Color(base.getRed(), base.getGreen(), base.getBlue(), 40));
+				g2.fillRoundRect(2, 3, GRIP_ZONE - 5, getHeight() - 7, 8, 8);
+			}
+		}
+
+		@Override
+		public void paint(Graphics g) {
+			if (!dragging) {
+				super.paint(g);
+				return;
+			}
+			Graphics2D g2 = (Graphics2D) g.create();
+			g2.setComposite(AlphaComposite.SrcOver.derive(0.35f));
+			super.paint(g2);
+			g2.dispose();
 		}
 
 		private void setHover(boolean hover) {
@@ -1193,6 +1427,7 @@ public class QuickNotesPanel extends JPanel {
 			g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, ARC, ARC);
 			g2.setColor(editing ? palette.accent : palette.border);
 			g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, ARC, ARC);
+			paintGrip(g2);
 			g2.dispose();
 			super.paintComponent(g);
 		}

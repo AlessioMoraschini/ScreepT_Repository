@@ -277,4 +277,28 @@ public class QuickNotesStoreTest {
 		assertFalse(again.ids().contains(work));
 		assertEquals(Arrays.asList("in main"), texts(again.current()));
 	}
+
+	@Test
+	public void moveRelativePutsANoteBeforeOrAfterAnother() {
+		QuickNotesStore store = new QuickNotesStore(file());
+		QuickNote a = store.addFirst("a"), b = store.addFirst("b"), c = store.addFirst("c"), d = store.addFirst("d");
+		assertEquals(Arrays.asList("d", "c", "b", "a"), texts(store));
+		assertTrue(store.moveRelative(d, a, true));
+		assertEquals(Arrays.asList("c", "b", "a", "d"), texts(store));
+		assertTrue(store.moveRelative(d, c, false));
+		assertEquals(Arrays.asList("d", "c", "b", "a"), texts(store));
+		assertTrue(store.moveRelative(a, c, false));
+		assertEquals(Arrays.asList("d", "a", "c", "b"), texts(store));
+		assertTrue(store.moveRelative(d, b, false));
+		assertEquals(Arrays.asList("a", "c", "d", "b"), texts(store));
+		// nothing changes: same place, itself, unknown notes
+		assertFalse(store.moveRelative(c, a, true));
+		assertFalse(store.moveRelative(c, d, false));
+		assertFalse(store.moveRelative(a, a, true));
+		assertFalse(store.moveRelative(a, new QuickNote("stranger"), true));
+		assertFalse(store.moveRelative(new QuickNote("stranger"), a, true));
+		assertEquals(Arrays.asList("a", "c", "d", "b"), texts(store));
+		store.flush();
+		assertEquals("the order is saved", Arrays.asList("a", "c", "d", "b"), texts(new QuickNotesStore(file())));
+	}
 }

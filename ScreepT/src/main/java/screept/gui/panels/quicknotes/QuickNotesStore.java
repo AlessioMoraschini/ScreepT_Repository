@@ -154,6 +154,26 @@ public class QuickNotesStore {
 		return false;
 	}
 
+	/**
+	 * Puts a note right before (or after) another one (drag and drop). Returns false when nothing changed: unknown notes,
+	 * the same note, or the note was already there.
+	 */
+	public synchronized boolean moveRelative(QuickNote note, QuickNote target, boolean after) {
+		int from = notes.indexOf(note);
+		if (from < 0 || note == target || !notes.contains(target)) {
+			return false;
+		}
+		notes.remove(from);
+		int to = notes.indexOf(target) + (after ? 1 : 0);
+		if (to == from) {
+			notes.add(from, note);
+			return false;
+		}
+		notes.add(to, note);
+		changed();
+		return true;
+	}
+
 	public boolean isCompletedCollapsed() {
 		return completedCollapsed;
 	}

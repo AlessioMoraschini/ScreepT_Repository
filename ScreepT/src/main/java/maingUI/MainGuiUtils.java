@@ -297,14 +297,13 @@ public class MainGuiUtils {
 							dialogHelper.error(I18n.t("app.cannot_read_updates_an_error_occurred"), "An error occurred!");
 							logger.error("Cannot read updates, an error occurred :(", e2);
 						}
+					} catch (Throwable fatal) {
+						// an Error (missing class, out of memory...) used to kill this thread and leave the menu item disabled for good
+						logger.error("Unexpected failure while looking for updates", fatal);
 					} finally {
 						dialogHelper.setAdvicesEnabled(true);
+						resetUpdateCheckGraphics();
 					}
-
-					// Reset application graphics
-					MainGUI.mainFrameScreept.setEnabled(true);
-					MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(true);
-					MainGUI.mainAPP.isUpdating.set(false);
 				}
 
 				SwingUtilities.invokeLater(new Runnable() {
@@ -316,6 +315,21 @@ public class MainGuiUtils {
 				});
 			}
 		});
+	}
+
+	/** Gives the application and the "check for updates" menu item back, whatever happened during the check (always on the screen thread) */
+	private static void resetUpdateCheckGraphics() {
+		MainGUI.mainAPP.isUpdating.set(false);
+		Runnable reset = () -> {
+			MainGUI.mainFrameScreept.setEnabled(true);
+			MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(true);
+		};
+		if (SwingUtilities.isEventDispatchThread()) {
+			reset.run();
+		} else {
+			SwingUtilities.invokeLater(reset);
+		}
+		logger.info("Update check finished: menu item enabled again.");
 	}
 
 	public static boolean checkNewLicense() {

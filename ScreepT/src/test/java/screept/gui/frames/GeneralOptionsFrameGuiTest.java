@@ -418,4 +418,86 @@ public class GeneralOptionsFrameGuiTest {
 		assertEquals("only the launcher option is written", "true", launcherHide());
 		assertNull(GeneralOptionsFrame.singletonInstance);
 	}
+
+	/** The window must fit its content: long lists in a combo box (charsets, languages) must not make the content wider than the window */
+	@Test
+	public void contentIsNotWiderThanTheWindow() throws Exception {
+		edt(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					javax.swing.UIManager.setLookAndFeel("gui.commons.guistyle.laf.ScreepTDarkLaf");
+					javax.swing.SwingUtilities.updateComponentTreeUI(frame);
+				} catch (Exception e) {
+					throw new AssertionError(e);
+				}
+			}
+		});
+		for (final String lang : new String[] {"en", "it"}) {
+			I18n.setLanguage(lang);
+			edt(new Runnable() {
+				@Override
+				public void run() {
+					frame.dispose();
+					GeneralOptionsFrame.singletonInstance = null;
+				}
+			});
+			frame = edt(new Callable<GeneralOptionsFrame>() {
+				@Override
+				public GeneralOptionsFrame call() throws Exception {
+					return new GeneralOptionsFrame(fx.conf);
+				}
+			});
+			flushEdt();
+			final java.awt.Dimension fit = frame.getDefaultDimension();
+			final int content = frame.getContentPane().getPreferredSize().width;
+			final int minContent = frame.getContentPane().getMinimumSize().width;
+			for (String name : new String[] {"comboCharsets", "comboBoxDefEOL", "comboSecurityLevels", "comboLocale"}) {
+				JComboBox<?> combo = (JComboBox<?>) get(frame, name);
+			}
+			widest(frame.getContentPane(), 0, 900);
+			assertTrue(lang + ": the content (" + content + ") must stay narrow, whatever the language", content < com.formdev.flatlaf.util.UIScale.scale(900));
+			assertTrue(lang + ": the window (" + fit.width + ") fits a 1536 px screen", fit.width <= com.formdev.flatlaf.util.UIScale.scale(1000));
+			edt(new Runnable() {
+				@Override
+				public void run() {
+					frame.setSize(fit);
+					frame.getContentPane().setSize(fit.width, fit.height);
+					layoutAll(frame.getContentPane());
+					java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(fit.width, fit.height, java.awt.image.BufferedImage.TYPE_INT_RGB);
+					frame.getContentPane().paint(img.getGraphics());
+					try {
+						javax.imageio.ImageIO.write(img, "png", new java.io.File("target/genopt-" + lang + ".png"));
+					} catch (java.io.IOException e) {
+						throw new AssertionError(e);
+					}
+					for (String name : new String[] {"comboCharsets", "comboBoxDefEOL", "comboSecurityLevels", "comboLocale"}) {
+						try {
+							int w = ((JComboBox<?>) get(frame, name)).getWidth();
+							assertTrue(lang + " " + name + " width " + w + " must not fill the whole window", w <= com.formdev.flatlaf.util.UIScale.scale(600));
+						} catch (Exception e) {
+							throw new AssertionError(e);
+						}
+					}
+				}
+			});
+		}
+	}
+
+	private static void widest(java.awt.Container c, int depth, int limit) {
+		for (java.awt.Component k : c.getComponents()) {
+			if (k.getPreferredSize().width > limit)
+				System.out.println("GENOPT wide " + depth + " " + k.getClass().getSimpleName() + " " + k.getPreferredSize().width + (k instanceof javax.swing.AbstractButton ? " " + ((javax.swing.AbstractButton) k).getText() : ""));
+			if (k instanceof java.awt.Container)
+				widest((java.awt.Container) k, depth + 1, limit);
+		}
+	}
+
+	private static void layoutAll(java.awt.Container c) {
+		c.doLayout();
+		for (java.awt.Component k : c.getComponents()) {
+			if (k instanceof java.awt.Container)
+				layoutAll((java.awt.Container) k);
+		}
+	}
 }
