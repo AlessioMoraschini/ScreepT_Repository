@@ -1515,7 +1515,7 @@ public class TextEditor extends ModulePanel {
 						footerPanel.dynLblTotLines.setText(String.valueOf(textLines));
 						footerPanel.dynLblFileSize.setText(loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.isFile() ? TextEditorFooterPanel.humanReadableSize(loadedTabObj.loadedFile.length()) : "");
 						footerPanel.dynLblColumn.setText(String.valueOf(column));
-						footerPanel.dynLabelCharset.setText(System.getProperty("file.encoding"));
+						footerPanel.dynLabelCharset.setText(loadedTabObj.encoding != null ? loadedTabObj.encoding : System.getProperty("file.encoding"));
 
 						File currFile = loadedTabObj.loadedFile;
 						if (loadedTabObj.loadedFile != null) {

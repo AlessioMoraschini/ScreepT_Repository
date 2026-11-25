@@ -73,6 +73,8 @@ import initializer.configs.impl.INItializer;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import various.common.light.files.FileVarious;
+import various.common.light.files.EncodingDetector;
+import various.common.light.utility.string.StringWorker.EOL;
 import various.common.light.files.FileWorker;
 import various.common.light.files.watcher.ChangeDTO;
 import various.common.light.gui.GuiUtils;
@@ -536,6 +538,29 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 
 	/**
+	 * Encoding a file is read with: the one it seems to have when the option is on (byte order mark, valid UTF-8, else the legacy one;
+	 * the fixed encoding when the file does not say), the fixed one of the preferences otherwise.
+	 */
+	public String encodingFor(File file) {
+		String fixed = currentConfiguration.getGenOpt().getCharset();
+		if (fixed == null || fixed.trim().isEmpty()) {
+			fixed = System.getProperty("file.encoding");
+		}
+		return currentConfiguration.getTextEditorOpt().autoDetectEncoding ? EncodingDetector.detect(file, fixed) : fixed;
+	}
+
+	/** Reads the file into the text area of the tab; the tab remembers the encoding, to save the file with the same one */
+	private void readFileIntoTab(TabTextEditorObject tab, File file, boolean goToStart) {
+		if (file == null) {
+			return; // a new empty tab: nothing to read, the default encoding is used when it is saved
+		}
+		String encoding = encodingFor(file);
+		tab.encoding = encoding;
+		logger.info("Reading " + file.getName() + " as " + encoding);
+		FileWorker.appendFileTxtArea(file, tab.textArea, goToStart, EOL.defaultEol, encoding);
+	}
+
+	/**
 	 * Writes the text of the tab over its file: encrypted again for an encrypted tab, plain otherwise.
 	 * Returns false (tab left unsaved, file untouched) on failure.
 	 */
@@ -545,7 +570,7 @@ public class CustomTabbedEditor implements ITabsManager {
 				tab.encrypted.write(text, target);
 				return true;
 			}
-			return FileWorker.writeStringToFile(text, target, true);
+			return FileWorker.writeStringToFileEncoded(text, target, true, tab.encoding);
 		} catch (Exception e) {
 			logger.error("Cannot save " + target + (tab.encrypted != null ? " (encrypted)" : ""), e);
 			return false;
@@ -809,7 +834,7 @@ public class CustomTabbedEditor implements ITabsManager {
 			SwingUtilities.invokeLater(() -> removeTab(geIndexOfTabObj(tab)));
 			return;
 		}
-		FileWorker.appendFileTxtArea(file, tab.textArea, true);
+		readFileIntoTab(tab, file, true);
 		tab.textArea.discardAllEdits();
 		tab.unsaved = false;
 		changeMonManager.updateCurrMonitor(file);
@@ -900,7 +925,7 @@ public class CustomTabbedEditor implements ITabsManager {
 			loadedList.add(newTabNode);
 			loadedTabObj = newTabNode;
 
-			FileWorker.appendFileTxtArea(file, loadedTabObj.textArea, true);
+			readFileIntoTab(loadedTabObj, file, true);
 			mainTabList.setTabComponentAt(newIndex, getCustomClosableTab(name, newIndex));
 			mainTabList.setSelectedIndex(newIndex);
 			loadedTabObj.textArea.discardAllEdits();
@@ -955,7 +980,7 @@ public class CustomTabbedEditor implements ITabsManager {
 
 			alreadyLoading = true;
 			loadedTabObj.textArea.setText("");
-			FileWorker.appendFileTxtArea(new File(loadedTabObj.loadedFile.getAbsolutePath()), loadedTabObj.textArea, false);
+			readFileIntoTab(loadedTabObj, new File(loadedTabObj.loadedFile.getAbsolutePath()), false);
 			loadedTabObj.unsaved = false;
 			updateSavedLabelNTab(null);
 			alreadyLoading = false;

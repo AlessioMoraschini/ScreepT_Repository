@@ -71,6 +71,10 @@ public final class OptionDescriptions {
 				+ "When you open one, ScreepT proposes LogSearch: a read-only viewer that reads the file a portion at a time and searches it as text "
 				+ "or regular expression, so even files of many gigabytes open at once. You can still choose to load the file in the editor anyway.");
 		m.put("Viewers", "Chooses how each type of file opens: in the file editor, or in an integrated viewer tab (Image Studio for pictures, LogSearch for .log files, HTML viewer for web pages).\n\nOnly the choices that differ from the defaults are saved in the ini file.");
+		m.put("Encoding", "How the file editor reads and saves text files.\n\nThe encoding in the list is used for new files, and for the files that do not say which one they have "
+				+ "(plain ASCII text). With \"Detect the encoding of each file\" on, a file that starts with a byte order mark, or that is valid UTF-8, or that is not UTF-8 "
+				+ "(then Windows-1252, the usual legacy one) is read as such and saved with the same encoding: accents stay right whatever the file.\n\n"
+				+ "With it off, every file is read and saved with the encoding in the list. It applies to the files opened from now on; the footer shows the encoding of the file in front.");
 		m.put("Spellchecker dictionary", "Dictionary used by the spellchecker of the file editor.\n\nThe spellchecker is switched on and off from the file editor toolbar.");
 
 		m.put("Auto-indentation", "When you press Enter, the new line starts with the same indentation as the previous one.");
@@ -115,7 +119,6 @@ public final class OptionDescriptions {
 		m.put("Language", "Language of the application. Not implemented yet: for now ScreepT speaks English.");
 		m.put("Volume", "Volume of the application sounds (clicks, alerts). Move the slider to hear the difference; the number beside it is the current value.");
 		m.put("Exception advices", "Shows an advice window when an exception happens inside ScreepT, so you know that something went wrong.\n\nErrors are written to the log in any case.");
-		m.put("Encoding", "Charset ScreepT uses by default to read and write text files.\n\nChange it only if your files are not UTF-8 and special characters look wrong.");
 		m.put("Default EOL", "Line ending used for new files: LF (Linux / macOS), CRLF (Windows) or CR.\n\nExisting files keep the line endings they already have unless you convert them.");
 		m.put("Configuration autosave", "When checked, ScreepT writes its configuration to the ini file automatically every given number of seconds, "
 				+ "and also when it closes.\n\nWhen unchecked, the configuration is saved only when you ask for it with Save Values.");

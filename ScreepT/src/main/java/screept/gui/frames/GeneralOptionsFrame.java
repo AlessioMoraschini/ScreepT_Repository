@@ -69,7 +69,6 @@ import various.common.light.gui.GUIStyelSettings;
 import various.common.light.gui.GuiUtils;
 import various.common.light.network.proxy.ProxySettingsGUI;
 import various.common.light.om.SecurityLevel;
-import various.common.light.utility.string.ListCharsets;
 import various.common.light.utility.string.StringWorker.EOL;
 
 /**
@@ -92,7 +91,6 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private final JFrame thisFrame;
 	private JTextField textFieldUname;
 	private JCheckBox chckbxAutosave;
-	private JComboBox<String> comboCharsets;
 	private JComboBox<EOL> comboBoxDefEOL;
 	private JComboBox<SecurityLevel> comboSecurityLevels;
 	private JComboBox<Locale> comboLocale;
@@ -129,7 +127,6 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private boolean BACKUP_AUTOCHECK_UPDATES;
 	private boolean BACKUP_AUTOCHECK_PLUGIN_UPDATES;
 	private String BACKUP_CURRENT_USERNAME;
-	private String BACKUP_CHARSET;
 	private SecurityLevel BACKUP_SECURITY_LEVEL;
 	private EOL BACKUP_DEFAULT_EOL;
 	private float BACKUP_GENVOLUME;
@@ -222,10 +219,6 @@ public class GeneralOptionsFrame extends ParentFrame{
 		chckbxExceptionAdvicesEnabled = newCheckBox(I18n.t("app.exception_advices"),
 				I18n.t("app.enable_disable_error_dialog_in_case"));
 
-		comboCharsets = new JComboBox<String>(ListCharsets.getCharsets());
-		comboCharsets.setMaximumRowCount(20);
-		comboCharsets.setToolTipText(I18n.t("app.choose_general_application_charset_to_use"));
-
 		comboBoxDefEOL = new JComboBox<EOL>(EOL.values());
 		comboBoxDefEOL.setToolTipText(I18n.t("app.line_ending_used_for_new_files"));
 
@@ -254,7 +247,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		lblLogLevelChosen = new JLabel(String.valueOf(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START));
 		lblLogLevelChosen.setToolTipText(I18n.t("app.log_level_chosen_at_application_start"));
 
-		for (JComponent control : new JComponent[] { comboLocale, sliderVolume, comboCharsets, comboBoxDefEOL, spinnerInterval,
+		for (JComponent control : new JComponent[] { comboLocale, sliderVolume, comboBoxDefEOL, spinnerInterval,
 				comboSecurityLevels, btnNetworkConfig, buttonOpenAutostartDir }) {
 			control.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		}
@@ -307,8 +300,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 				.addRow(I18n.t("app.language"), comboLocale)
 				.addRow(I18n.t("app.volume"), sliderVolume, lblDynVolume)
 				.addCheckBoxes(chckbxExceptionAdvicesEnabled);
-		optionsPanel.addSection(I18n.t("app.files"), I18n.t("app.encoding_line_endings_and_configuration_auto"))
-				.addRow(I18n.t("app.encoding"), comboCharsets)
+		optionsPanel.addSection(I18n.t("app.files"), I18n.t("app.line_endings_and_configuration_autosave"))
 				.addRow(I18n.t("app.default_eol"), comboBoxDefEOL)
 				.addRow(I18n.t("app.configuration_autosave"), chckbxAutosave, spinnerInterval, new JLabel(I18n.t("app.seconds")), lblIntMinutes);
 		optionsPanel.addSection(I18n.t("app.security_and_network"), I18n.t("app.password_checks_and_proxy"))
@@ -424,16 +416,6 @@ public class GeneralOptionsFrame extends ParentFrame{
 				int AUTOSAVE_INTERVAL = (int)spinnerInterval.getValue();
 				currentConfiguration.getFileOpt().setAutosaveInterval(AUTOSAVE_INTERVAL*1000);
 				lblIntMinutes.setText("("+AUTOSAVE_INTERVAL/60 +" Minutes + "+ AUTOSAVE_INTERVAL%60+" Seconds)");
-			}
-		});
-
-		// CHARSETS SELECTOR HANDLER
-		comboCharsets.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String CHARSET = (String)comboCharsets.getSelectedItem();
-				currentConfiguration.getGenOpt().setCharset(CHARSET);
-				logger.info("Default charset: " + CHARSET);
 			}
 		});
 
@@ -596,7 +578,6 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_AUTOSAVE_INTERVAL = currentConfiguration.getFileOpt().getAutosaveInterval()/1000;
 		BACKUP_AUTOSAVE_FLAG = currentConfiguration.getFileOpt().isFlagAutosave();
 		BACKUP_CURRENT_USERNAME = new String(currentConfiguration.getGenOpt().getUserName());
-		BACKUP_CHARSET = currentConfiguration.getGenOpt().getCharset();
 		BACKUP_SECURITY_LEVEL = currentConfiguration.getAesOpt().getSecurityLevel();
 		BACKUP_DEFAULT_EOL = currentConfiguration.getTextEditorOpt().getEol();
 		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
@@ -620,8 +601,6 @@ public class GeneralOptionsFrame extends ParentFrame{
     	chckbxExceptionAdvicesEnabled.setSelected(currentConfiguration.getGenOpt().isExceptionAdvicesEnabled());
     	chckbxAutomaticallyCheckFor.setSelected(currentConfiguration.getGenOpt().isAutomaticUpdateOn());
     	chckbxAutomaticallyCheckPlugins.setSelected(currentConfiguration.getGenOpt().isAutomaticPluginUpdateOn());
-    	updateComboCharsetSelection(currentConfiguration.getGenOpt().getCharset());
-    	System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
     	comboSecurityLevels.setSelectedItem(currentConfiguration.getAesOpt().getSecurityLevel());
     	comboBoxDefEOL.setSelectedItem(currentConfiguration.getTextEditorOpt().getEol());
 comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(currentConfiguration.getGenOpt().getLanguage())));
@@ -642,20 +621,6 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 		return supportedLocales;
 	}
 
-	public void updateComboCharsetSelection(String charset) {
-		int tot = comboCharsets.getItemCount();
-		for(int i = 0; i < tot; i++) {
-			String value = comboCharsets.getItemAt(i);
-			if(value.equalsIgnoreCase(charset)) {
-				comboCharsets.setSelectedIndex(i);
-				break;
-			}
-		}
-
-		comboCharsets.revalidate();
-		comboCharsets.repaint();
-	}
-
 	private void updateComboLocale() {
 		for (int i = 0; i < comboLocale.getItemCount(); i++) {
 			Locale currentScanLocale = (comboLocale.getItemAt(i));
@@ -674,7 +639,6 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 		currentConfiguration.getFileOpt().autosaveInterval = BACKUP_AUTOSAVE_INTERVAL*1000;
 		currentConfiguration.getFileOpt().setFlagAutosave(BACKUP_AUTOSAVE_FLAG);
 		currentConfiguration.getGenOpt().setUserName(BACKUP_CURRENT_USERNAME);
-		currentConfiguration.getGenOpt().setCharset(BACKUP_CHARSET);
 		currentConfiguration.getAesOpt().setSecurityLevel(BACKUP_SECURITY_LEVEL);
 		currentConfiguration.getTextEditorOpt().setEol(BACKUP_DEFAULT_EOL);
 		currentConfiguration.getGenOpt().setGeneralVolume(BACKUP_GENVOLUME);
@@ -686,7 +650,6 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 		various.common.light.i18n.I18n.setLanguage(BACKUP_LANGUAGE);
 
 		// reset INItializer reference currentConfiguration too
-		System.setProperty("file.encoding", BACKUP_CHARSET);
 	}
 
 	private void addOrRemoveFromAutostart(boolean flagAutostartActive, boolean showDialogs) {
@@ -732,7 +695,6 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 		BACKUP_AUTOSAVE_INTERVAL = currentConfiguration.getFileOpt().getAutosaveInterval()/1000;
 		BACKUP_AUTOSAVE_FLAG = currentConfiguration.getFileOpt().isFlagAutosave();
 		BACKUP_CURRENT_USERNAME = currentConfiguration.getGenOpt().getUserName();
-		BACKUP_CHARSET = currentConfiguration.getGenOpt().getCharset();
 		BACKUP_SECURITY_LEVEL = currentConfiguration.getAesOpt().getSecurityLevel();
 		BACKUP_DEFAULT_EOL = currentConfiguration.getTextEditorOpt().getEol();
 		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
@@ -744,8 +706,6 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 
 		// write launcher configuration
 		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());
-
-		System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
 	}
 
 	private void writeValues() {
@@ -753,7 +713,6 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "locale", currentConfiguration.getGenOpt().getLocale().toString());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "language", currentConfiguration.getGenOpt().getLanguage());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", currentConfiguration.getGenOpt().getUserName());
-		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "charset", currentConfiguration.getGenOpt().getCharset());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "generalVolume", currentConfiguration.getGenOpt().getGeneralVolume());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "exceptionAdvicesEnabled", currentConfiguration.getGenOpt().isExceptionAdvicesEnabled());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "automaticUpdateOn", currentConfiguration.getGenOpt().isAutomaticUpdateOn());

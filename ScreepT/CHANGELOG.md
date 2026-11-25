@@ -6,6 +6,24 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.93 - 2026-11-25
+> Reorder Quick notes by drag and drop, the right encoding for every file, plugins that become the viewer of their files, and Markdown viewer 1.6 (find and replace, document check, colored code, emoji)
+
+### New
+- Quick notes: drag a note by the dots on its left to reorder it. The pointer changes, a copy of the note follows it and a bar shows where it would be dropped; the list scrolls by itself near the edges.
+- File editor: each file is read with the encoding it really has (byte order mark, valid UTF-8, else Windows-1252) and saved with the same one, so accents stay right. It can be switched off in Graphic preferences > File editor, where the fixed encoding now lives.
+- A plugin you download becomes the viewer of its file types (for example .md for the Markdown viewer) at the first start after the installation. The choices you made yourself are not touched.
+- Plugins that need a newer ScreepT are recognised: the plugin manager warns and asks before installing them, and the automatic update check does not offer them but lists them, advising Help > Check for software updates.
+- Markdown viewer plugin 1.6.0 (needs ScreepT 0.9.87 or newer): find and replace (also in the preview), document check (broken links, images and #anchors, headings, code fences, tables), colored code, GitHub alerts, clickable task boxes, front matter, emoji picker with search and recent ones, heading level combo, table sort and paste from a spreadsheet, image paste and copy as rich text.
+
+### Improved
+- Generic Options: the window no longer grows wider than the screen with long texts (Italian): check boxes in one column until there is room for more, and combo boxes and text fields have a maximum width.
+- Encoding of the files moved from Generic Options to Graphic preferences > File editor, together with the new detection switch.
+
+### Fixed
+- Help > Check for software updates: the check could stay blocked after the progress window, without any answer and with the menu item disabled for good. Now it always answers and the item comes back.
+- Editor: wrong upper and lower case after a full stop when a selection was active; first tab opened without its shortcuts.
+
 ## 0.9.92 - 2026-11-24
 > Fast start with many tabs (only the tab in front is loaded, the others when shown) and full screen that really works for PDF, Markdown and LogSearch
 

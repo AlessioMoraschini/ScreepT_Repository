@@ -193,6 +193,11 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private JPanel panelSpacing;
 	private JCheckBox chckbxInlineTabs;
 	private JCheckBox chckbxLazyTabs;
+	/** Encoding of the text files (fixed one, or the fallback of the automatic detection) and the switch of the detection */
+	private javax.swing.JComboBox<String> comboEncoding;
+	private JCheckBox chckbxAutoEncoding;
+	private String BACKUP_ENCODING;
+	private boolean BACKUP_AUTO_ENCODING;
 	private JCheckBox chckbxAdaptTextWidth;
 	private boolean BACKUP_ADAPT_TEXT_WIDTH;
 	private int BACKUP_EDITOR_MARGIN;
@@ -296,6 +301,11 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		chckbxInlineTabs = newCheckBox(I18n.t("app.inline_tabs_one_scrolling_line"));
 		chckbxAdaptTextWidth = newCheckBox(I18n.t("app.adapt_text_width_word_wrap"));
 		chckbxLazyTabs = newCheckBox(I18n.t("app.lazy_tab_loading"));
+		comboEncoding = new javax.swing.JComboBox<String>(various.common.light.utility.string.ListCharsets.getCharsets());
+		comboEncoding.setMaximumRowCount(20);
+		comboEncoding.setToolTipText(I18n.t("app.choose_general_application_charset_to_use"));
+		chckbxAutoEncoding = newCheckBox(I18n.t("app.detect_encoding_automatically"));
+		chckbxAutoEncoding.setToolTipText(I18n.t("app.detect_encoding_tip"));
 		chckbxAdaptTextWidth.setToolTipText(TextEditTooltips.tooltipCutWordsTo);
 		chckbxInlineTabs.setToolTipText("[Ctrl + Shift + I] If selected the tabs of the file editor are on one line, else they are organized in rows and always visible");
 		comboSpellcheckerDictionary = new JComboBox<FileNamed>(RsyntaxUtils.getSpellCheckerDIctionaries());
@@ -386,7 +396,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				.addRow(I18n.t("app.margin_and_interline"), panelSpacing)
 				.addRow(I18n.t("app.max_file_size_mb"), spinnerMaxFileSize)
 				.addRow(I18n.t("app.spellchecker_dictionary"), comboSpellcheckerDictionary)
-				.addRow(I18n.t("app.viewers"), createViewerAssociationsButton());
+				.addRow(I18n.t("app.viewers"), createViewerAssociationsButton())
+				.addRow(I18n.t("app.encoding"), comboEncoding, chckbxAutoEncoding);
 		textEditor.addSubsection(I18n.t("common.editing"), I18n.t("app.typing_helpers_tabs_and_files"))
 				.addCheckBoxes(chckbxAutoindentation, chckbxCloseCurlybraces, chckbxCloseMarkuptags, chckbxEmulatedTabsWith,
 						chckbxClearWhitespaceLines, checkBoxAutosaveTempFiles, chckbxAutoCheckFiles, chckbxSyncClipboardStyle, chckbxLazyTabs);
@@ -827,6 +838,15 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		chckbxInlineTabs.addActionListener(e -> applyInlineTabs(chckbxInlineTabs.isSelected()));
 		// read at the next start: nothing to show live
 		chckbxLazyTabs.addActionListener(e -> currentConfiguration.getTextEditorOpt().lazyTabLoading = chckbxLazyTabs.isSelected());
+		// the files opened from now on are read with it (the open tabs keep the encoding they were read with)
+		comboEncoding.addActionListener(e -> {
+			String charset = (String) comboEncoding.getSelectedItem();
+			if (charset != null) {
+				currentConfiguration.getGenOpt().setCharset(charset);
+				System.setProperty("file.encoding", charset);
+			}
+		});
+		chckbxAutoEncoding.addActionListener(e -> currentConfiguration.getTextEditorOpt().autoDetectEncoding = chckbxAutoEncoding.isSelected());
 		chckbxAdaptTextWidth.addActionListener(e -> applyAdaptTextWidth(chckbxAdaptTextWidth.isSelected()));
 
 		spinnerInterline.addChangeListener((e) -> {
@@ -1047,6 +1067,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		currentConf.writeTxtEditOptions();
 		currentConf.store();
 		currentConf.writeSingleValue(INItializer.GUI_OPT, "darkGuiNimbus", currentConfiguration.getGuiOpt().isDarkGuiNimbus());
+		currentConf.writeSingleValue(INItializer.GEN_OPT, "charset", currentConfiguration.getGenOpt().getCharset());
 
 		return true;
 	}
@@ -1054,6 +1075,15 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	/**
 	 * Update this panel elements, and also general graphics according to config
 	 **/
+	private void selectEncoding(String charset) {
+		for (int i = 0; i < comboEncoding.getItemCount(); i++) {
+			if (comboEncoding.getItemAt(i).equalsIgnoreCase(charset)) {
+				comboEncoding.setSelectedIndex(i);
+				return;
+			}
+		}
+	}
+
 	private void updateGUI(boolean forceGuiRefresh) {
 		TextEditorOption txtOpt = currentConfiguration.getTextEditorOpt();
 		GuiOption guiOpt = currentConfiguration.getGuiOpt();
@@ -1079,6 +1109,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		updatingMargin = false;
 		chckbxInlineTabs.setSelected(txtOpt.isInlinedTabs());
 		chckbxLazyTabs.setSelected(txtOpt.lazyTabLoading);
+		selectEncoding(currentConfiguration.getGenOpt().getCharset());
+		chckbxAutoEncoding.setSelected(txtOpt.autoDetectEncoding);
 		chckbxAdaptTextWidth.setSelected(txtOpt.isBreaklineActive());
 
 		// TEXT AREA
@@ -1189,6 +1221,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		BACKUP_EDITOR_MARGIN = txtOpt.getMargin();
 		BACKUP_INLINE_TABS = txtOpt.isInlinedTabs();
 		BACKUP_LAZY_TABS = txtOpt.lazyTabLoading;
+		BACKUP_ENCODING = currentConf.getGenOpt().getCharset();
+		BACKUP_AUTO_ENCODING = txtOpt.autoDetectEncoding;
 		BACKUP_ADAPT_TEXT_WIDTH = txtOpt.isBreaklineActive();
 		BACKUP_SYNC_CLIPBOARD_STYLE = txtOpt.clipboardSyncStyle;
 		BACKUP_AUTOSAVE_TEMP_FILES = txtOpt.autosaveTempFiles;
@@ -1239,6 +1273,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		applyEditorMargin(BACKUP_EDITOR_MARGIN);
 		applyInlineTabs(BACKUP_INLINE_TABS);
 		txtOpt.lazyTabLoading = BACKUP_LAZY_TABS;
+		currentConf.getGenOpt().setCharset(BACKUP_ENCODING);
+		System.setProperty("file.encoding", BACKUP_ENCODING);
+		txtOpt.autoDetectEncoding = BACKUP_AUTO_ENCODING;
 		applyAdaptTextWidth(BACKUP_ADAPT_TEXT_WIDTH);
 		txtOpt.setClipboardSyncStyle(BACKUP_SYNC_CLIPBOARD_STYLE);
 		txtOpt.setAutosaveTempFiles(BACKUP_AUTOSAVE_TEMP_FILES);

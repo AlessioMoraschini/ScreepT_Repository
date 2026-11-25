@@ -163,7 +163,7 @@ public class MainGuiGeneralAppStarter {
 				gui.commons.tabs.TabImplementors.register(new gui.texteditor.commons.logsearch.LogSearchFrame.Implementor());
 				gui.commons.tabs.TabImplementors.register(new gui.commons.tabs.HtmlViewerTab.Implementor());
 				// plugins with panel mode (Markdown viewer, PDF viewer...) join the viewers at runtime, when the registry asks for them
-				screept.plugins.panel.PluginPanelBridge.install();
+				screept.plugins.panel.PluginPanelBridge.install(currentConfiguration);
 				gui.commons.tabs.TabImplementors.loadOverrides(currentConfiguration.getTextEditorOpt().viewerAssociations);
 				System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
 
@@ -331,6 +331,7 @@ public class MainGuiGeneralAppStarter {
 				SCREEPT_BENCHMARKER.registerEvent("Loading updates manager");
 				loaderGraphics.update("Starting updates manager...", 5);
 				updatesManager = new UpdatesManager(new URL(GeneralConfig.WEB_UPDATES_MANIFEST_URL), GeneralConfig.APP_VERSION);
+				updater.module.plugins.PluginManager.currentAppVersion = GeneralConfig.APP_VERSION;
 				updatesManager.emptyUpdatesDir();
 				logger.info("Updates manager started!");
 			} catch (Exception e) {

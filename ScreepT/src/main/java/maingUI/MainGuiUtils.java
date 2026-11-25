@@ -176,10 +176,23 @@ public class MainGuiUtils {
 				}
 				try {
 					java.util.ArrayList<updater.module.plugins.PluginDTO> updatable = MainGuiGeneralAppStarter.pluginManager.findUpdatablePlugins(!silent);
+					// the updates that ask for a newer ScreepT are not offered: the user is told to update ScreepT first
+					java.util.List<updater.module.plugins.PluginDTO> blocked = new java.util.ArrayList<>();
+					for (java.util.Iterator<updater.module.plugins.PluginDTO> it = updatable.iterator(); it.hasNext();) {
+						updater.module.plugins.PluginDTO candidate = it.next();
+						if (updater.module.plugins.PluginManager.compatibilityProblem(candidate) != null) {
+							blocked.add(candidate);
+							it.remove();
+						}
+					}
 					if (updatable.isEmpty()) {
-						logger.info("All installed plugins are up to date.");
-						if (!silent) {
-							dialogHelper.info(I18n.t("app.all_plugins_up_to_date"), I18n.t("app.plugin_updates_title"));
+						if (blocked.isEmpty()) {
+							logger.info("All installed plugins are up to date.");
+							if (!silent) {
+								dialogHelper.info(I18n.t("app.all_plugins_up_to_date"), I18n.t("app.plugin_updates_title"));
+							}
+						} else {
+							warnBlockedPluginUpdates(blocked);
 						}
 						return;
 					}
@@ -208,6 +221,9 @@ public class MainGuiUtils {
 						if (prepared > 0 && dialogHelper.yesOrNo(I18n.fmt("app.plugins_ready_restart_message", prepared), I18n.t("app.plugin_updates_title"))) {
 							MainGuiManager.restartApplication(false);
 						}
+					}
+					if (!blocked.isEmpty()) {
+						warnBlockedPluginUpdates(blocked);
 					}
 				} catch (Throwable e) {
 					logger.warn("Cannot check the plugin updates", e);
@@ -330,6 +346,18 @@ public class MainGuiUtils {
 			SwingUtilities.invokeLater(reset);
 		}
 		logger.info("Update check finished: menu item enabled again.");
+	}
+
+	/** Plugin updates that need a newer ScreepT: listed, with the advice to update ScreepT from the Help menu */
+	private static void warnBlockedPluginUpdates(java.util.List<updater.module.plugins.PluginDTO> blocked) {
+		StringBuilder list = new StringBuilder();
+		for (updater.module.plugins.PluginDTO plugin : blocked) {
+			list.append("<li><b>").append(updater.module.plugins.PluginManager.displayName(plugin)).append("</b> ")
+				.append(plugin.getLastVersion()).append(" (ScreepT ").append(plugin.getMinAppVersion()).append("+)</li>");
+		}
+		logger.info("Plugin updates not offered, they need a newer ScreepT: " + list);
+		dialogHelper.showTypedOKDialog(I18n.fmt("app.plugin_updates_blocked_message", list, I18n.t("app.help"), updater.module.plugins.PluginManager.updateMenuName()),
+				I18n.t("app.plugin_updates_title"), javax.swing.JOptionPane.WARNING_MESSAGE);
 	}
 
 	public static boolean checkNewLicense() {

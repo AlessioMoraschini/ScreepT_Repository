@@ -122,6 +122,8 @@ public class TabTextEditorObject {
 	// Normal Pojo fields
 	public FileChangeMonitor fileMonitorManager;
 	public File loadedFile;
+	/** Encoding the text of this tab was read with (detected or fixed): the file is saved with it again; null = the default one */
+	public String encoding;
 	public File tempFile;
 	public RTextScrollPane currentScrollPane;
 	public ColumnTextArea textArea;

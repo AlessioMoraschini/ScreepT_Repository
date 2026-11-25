@@ -208,6 +208,32 @@ public class GraphicPreferencesFrameGuiTest {
 		assertFalse("the window knows it is closed", frame.isActive.get());
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test
+	public void encodingChoiceAndDetectionSwitchAreLiveAndRestored() throws Exception {
+		final javax.swing.JComboBox<String> encoding = (javax.swing.JComboBox<String>) get(frame, "comboEncoding");
+		final JCheckBox detect = (JCheckBox) get(frame, "chckbxAutoEncoding");
+		final String charsetBefore = fx.conf.getGenOpt().getCharset();
+		final boolean detectBefore = fx.conf.getTextEditorOpt().autoDetectEncoding;
+		assertEquals("the list shows the configured encoding", charsetBefore, encoding.getSelectedItem());
+		assertEquals(detectBefore, detect.isSelected());
+		edt(new Runnable() {
+			@Override
+			public void run() {
+				encoding.setSelectedItem("ISO-8859-1");
+				detect.doClick();
+			}
+		});
+		assertEquals("ISO-8859-1", fx.conf.getGenOpt().getCharset());
+		assertEquals(!detectBefore, fx.conf.getTextEditorOpt().autoDetectEncoding);
+		assertEquals("ISO-8859-1", System.getProperty("file.encoding"));
+		click(button("btnResetValues"));
+		assertEquals(charsetBefore, fx.conf.getGenOpt().getCharset());
+		assertEquals(detectBefore, fx.conf.getTextEditorOpt().autoDetectEncoding);
+		assertEquals(charsetBefore, System.getProperty("file.encoding"));
+		assertEquals(charsetBefore, encoding.getSelectedItem());
+	}
+
 	@Test
 	public void spinnersAreLiveAndRestored() throws Exception {
 		final JSpinner interline = (JSpinner) get(frame, "spinnerInterline");

@@ -87,10 +87,6 @@ public class GeneralOptionsFrameGuiTest {
 		return (JComboBox<EOL>) get(frame, "comboBoxDefEOL");
 	}
 
-	@SuppressWarnings("unchecked")
-	private JComboBox<String> charsets() throws Exception {
-		return (JComboBox<String>) get(frame, "comboCharsets");
-	}
 
 	@SuppressWarnings("unchecked")
 	private JComboBox<various.common.light.om.SecurityLevel> security() throws Exception {
@@ -216,7 +212,6 @@ public class GeneralOptionsFrameGuiTest {
 		assertFalse(autosave().isSelected());
 		assertEquals(60, interval().getValue());
 		assertEquals(EOL.LF, eol().getSelectedItem());
-		assertEquals("UTF-8", charsets().getSelectedItem());
 		assertEquals(50, volume().getValue());
 		assertFalse("the interval is editable only with autosave on", interval().isEnabled());
 	}
@@ -231,7 +226,6 @@ public class GeneralOptionsFrameGuiTest {
 					autosave().doClick();
 					interval().setValue(90);
 					eol().setSelectedItem(EOL.CRLF);
-					charsets().setSelectedItem("ISO-8859-1");
 					security().setSelectedItem(various.common.light.om.SecurityLevel.values()[various.common.light.om.SecurityLevel.values().length - 1]);
 					volume().setValue(80);
 				} catch (Exception e) {
@@ -243,7 +237,6 @@ public class GeneralOptionsFrameGuiTest {
 		assertTrue(fx.conf.getFileOpt().isFlagAutosave());
 		assertEquals("seconds in the window, milliseconds in the configuration", 90000, fx.conf.getFileOpt().getAutosaveInterval());
 		assertEquals(EOL.CRLF, fx.conf.getTextEditorOpt().getEol());
-		assertEquals("ISO-8859-1", fx.conf.getGenOpt().getCharset());
 		assertEquals(0.8f, fx.conf.getGenOpt().getGeneralVolume(), 0.0001f);
 		assertTrue("the interval follows the autosave switch", interval().isEnabled());
 		assertEquals("nothing is written to the file until Save", "tester", iniValue(INItializer.GEN_OPT, "userName"));
@@ -260,7 +253,6 @@ public class GeneralOptionsFrameGuiTest {
 					interval().setValue(300);
 					eol().setSelectedItem(EOL.CRLF);
 					volume().setValue(10);
-					charsets().setSelectedItem("ISO-8859-1");
 				} catch (Exception e) {
 					throw new AssertionError(e);
 				}
@@ -272,7 +264,6 @@ public class GeneralOptionsFrameGuiTest {
 		assertFalse(fx.conf.getFileOpt().isFlagAutosave());
 		assertEquals(60000, fx.conf.getFileOpt().getAutosaveInterval());
 		assertEquals(EOL.LF, fx.conf.getTextEditorOpt().getEol());
-		assertEquals("UTF-8", fx.conf.getGenOpt().getCharset());
 		assertEquals(0.5f, fx.conf.getGenOpt().getGeneralVolume(), 0.0001f);
 		// the controls show the restored values again
 		assertEquals("tester", userName().getText());
@@ -452,7 +443,7 @@ public class GeneralOptionsFrameGuiTest {
 			final java.awt.Dimension fit = frame.getDefaultDimension();
 			final int content = frame.getContentPane().getPreferredSize().width;
 			final int minContent = frame.getContentPane().getMinimumSize().width;
-			for (String name : new String[] {"comboCharsets", "comboBoxDefEOL", "comboSecurityLevels", "comboLocale"}) {
+			for (String name : new String[] {"comboBoxDefEOL", "comboSecurityLevels", "comboLocale"}) {
 				JComboBox<?> combo = (JComboBox<?>) get(frame, name);
 			}
 			widest(frame.getContentPane(), 0, 900);
@@ -471,7 +462,7 @@ public class GeneralOptionsFrameGuiTest {
 					} catch (java.io.IOException e) {
 						throw new AssertionError(e);
 					}
-					for (String name : new String[] {"comboCharsets", "comboBoxDefEOL", "comboSecurityLevels", "comboLocale"}) {
+					for (String name : new String[] {"comboBoxDefEOL", "comboSecurityLevels", "comboLocale"}) {
 						try {
 							int w = ((JComboBox<?>) get(frame, name)).getWidth();
 							assertTrue(lang + " " + name + " width " + w + " must not fill the whole window", w <= com.formdev.flatlaf.util.UIScale.scale(600));

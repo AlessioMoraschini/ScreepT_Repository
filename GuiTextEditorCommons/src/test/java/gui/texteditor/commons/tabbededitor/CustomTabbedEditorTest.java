@@ -11,6 +11,7 @@
  */
 package gui.texteditor.commons.tabbededitor;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -293,6 +294,72 @@ public class CustomTabbedEditorTest {
 		TabTextEditorObject tab = open(f);
 		assertTrue(editor.writeTabToFile(tab, "new content", f));
 		assertEquals("new content", new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8));
+	}
+
+	// ------------------------------------------------------------------ encoding of the files
+
+	private static final String ACCENTED = "caff\u00e8 \u20ac \u201cok\u201d pi\u00f9";
+
+	private File writeBytes(String name, byte[] content) throws Exception {
+		File f = new File(tmp.newFolder(), name);
+		Files.write(f.toPath(), content);
+		return f;
+	}
+
+	@Test
+	public void legacyFileIsReadAndSavedAsLegacyWhenDetectionIsOn() throws Exception {
+		java.nio.charset.Charset cp1252 = java.nio.charset.Charset.forName("windows-1252");
+		File f = writeBytes("legacy.txt", ACCENTED.getBytes(cp1252));
+		TabTextEditorObject tab = open(f);
+		assertEquals("windows-1252", tab.encoding);
+		assertEquals(ACCENTED + "\n", tab.textArea.getText().replace("\r\n", "\n"));
+		assertTrue(editor.writeTabToFile(tab, ACCENTED + " ancora", f));
+		assertArrayEquals("saved with the encoding it was read with", (ACCENTED + " ancora").getBytes(cp1252), Files.readAllBytes(f.toPath()));
+	}
+
+	@Test
+	public void utf8AndBomFilesKeepTheirBytes() throws Exception {
+		File f = writeBytes("u8.txt", ACCENTED.getBytes(StandardCharsets.UTF_8));
+		TabTextEditorObject tab = open(f);
+		assertEquals("UTF-8", tab.encoding);
+		assertTrue(tab.textArea.getText().startsWith(ACCENTED));
+		assertTrue(editor.writeTabToFile(tab, ACCENTED, f));
+		assertArrayEquals(ACCENTED.getBytes(StandardCharsets.UTF_8), Files.readAllBytes(f.toPath()));
+
+		byte[] utf16 = ("\ufeff" + ACCENTED).getBytes(StandardCharsets.UTF_16LE);
+		File g = writeBytes("u16.txt", utf16);
+		TabTextEditorObject tab16 = open(g);
+		assertEquals("UTF-16LE", tab16.encoding);
+		assertTrue(tab16.textArea.getText().contains(ACCENTED));
+		assertTrue(editor.writeTabToFile(tab16, "\ufeff" + ACCENTED, g));
+		assertArrayEquals("byte order mark included", utf16, Files.readAllBytes(g.toPath()));
+	}
+
+	@Test
+	public void withDetectionOffTheFixedEncodingIsUsed() throws Exception {
+		java.nio.charset.Charset cp1252 = java.nio.charset.Charset.forName("windows-1252");
+		editor.currentConfiguration.getTextEditorOpt().autoDetectEncoding = false;
+		File f = writeBytes("fixed.txt", ACCENTED.getBytes(cp1252));
+		TabTextEditorObject tab = open(f);
+		assertEquals("UTF-8", tab.encoding);
+		assertTrue("read as UTF-8 the legacy bytes are not valid", tab.textArea.getText().indexOf('\ufffd') >= 0);
+
+		editor.currentConfiguration.getGenOpt().setCharset("windows-1252");
+		File g = writeBytes("fixed2.txt", ACCENTED.getBytes(cp1252));
+		TabTextEditorObject tab2 = open(g);
+		assertEquals("windows-1252", tab2.encoding);
+		assertTrue(tab2.textArea.getText().startsWith(ACCENTED));
+	}
+
+	@Test
+	public void plainAsciiTakesTheEncodingOfThePreferences() throws Exception {
+		editor.currentConfiguration.getGenOpt().setCharset("ISO-8859-1");
+		TabTextEditorObject tab = open(write("ascii.txt", "only ascii"));
+		assertEquals("ISO-8859-1", tab.encoding);
+		// a new tab has no file to read: it keeps no encoding, the default one of the application is used when it is saved
+		SwingUtilities.invokeAndWait(() -> editor.addTab(null));
+		SwingUtilities.invokeAndWait(() -> { });
+		assertEquals(null, editor.loadedTabObj.encoding);
 	}
 
 	// ------------------------------------------------------------------ encrypted tabs
