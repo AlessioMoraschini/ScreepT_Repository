@@ -13,10 +13,11 @@
 - Crypter: "Ultra" mode. The password becomes the key with Argon2id (256 MB of memory, the modern standard) and the data is protected by two ciphers of different families, AES-256-GCM and ChaCha20-Poly1305, each with its own key.
 - Crypter: ChaCha20-Poly1305 layer and Argon2id key derivation in Options... (Custom).
 - Crypter: "Public keys" mode to share files without sharing a password. Keys... creates your key pair (the private key is kept in a file protected by your password) and keeps the public keys of the people you send files to; each of them opens the file with their own password.
-- Crypter: hide the encrypted data in a picture (Options... > Output). The result is a normal looking PNG; without the password nobody can find the data. Decrypting the PNG recognises it by itself.
+- Crypter: hide the encrypted data in a picture ("Hide in a picture" and "Picture..." under the controls, remembered). The result is a normal looking PNG; without the password nobody can find the data. Decrypting the PNG recognises it by itself.
 - File editor: text encryption uses the authenticated engine (Argon2id + AES-256-GCM): the whole password counts, wrong passwords and changes are detected, line breaks are kept, and the encrypted block can be pasted anywhere. Texts encrypted by older versions are still decrypted.
 
 ### Improved
+- Crypter: two lines under the controls tell what Crypt and Decrypt need right now (files, password, key image, picture, keys), with what is still missing; for decryption they read the selected files, so they say which file needs the key image or your private key.
 - Crypter: the Legacy modes only decrypt old files now (encrypting with them is refused, with the reason).
 - Crypter: the Secure modes use Argon2id (64 MB) instead of PBKDF2: much harder to attack, and files open faster. Older files open as before.
 - Crypter: passwords and keys are wiped from memory much more thoroughly (own SHA-2/HMAC/PBKDF2 with wipeable buffers, no more copies of the password left by the password fields).

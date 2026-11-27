@@ -88,6 +88,7 @@ import screept.gui.panels.crypter.SecurityBadge;
 import screept.gui.frames.OptionDescriptions;
 import screept.crypter.impl.manager.CryptoMode;
 import screept.gui.panels.crypter.KeysDialog;
+import screept.gui.panels.crypter.CrypterChecklist;
 import screept.crypter.impl.manager.ScreeptManagerFileOrFolder;
 import screept.crypter.om.CrypterResultDTO;
 import screept.crypter.util.ScreeptUtils;
@@ -227,6 +228,13 @@ public class CrypterPanel extends ModulePanel {
 	private JCheckBox chckbxHashKey;
 	private JButton btnProtectionOptions;
 	private JButton btnKeys;
+	private final CrypterChecklist checklist = new CrypterChecklist();
+	private JLabel lblChecklist;
+	private JPanel pictureRow;
+	private JCheckBox chckbxHidePicture;
+	private JLabel lblPicture;
+	private File coverPicture;
+	private long coverCapacity = -1;
 	private JTabbedPane centerTabs;
 	private boolean guideShown = false;
 	private SecurityBadge securityBadge;
@@ -316,7 +324,7 @@ public class CrypterPanel extends ModulePanel {
 		panelMainContainer.setLayout(new MigLayout(
 				"fill,insets 0",
 				"[100:200:200][100:205:205][30,grow][100px:250px:250px][100px:120px:120px]",
-				"[40px:40px:40px,top][:66px:66px][30px:30px:34px][100px:150px][100px:200px:200px][100px:200px][:1px:1px]"));
+				"[40px:40px:40px,top][pref][30px:30px:34px][100px:150px][100px:200px:200px][100px:200px][:1px:1px]"));
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMaximumSize(maxBodySize);
 		mainScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -396,14 +404,13 @@ public class CrypterPanel extends ModulePanel {
 		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 14));
 
 		panelStatus = new JPanel();
-		panelStatus.setMaximumSize(new Dimension(screenSize.width, 70));
-		panelStatus.setPreferredSize(new Dimension(10, 20));
+		panelStatus.setMaximumSize(new Dimension(screenSize.width, 200)); // grows with the "what is needed" lines
 		panelStatus.setBorder(new LineBorder(new Color(105, 105, 105), 2));
 		panelStatus.setBackground(new Color(112, 128, 144));
-		panelMainContainer.add(panelStatus, "cell 0 1 5 1,grow");
+		panelMainContainer.add(panelStatus, "cell 0 1 5 1,grow,wmin 0");
 		// two rows (controls, then the protection line); the fields grow and shrink with the window, hidden controls take no room
 		panelStatus.setLayout(new MigLayout("insets 4 8 2 8, fillx, hidemode 3, gapx 8, gapy 2",
-				"[][grow 40, 90:200:240][][][][grow 60, 120:220:320][][][][]", "[28!][22!]"));
+				"[][grow 40, 90:200:240][][][][grow 60, 120:220:320][][][][]", "[28!][22!][][]"));
 
 		lblAesKeyStatic = new JLabel("Password:");
 		lblAesKeyStatic.setForeground(new Color(255, 239, 213));
@@ -484,6 +491,8 @@ public class CrypterPanel extends ModulePanel {
 					settings.loadFrom(current.profile);
 				}
 				if (CrypterAdvancedDialog.show(thisPanel, settings)) {
+					chckbxHidePicture.setSelected(settings.hideInPicture);
+					savePictureChoice();
 					customChosen = true;
 					comboModeCrypto.setSelectedItem(CryptoMode.CUSTOM);
 					refreshSecurityBadge();
@@ -504,6 +513,39 @@ public class CrypterPanel extends ModulePanel {
 
 		securityBadge = new SecurityBadge();
 		panelStatus.add(securityBadge, "cell 0 1 10 1, growx, wmin 0");
+
+		// what Crypt and Decrypt need right now (mode, files, password, key image, picture)
+		lblChecklist = new JLabel(" ");
+		panelStatus.add(lblChecklist, "cell 0 2 10 1, growx, wmin 0");
+
+		pictureRow = new JPanel(new MigLayout("insets 0, gapx 8, hidemode 3", "[][][grow]"));
+		pictureRow.setOpaque(false);
+		chckbxHidePicture = new JCheckBox("Hide in a picture");
+		chckbxHidePicture.setOpaque(false);
+		chckbxHidePicture.setForeground(Color.WHITE);
+		chckbxHidePicture.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chckbxHidePicture.setToolTipText(encapsulateInHtml(OptionDescriptions.crypterOption("Hide in a picture")));
+		chckbxHidePicture.addActionListener(e -> {
+			settings.hideInPicture = chckbxHidePicture.isSelected();
+			savePictureChoice();
+		});
+		JButton btnPicture = new JButton("Picture...");
+		btnPicture.setFocusable(false);
+		btnPicture.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnPicture.setToolTipText(encapsulateInHtml("The colour photo that will contain the encrypted data (it is not secret: any photo works)."));
+		btnPicture.addActionListener(e -> {
+			File f = KeysDialog.chooseCover(thisPanel);
+			if (f != null) {
+				useCoverPicture(f, true);
+			}
+		});
+		lblPicture = new JLabel("no picture chosen");
+		lblPicture.setForeground(new Color(160, 168, 176));
+		pictureRow.add(chckbxHidePicture);
+		pictureRow.add(btnPicture);
+		pictureRow.add(lblPicture, "wmin 0");
+		panelStatus.add(pictureRow, "cell 0 3 10 1, growx, wmin 0");
+		restorePictureChoice();
 
 		labelFlagCodeReady = new JLabel("");
 		labelFlagCodeReady.setHorizontalAlignment(SwingConstants.CENTER);
@@ -863,8 +905,14 @@ public class CrypterPanel extends ModulePanel {
 					return;
 				}
 				java.io.File cover = null;
-				if (settings.hideInPicture && !publicKeys && (cover = KeysDialog.chooseCover(thisPanel)) == null) {
-					return; // cancelled by user
+				if (settings.hideInPicture && !publicKeys) {
+					if (coverPicture == null) {
+						File f = KeysDialog.chooseCover(thisPanel);
+						if (f == null || !useCoverPicture(f, true)) {
+							return; // cancelled by user
+						}
+					}
+					cover = coverPicture;
 				}
 				// public keys need no password to encrypt (each recipient opens the file with its own)
 				if (publicKeys || ScreeptUtils.checkPasswordStrengthDynamic(currentConf.getAesOpt().getSecurityLevel(), AESKEYtext, 10)) {
@@ -920,6 +968,7 @@ public class CrypterPanel extends ModulePanel {
 				chckbxHashKey.setVisible(!engineMode);
 				btnProtectionOptions.setVisible(engineMode);
 				btnKeys.setVisible(engineMode);
+				pictureRow.setVisible(engineMode && modality != CryptoMode.SECURE_PUBLIC);
 				if (modality == CryptoMode.CUSTOM && !customChosen) {
 					customChosen = CrypterAdvancedDialog.show(thisPanel, settings);
 				}
@@ -1680,6 +1729,80 @@ public class CrypterPanel extends ModulePanel {
 		char[] pw = AESKEYtext.getPassword();
 		securityBadge.refresh(profile, pw, m != null && srcKeyImageFile == null && needsKeyImage(m));
 		java.util.Arrays.fill(pw, '\0');
+		refreshChecklist(m, profile);
+	}
+
+	private String lastChecklist = "";
+
+	private void refreshChecklist(CryptoMode m, screept.crypter.engine.CryptoProfile profile) {
+		if (lblChecklist == null || panelVDragNDropPane == null) {
+			return;
+		}
+		CrypterChecklist.State s = new CrypterChecklist.State();
+		s.mode = m;
+		s.profile = profile;
+		File[] src = panelVDragNDropPane.getTreeNodes();
+		s.sources = src != null ? src : new File[0];
+		s.passwordEntered = AESKEYtext.getDocument().getLength() > 0;
+		s.keyImage = srcKeyImageFile;
+		s.hideInPicture = settings.hideInPicture && pictureRow.isVisible();
+		s.picture = coverPicture;
+		s.pictureCapacity = coverCapacity;
+		s.haveKeys = KeysDialog.identityFile().isFile();
+		s.people = s.haveKeys && profile != null && !profile.kdf.passwordBased() ? KeysDialog.selectedCount() : 0;
+		String html = "<html>" + checklist.encryptLine(s) + "<br>" + checklist.decryptLine(s) + "</html>";
+		if (!html.equals(lastChecklist)) {
+			lastChecklist = html;
+			lblChecklist.setText(html);
+		}
+	}
+
+	/** The cover picture of "Hide in a picture": must be a readable colour picture. */
+	private boolean useCoverPicture(File f, boolean interactive) {
+		try {
+			java.awt.image.BufferedImage img = ImageIO.read(f);
+			if (img == null || img.getColorModel().getNumColorComponents() < 3) {
+				throw new IOException("not a colour picture");
+			}
+			coverPicture = f;
+			coverCapacity = CrypterChecklist.capacity(img.getWidth(), img.getHeight());
+			lblPicture.setText(f.getName() + "  (holds " + (coverCapacity / 1024) + " KB)");
+			lblPicture.setToolTipText(f.getAbsolutePath());
+			lblPicture.setForeground(Color.WHITE);
+			if (interactive) {
+				chckbxHidePicture.setSelected(true);
+				settings.hideInPicture = true;
+				savePictureChoice();
+			}
+			return true;
+		} catch (IOException | RuntimeException e) {
+			if (interactive) {
+				dialogHelper.error("Choose a colour photo (png, jpg or bmp): " + f.getName() + " cannot be used.", "Hide in a picture");
+			}
+			return false;
+		}
+	}
+
+	private void savePictureChoice() {
+		try {
+			currentConf.writeSingleValue(INItializer.AES_OPT, "crypterHidePicture", String.valueOf(settings.hideInPicture));
+			currentConf.writeSingleValue(INItializer.AES_OPT, "crypterPicture", coverPicture != null ? coverPicture.getAbsolutePath() : "");
+		} catch (Exception e) {
+			logger.warn("Cannot save the picture choice");
+		}
+	}
+
+	private void restorePictureChoice() {
+		try {
+			String path = currentConf.getSafeStringConf(INItializer.AES_OPT, "crypterPicture", "");
+			if (!path.isEmpty() && new File(path).isFile()) {
+				useCoverPicture(new File(path), false);
+			}
+			settings.hideInPicture = Boolean.parseBoolean(currentConf.getSafeStringConf(INItializer.AES_OPT, "crypterHidePicture", "false"));
+			chckbxHidePicture.setSelected(settings.hideInPicture);
+		} catch (Exception e) {
+			// nothing saved yet
+		}
 	}
 
 	private synchronized boolean checkIfReadyToCode() {
@@ -1707,7 +1830,8 @@ public class CrypterPanel extends ModulePanel {
 			ready = false;
 		}
 
-		if(AESKEYtext.getDocument().getLength() == 0 && selectedMode.isAES()) {
+		// public key files need no password to be encrypted (decrypting asks for it with a clear message)
+		if(AESKEYtext.getDocument().getLength() == 0 && selectedMode.isAES() && selectedMode != CryptoMode.SECURE_PUBLIC) {
 			// MISSING AES KEY
 			checkEsit += I18n.t("crypter.missing_aes_key");
 			ready = false;
