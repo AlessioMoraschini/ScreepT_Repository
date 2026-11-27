@@ -50,6 +50,9 @@ public final class LauncherTheme {
 			ScreepTDarkLaf.apply();
 			// rounder, calmer controls
 			UIManager.put("Button.arc", 10);
+			// a pressed toggle must be seen at a glance (desktop integration)
+			UIManager.put("ToggleButton.selectedBackground", GREEN);
+			UIManager.put("ToggleButton.selectedForeground", Color.WHITE);
 			UIManager.put("Component.arc", 8);
 			UIManager.put("ProgressBar.arc", 8);
 			UIManager.put("TextComponent.arc", 6);

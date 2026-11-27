@@ -14,10 +14,12 @@ package maingUI;
 import various.common.light.i18n.I18n;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
 import java.awt.Image;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -151,6 +153,10 @@ public class MainGUI extends MainGuiParent {
 	// main app object reference
 	public static MainGUI mainAPP;
 	public static Dimension preFullScreenSize = null;
+	/** Linux full screen: the screen taken (null when not in full screen) and how the window was before */
+	private GraphicsDevice fullScreenDevice;
+	private int preFullScreenState;
+	private Rectangle preFullScreenBounds;
 
 	public static JOptionHelperExtended dialogHelper;
 
@@ -1081,11 +1087,8 @@ public class MainGUI extends MainGuiParent {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						if (mainFrameScreept.isUndecorated()) {
-						} else {
-						}
-
-						setFullScreenEnabled(!mainFrameScreept.isUndecorated());
+						// not isUndecorated(): on Linux the window keeps its decorations
+						setFullScreenEnabled(!isFullScreen.get());
 
 						// Update txtArea to adapt new size
 						if (textEditorPanel != null && textEditorPanel.textEditorUtils != null) {
@@ -1505,7 +1508,10 @@ public class MainGUI extends MainGuiParent {
 
 	public void setFullScreenEnabled(boolean enable) {
 
-		if (enable) {
+		if (SysUtils.getOsInfoLazy().isLinux()) {
+			setLinuxFullScreen(enable);
+
+		} else if (enable) {
 			mainFrameScreept.dispose();
 			preFullScreenSize = GuiUtilsExtended.makeFullScreen(mainFrameScreept);
 			mainFrameScreept.setSize(preFullScreenSize);
@@ -1535,6 +1541,44 @@ public class MainGUI extends MainGuiParent {
 		}
 
 		resizeMainFrameDefaults();
+	}
+
+	/**
+	 * On Linux the window is never destroyed and created again (it did not come back): the window manager is asked to show
+	 * the same one in full screen.
+	 */
+	private void setLinuxFullScreen(boolean enable) {
+		if (enable && fullScreenDevice == null) {
+			preFullScreenState = mainFrameScreept.getExtendedState();
+			preFullScreenBounds = mainFrameScreept.getBounds();
+			GraphicsDevice device = mainFrameScreept.getGraphicsConfiguration().getDevice();
+			logger.info("Linux full screen: supported=" + device.isFullScreenSupported() + ", session="
+					+ System.getenv("XDG_SESSION_TYPE") + ", desktop=" + System.getenv("XDG_CURRENT_DESKTOP"));
+			try {
+				device.setFullScreenWindow(mainFrameScreept);
+				fullScreenDevice = device;
+			} catch (Throwable e) {
+				// whatever happens the window must stay visible
+				logger.error("Cannot enter full screen", e);
+				device.setFullScreenWindow(null);
+				mainFrameScreept.setVisible(true);
+				menuBar.setVisible(true);
+				return;
+			}
+		} else if (!enable && fullScreenDevice != null) {
+			fullScreenDevice.setFullScreenWindow(null);
+			fullScreenDevice = null;
+			if ((preFullScreenState & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH) {
+				mainFrameScreept.setExtendedState(preFullScreenState);
+			} else {
+				mainFrameScreept.setBounds(preFullScreenBounds);
+			}
+		}
+		isFullScreen.set(enable);
+		if (!enable) {
+			menuBar.setVisible(true);
+		}
+		mntmFullScreenMode.setIcon(new ImageIcon(enable ? IconsPathConfigurator.ICON_LESS : IconsPathConfigurator.ICON_EXPAND));
 	}
 
 	public void resizeMainFrameDefaults() {

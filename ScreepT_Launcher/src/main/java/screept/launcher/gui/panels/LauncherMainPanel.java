@@ -41,6 +41,10 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JToggleButton;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -198,14 +202,20 @@ public class LauncherMainPanel extends JFrame{
 		boolean windows = SysUtils.getOsInfoLazy().isWindows();
 		JPanel row = new JPanel(new MigLayout("insets 0, fill", "", "[grow]"));
 		row.setOpaque(false);
-		addDesktopButton(row, "launcher.create_desktop_icon", "launcher.create_desktop_icon_tip", DesktopIntegration::createDesktopIcon);
-		addDesktopButton(row, windows ? "launcher.add_to_start_menu" : "launcher.add_to_panel",
-				windows ? "launcher.add_to_start_menu_tip" : "launcher.add_to_panel_tip", DesktopIntegration::addToPanel);
-		if (!windows) {
-			addDesktopButton(row, "launcher.add_open_with", "launcher.add_open_with_tip", DesktopIntegration::addOpenWith);
+		if (windows) {
+			addDesktopButton(row, "launcher.create_desktop_icon", "launcher.create_desktop_icon_tip", DesktopIntegration::createDesktopIcon);
+			addDesktopButton(row, "launcher.add_to_start_menu", "launcher.add_to_start_menu_tip", DesktopIntegration::addToPanel);
+		} else {
+			Map<DesktopIntegration.Item, JToggleButton> toggles = new EnumMap<>(DesktopIntegration.Item.class);
+			addDesktopToggle(row, toggles, DesktopIntegration.Item.DESKTOP_ICON, "launcher.create_desktop_icon", "launcher.create_desktop_icon_tip");
+			addDesktopToggle(row, toggles, DesktopIntegration.Item.PANEL, "launcher.add_to_panel", "launcher.add_to_panel_tip");
+			addDesktopToggle(row, toggles, DesktopIntegration.Item.OPEN_WITH, "launcher.add_open_with", "launcher.add_open_with_tip");
+			refreshDesktopToggles(toggles);
 		}
 		return row;
 	}
+
+	private static final String DESKTOP_TIP = "screept.desktopTip";
 
 	private interface DesktopAction {
 		String run() throws java.io.IOException;
@@ -215,20 +225,53 @@ public class LauncherMainPanel extends JFrame{
 		JButton button = new JButton(I18n.t(textId));
 		button.setToolTipText(I18n.t(tipId));
 		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		// run here and not in background: it takes a moment, and what it does ends before the click is over
-		button.addActionListener(e -> {
-			LAUNCHER_GUI.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			try {
-				String message = action.run();
-				new JOptionHelper(LAUNCHER_GUI).info(message);
-			} catch (java.io.IOException | RuntimeException ex) {
-				logger.error("Desktop integration failed", ex);
-				new JOptionHelper(LAUNCHER_GUI).error(String.valueOf(ex.getMessage()));
-			} finally {
-				LAUNCHER_GUI.setCursor(Cursor.getDefaultCursor());
-			}
-		});
+		button.addActionListener(e -> runDesktopAction(action));
 		row.add(button, "grow, sg desktop, pushx");
+	}
+
+	/** A button shown as pressed while its item is in place: clicking it again removes the item */
+	private void addDesktopToggle(JPanel row, Map<DesktopIntegration.Item, JToggleButton> toggles, DesktopIntegration.Item item,
+			String textId, String tipId) {
+		JToggleButton toggle = new JToggleButton(I18n.t(textId));
+		toggle.putClientProperty(DESKTOP_TIP, I18n.t(tipId));
+		toggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		toggle.setEnabled(false); // until the desktop has been read
+		toggle.addActionListener(e -> {
+			boolean activate = toggle.isSelected();
+			runDesktopAction(() -> DesktopIntegration.setActive(item, activate));
+			refreshDesktopToggles(toggles);
+		});
+		toggles.put(item, toggle);
+		row.add(toggle, "grow, sg desktop, pushx");
+	}
+
+	/** Shows what is really in place: one item can change another, and an action can fail */
+	private void refreshDesktopToggles(Map<DesktopIntegration.Item, JToggleButton> toggles) {
+		Thread reader = new Thread(() -> {
+			Set<DesktopIntegration.Item> active = DesktopIntegration.activeItems();
+			SwingUtilities.invokeLater(() -> toggles.forEach((item, toggle) -> {
+				toggle.setSelected(active.contains(item));
+				toggle.setToolTipText(active.contains(item) ? I18n.t("launcher.desktop_active_tip")
+						: (String) toggle.getClientProperty(DESKTOP_TIP));
+				toggle.setEnabled(true);
+			}));
+		}, "desktop-integration-state");
+		reader.setDaemon(true);
+		reader.start();
+	}
+
+	// run here and not in background: it takes a moment, and what it does ends before the click is over
+	private void runDesktopAction(DesktopAction action) {
+		LAUNCHER_GUI.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		try {
+			String message = action.run();
+			new JOptionHelper(LAUNCHER_GUI).info(message);
+		} catch (java.io.IOException | RuntimeException ex) {
+			logger.error("Desktop integration failed", ex);
+			new JOptionHelper(LAUNCHER_GUI).error(String.valueOf(ex.getMessage()));
+		} finally {
+			LAUNCHER_GUI.setCursor(Cursor.getDefaultCursor());
+		}
 	}
 
 	// button handler settings

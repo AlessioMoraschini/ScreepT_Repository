@@ -18,9 +18,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,9 +59,76 @@ public final class DesktopIntegration {
 	private DesktopIntegration() {
 	}
 
+	/** What can be switched on and off on Linux */
+	public enum Item {
+		DESKTOP_ICON, PANEL, OPEN_WITH
+	}
+
 	/** Windows and Linux; macOS has its own way (the Dock) */
 	public static boolean isSupported() {
 		return SysUtils.getOsInfoLazy().isWindows() || SysUtils.getOsInfoLazy().isLinux();
+	}
+
+	////////// STATE (Linux) ////////////////
+
+	/** @return the items already in place for this installation (reads files and may run desktop commands: not for the EDT) */
+	public static Set<Item> activeItems() {
+		Set<Item> active = EnumSet.noneOf(Item.class);
+		try {
+			String starter = starter().getAbsolutePath();
+			if (startsWith(new File(desktopFolder(), ENTRY_NAME), desktopExec(starter))) {
+				active.add(Item.DESKTOP_ICON);
+			}
+			if (isPinned(starter)) {
+				active.add(Item.PANEL);
+			}
+			if (isOpenWithActive(dataHome(), starter)) {
+				active.add(Item.OPEN_WITH);
+			}
+		} catch (IOException | RuntimeException e) {
+			logger.warn("Cannot read the desktop integration", e);
+		}
+		return active;
+	}
+
+	/** @return the message to show to the user */
+	public static String setActive(Item item, boolean active) throws IOException {
+		switch (item) {
+			case DESKTOP_ICON:
+				return active ? createDesktopIcon() : removeDesktopIcon();
+			case PANEL:
+				return active ? addToPanel() : removeFromPanel();
+			default:
+				return active ? addOpenWith() : removeOpenWith();
+		}
+	}
+
+	/** True when the file exists and has the line that starts this installation: one of another folder is not ours */
+	static boolean startsWith(File file, String execLine) throws IOException {
+		return file.isFile() && Arrays.asList(new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8).split("\r?\n"))
+				.contains(execLine);
+	}
+
+	static boolean isOpenWithActive(File dataHome, String starterPath) throws IOException {
+		return startsWith(new File(dataHome, "nemo/actions/" + NEMO_ACTION), nemoExec(starterPath));
+	}
+
+	private static boolean isPinned(String starterPath) throws IOException {
+		if (!startsWith(new File(dataHome(), "applications/" + ENTRY_NAME), desktopExec(starterPath))) {
+			return false;
+		}
+		if (isDesktop("cinnamon")) {
+			return isPinnedInCinnamon(new File(System.getProperty("user.home")));
+		}
+		if (isDesktop("gnome") || isDesktop("unity")) {
+			String current = run("gsettings", "get", "org.gnome.shell", "favorite-apps");
+			return current != null && current.contains("'" + ENTRY_NAME + "'");
+		}
+		return false;
+	}
+
+	private static boolean isDesktop(String name) {
+		return String.valueOf(System.getenv("XDG_CURRENT_DESKTOP")).toLowerCase(Locale.ROOT).contains(name);
 	}
 
 	////////// ACTIONS ////////////////
@@ -84,12 +154,12 @@ public final class DesktopIntegration {
 			windowsShortcut("Programs", starter);
 			return I18n.t("launcher.added_to_start_menu");
 		}
-		writeMenuEntry(starter);
-		String desktop = String.valueOf(System.getenv("XDG_CURRENT_DESKTOP")).toLowerCase(Locale.ROOT);
-		if (desktop.contains("cinnamon")) {
+		// the file types are listed only if "Open with" was asked for
+		writeMenuEntry(starter, isOpenWithActive(dataHome(), starter.getAbsolutePath()));
+		if (isDesktop("cinnamon")) {
 			return pinToCinnamon(new File(System.getProperty("user.home")));
 		}
-		if (desktop.contains("gnome") || desktop.contains("unity")) {
+		if (isDesktop("gnome") || isDesktop("unity")) {
 			return pinToGnome();
 		}
 		return I18n.t("launcher.added_to_menu_pin_by_hand");
@@ -98,10 +168,41 @@ public final class DesktopIntegration {
 	/** Linux: "Open With" of every file manager, and a direct entry in the right click menu of Nemo (Linux Mint) */
 	public static String addOpenWith() throws IOException {
 		File starter = starter();
-		writeMenuEntry(starter);
+		writeMenuEntry(starter, true);
 		File actions = new File(dataHome(), "nemo/actions");
 		write(new File(actions, NEMO_ACTION), nemoAction(starter.getAbsolutePath()));
 		return I18n.t("launcher.open_with_added");
+	}
+
+	public static String removeDesktopIcon() throws IOException {
+		delete(new File(desktopFolder(), ENTRY_NAME));
+		return I18n.t("launcher.desktop_icon_removed");
+	}
+
+	/** Linux: the menu entry goes too, unless "Open with" still needs it */
+	public static String removeFromPanel() throws IOException {
+		if (isDesktop("cinnamon")) {
+			unpinFromCinnamon(new File(System.getProperty("user.home")));
+		} else if (isDesktop("gnome") || isDesktop("unity")) {
+			unpinFromGnome();
+		}
+		if (!isOpenWithActive(dataHome(), starter().getAbsolutePath())) {
+			removeMenuEntry();
+		}
+		return I18n.t("launcher.removed_from_panel");
+	}
+
+	/** Linux: a pinned ScreepT keeps its menu entry, without the file types */
+	public static String removeOpenWith() throws IOException {
+		File starter = starter();
+		boolean pinned = isPinned(starter.getAbsolutePath());
+		delete(new File(dataHome(), "nemo/actions/" + NEMO_ACTION));
+		if (pinned) {
+			writeMenuEntry(starter, false);
+		} else {
+			removeMenuEntry();
+		}
+		return I18n.t("launcher.open_with_removed");
 	}
 
 	////////// FILES ////////////////
@@ -140,12 +241,25 @@ public final class DesktopIntegration {
 		return folder;
 	}
 
-	private static void writeMenuEntry(File starter) throws IOException {
+	private static void writeMenuEntry(File starter, boolean openWith) throws IOException {
 		File applications = new File(dataHome(), "applications");
 		File entry = new File(applications, ENTRY_NAME);
-		write(entry, desktopEntry(starter.getAbsolutePath(), iconPath()));
+		String content = desktopEntry(starter.getAbsolutePath(), iconPath());
+		write(entry, openWith ? content : withoutFileTypes(content));
 		makeExecutable(entry);
 		run("update-desktop-database", applications.getAbsolutePath());
+	}
+
+	private static void removeMenuEntry() throws IOException {
+		File applications = new File(dataHome(), "applications");
+		delete(new File(applications, ENTRY_NAME));
+		run("update-desktop-database", applications.getAbsolutePath());
+	}
+
+	private static void delete(File file) throws IOException {
+		if (Files.deleteIfExists(file.toPath())) {
+			logger.info("Deleted " + file);
+		}
 	}
 
 	private static void write(File file, String content) throws IOException {
@@ -168,13 +282,21 @@ public final class DesktopIntegration {
 				+ "Version=1.0\n"
 				+ "Name=ScreepT\n"
 				+ "Comment=Text and script editor, crypter and tools\n"
-				+ "Exec=" + execArgument(starterPath) + " %F\n"
+				+ desktopExec(starterPath) + "\n"
 				+ "Path=" + value(folder) + "\n"
 				+ "Icon=" + value(iconPath) + "\n"
 				+ "Terminal=false\n"
 				+ "Categories=Utility;TextEditor;Development;\n"
 				+ "StartupWMClass=" + WINDOW_CLASS + "\n"
 				+ "MimeType=" + MIME_TYPES + "\n";
+	}
+
+	private static String desktopExec(String starterPath) {
+		return "Exec=" + execArgument(starterPath) + " %F";
+	}
+
+	static String withoutFileTypes(String desktopEntry) {
+		return desktopEntry.replaceFirst("(?m)^MimeType=.*\n", "");
 	}
 
 	/** A plain value of a .desktop file: backslashes are escapes */
@@ -202,28 +324,23 @@ public final class DesktopIntegration {
 				+ "Active=true\n"
 				+ "Name=Open with ScreepT\n"
 				+ "Comment=Open the selected files with ScreepT\n"
-				+ "Exec=\"" + starterPath.replace("\\", "\\\\").replace("\"", "\\\"").replace("%", "%%") + "\" %F\n"
+				+ nemoExec(starterPath) + "\n"
 				+ "Icon-Name=accessories-text-editor\n" // Nemo takes only names of the icon theme
 				+ "Selection=notnone\n"
 				+ "Extensions=nodirs;\n"
 				+ "Quote=double\n";
 	}
 
+	private static String nemoExec(String starterPath) {
+		return "Exec=\"" + starterPath.replace("\\", "\\\\").replace("\"", "\\\"").replace("%", "%%") + "\" %F";
+	}
+
 	////////// PANEL ////////////////
 
 	/** Adds ScreepT to the pinned applications of every window list of the Cinnamon panel */
 	static String pinToCinnamon(File home) throws IOException {
-		List<File> settings = new ArrayList<File>();
-		for (String folder : new String[] { ".config/cinnamon/spices/" + CINNAMON_APPLET, ".cinnamon/configs/" + CINNAMON_APPLET }) {
-			File[] files = new File(home, folder).listFiles((dir, name) -> name.endsWith(".json"));
-			if (files != null) {
-				for (File file : files) {
-					settings.add(file);
-				}
-			}
-		}
 		boolean added = false, present = false;
-		for (File file : settings) {
+		for (File file : cinnamonSettings(home)) {
 			String json = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
 			String changed = addPinned(json, ENTRY_NAME);
 			if (changed == null) {
@@ -233,8 +350,7 @@ public final class DesktopIntegration {
 				present = true;
 				continue;
 			}
-			Files.copy(file.toPath(), new File(file.getPath() + ".before-screept").toPath(), StandardCopyOption.REPLACE_EXISTING);
-			write(file, changed);
+			replaceSettings(file, changed);
 			added = true;
 		}
 		if (added) {
@@ -248,13 +364,8 @@ public final class DesktopIntegration {
 	 *         settings do not have that list
 	 */
 	static String addPinned(String json, String id) {
-		int key = json.indexOf("\"pinned-apps\"");
-		if (key < 0) {
-			return null;
-		}
-		// the list of the object of this key only: no other object may start or end in between
-		Matcher list = Pattern.compile("\"pinned-apps\"\\s*:\\s*\\{(?:[^{}]*?)\"value\"\\s*:\\s*\\[([^\\[\\]]*)\\]").matcher(json);
-		if (!list.find(key)) {
+		Matcher list = pinnedList(json);
+		if (list == null) {
 			return null;
 		}
 		String content = list.group(1);
@@ -264,6 +375,95 @@ public final class DesktopIntegration {
 		String kept = content.replaceAll("\\s+$", "");
 		String added = (kept.isEmpty() ? "" : kept + ", ") + "\"" + id + "\"" + content.substring(kept.length());
 		return json.substring(0, list.start(1)) + added + json.substring(list.end(1));
+	}
+
+	/** Inverse of {@link #addPinned}: the same text when id is not there, null when the settings do not have the list */
+	static String removePinned(String json, String id) {
+		Matcher list = pinnedList(json);
+		if (list == null) {
+			return null;
+		}
+		return json.substring(0, list.start(1)) + withoutItem(list.group(1), "\"" + id + "\"") + json.substring(list.end(1));
+	}
+
+	/** @return a matcher whose group 1 is the content of the "value" list of "pinned-apps", or null */
+	private static Matcher pinnedList(String json) {
+		int key = json.indexOf("\"pinned-apps\"");
+		if (key < 0) {
+			return null;
+		}
+		// the list of the object of this key only: no other object may start or end in between
+		Matcher list = Pattern.compile("\"pinned-apps\"\\s*:\\s*\\{(?:[^{}]*?)\"value\"\\s*:\\s*\\[([^\\[\\]]*)\\]").matcher(json);
+		return list.find(key) ? list : null;
+	}
+
+	/** Removes a quoted item, with its comma, from the content of a list */
+	private static String withoutItem(String content, String item) {
+		String quoted = Pattern.quote(item);
+		return content.replaceAll(",\\s*" + quoted, "").replaceAll(quoted + "\\s*,\\s*", "").replaceAll("\\s*" + quoted, "");
+	}
+
+	static boolean isPinnedInCinnamon(File home) throws IOException {
+		for (File file : cinnamonSettings(home)) {
+			Matcher list = pinnedList(new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8));
+			if (list != null && list.group(1).contains("\"" + ENTRY_NAME + "\"")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	static void unpinFromCinnamon(File home) throws IOException {
+		for (File file : cinnamonSettings(home)) {
+			String json = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+			String changed = removePinned(json, ENTRY_NAME);
+			if (changed != null && !changed.equals(json)) {
+				replaceSettings(file, changed);
+			}
+		}
+	}
+
+	private static List<File> cinnamonSettings(File home) {
+		List<File> settings = new ArrayList<File>();
+		for (String folder : new String[] { ".config/cinnamon/spices/" + CINNAMON_APPLET, ".cinnamon/configs/" + CINNAMON_APPLET }) {
+			File[] files = new File(home, folder).listFiles((dir, name) -> name.endsWith(".json"));
+			if (files != null) {
+				settings.addAll(Arrays.asList(files));
+			}
+		}
+		return settings;
+	}
+
+	/** Writes the settings of the panel, keeping a copy of the previous ones */
+	private static void replaceSettings(File file, String content) throws IOException {
+		Files.copy(file.toPath(), new File(file.getPath() + ".before-screept").toPath(), StandardCopyOption.REPLACE_EXISTING);
+		write(file, content);
+	}
+
+	private static void unpinFromGnome() throws IOException {
+		String current = run("gsettings", "get", "org.gnome.shell", "favorite-apps");
+		String changed = removeFavorite(current, ENTRY_NAME);
+		if (changed == null || !changed.equals(current.trim()) && run("gsettings", "set", "org.gnome.shell", "favorite-apps", changed) == null) {
+			throw new IOException(I18n.t("launcher.cannot_remove_from_panel"));
+		}
+	}
+
+	/** Same of {@link #removePinned} for the list printed by gsettings */
+	static String removeFavorite(String current, String id) {
+		String list = favoriteList(current);
+		if (list == null) {
+			return null;
+		}
+		return list.contains("'" + id + "'") ? withoutItem(list, "'" + id + "'") : current.trim();
+	}
+
+	private static String favoriteList(String current) {
+		if (current == null) {
+			return null;
+		}
+		String list = current.trim();
+		list = list.startsWith("@as ") ? list.substring(4) : list;
+		return list.startsWith("[") && list.endsWith("]") ? list : null;
 	}
 
 	private static String pinToGnome() throws IOException {
@@ -281,12 +481,8 @@ public final class DesktopIntegration {
 
 	/** Same of {@link #addPinned} for the list printed by gsettings, e.g. ['a.desktop', 'b.desktop'] */
 	static String addFavorite(String current, String id) {
-		if (current == null) {
-			return null;
-		}
-		String list = current.trim();
-		list = list.startsWith("@as ") ? list.substring(4) : list;
-		if (!list.startsWith("[") || !list.endsWith("]")) {
+		String list = favoriteList(current);
+		if (list == null) {
 			return null;
 		}
 		if (list.contains("'" + id + "'")) {

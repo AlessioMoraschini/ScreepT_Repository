@@ -6,6 +6,16 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.96 - 2026-11-27
+> Linux: full screen and immersive mode fixed, ScreepT opens maximized, and the launcher buttons turn the desktop integration on and off
+
+### Improved
+- Linux launcher: "Desktop icon", "Pin to panel" and "Add Open with" look pressed when they are already in place, and a second click removes them. Pinning to the panel alone no longer adds ScreepT to "Open with".
+
+### Fixed
+- Linux: with full screen or immersive mode the window disappeared and did not come back.
+- Linux: ScreepT now opens maximized.
+
 ## 0.9.95 - 2026-11-27
 > A smoother home page, desktop icon and Start menu or panel buttons in the launcher, and a better ScreepT on Linux
 

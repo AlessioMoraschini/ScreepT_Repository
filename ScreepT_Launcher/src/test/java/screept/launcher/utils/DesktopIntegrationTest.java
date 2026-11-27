@@ -12,6 +12,7 @@
 package screept.launcher.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -72,6 +73,55 @@ public class DesktopIntegrationTest {
 		assertEquals("['screept.desktop']", DesktopIntegration.addFavorite("['screept.desktop']", "screept.desktop"));
 		assertNull(DesktopIntegration.addFavorite(null, "screept.desktop"));
 		assertNull(DesktopIntegration.addFavorite("No such schema", "screept.desktop"));
+	}
+
+	@Test
+	public void removingIsTheInverseOfPinning() {
+		String pinned = DesktopIntegration.addPinned(SETTINGS, "screept.desktop");
+		assertEquals(SETTINGS, DesktopIntegration.removePinned(pinned, "screept.desktop"));
+		assertEquals(SETTINGS, DesktopIntegration.removePinned(SETTINGS, "screept.desktop"));
+		assertEquals("{\"pinned-apps\": {\"value\": []}}",
+				DesktopIntegration.removePinned("{\"pinned-apps\": {\"value\": [\"screept.desktop\"]}}", "screept.desktop"));
+		assertEquals("{\"pinned-apps\": {\"value\": [\"b\"]}}",
+				DesktopIntegration.removePinned("{\"pinned-apps\": {\"value\": [\"screept.desktop\", \"b\"]}}", "screept.desktop"));
+		assertNull(DesktopIntegration.removePinned("{}", "screept.desktop"));
+
+		assertEquals("['a.desktop', 'b.desktop']",
+				DesktopIntegration.removeFavorite("['a.desktop', 'screept.desktop', 'b.desktop']\n", "screept.desktop"));
+		assertEquals("[]", DesktopIntegration.removeFavorite("['screept.desktop']", "screept.desktop"));
+		assertEquals("@as []", DesktopIntegration.removeFavorite("@as []\n", "screept.desktop"));
+		assertNull(DesktopIntegration.removeFavorite("No such schema", "screept.desktop"));
+	}
+
+	@Test
+	public void cinnamonPinIsReadAndRemoved() throws Exception {
+		File folder = tmp.newFolder(".config", "cinnamon", "spices", "grouped-window-list@cinnamon.org");
+		Files.write(new File(folder, "2.json").toPath(), SETTINGS.getBytes(StandardCharsets.UTF_8));
+		assertFalse(DesktopIntegration.isPinnedInCinnamon(tmp.getRoot()));
+		DesktopIntegration.pinToCinnamon(tmp.getRoot());
+		assertTrue(DesktopIntegration.isPinnedInCinnamon(tmp.getRoot()));
+		DesktopIntegration.unpinFromCinnamon(tmp.getRoot());
+		assertFalse(DesktopIntegration.isPinnedInCinnamon(tmp.getRoot()));
+		assertEquals(SETTINGS, new String(Files.readAllBytes(new File(folder, "2.json").toPath()), StandardCharsets.UTF_8));
+	}
+
+	@Test
+	public void onlyTheEntriesOfThisInstallationAreActive() throws Exception {
+		File entry = tmp.newFile("screept.desktop");
+		Files.write(entry.toPath(), DesktopIntegration.desktopEntry("/opt/a/ScreepT.sh", "/i.png").getBytes(StandardCharsets.UTF_8));
+		assertTrue(DesktopIntegration.startsWith(entry, "Exec=\"/opt/a/ScreepT.sh\" %F"));
+		assertFalse(DesktopIntegration.startsWith(entry, "Exec=\"/opt/b/ScreepT.sh\" %F"));
+		assertFalse(DesktopIntegration.startsWith(new File(tmp.getRoot(), "missing"), "Exec=\"/opt/a/ScreepT.sh\" %F"));
+
+		File actions = tmp.newFolder("nemo", "actions");
+		Files.write(new File(actions, "screept.nemo_action").toPath(),
+				DesktopIntegration.nemoAction("/opt/a b/ScreepT.sh").getBytes(StandardCharsets.UTF_8));
+		assertTrue(DesktopIntegration.isOpenWithActive(tmp.getRoot(), "/opt/a b/ScreepT.sh"));
+		assertFalse(DesktopIntegration.isOpenWithActive(tmp.getRoot(), "/opt/b/ScreepT.sh"));
+
+		String plain = DesktopIntegration.withoutFileTypes(DesktopIntegration.desktopEntry("/opt/a/ScreepT.sh", "/i.png"));
+		assertFalse(plain.contains("MimeType"));
+		assertTrue(plain.contains("StartupWMClass="));
 	}
 
 	@Test
