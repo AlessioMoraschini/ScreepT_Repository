@@ -506,7 +506,7 @@ public class TextEditorGuiTest {
 		edt(new Runnable() {
 			@Override
 			public void run() {
-				editor.tabSplit.restoreSecondPanel(Arrays.asList(f.getAbsolutePath(), g.getAbsolutePath()), new ArrayList<String>());
+				editor.tabSplit.restoreSecondPanel(Arrays.asList(f.getAbsolutePath(), g.getAbsolutePath()));
 			}
 		});
 		flushEdt();

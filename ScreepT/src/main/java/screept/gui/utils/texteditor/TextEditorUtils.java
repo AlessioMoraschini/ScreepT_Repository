@@ -464,6 +464,17 @@ public class TextEditorUtils {
 		}
 	}
 
+	/** A viewer or a plugin wrote a file: if it is under the folder of the tree it is shown, keeping root and open folders */
+	public void showWrittenFile(File written) {
+		javax.swing.tree.TreeModel model = currentTextEditor.leftFileTree.getModel();
+		if (model instanceof FileTreeNamedModel) {
+			File root = ((FileNamed) model.getRoot()).getFile();
+			if (written.getAbsoluteFile().toPath().startsWith(root.getAbsoluteFile().toPath())) {
+				changeTreeDepth(root, written);
+			}
+		}
+	}
+
 	public void refreshTreeFromLastValid() {
 
 		FileNamed lastSelectedNode = (FileNamed)currentTextEditor.leftFileTree.getLastSelectedPathComponent();

@@ -6,6 +6,23 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.97 - 2026-11-27
+> PDF viewer: edit mode (texts, images, pages), merge and extract
+
+### New
+- PDF viewer: "Edit" mode. Drag lines of text and images, change the text of a line, delete elements, add text and images, resize images.
+- PDF viewer: rotate, reorder, delete and insert pages; "Extract..." writes the pages you choose in a new file; "Merge..." joins several PDF files.
+- PDF viewer: Save, Undo and Redo of the file editor toolbar (and Ctrl+S, Ctrl+Z, Ctrl+Y) work on the PDF changes; a changed tab is marked and asks before closing.
+
+### Improved
+- PDF edit mode: while dragging, a grid appears and the element snaps to the edges and centers of the others and of the page (hold Alt to move freely).
+- File editor: Save as and "Reload from disk" of the toolbar work on the PDF viewer too.
+- File editor: "Reload from disk" and the start of ScreepT open each file with the viewer now associated to it in Graphic preferences.
+- File tree: a PDF saved with another name, extracted or merged into a folder of the tree appears at once.
+- File editor: every viewer tab shows the icon of its viewer (some showed the text file icon).
+- PDF viewer: the pages seen last stay in memory (48 MB, or 20% of the maximum memory above 700 MB), so they are not lost when Java frees memory.
+- PDF plugin: it now includes Apache PDFBox, needed by the editing functions. Update the plugin to use them.
+
 ## 0.9.96 - 2026-11-27
 > Linux: full screen and immersive mode fixed, ScreepT opens maximized, and the launcher buttons turn the desktop integration on and off
 

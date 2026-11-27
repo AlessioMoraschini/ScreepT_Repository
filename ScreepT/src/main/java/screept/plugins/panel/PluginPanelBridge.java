@@ -247,6 +247,26 @@ public final class PluginPanelBridge {
 		}
 
 		@Override
+		public boolean saveAs() {
+			return panel.saveAs();
+		}
+
+		@Override
+		public boolean supportsEditHistory() {
+			return panel.supportsEditHistory();
+		}
+
+		@Override
+		public void undo() {
+			panel.undo();
+		}
+
+		@Override
+		public void redo() {
+			panel.redo();
+		}
+
+		@Override
 		public boolean supportsTextTools() {
 			return panel.supportsTextTools();
 		}

@@ -235,6 +235,7 @@ public class TextEditor extends ModulePanel {
 
 		// Initialize text editor Utils reference
 		textEditorUtils = new TextEditorUtils(this);
+		gui.commons.treeutils.WrittenFiles.setListener(textEditorUtils::showWrittenFile);
 
 		// MAIN PANEL
 		// follows the viewport size: header, editor and footer always fit the frame, no outer scrolling
@@ -1318,14 +1319,14 @@ public class TextEditor extends ModulePanel {
 				File toLoadFile = new File(pathToOpen);
 				if (toLoadFile.exists()) {
 					if (lazyLoading && !pathToOpen.equals(frontPath)) {
-						if (currentTabbedEditor.addLazyTab(toLoadFile, currentTabbedEditor.savedViewerOf(toLoadFile, currentConfiguration.getTextEditorOpt().getViewerTabList())) != null) {
+						if (currentTabbedEditor.addLazyTab(toLoadFile, currentTabbedEditor.viewerAtStart(toLoadFile)) != null) {
 							lazyTabs++;
 							loadedAlmostOne = true;
 						}
 						continue;
 					}
-					// tabs that were hosting a viewer (image studio, LogSearch, HTML...) come back as viewer tabs
-					if(currentTabbedEditor.restoreViewerTab(toLoadFile, currentConfiguration.getTextEditorOpt().getViewerTabList())) {
+					// files with an associated viewer (image studio, LogSearch, HTML, plugins...) come back in it
+					if(currentTabbedEditor.restoreViewerTab(toLoadFile)) {
 						loadedAlmostOne = true;
 						continue;
 					}
@@ -1400,7 +1401,7 @@ public class TextEditor extends ModulePanel {
 			currentTabbedEditor.lastIndexTabbedPane = currentTabbedEditor.mainTabList.getSelectedIndex();
 
 			// the second panel, if there was one, with its own files
-			tabSplit.restoreSecondPanel(currentConfiguration.getTextEditorOpt().getSecondPanelFileList(), currentConfiguration.getTextEditorOpt().getViewerTabList());
+			tabSplit.restoreSecondPanel(currentConfiguration.getTextEditorOpt().getSecondPanelFileList());
 		} else if(currentConfiguration.getTextEditorOpt().firstTimeOpened){
 
 			currentTabbedEditor.loadedTabObj.textArea.setText(" Welcome to ScreepT's File Editor!\n\n\n"

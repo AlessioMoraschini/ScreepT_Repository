@@ -84,6 +84,35 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		});
 	}
 
+	/** Ctrl+Z, Ctrl+Y and Ctrl+Shift+Z while the focus is on a viewer tab that keeps its own history */
+	private boolean viewerHistoryKey(KeyEvent e) {
+		boolean z = e.getKeyCode() == KeyEvent.VK_Z;
+		if (e.getID() != KeyEvent.KEY_PRESSED || !(z || e.getKeyCode() == KeyEvent.VK_Y) || !ShortcutKeys.isCtrlDown(e)
+				|| e.isAltDown() || !areShortcutsEnabled(enabler)) {
+			return false;
+		}
+		try {
+			java.awt.Component focus = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+			if (focus == null || focus instanceof javax.swing.text.JTextComponent || !MainGUI.mainGuiUtils.isTextEditorActive(true)) {
+				return false;
+			}
+			gui.texteditor.commons.om.TabTextEditorObject tab = currentTabEditor().loadedTabObj;
+			if (tab == null || !tab.isEmbeddedViewer() || !tab.viewer.supportsEditHistory()
+					|| !javax.swing.SwingUtilities.isDescendingFrom(focus, currentTabEditor().mainTabList)) {
+				return false;
+			}
+			if (z && !e.isShiftDown()) {
+				tab.viewer.undo();
+			} else {
+				tab.viewer.redo();
+			}
+			return true;
+		} catch (Exception e1) {
+			logger.warn("Cannot apply undo/redo to the viewer", e1);
+			return false;
+		}
+	}
+
 	@Override
 	  public boolean dispatchKeyEvent(final KeyEvent e) {
 
@@ -109,6 +138,11 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		// typing in the quick notes drawer must not trigger editor shortcuts (undo, find...)
 		if (QuickNotesDrawer.ownsFocus()) {
 			return false;
+		}
+
+		// a viewer tab with its own history (PDF editing) takes undo and redo; text fields keep theirs
+		if (viewerHistoryKey(e)) {
+			return true;
 		}
 
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////

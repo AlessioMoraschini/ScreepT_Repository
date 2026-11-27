@@ -749,7 +749,8 @@ public class CustomTabbedEditor implements ITabsManager {
 					currentConfiguration,
 					changeMonManager,
 					tabEditorManager.getShortcutManager());
-			newTabNode.textArea.addFocusListener(getFocusListener());
+			installTextAreaListeners(newTabNode);
+			newTabNode.textArea.addMouseWheelListener(tabEditorManager.getMouseWheelTabbedAreaListener());
 			bindViewer(newTabNode, content, implementor);
 
 			mainTabList.addTab(name, newTabNode.currentScrollPane);
@@ -772,7 +773,10 @@ public class CustomTabbedEditor implements ITabsManager {
 		tab.embedViewer(content);
 		tab.viewerId = implementor.getId();
 		tab.textArea.setEditable(false);
-		content.setChangeListener(() -> SwingUtilities.invokeLater(() -> updateSavedLabelNTab(geIndexOfTabObj(tab))));
+		content.setChangeListener(() -> SwingUtilities.invokeLater(() -> {
+			followViewerFile(tab);
+			updateSavedLabelNTab(geIndexOfTabObj(tab));
+		}));
 		content.setCloseHandler(() -> SwingUtilities.invokeLater(() -> removeTab(geIndexOfTabObj(tab))));
 	}
 
@@ -837,7 +841,7 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 
 	private void loadLazyTab(final TabTextEditorObject tab, File file, TabImplementor viewer) {
-		// an image whose viewer was not saved goes to the viewer chosen for it, in the tab: as text it would open the image window
+		// an image tab added without a viewer goes to the one chosen for images, in the tab: as text it would open the image window
 		if (viewer == null && isImageFileSupported(file) && file.isFile()) {
 			viewer = TabImplementors.resolve(file);
 		}
@@ -1533,24 +1537,14 @@ public class CustomTabbedEditor implements ITabsManager {
 		}
 	}
 
-	/** The viewer the file had at the last exit; null if it had none or the viewer is gone (then it opens as text) */
-	public TabImplementor savedViewerOf(File file, java.util.List<String> viewerEntries) {
-		if (file == null || viewerEntries == null) {
-			return null;
-		}
-		for (String entry : viewerEntries) {
-			int sep = entry.indexOf('|');
-			if (sep > 0 && entry.substring(sep + 1).equals(file.getAbsolutePath())) {
-				TabImplementor implementor = TabImplementors.byId(entry.substring(0, sep));
-				return (implementor != null && implementor.canOpen(file)) ? implementor : null;
-			}
-		}
-		return null;
+	/** The viewer now associated to the file (Graphic preferences), the one its tab gets at start; null for a text tab */
+	public TabImplementor viewerAtStart(File file) {
+		return file != null && file.isFile() ? TabImplementors.resolve(file) : null;
 	}
 
-	/** Opens at start the file in the viewer tab it had; false if it has no saved viewer or the viewer is gone (then it opens as text) */
-	public boolean restoreViewerTab(File file, java.util.List<String> viewerEntries) {
-		TabImplementor implementor = savedViewerOf(file, viewerEntries);
+	/** Opens at start the file in the viewer associated to it; false if it has none or the viewer fails (then it opens as text) */
+	public boolean restoreViewerTab(File file) {
+		TabImplementor implementor = viewerAtStart(file);
 		if (implementor == null) {
 			return false;
 		}
@@ -1561,6 +1555,76 @@ public class CustomTabbedEditor implements ITabsManager {
 			logger.warn("Cannot restore the viewer tab of " + file, e);
 			return false;
 		}
+	}
+
+	/**
+	 * Reload asked by the user: reads the file again with the viewer now associated to it, also when the tab showed it as
+	 * text or with another viewer
+	 */
+	public void reloadCurrentTabFromDisk() {
+		final TabTextEditorObject tab = loadedTabObj;
+		final File file = tab.loadedFile;
+		boolean readable = file != null && file.isFile() && !tab.isEncrypted();
+		TabImplementor wanted = readable ? TabImplementors.resolve(file) : null;
+		if (!readable || wanted == null && !tab.isEmbeddedViewer()) {
+			reloadCurrentTab(true); // a text tab staying such (or the messages about files that cannot be reloaded)
+			return;
+		}
+		if (tab.isEmbeddedViewer() ? !tab.viewer.confirmClose(mainTabList)
+				: tab.unsaved && !dialogHelper.yesOrNo(I18n.t("editor.wanna_reload_if_document_is_different"), "Reload file")) {
+			return;
+		}
+		boolean wasLoading = alreadyLoading;
+		alreadyLoading = true;
+		try {
+			if (tab.isEmbeddedViewer()) {
+				tab.releaseViewer();
+			}
+			tab.getTailMode().set(false);
+			tab.fileMonitorManager = null; // only text tabs watch their file
+			tab.textArea.setText("");
+			if (wanted != null) {
+				try {
+					bindViewer(tab, wanted.open(file), wanted);
+				} catch (Throwable e) {
+					logger.warn("Cannot open the viewer of " + file + ", it opens as text", e);
+				}
+			}
+			if (!tab.isEmbeddedViewer()) {
+				tab.textArea.setEditable(true);
+				if (!validateFileToOpen(file, true)) {
+					SwingUtilities.invokeLater(() -> removeTab(geIndexOfTabObj(tab)));
+					return;
+				}
+				readFileIntoTab(tab, file, true);
+				changeMonManager.updateCurrMonitor(file);
+				tab.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
+			}
+			tab.textArea.discardAllEdits();
+			tab.unsaved = false;
+		} finally {
+			alreadyLoading = wasLoading;
+		}
+		int index = geIndexOfTabObj(tab);
+		updateSavedLabelNTab(index);
+		setIconToTab(IconsPathConfigurator.ICON_DOC_SAVED, index);
+		tabEditorManager.doAfterTabRefresh();
+		if (tab.viewer != null) {
+			tab.viewer.onSelected();
+		}
+	}
+
+	/** After "Save as" in a viewer its tab follows the new file */
+	private void followViewerFile(TabTextEditorObject tab) {
+		File file = tab.isEmbeddedViewer() ? tab.viewer.getFile() : null;
+		int index = geIndexOfTabObj(tab);
+		if (file == null || index < 0 || file.equals(tab.loadedFile)) {
+			return;
+		}
+		tab.loadedFile = file;
+		java.awt.Component title = getPanelFromTabHeader(index).getComponent(TabUtils.TAB_TITLE_ORDER);
+		((javax.swing.JComponent) title).setToolTipText(file.getAbsolutePath());
+		tabEditorManager.onTabSelected(tab);
 	}
 
 	private void applyPinnedLook(final TabTextEditorObject tab) {
@@ -1947,6 +2011,7 @@ public class CustomTabbedEditor implements ITabsManager {
 			try {
 				JLabel viewerLabel = (JLabel) (getPanelFromTabHeader(indexChange)).getComponent(TabUtils.TAB_TITLE_ORDER);
 				viewerLabel.setText(StringWorker.fitToMaxLentgh(indexTabObj.viewer.getTitle(), TabUtils.MAX_TAB_LABELENGHT) + (indexTabObj.viewer.isModified() ? " *" : ""));
+				setIconToTab(IconsPathConfigurator.ICON_DOC_SAVED, indexChange); // the icon of the viewer
 				if (indexTabObj.loadedFile != null && newFileStringTarget != null && indexChange == mainTabList.getSelectedIndex()) {
 					newFileStringTarget.setText(indexTabObj.loadedFile.getName());
 					newFileStringTarget.setToolTipText(indexTabObj.loadedFile.getCanonicalPath());

@@ -1269,7 +1269,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnUndo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (parent.getCurrentTabEditor().loadedTabObj.textArea.canUndo()) {
+				if (parent.getCurrentTabEditor().loadedTabObj.isEmbeddedViewer()) {
+					parent.getCurrentTabEditor().loadedTabObj.viewer.undo();
+				} else if (parent.getCurrentTabEditor().loadedTabObj.textArea.canUndo()) {
 					parent.getCurrentTabEditor().loadedTabObj.textArea.undoLastAction();
 					textEditorUtils.updateCurrentUnsavedFromFileRead();
 				}
@@ -1281,7 +1283,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				if (parent.getCurrentTabEditor().loadedTabObj.textArea.canRedo()) {
+				if (parent.getCurrentTabEditor().loadedTabObj.isEmbeddedViewer()) {
+					parent.getCurrentTabEditor().loadedTabObj.viewer.redo();
+				} else if (parent.getCurrentTabEditor().loadedTabObj.textArea.canRedo()) {
 					parent.getCurrentTabEditor().loadedTabObj.textArea.redoLastAction();
 					textEditorUtils.updateCurrentUnsavedFromFileRead();
 				}
@@ -1457,7 +1461,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						parent.getCurrentTabEditor().reloadCurrentTab(true);
+						parent.getCurrentTabEditor().reloadCurrentTabFromDisk();
 						textEditorUtils.refreshMessageAndTabTooltip("[File Reloaded]");
 						textEditorUtils.syncMiniTextAreaContent();
 					}
@@ -1554,7 +1558,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 		if (loadedTabObj.isEmbeddedViewer()) {
-			loadedTabObj.viewer.save();
+			loadedTabObj.viewer.saveAs();
 			parent.getCurrentTabEditor().updateSavedLabelNTab(null);
 			return;
 		}
@@ -1702,7 +1706,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		javax.swing.JComponent[] textFunctions = {
 				btnFindText, btnReplaceText, btnReplaceEscapesSeq, btnGoToLine, btnSpeak, btnParseImageText,
 				btnParsePdfText, btnFontChooser, btnTemplates, btnUndo, btnRedo, btnClear, btnRemoveSpaces, btnRemoveWord,
-				btnBase64Conversion, btnReloadFromDisk, btnOpenInScreepT, btnTailMode, toggleBtnMap, toggleButtonSpellCheck,
+				btnBase64Conversion, btnOpenInScreepT, btnTailMode, toggleBtnMap, toggleButtonSpellCheck,
 				tabSizeSpinner, comboFileFormat, comboStylesScheme, sliderFontSize, slider_margin, chckbxShowTabGrid, chckbxLockLanguage
 		};
 		for (javax.swing.JComponent component : textFunctions) {
@@ -1715,6 +1719,14 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			checkFormatterEnabled();       // the formatter depends on the file type
 		} else if (btntTextFormat != null) {
 			btntTextFormat.setEnabled(false);
+		}
+	}
+
+	/** Undo and redo work also on the viewers that keep their own history */
+	public void applyHistoryAvailable(boolean viewerHistory) {
+		if (viewerHistory) {
+			btnUndo.setEnabled(true);
+			btnRedo.setEnabled(true);
 		}
 	}
 

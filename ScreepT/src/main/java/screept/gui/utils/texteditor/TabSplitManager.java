@@ -169,7 +169,7 @@ public class TabSplitManager {
 	// ------------------------------------------------------------------ panels
 
 	/** At start: opens the second panel with the files it had when the application was closed (nothing if the list is empty) */
-	public void restoreSecondPanel(java.util.List<String> paths, java.util.List<String> viewerEntries) {
+	public void restoreSecondPanel(java.util.List<String> paths) {
 		if (paths == null || paths.isEmpty() || secondary != null) {
 			return;
 		}
@@ -194,8 +194,8 @@ public class TabSplitManager {
 			editor.alreadyLoading = true;
 			try {
 				if (textEditor.currentConfiguration.getTextEditorOpt().lazyTabLoading && !path.equals(frontPath)) {
-					editor.addLazyTab(file, editor.savedViewerOf(file, viewerEntries));
-				} else if (!editor.restoreViewerTab(file, viewerEntries)) {
+					editor.addLazyTab(file, editor.viewerAtStart(file));
+				} else if (!editor.restoreViewerTab(file)) {
 					editor.addTab(file);
 				}
 			} catch (Exception e) {

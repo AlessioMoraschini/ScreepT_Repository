@@ -898,6 +898,19 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>${pdfbox.version}</version>
+			<scope>${plugins.export.scope}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>fontbox</artifactId>
+			<version>${pdfbox.version}</version>
+			<scope>${plugins.export.scope}</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>com.github.oshi</groupId>
 			<artifactId>oshi-core</artifactId>
 			<version>${oshi.version}</version>

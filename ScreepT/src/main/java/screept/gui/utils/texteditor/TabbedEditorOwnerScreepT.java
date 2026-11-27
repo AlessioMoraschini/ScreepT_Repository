@@ -106,6 +106,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	public void onTabSelected(TabTextEditorObject tab) {
 		if (textEditor.subHeaderPanel != null) {
 			textEditor.subHeaderPanel.applyTabKind(tab == null || !tab.isEmbeddedViewer() || tab.viewer.supportsTextTools());
+			textEditor.subHeaderPanel.applyHistoryAvailable(tab != null && tab.isEmbeddedViewer() && tab.viewer.supportsEditHistory());
 			textEditor.subHeaderPanel.applyFullscreenAvailable(tab != null && tab.supportsFullscreen());
 			if (textEditor.headerPanel != null) {
 				textEditor.headerPanel.refreshEncryptionState(tab);
