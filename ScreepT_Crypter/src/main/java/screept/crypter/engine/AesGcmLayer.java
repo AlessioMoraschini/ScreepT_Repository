@@ -12,12 +12,10 @@
 package screept.crypter.engine;
 
 import java.security.GeneralSecurityException;
-import java.security.InvalidKeyException;
 import java.util.Arrays;
 
 import javax.crypto.AEADBadTagException;
 import javax.crypto.Cipher;
-import javax.crypto.Mac;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -94,12 +92,6 @@ public class AesGcmLayer implements CipherLayer {
 
 	/** HMAC-SHA256, used by derived layers to mix extra secrets into the key. */
 	static byte[] hmac(byte[] key, byte[] data) throws CryptoException {
-		try {
-			Mac mac = Mac.getInstance("HmacSHA256");
-			mac.init(new SecretKeySpec(key, "HmacSHA256"));
-			return mac.doFinal(data);
-		} catch (InvalidKeyException | java.security.NoSuchAlgorithmException e) {
-			throw new CryptoException("Key derivation failed", e);
-		}
+		return Pbkdf2.hmacSha256(key, data);
 	}
 }

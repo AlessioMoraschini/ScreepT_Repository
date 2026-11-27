@@ -119,7 +119,8 @@ public class PrimitiveVectorsTest {
 				Argon2.cost(18, 3, 0), Argon2.cost(18, 3, 9), 0x01000000 | k.defaultCost, -1 }) {
 			assertFalse("cost " + Integer.toHexString(bad), k.isCostAcceptable(bad));
 		}
-		assertEquals(256L << 20, k.memoryBytes(k.defaultCost));
+		assertEquals(64L << 20, k.memoryBytes(k.defaultCost));
+		assertEquals(256L << 20, k.memoryBytes(CryptoProfile.ultra().kdfCost));
 	}
 
 	// ---------------------------------------------------------------- ChaCha20-Poly1305 (RFC 8439)

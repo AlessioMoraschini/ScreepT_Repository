@@ -53,7 +53,13 @@ public final class CrypterAdvancedDialog {
 			boxes[i].setToolTipText(html(OptionDescriptions.crypterOption(names[i])));
 		}
 
-		final JComboBox<KdfAlgorithm> kdf = new JComboBox<KdfAlgorithm>(KdfAlgorithm.values());
+		List<KdfAlgorithm> passwordKdfs = new ArrayList<KdfAlgorithm>();
+		for (KdfAlgorithm k : KdfAlgorithm.values()) {
+			if (k.passwordBased()) { // public keys have their own mode
+				passwordKdfs.add(k);
+			}
+		}
+		final JComboBox<KdfAlgorithm> kdf = new JComboBox<KdfAlgorithm>(passwordKdfs.toArray(new KdfAlgorithm[0]));
 		kdf.setSelectedItem(settings.kdf);
 		kdf.setRenderer(new DefaultListCellRenderer() {
 			private static final long serialVersionUID = 1L;
@@ -114,6 +120,10 @@ public final class CrypterAdvancedDialog {
 		p.add(kdf);
 		p.add(section("Folders"), "gaptop 8");
 		p.add(folder);
+		final JCheckBox hide = new JCheckBox("Hide the encrypted data in a picture (steganography)", settings.hideInPicture);
+		hide.setToolTipText(html(OptionDescriptions.crypterOption("Hide in a picture")));
+		p.add(section("Output"), "gaptop 8");
+		p.add(hide);
 		p.add(summary, "gaptop 10, wmin 380");
 
 		while (true) {
@@ -127,6 +137,7 @@ public final class CrypterAdvancedDialog {
 				settings.layers = chosen.layers;
 				settings.kdf = chosen.kdf;
 				settings.outputMode = chosen.outputMode;
+				settings.hideInPicture = hide.isSelected();
 				return true;
 			} catch (IllegalArgumentException ex) {
 				JOptionPane.showMessageDialog(parent, "Pick at least one AES or ChaCha20 layer: Shuffle alone does not protect anything.",

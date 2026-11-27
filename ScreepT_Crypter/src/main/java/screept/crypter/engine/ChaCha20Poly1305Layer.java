@@ -186,8 +186,8 @@ public class ChaCha20Poly1305Layer implements CipherLayer {
 	/** Poly1305 one-time authenticator (26 bit limbs). */
 	static final class Poly1305 {
 		private static final long M26 = 0x3ffffff;
-		private final long r0, r1, r2, r3, r4, s1, s2, s3, s4;
-		private final int pad0, pad1, pad2, pad3;
+		private long r0, r1, r2, r3, r4, s1, s2, s3, s4;
+		private int pad0, pad1, pad2, pad3;
 		private long h0, h1, h2, h3, h4;
 
 		Poly1305(byte[] k) {
@@ -316,7 +316,10 @@ public class ChaCha20Poly1305Layer implements CipherLayer {
 			for (int i = 0; i < 16; i++) {
 				out[i] = (byte) (w[i >>> 2] >>> (8 * (i & 3)));
 			}
-			h0 = h1 = h2 = h3 = h4 = 0;
+			h0 = h1 = h2 = h3 = h4 = 0; // the one-time key is forgotten
+			r0 = r1 = r2 = r3 = r4 = s1 = s2 = s3 = s4 = 0;
+			pad0 = pad1 = pad2 = pad3 = 0;
+			Arrays.fill(w, 0);
 			return out;
 		}
 	}

@@ -24,6 +24,7 @@ public enum CryptoMode {SECURE_256("G2", true, false, false, CryptoProfile.stand
 						SECURE_128("G1", true, false, false, CryptoProfile.aes128(), "Secure: AES-128-GCM"),
 						SECURE_MAX("GM", true, false, false, CryptoProfile.maximum(), "Maximum: AES-128 + AES-256, scrypt"),
 						SECURE_ULTRA("GU", true, false, false, CryptoProfile.ultra(), "Ultra: AES-256 + ChaCha20, Argon2id"),
+						SECURE_PUBLIC("GP", true, false, false, CryptoProfile.forRecipients(), "Public keys: share without a password"),
 						SECURE_KEYIMAGE("GK", true, true, false, CryptoProfile.withKeyImage(), "Secure + key image (StegaCREEPT)"),
 						CUSTOM("GX", true, false, false, CryptoProfile.standard(), "Custom (choose layers)..."),
 						COMPLETE("AS", true, true, true, null, "Legacy: AES + key image"),

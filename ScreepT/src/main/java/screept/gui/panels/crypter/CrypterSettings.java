@@ -24,18 +24,25 @@ import screept.crypter.engine.KdfAlgorithm;
 public final class CrypterSettings {
 
 	public List<CipherLayer> layers = new ArrayList<CipherLayer>(java.util.Arrays.asList(CipherAlgorithm.AES_256_GCM));
-	public KdfAlgorithm kdf = KdfAlgorithm.PBKDF2_SHA512;
+	public KdfAlgorithm kdf = KdfAlgorithm.ARGON2ID;
+	/** Cost of the mode Options... started from (Ultra: 256 MB); used while its KDF stays selected. */
+	private KdfAlgorithm costKdf;
+	private int cost;
 	public FileCrypter.OutputMode outputMode = FileCrypter.OutputMode.SINGLE_ENCRYPTED_ARCHIVE;
+	/** Steganography: hide the encrypted data in a picture chosen at every encryption (not saved). */
+	public boolean hideInPicture;
 
 	/** @throws IllegalArgumentException if the combination is not valid (for example no authenticated layer) */
 	public CryptoProfile buildProfile() {
-		return new CryptoProfile(kdf, kdf.defaultCost, layers);
+		return new CryptoProfile(kdf, kdf == costKdf ? cost : kdf.defaultCost, layers);
 	}
 
 	/** Starts from a ready made mode, so that "Options..." shows (and refines) what is selected in the list. */
 	public void loadFrom(CryptoProfile profile) {
 		layers = new ArrayList<CipherLayer>(profile.getLayers());
 		kdf = profile.kdf;
+		costKdf = profile.kdf;
+		cost = profile.kdfCost;
 	}
 
 	/** Layer ids as written in the INI, for example "2,3". */

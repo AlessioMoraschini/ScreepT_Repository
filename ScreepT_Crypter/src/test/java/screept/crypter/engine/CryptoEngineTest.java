@@ -52,7 +52,7 @@ public class CryptoEngineTest {
 				Arrays.asList(CipherAlgorithm.AES_256_GCM),
 				Arrays.asList(CipherAlgorithm.AES_128_GCM, CipherAlgorithm.AES_256_GCM),
 				Arrays.asList(CipherAlgorithm.AES_256_GCM, CipherAlgorithm.AES_128_GCM));
-		for (KdfAlgorithm kdf : KdfAlgorithm.values()) {
+		for (KdfAlgorithm kdf : CrypterTortureTest.passwordKdfs()) {
 			int cost = CrypterTortureTest.cheapCost(kdf);
 			for (List<CipherLayer> st : stacks) {
 				list.add(new CryptoProfile(kdf, cost, CHUNK_LOG2, st));

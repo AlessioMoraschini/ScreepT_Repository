@@ -16,14 +16,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Streaming authenticated encryption (container "SCP2").
@@ -89,6 +86,10 @@ public final class CryptoEngine {
 		return out.toByteArray();
 	}
 
+	/** Longest possible header: what {@link #readProfile} may need. */
+	public static final int MAX_HEADER_BYTES = 12 + CryptoProfile.MAX_LAYERS + SALT_BYTES + PREFIX_BYTES
+			+ KdfAlgorithm.MAX_RECIPIENTS * Recipients.STANZA_BYTES;
+
 	/** True if the data starts with the engine magic (a cheap check, no password needed). */
 	public static boolean isEngineData(byte[] head) {
 		return head != null && head.length >= MAGIC.length && Arrays.equals(Arrays.copyOf(head, MAGIC.length), MAGIC);
@@ -108,17 +109,32 @@ public final class CryptoEngine {
 
 	public static void encrypt(InputStream in, OutputStream out, CryptoKey password, CryptoProfile profile)
 			throws CryptoException, IOException {
-		requirePassword(password);
 		byte[] salt = random(SALT_BYTES);
 		byte[] prefix = random(PREFIX_BYTES);
-		Header header = new Header(profile, salt, prefix);
-		out.write(header.raw);
-
-		byte[][] keys = layerKeys(password, header);
+		byte[] master;
+		Header header;
+		if (profile.kdf.passwordBased()) {
+			requirePassword(password);
+			header = new Header(profile, salt, prefix, null);
+			master = profile.kdf.derive(password.password(), salt, profile.kdfCost, MASTER_BYTES);
+		} else {
+			List<byte[]> to = password == null ? null : password.recipients();
+			if (to == null || to.isEmpty() || to.size() > KdfAlgorithm.MAX_RECIPIENTS) {
+				throw new CryptoException("Choose 1 to " + KdfAlgorithm.MAX_RECIPIENTS + " public keys to encrypt for");
+			}
+			master = random(MASTER_BYTES); // the file key, sealed for every recipient in the header
+			byte[][] stanzas = new byte[to.size()][];
+			for (int i = 0; i < stanzas.length; i++) {
+				stanzas[i] = Recipients.seal(master, to.get(i), salt);
+			}
+			header = new Header(new CryptoProfile(profile.kdf, to.size(), profile.chunkLog2, profile.getLayers()), salt, prefix, stanzas);
+		}
+		byte[][] keys = layerKeys(master, password, header);
 		List<CipherLayer> layers = profile.getLayers();
 		int chunk = profile.chunkSize();
 		byte[] buf = new byte[chunk];
 		try {
+			out.write(header.raw);
 			for (long counter = 0;; counter++) {
 				int n = readFully(in, buf);
 				boolean last = n < chunk;
@@ -140,10 +156,19 @@ public final class CryptoEngine {
 
 	public static CryptoProfile decrypt(InputStream in, OutputStream out, CryptoKey password)
 			throws CryptoException, IOException {
-		requirePassword(password);
 		Header header = Header.read(in);
 		CryptoProfile profile = header.profile;
-		byte[][] keys = layerKeys(password, header);
+		byte[] master;
+		if (profile.kdf.passwordBased()) {
+			requirePassword(password);
+			master = profile.kdf.derive(password.password(), header.salt, profile.kdfCost, MASTER_BYTES);
+		} else {
+			if (password == null || password.identity() == null) {
+				throw new CryptoException("This file was encrypted for public keys: open it with your private key (Keys...)");
+			}
+			master = Recipients.open(header.stanzas, password.identity(), header.salt);
+		}
+		byte[][] keys = layerKeys(master, password, header);
 		List<CipherLayer> layers = profile.getLayers();
 		int overhead = profile.overheadPerChunk();
 		byte[] frame = new byte[profile.chunkSize() + overhead];
@@ -218,24 +243,24 @@ public final class CryptoEngine {
 		return a;
 	}
 
-	private static byte[][] layerKeys(CryptoKey password, Header header) throws CryptoException {
-		byte[] master = header.profile.kdf.derive(password.password(), header.salt, header.profile.kdfCost, MASTER_BYTES);
+	/** One key per layer from the master key, which is wiped. */
+	private static byte[][] layerKeys(byte[] master, CryptoKey password, Header header) throws CryptoException {
 		List<CipherLayer> layers = header.profile.getLayers();
 		byte[][] keys = new byte[layers.size()][];
+		Pbkdf2.Hmac mac = new Pbkdf2.Hmac(false, master); // HMAC-SHA256, wiped below (the JDK Mac keeps key copies)
 		try {
-			Mac mac = Mac.getInstance("HmacSHA256");
-			mac.init(new SecretKeySpec(master, "HmacSHA256"));
+			byte[] full = new byte[mac.length()];
 			for (int i = 0; i < keys.length; i++) {
-				byte[] full = mac.doFinal(("SCP2/layer/" + i + "/" + layers.get(i).id()).getBytes("UTF-8"));
+				byte[] label = ("SCP2/layer/" + i + "/" + layers.get(i).id()).getBytes(java.nio.charset.StandardCharsets.UTF_8);
+				mac.mac(label, label.length, full);
 				keys[i] = layers.get(i).deriveKey(full, password);
-				Arrays.fill(full, (byte) 0);
 			}
-		} catch (GeneralSecurityException | java.io.UnsupportedEncodingException e) {
-			throw new CryptoException("Key derivation failed", e);
+			Arrays.fill(full, (byte) 0);
 		} catch (CryptoException e) {
 			wipe(keys);
 			throw e;
 		} finally {
+			mac.wipe();
 			Arrays.fill(master, (byte) 0);
 		}
 		return keys;
@@ -254,12 +279,15 @@ public final class CryptoEngine {
 		final CryptoProfile profile;
 		final byte[] salt;
 		final byte[] noncePrefix;
+		/** Sealed file keys of a public key file, null for password files. */
+		final byte[][] stanzas;
 		final byte[] raw;
 
-		Header(CryptoProfile profile, byte[] salt, byte[] noncePrefix) {
+		Header(CryptoProfile profile, byte[] salt, byte[] noncePrefix, byte[][] stanzas) {
 			this.profile = profile;
 			this.salt = salt;
 			this.noncePrefix = noncePrefix;
+			this.stanzas = stanzas;
 			ByteArrayOutputStream b = new ByteArrayOutputStream();
 			b.write(MAGIC, 0, MAGIC.length);
 			b.write(VERSION);
@@ -276,6 +304,11 @@ public final class CryptoEngine {
 			}
 			b.write(salt, 0, salt.length);
 			b.write(noncePrefix, 0, noncePrefix.length);
+			if (stanzas != null) {
+				for (byte[] s : stanzas) {
+					b.write(s, 0, s.length);
+				}
+			}
 			this.raw = b.toByteArray();
 		}
 
@@ -304,8 +337,17 @@ public final class CryptoEngine {
 			for (byte id : ids) {
 				layers.add(CipherAlgorithm.fromId(id & 0xff));
 			}
+			byte[][] stanzas = null;
+			if (!kdf.passwordBased()) {
+				stanzas = new byte[cost][Recipients.STANZA_BYTES];
+				for (byte[] s : stanzas) {
+					if (readFully(in, s) < s.length) {
+						throw new CryptoException("Invalid or damaged file header");
+					}
+				}
+			}
 			try {
-				return new Header(new CryptoProfile(kdf, cost, chunkLog2, layers), salt, prefix);
+				return new Header(new CryptoProfile(kdf, cost, chunkLog2, layers), salt, prefix, stanzas);
 			} catch (IllegalArgumentException e) { // for example no authenticated layer: never a valid file
 				throw new CryptoException("Invalid or damaged file header", e);
 			}

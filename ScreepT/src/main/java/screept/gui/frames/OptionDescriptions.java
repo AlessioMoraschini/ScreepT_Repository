@@ -42,6 +42,9 @@ public final class OptionDescriptions {
 				+ "breaking one of the two ciphers is not enough to read the files.");
 		m.put("StegaCREEPT key image", "A secret picture becomes a second key: without the same picture the file cannot be decrypted, even with the right password. "
 				+ "Keep the image private and backed up: losing it means losing the files.");
+		m.put("Hide in a picture", "Steganography: at every encryption you choose a colour photo, and the encrypted file or folder is hidden inside a copy of it "
+				+ "(PNG, named like the photo). The picture looks normal; without the password nobody can find or extract the data. Keep at most a small "
+				+ "file per picture (the limit is shown) and never resize or convert the picture to JPEG: the data would be lost. Decrypt the PNG like any file.");
 		m.put("Shuffle", "Scrambles the position of the bytes of the encrypted data with a key. It does not add strength by itself: the AES layers keep protecting and checking the data. "
 				+ "It only hides the structure of the encrypted file.");
 		m.put("Key derivation", "How the password becomes the encryption key. PBKDF2 is the standard and works everywhere. scrypt and Argon2id (the modern standard, RFC 9106) also need a lot of memory, which makes password guessing on graphic cards and special hardware much more expensive.");

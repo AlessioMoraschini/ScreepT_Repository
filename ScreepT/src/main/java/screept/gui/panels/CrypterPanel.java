@@ -87,6 +87,7 @@ import screept.gui.panels.crypter.CrypterSettings;
 import screept.gui.panels.crypter.SecurityBadge;
 import screept.gui.frames.OptionDescriptions;
 import screept.crypter.impl.manager.CryptoMode;
+import screept.gui.panels.crypter.KeysDialog;
 import screept.crypter.impl.manager.ScreeptManagerFileOrFolder;
 import screept.crypter.om.CrypterResultDTO;
 import screept.crypter.util.ScreeptUtils;
@@ -225,6 +226,7 @@ public class CrypterPanel extends ModulePanel {
 	private JCheckBox chckbxShuffle;
 	private JCheckBox chckbxHashKey;
 	private JButton btnProtectionOptions;
+	private JButton btnKeys;
 	private JTabbedPane centerTabs;
 	private boolean guideShown = false;
 	private SecurityBadge securityBadge;
@@ -490,6 +492,15 @@ public class CrypterPanel extends ModulePanel {
 		});
 		btnProtectionOptions.setVisible(false);
 		panelStatus.add(btnProtectionOptions, "cell 6 0");
+
+		btnKeys = new JButton("Keys...");
+		btnKeys.setToolTipText(encapsulateInHtml("Public keys: your key pair and the people you send files to (mode \"Public keys\"). "
+				+ "They open the files with their own password, you never share yours."));
+		btnKeys.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnKeys.setFocusable(false);
+		btnKeys.addActionListener(e -> KeysDialog.show(thisPanel));
+		btnKeys.setVisible(false);
+		panelStatus.add(btnKeys, "cell 6 0");
 
 		securityBadge = new SecurityBadge();
 		panelStatus.add(securityBadge, "cell 0 1 10 1, growx, wmin 0");
@@ -842,9 +853,25 @@ public class CrypterPanel extends ModulePanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				if (ScreeptUtils.checkPasswordStrengthDynamic(currentConf.getAesOpt().getSecurityLevel(), AESKEYtext, 10)) {
+				CryptoMode chosen = (CryptoMode) comboModeCrypto.getSelectedItem();
+				if (KeysDialog.refuseLegacyEncryption(thisPanel, chosen)) {
+					return;
+				}
+				boolean publicKeys = chosen == CryptoMode.SECURE_PUBLIC;
+				java.util.List<byte[]> recipients = null;
+				if (publicKeys && (recipients = KeysDialog.recipients(thisPanel)) == null) {
+					return;
+				}
+				java.io.File cover = null;
+				if (settings.hideInPicture && !publicKeys && (cover = KeysDialog.chooseCover(thisPanel)) == null) {
+					return; // cancelled by user
+				}
+				// public keys need no password to encrypt (each recipient opens the file with its own)
+				if (publicKeys || ScreeptUtils.checkPasswordStrengthDynamic(currentConf.getAesOpt().getSecurityLevel(), AESKEYtext, 10)) {
 					try {
 						screeptManagerFoF.setHashed(chckbxHashKey.isSelected());
+						screeptManagerFoF.setRecipients(recipients);
+						screeptManagerFoF.setCoverPicture(cover);
 						new Thread(cripterRunner()).start();
 					} catch (Throwable ex) {
 						if (screeptManagerFoF.screepTManager != null) {
@@ -867,6 +894,7 @@ public class CrypterPanel extends ModulePanel {
 
 				try {
 					screeptManagerFoF.setHashed(chckbxHashKey.isSelected());
+					screeptManagerFoF.setIdentityFile(KeysDialog.identityFile()); // used only by public key files
 					new Thread(decripterRunner()).start();
 				}catch(Throwable ex) {
 					if(screeptManagerFoF.screepTManager!=null) {
@@ -891,6 +919,7 @@ public class CrypterPanel extends ModulePanel {
 				chckbxShuffle.setVisible(!engineMode);
 				chckbxHashKey.setVisible(!engineMode);
 				btnProtectionOptions.setVisible(engineMode);
+				btnKeys.setVisible(engineMode);
 				if (modality == CryptoMode.CUSTOM && !customChosen) {
 					customChosen = CrypterAdvancedDialog.show(thisPanel, settings);
 				}
@@ -992,7 +1021,9 @@ public class CrypterPanel extends ModulePanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				mainApplication.windowCreator.newGeneratePassordFrame(AesCipher.limit);
+				CryptoMode m = (CryptoMode) comboModeCrypto.getSelectedItem();
+				// only the Legacy modes are limited to 16 characters
+				mainApplication.windowCreator.newGeneratePassordFrame(m != null && m.profile == null ? AesCipher.limit : null);
 			}
 		});
 	}
@@ -1676,7 +1707,7 @@ public class CrypterPanel extends ModulePanel {
 			ready = false;
 		}
 
-		if(AESKEYtext.getPassword().length == 0 && selectedMode.isAES()) {
+		if(AESKEYtext.getDocument().getLength() == 0 && selectedMode.isAES()) {
 			// MISSING AES KEY
 			checkEsit += I18n.t("crypter.missing_aes_key");
 			ready = false;

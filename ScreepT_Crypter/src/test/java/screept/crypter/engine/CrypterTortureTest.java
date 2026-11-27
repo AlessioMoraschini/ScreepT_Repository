@@ -61,6 +61,16 @@ public class CrypterTortureTest {
 		return new CryptoProfile(kdf, cheapCost(kdf), CHUNK_LOG2, Arrays.asList(layers));
 	}
 
+	static KdfAlgorithm[] passwordKdfs() {
+		List<KdfAlgorithm> l = new ArrayList<KdfAlgorithm>();
+		for (KdfAlgorithm k : KdfAlgorithm.values()) {
+			if (k.passwordBased()) {
+				l.add(k);
+			}
+		}
+		return l.toArray(new KdfAlgorithm[0]);
+	}
+
 	static int cheapCost(KdfAlgorithm kdf) {
 		switch (kdf) {
 		case SCRYPT:
@@ -107,7 +117,7 @@ public class CrypterTortureTest {
 
 	@Test(timeout = 120000)
 	public void everyKdfRoundTripsAndIsRecognisedFromTheHeader() throws Exception {
-		for (KdfAlgorithm kdf : KdfAlgorithm.values()) {
+		for (KdfAlgorithm kdf : passwordKdfs()) {
 			for (CipherLayer[] set : new CipherLayer[][] { { A256 }, { A256, CHA }, { A128, A256, CHA, SHU } }) {
 				CryptoProfile p = profile(kdf, set);
 				for (int size : new int[] { 0, 1, CHUNK, 2 * CHUNK + 7 }) {
@@ -169,7 +179,7 @@ public class CrypterTortureTest {
 
 	@Test(timeout = 60000)
 	public void nearlyRightPasswordsAreRejected() throws Exception {
-		for (KdfAlgorithm kdf : KdfAlgorithm.values()) {
+		for (KdfAlgorithm kdf : passwordKdfs()) {
 			byte[] enc = CryptoEngine.encrypt(data(500, 3), PSW.clone(), profile(kdf, A256, CHA));
 			String psw = new String(PSW);
 			for (String wrong : new String[] { psw.substring(0, psw.length() - 1), psw + " ", " " + psw, psw.toUpperCase(),
@@ -376,7 +386,7 @@ public class CrypterTortureTest {
 				results.add(pool.submit(new Callable<Void>() {
 					@Override
 					public Void call() throws Exception {
-						KdfAlgorithm kdf = KdfAlgorithm.values()[id % KdfAlgorithm.values().length];
+						KdfAlgorithm kdf = passwordKdfs()[id % passwordKdfs().length];
 						CipherLayer[] set = LAYER_SETS[id % LAYER_SETS.length];
 						char[] psw = ("thread-" + id).toCharArray();
 						for (int i = 0; i < 4; i++) {

@@ -258,9 +258,108 @@ public final class FileCrypter {
 			decryptArchiveToFolder(src, destDir, password);
 			return root.exists() ? root : destDir;
 		}
+		if (isPicture(src) && inspect(src) == null) {
+			return decryptFromPicture(src, destDir, password);
+		}
 		File out = free(new File(destDir, originalName(src.getName())));
 		decryptFile(src, out, password);
 		return out;
+	}
+
+	// ---------------------------------------------------------------- steganography
+
+	/** Lossless pictures that may hide data (a JPEG would have destroyed it). */
+	public static boolean isPicture(File f) {
+		String n = f == null ? "" : f.getName().toLowerCase();
+		return f != null && f.isFile() && (n.endsWith(".png") || n.endsWith(".bmp"));
+	}
+
+	/**
+	 * Encrypts a file or a folder (one archive) and hides the result in a copy of {@code cover}: the output is a normal
+	 * looking PNG named like the cover. Needs a password profile: the hiding places come from the password.
+	 * The written picture is read back and checked before returning.
+	 */
+	public static File encryptIntoPicture(File src, File cover, File destDir, CryptoKey password, CryptoProfile profile)
+			throws CryptoException, IOException {
+		if (src == null || !src.exists()) {
+			throw new CryptoException("Source not found");
+		}
+		if (!profile.kdf.passwordBased()) {
+			throw new CryptoException("Hiding in a picture needs a password mode (public key files cannot be hidden)");
+		}
+		java.awt.image.BufferedImage img = cover == null || !cover.isFile() ? null : javax.imageio.ImageIO.read(cover);
+		if (img == null) {
+			throw new CryptoException("The cover picture cannot be read");
+		}
+		if (!destDir.isDirectory() && !destDir.mkdirs()) {
+			throw new CryptoException("Cannot create the destination folder");
+		}
+		File tmp = File.createTempFile("scpt_hide", ".tmp", destDir);
+		try {
+			boolean folder = src.isDirectory();
+			if (folder) {
+				tmp.delete();
+				encryptFolderToArchive(src, tmp, password, profile);
+			} else {
+				encryptFile(src, tmp, password, profile);
+			}
+			long cap = StegoPicture.capacity(img.getWidth(), img.getHeight());
+			byte[] name = src.getName().getBytes(java.nio.charset.StandardCharsets.UTF_8);
+			if (tmp.length() + 3 + name.length > cap) {
+				throw new CryptoException("The picture can hide at most " + (cap / 1024) + " KB, the encrypted data is "
+						+ ((tmp.length() + 1023) / 1024) + " KB: choose a bigger picture or less data");
+			}
+			byte[] enc = java.nio.file.Files.readAllBytes(tmp.toPath());
+			byte[] payload = new byte[3 + name.length + enc.length];
+			payload[0] = (byte) (folder ? 1 : 0);
+			payload[1] = (byte) (name.length >>> 8);
+			payload[2] = (byte) name.length;
+			System.arraycopy(name, 0, payload, 3, name.length);
+			System.arraycopy(enc, 0, payload, 3 + name.length, enc.length);
+			java.awt.image.BufferedImage stego = StegoPicture.hide(img, payload, password.password());
+			File out = free(new File(destDir, stripExt(cover.getName()) + ".png"));
+			try {
+				if (!javax.imageio.ImageIO.write(stego, "png", out)) {
+					throw new IOException("PNG writer missing");
+				}
+				// reliability: what was written must give back exactly what was hidden
+				if (!java.util.Arrays.equals(payload, StegoPicture.reveal(javax.imageio.ImageIO.read(out), password.password()))) {
+					throw new CryptoException("The picture could not be verified after writing");
+				}
+			} catch (CryptoException | IOException | RuntimeException e) {
+				out.delete();
+				throw e;
+			}
+			return out;
+		} finally {
+			tmp.delete();
+		}
+	}
+
+	private static File decryptFromPicture(File picture, File destDir, CryptoKey password) throws CryptoException, IOException {
+		if (password == null || password.password() == null) {
+			throw new CryptoException("The password is empty");
+		}
+		byte[] payload = StegoPicture.reveal(javax.imageio.ImageIO.read(picture), password.password());
+		int nameLen = payload.length < 3 ? -1 : ((payload[1] & 0xff) << 8) | (payload[2] & 0xff);
+		if (nameLen < 0 || payload.length < 3 + nameLen || (payload[0] != 0 && payload[0] != 1)) {
+			throw new CryptoException("The hidden data is damaged");
+		}
+		String name = new String(payload, 3, nameLen, java.nio.charset.StandardCharsets.UTF_8);
+		if (name.isEmpty() || name.contains("/") || name.contains("\\") || name.equals("..") || name.equals(".")) {
+			throw new CryptoException("The hidden data is damaged");
+		}
+		File tmpDir = new File(destDir, ".scpt_reveal_" + System.nanoTime());
+		if (!tmpDir.mkdirs()) {
+			throw new IOException("Cannot create a temporary folder in the destination");
+		}
+		try {
+			File enc = new File(tmpDir, name + (payload[0] == 1 ? DIR_EXT : EXT));
+			java.nio.file.Files.write(enc.toPath(), java.util.Arrays.copyOfRange(payload, 3 + nameLen, payload.length));
+			return decrypt(enc, destDir, password);
+		} finally {
+			deleteRecursive(tmpDir);
+		}
 	}
 
 	/** Describes how a file is protected, from its header only (no password). Null if it is not an engine file. */
@@ -268,10 +367,13 @@ public final class FileCrypter {
 		if (file == null || !file.isFile()) {
 			return null;
 		}
-		byte[] head = new byte[64];
+		byte[] head = new byte[CryptoEngine.MAX_HEADER_BYTES];
 		try (InputStream is = new FileInputStream(file)) {
-			int n = is.read(head);
-			if (n < 0 || !CryptoEngine.isEngineData(head)) {
+			int n = 0;
+			for (int r; n < head.length && (r = is.read(head, n, head.length - n)) > 0;) {
+				n += r;
+			}
+			if (n < 4 || !CryptoEngine.isEngineData(head)) {
 				return null;
 			}
 			return CryptoEngine.readProfile(java.util.Arrays.copyOf(head, n));

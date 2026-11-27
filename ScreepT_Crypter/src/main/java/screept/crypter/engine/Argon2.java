@@ -211,6 +211,12 @@ final class Argon2 {
 			fillBlock(memory, prev * BLOCK_LONGS, memory, (refLane * laneLength + refIndex) * BLOCK_LONGS, memory, curr * BLOCK_LONGS,
 					pass != 0, r, tmp);
 		}
+		Arrays.fill(r, 0);
+		Arrays.fill(tmp, 0);
+		if (address != null) {
+			Arrays.fill(address, 0);
+			Arrays.fill(input, 0);
+		}
 	}
 
 	private int indexAlpha(int pass, int slice, int index, long rand32, boolean sameLane) {

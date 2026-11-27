@@ -29,10 +29,42 @@ public final class CryptoKey {
 
 	private final char[] password;
 	private final byte[] keyImageDigest;
+	/** Public keys a file is encrypted for (X25519 profiles); null otherwise. */
+	private final java.util.List<byte[]> recipients;
+	/** Private key that opens public key files; null otherwise. */
+	private final byte[] identity;
 
 	private CryptoKey(char[] password, byte[] keyImageDigest) {
+		this(password, keyImageDigest, null, null);
+	}
+
+	private CryptoKey(char[] password, byte[] keyImageDigest, java.util.List<byte[]> recipients, byte[] identity) {
 		this.password = password;
 		this.keyImageDigest = keyImageDigest;
+		this.recipients = recipients;
+		this.identity = identity;
+	}
+
+	/** Same secrets, encrypting for these public keys (see {@link Identity#parsePublicKey}). */
+	public CryptoKey withRecipients(java.util.List<byte[]> publicKeys) {
+		java.util.List<byte[]> copy = new java.util.ArrayList<byte[]>();
+		for (byte[] k : publicKeys) {
+			copy.add(k.clone());
+		}
+		return new CryptoKey(password, keyImageDigest, java.util.Collections.unmodifiableList(copy), identity);
+	}
+
+	/** Same secrets, able to open public key files made for this identity. */
+	public CryptoKey withIdentity(Identity id) {
+		return new CryptoKey(password, keyImageDigest, recipients, id.privateKey().clone());
+	}
+
+	java.util.List<byte[]> recipients() {
+		return recipients;
+	}
+
+	byte[] identity() {
+		return identity;
 	}
 
 	public static CryptoKey of(char[] password) {
@@ -60,11 +92,29 @@ public final class CryptoKey {
 	}
 
 	public void clear() {
+		if (identity != null) {
+			Arrays.fill(identity, (byte) 0);
+		}
 		if (password != null) {
 			Arrays.fill(password, '\0');
 		}
 		if (keyImageDigest != null) {
 			Arrays.fill(keyImageDigest, (byte) 0);
+		}
+	}
+
+	private static void wipePixels(BufferedImage img) {
+		java.awt.image.DataBuffer db = img.getRaster().getDataBuffer();
+		for (int b = 0; b < db.getNumBanks(); b++) {
+			if (db instanceof java.awt.image.DataBufferByte) {
+				Arrays.fill(((java.awt.image.DataBufferByte) db).getData(b), (byte) 0);
+			} else if (db instanceof java.awt.image.DataBufferInt) {
+				Arrays.fill(((java.awt.image.DataBufferInt) db).getData(b), 0);
+			} else if (db instanceof java.awt.image.DataBufferUShort) {
+				Arrays.fill(((java.awt.image.DataBufferUShort) db).getData(b), (short) 0);
+			} else if (db instanceof java.awt.image.DataBufferShort) {
+				Arrays.fill(((java.awt.image.DataBufferShort) db).getData(b), (short) 0);
+			}
 		}
 	}
 
@@ -85,6 +135,8 @@ public final class CryptoKey {
 				}
 				md.update(row.array());
 			}
+			Arrays.fill(row.array(), (byte) 0);
+			wipePixels(img); // the key image is a secret too: do not leave its pixels around
 			return md.digest();
 		} catch (IOException | GeneralSecurityException e) {
 			throw new CryptoException("The key image cannot be read", e);

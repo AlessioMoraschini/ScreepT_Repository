@@ -15,6 +15,7 @@ import screept.crypter.engine.CryptoException;
 import screept.crypter.engine.CryptoKey;
 import screept.crypter.engine.CryptoProfile;
 import screept.crypter.engine.FileCrypter;
+import screept.crypter.engine.Identity;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -218,7 +219,7 @@ public class ScreeptManagerFileOrFolder {
 
 		// files made by the authenticated engine are recognised by themselves, whatever the selected mode is
 		engineStats = null;
-		if (FileCrypter.isEngineInput(srcFile)) {
+		if (FileCrypter.isEngineInput(srcFile) || (mode.profile != null && FileCrypter.isPicture(srcFile))) {
 			return engineDecrypt(srcFile, destinationDir, aesKey, srcKeyImageFile);
 		}
 		
@@ -341,7 +342,14 @@ public class ScreeptManagerFileOrFolder {
 				destinationDir.mkdirs();
 			}
 			key = CryptoKey.of(password, profile.needsKeyImage() ? keyImage : null);
-			File out = FileCrypter.encrypt(src, destinationDir, key, profile, outputMode);
+			if (!profile.kdf.passwordBased()) {
+				if (recipients == null || recipients.isEmpty()) {
+					throw new CryptoException("No public key chosen (Keys...)");
+				}
+				key = key.withRecipients(recipients);
+			}
+			File out = coverPicture != null ? FileCrypter.encryptIntoPicture(src, coverPicture, destinationDir, key, profile)
+					: FileCrypter.encrypt(src, destinationDir, key, profile, outputMode);
 			engineStats = "Encrypted " + src.getName() + " -> " + out.getName() + "  [" + profile.describe() + "]\n";
 			result.resultOK = true;
 		} catch (CryptoException | IOException | RuntimeException e) {
@@ -365,6 +373,18 @@ public class ScreeptManagerFileOrFolder {
 			}
 			CryptoProfile found = FileCrypter.inspect(src);
 			key = CryptoKey.of(password, keyImage);
+			if (found != null && !found.kdf.passwordBased()) {
+				// public key file: the password opens the private key file of the user
+				if (identityFile == null || !identityFile.isFile()) {
+					throw new CryptoException("This file was encrypted for public keys: create or restore your keys first (Keys...)");
+				}
+				Identity id = Identity.load(identityFile, password);
+				try {
+					key = key.withIdentity(id);
+				} finally {
+					id.clear();
+				}
+			}
 			File out = FileCrypter.decrypt(src, destinationDir, key);
 			engineStats = "Decrypted " + src.getName() + " -> " + out.getName()
 					+ (found != null ? "  [" + found.describe() + "]" : "") + "\n";
@@ -379,6 +399,25 @@ public class ScreeptManagerFileOrFolder {
 		}
 		opInfo = engineStats;
 		return result;
+	}
+
+	private java.util.List<byte[]> recipients;
+	private File coverPicture;
+	private File identityFile;
+
+	/** Public keys for the "Public keys" mode. */
+	public void setRecipients(java.util.List<byte[]> recipients) {
+		this.recipients = recipients;
+	}
+
+	/** Not null: hide the encrypted data in a copy of this picture (steganography). */
+	public void setCoverPicture(File cover) {
+		this.coverPicture = cover;
+	}
+
+	/** Private key file (protected by the password) used to open public key files. */
+	public void setIdentityFile(File identityFile) {
+		this.identityFile = identityFile;
 	}
 
 	/** Profile used instead of the one of the selected engine mode (custom protection); null = use the mode's own. */

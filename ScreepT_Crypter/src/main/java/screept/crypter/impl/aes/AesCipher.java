@@ -286,22 +286,18 @@ public class AesCipher {
 			return;
 		}
 			
-        if(aesKey.getPassword().length<16) {     	
-        	aesKey.setBackground(Color.orange);					    
-        	aesKey.setToolTipText("You could reach 16 chars to have best secured password ;)");
-		}
-		if(aesKey.getPassword().length>16) {
-			aesKey.setBackground(new Color(227, 223, 113)); 	
-			aesKey.setToolTipText("More that 16 chars are overkill, only first 16 are actually used :)");
-		}
-	    if(aesKey.getPassword().length==0) {
-        	aesKey.setBackground(new Color(209, 73, 73));
+		// the length from the document: getPassword() would leave a copy of the password in memory at every check
+		int n = aesKey.getDocument().getLength();
+		if (n == 0) {
+			aesKey.setBackground(new Color(209, 73, 73));
 			aesKey.setToolTipText(I18n.t("crypter.password_is_empty_fill_password_text"));
+		} else if (n < 12) {
+			aesKey.setBackground(Color.orange);
+			aesKey.setToolTipText("A longer password is much safer: 12 characters or more. The whole password is used.");
+		} else {
+			aesKey.setBackground(new Color(107, 219, 105));
+			aesKey.setToolTipText("Good length: the whole password is used (the old Legacy modes use only the first 16 characters).");
 		}
-		if(aesKey.getPassword().length==16) {
-        	aesKey.setBackground(new Color(107, 219, 105));
-			aesKey.setToolTipText("WOW! 16 char is perfect! :D");
-		}	
 	}
 	
 	private static byte[] generateIV(int length) {

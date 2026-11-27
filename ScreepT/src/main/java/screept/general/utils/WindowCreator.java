@@ -263,7 +263,7 @@ public class WindowCreator {
 		commonGraphicInit(panelPswKeyGen, "Generate Password - ", true);
 
 		if (passordSizeNullable == null) {
-			panelPswKeyGen.unforceLentgh(16);
+			panelPswKeyGen.unforceLentgh(20);
 		} else {
 			panelPswKeyGen.forceLentgh(passordSizeNullable);
 		}

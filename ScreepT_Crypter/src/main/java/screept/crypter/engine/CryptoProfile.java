@@ -87,21 +87,24 @@ public final class CryptoProfile {
 		return 1 << chunkLog2;
 	}
 
-	/** Recommended: AES-256-GCM, PBKDF2-HMAC-SHA512. */
+	/** Ultra: Argon2id with 256 MiB. */
+	static final int ARGON2ID_ULTRA_COST = Argon2.cost(18, 3, 4);
+
+	/** Recommended: AES-256-GCM, Argon2id 64 MiB (faster to open and much harder to attack than PBKDF2). */
 	public static CryptoProfile standard() {
-		return new CryptoProfile(KdfAlgorithm.PBKDF2_SHA512, KdfAlgorithm.PBKDF2_SHA512.defaultCost,
+		return new CryptoProfile(KdfAlgorithm.ARGON2ID, KdfAlgorithm.ARGON2ID.defaultCost,
 				Arrays.asList(CipherAlgorithm.AES_256_GCM));
 	}
 
 	/** AES-256-GCM plus StegaCREEPT: password and secret key image are both needed. */
 	public static CryptoProfile withKeyImage() {
-		return new CryptoProfile(KdfAlgorithm.PBKDF2_SHA512, KdfAlgorithm.PBKDF2_SHA512.defaultCost,
+		return new CryptoProfile(KdfAlgorithm.ARGON2ID, KdfAlgorithm.ARGON2ID.defaultCost,
 				Arrays.asList(CipherAlgorithm.AES_256_GCM, CipherAlgorithm.STEGA_CREEPT));
 	}
 
 	/** AES-128-GCM only (smaller and faster, still strong). */
 	public static CryptoProfile aes128() {
-		return new CryptoProfile(KdfAlgorithm.PBKDF2_SHA512, KdfAlgorithm.PBKDF2_SHA512.defaultCost,
+		return new CryptoProfile(KdfAlgorithm.ARGON2ID, KdfAlgorithm.ARGON2ID.defaultCost,
 				Arrays.asList(CipherAlgorithm.AES_128_GCM));
 	}
 
@@ -116,8 +119,16 @@ public final class CryptoProfile {
 	 * AES-256-GCM inside, ChaCha20-Poly1305 outside. Guessing a password costs much more and a break of one cipher is not enough.
 	 */
 	public static CryptoProfile ultra() {
-		return new CryptoProfile(KdfAlgorithm.ARGON2ID, KdfAlgorithm.ARGON2ID.defaultCost,
+		return new CryptoProfile(KdfAlgorithm.ARGON2ID, ARGON2ID_ULTRA_COST,
 				Arrays.asList(CipherAlgorithm.AES_256_GCM, CipherAlgorithm.CHACHA20_POLY1305));
+	}
+
+	/**
+	 * Public keys: no password, the file key is sealed for each recipient with X25519 (like age); data protected by
+	 * AES-256-GCM and ChaCha20-Poly1305. Each recipient opens it with the private key (kept in a password file).
+	 */
+	public static CryptoProfile forRecipients() {
+		return new CryptoProfile(KdfAlgorithm.X25519, 1, Arrays.asList(CipherAlgorithm.AES_256_GCM, CipherAlgorithm.CHACHA20_POLY1305));
 	}
 
 	public String describe() {

@@ -46,6 +46,9 @@ import initializer.configs.impl.INItializer;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import screept.crypter.engine.CryptoKey;
+import screept.crypter.engine.CryptoProfile;
+import screept.crypter.engine.TextCrypter;
 import screept.crypter.impl.aes.AesCipher;
 import screept.crypter.util.ScreeptUtils;
 import gui.texteditor.commons.encrypted.EncryptedFileSupport;
@@ -223,10 +226,11 @@ public class TextEditorHeaderPanel extends JPanel{
 			}
 
 			public void mousePressed(MouseEvent e) {
-				if (txtAesKey.getPassword().length == AES_KEY_PLACEHOLDER.length()) {
-					String digits = Arrays.toString(txtAesKey.getPassword());
-					digits = digits.replace(", ", "");
-					if (digits.substring(1, digits.length() - 1).equals(AES_KEY_PLACEHOLDER)) {
+				if (txtAesKey.getDocument().getLength() == AES_KEY_PLACEHOLDER.length()) {
+					char[] pw = txtAesKey.getPassword(); // compared and wiped: never turned into a String
+					boolean placeholder = Arrays.equals(pw, AES_KEY_PLACEHOLDER.toCharArray());
+					Arrays.fill(pw, ' ');
+					if (placeholder) {
 						txtAesKey.setText("");
 						if (!chckbxAesShowKey.isSelected()) {
 							txtAesKey.setEchoChar(DEFAULT_PSW_CHAR);
@@ -268,13 +272,13 @@ public class TextEditorHeaderPanel extends JPanel{
 					isCrypterOn = true;
 					AesCipher.check(txtAesKey);
 					String encoded = "";
-					if (txtAesKey.getPassword().length != 0) {
+					if (txtAesKey.getDocument().getLength() != 0) {
+						// authenticated engine (SCP2, Argon2id + AES-256-GCM): the whole text in one block, line breaks kept
+						CryptoKey key = CryptoKey.of(txtAesKey.getPassword());
 						try {
-							// loadedTabObj.textArea.getDocument().removeDocumentListener(textAreaChangedListener);
-							AesCipher crypter = new AesCipher(txtAesKey.getPassword());
 							SelectionDtoFull dto = new SelectionDtoFull(loadedTabObj.textArea);
 							String displayedSource = dto.getSelectedOrAllText();
-							encoded = crypter.encryptLines(displayedSource);
+							encoded = TextCrypter.encrypt(displayedSource, key, CryptoProfile.standard());
 							// if lentgh more than admitted suggest to use screept
 							if(dto.selected) {
 								dto.replaceSelection(encoded, true, false);
@@ -289,6 +293,7 @@ public class TextEditorHeaderPanel extends JPanel{
 							
 							txtAesKey.requestFocusInWindow();
 						} finally {
+							key.clear();
 							parentUtils.updateCurrentUnsavedFromFileRead();
 							parent.getCurrentTabEditor().revalidateFoldingPainted(loadedTabObj.textArea);
 						}
@@ -315,12 +320,18 @@ public class TextEditorHeaderPanel extends JPanel{
 					isCrypterOn = true;
 					AesCipher.check(txtAesKey);
 					String decoded = "";
-					if (txtAesKey.getPassword().length != 0) {
+					if (txtAesKey.getDocument().getLength() != 0) {
+						char[] pw = txtAesKey.getPassword();
+						AesCipher legacy = null;
 						try {
-							AesCipher decrypter = new AesCipher(txtAesKey.getPassword());
 							SelectionDtoFull dto = new SelectionDtoFull(loadedTabObj.textArea);
 							String displayedSource = dto.getSelectedOrAllText();
-							decoded = decrypter.decryptLines(displayedSource);
+							if (TextCrypter.containsEncrypted(displayedSource)) {
+								decoded = TextCrypter.decrypt(displayedSource, CryptoKey.of(pw)); // algorithms read from each block
+							} else {
+								legacy = new AesCipher(pw); // texts encrypted by older versions
+								decoded = legacy.decryptLines(displayedSource);
+							}
 							if(dto.selected) {
 								dto.replaceSelection(decoded, true, false);
 								dto.applySelectionDTO(loadedTabObj.textArea);
@@ -333,6 +344,10 @@ public class TextEditorHeaderPanel extends JPanel{
 							logger.error("Exception happened!", e);
 							txtAesKey.requestFocusInWindow();
 						} finally {
+							if (legacy != null) {
+								legacy.clearSensitiveData(); // also wipes pw
+							}
+							Arrays.fill(pw, ' ');
 							parentUtils.updateCurrentUnsavedFromFileRead();
 							parent.getCurrentTabEditor().revalidateFoldingPainted(loadedTabObj.textArea);
 						}
