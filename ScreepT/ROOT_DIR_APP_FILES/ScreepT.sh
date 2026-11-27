@@ -66,9 +66,40 @@ It is not installed system wide and needs no root rights."
 	fi
 }
 
+# window shown while downloading when there is no terminal (a double click would otherwise show nothing for a while)
+PROGRESS_PID=""
+start_progress() {
+	[ -t 0 ] && return 0
+	local msg="Downloading Java (Eclipse Temurin 21, about 50 MB). ScreepT starts when it is done."
+	if command -v zenity >/dev/null 2>&1; then
+		# the loop ends by itself when the window is gone (broken pipe)
+		( while echo; do sleep 1; done ) 2>/dev/null | zenity --progress --pulsate --no-cancel --title="ScreepT" --text="$msg" >/dev/null 2>&1 &
+		PROGRESS_PID=$!
+	elif command -v kdialog >/dev/null 2>&1; then
+		kdialog --title "ScreepT" --passivepopup "$msg" 600 >/dev/null 2>&1 &
+		PROGRESS_PID=$!
+	elif command -v osascript >/dev/null 2>&1; then
+		osascript -e "display notification \"$msg\" with title \"ScreepT\"" >/dev/null 2>&1
+	fi
+}
+
+stop_progress() {
+	[ -n "$PROGRESS_PID" ] && kill "$PROGRESS_PID" 2>/dev/null
+	PROGRESS_PID=""
+}
+
 fail() {
+	stop_progress
 	echo "$1" >&2
-	command -v zenity >/dev/null 2>&1 && [ ! -t 0 ] && zenity --error --title="ScreepT" --text="$1" 2>/dev/null
+	if [ ! -t 0 ]; then
+		if command -v zenity >/dev/null 2>&1; then
+			zenity --error --title="ScreepT" --text="$1" 2>/dev/null
+		elif command -v kdialog >/dev/null 2>&1; then
+			kdialog --title "ScreepT" --error "$1" 2>/dev/null
+		elif command -v osascript >/dev/null 2>&1; then
+			osascript -e "display alert \"ScreepT\" message \"$1\"" >/dev/null 2>&1
+		fi
+	fi
 	exit 1
 }
 
@@ -77,7 +108,8 @@ download_java() {
 	case "$(uname -s)" in Linux) os=linux ;; Darwin) os=macos ;; *) fail "Unsupported system for the automatic Java download." ;; esac
 	case "$(uname -m)" in x86_64|amd64) arch=x64 ;; aarch64|arm64) arch=aarch64 ;; *) fail "Unsupported CPU ($(uname -m)) for the automatic Java download." ;; esac
 	tmp="$(mktemp -d)" || fail "Cannot create a temporary folder."
-	trap 'rm -rf "$tmp" "$ROOT/jre.tmp"' EXIT
+	trap 'stop_progress; rm -rf "$tmp" "$ROOT/jre.tmp"' EXIT
+	start_progress
 
 	fetch() { if command -v curl >/dev/null 2>&1; then curl -fL --progress-bar -o "$2" "$1"; else wget -O "$2" "$1"; fi; }
 	command -v curl >/dev/null 2>&1 || command -v wget >/dev/null 2>&1 || fail "curl or wget is needed to download Java."
@@ -108,6 +140,7 @@ download_java() {
 		mv "$home" "$ROOT/jre"
 	fi
 	rm -rf "$ROOT/jre.tmp" "$tmp"
+	stop_progress
 }
 
 if ! find_java; then
@@ -124,4 +157,8 @@ JAVA_HOME="$(dirname "$(dirname "$JAVA_EXE")")"
 export JAVA_HOME
 export PATH="$JAVA_HOME/bin:$PATH"
 
-exec "$JAVA_EXE" -Xms128m -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_ScreepT/lib" -Dfile.encoding=UTF8 -jar ScreepT_Launcher.jar "$@"
+# Linux: the default XRender pipeline of Java makes the animations slow and glitchy
+GRAPHICS_ARGS=""
+[ "$(uname -s)" = "Linux" ] && GRAPHICS_ARGS="-Dsun.java2d.xrender=false"
+
+exec "$JAVA_EXE" $GRAPHICS_ARGS -Xms128m -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_ScreepT/lib" -Dfile.encoding=UTF8 -jar ScreepT_Launcher.jar "$@"

@@ -53,6 +53,8 @@ import java.awt.Insets;
 import java.awt.Dialog.ModalityType;
 import java.awt.Image;
 import javax.swing.BorderFactory;
+import screept.launcher.utils.DesktopIntegration;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 import screept.launcher.gui.utils.LauncherTheme;
 import screept.launcher.utils.IniFileManager;
 import screept.launcher.gui.utils.LauncherBackdropPanel;
@@ -83,11 +85,11 @@ public class LauncherMainPanel extends JFrame{
 	private JLabel lblAmDesign;
 	
 	private final int W = 800;
-	private final int H = 590;
+	private final int H = 634;
 
 	/** Heights of the header and of the controls area: the pixel art icon is centered in the space between */
 	private static final int HEADER_HEIGHT = 74;
-	private static final int CONTROLS_HEIGHT = 176;
+	private static final int CONTROLS_HEIGHT = 220;
 	private JButton btnNetworkConfig;
 	private JCheckBox chkHideLauncher;
 	/** "Hide launcher at start" as it was when the launcher opened */
@@ -138,7 +140,7 @@ public class LauncherMainPanel extends JFrame{
 		mainPanel.add(stage, "cell 0 1,grow");
 
 		// controls: always visible at the bottom, Start is big
-		JPanel controls = new LauncherBackdropPanel.Glass(new MigLayout("insets 16 26 10 26, fillx", "[grow][grow][]", "[]12[]6[]"));
+		JPanel controls = new LauncherBackdropPanel.Glass(new MigLayout("insets 16 26 10 26, fillx", "[grow][grow][]", "[]8[]12[]6[]"));
 
 		btnCustomizeParameters = new JButton(I18n.t("launcher.customize_launch_parameters"));
 		btnCustomizeParameters.setToolTipText(I18n.t("launcher.memory_java_version_log_level_and"));
@@ -160,7 +162,10 @@ public class LauncherMainPanel extends JFrame{
 		btnStartScreept.setToolTipText(ScreepTLauncher.settingsOnly ? I18n.t("launcher.close_the_launcher_settings_nothing_is") : I18n.t("launcher.start_screept_with_the_current_options"));
 		btnStartScreept.setFont(btnStartScreept.getFont().deriveFont(Font.BOLD, 24f));
 		btnStartScreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		controls.add(btnStartScreept, "cell 0 1 3 1,grow,h 66!");
+		if (DesktopIntegration.isSupported()) {
+			controls.add(desktopButtons(), "cell 0 1 3 1,growx,h 36!");
+		}
+		controls.add(btnStartScreept, "cell 0 2 3 1,grow,h 66!");
 
 		lblAmDesign = new JLabel("A.M. Design & Development");
 		lblAmDesign.setForeground(new Color(0x6C8F8B));
@@ -178,8 +183,8 @@ public class LauncherMainPanel extends JFrame{
 				writeHideFlag(chkHideLauncher.isSelected());
 			}
 		});
-		controls.add(chkHideLauncher, "cell 0 2,alignx left,aligny bottom");
-		controls.add(lblAmDesign, "cell 1 2 2 1,alignx right,aligny bottom");
+		controls.add(chkHideLauncher, "cell 0 3,alignx left,aligny bottom");
+		controls.add(lblAmDesign, "cell 1 3 2 1,alignx right,aligny bottom");
 		mainPanel.add(controls, "cell 0 2,growx");
 
 		addHandlers();
@@ -188,6 +193,44 @@ public class LauncherMainPanel extends JFrame{
 		logger.info(this.getClass().getName() + " Started");
 	}
 	
+	/** Desktop icon, panel (Start menu on Windows) and, on Linux, "Open with" of the file manager */
+	private JPanel desktopButtons() {
+		boolean windows = SysUtils.getOsInfoLazy().isWindows();
+		JPanel row = new JPanel(new MigLayout("insets 0, fill", "", "[grow]"));
+		row.setOpaque(false);
+		addDesktopButton(row, "launcher.create_desktop_icon", "launcher.create_desktop_icon_tip", DesktopIntegration::createDesktopIcon);
+		addDesktopButton(row, windows ? "launcher.add_to_start_menu" : "launcher.add_to_panel",
+				windows ? "launcher.add_to_start_menu_tip" : "launcher.add_to_panel_tip", DesktopIntegration::addToPanel);
+		if (!windows) {
+			addDesktopButton(row, "launcher.add_open_with", "launcher.add_open_with_tip", DesktopIntegration::addOpenWith);
+		}
+		return row;
+	}
+
+	private interface DesktopAction {
+		String run() throws java.io.IOException;
+	}
+
+	private void addDesktopButton(JPanel row, String textId, String tipId, DesktopAction action) {
+		JButton button = new JButton(I18n.t(textId));
+		button.setToolTipText(I18n.t(tipId));
+		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		// run here and not in background: it takes a moment, and what it does ends before the click is over
+		button.addActionListener(e -> {
+			LAUNCHER_GUI.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			try {
+				String message = action.run();
+				new JOptionHelper(LAUNCHER_GUI).info(message);
+			} catch (java.io.IOException | RuntimeException ex) {
+				logger.error("Desktop integration failed", ex);
+				new JOptionHelper(LAUNCHER_GUI).error(String.valueOf(ex.getMessage()));
+			} finally {
+				LAUNCHER_GUI.setCursor(Cursor.getDefaultCursor());
+			}
+		});
+		row.add(button, "grow, sg desktop, pushx");
+	}
+
 	// button handler settings
 	private void addHandlers() {
 		

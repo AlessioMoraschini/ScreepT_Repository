@@ -19,10 +19,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.Locale;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -40,9 +43,14 @@ public class MatrixHomePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private static final char[] GLYPHS = "01010101010123456789ABCDEF#$%&*+=<>/\\|".toCharArray();
-	private static final Font GLYPH_FONT = new Font("Consolas", Font.BOLD, 12);
+	private static final Font GLYPH_FONT = glyphFont();
 
-	private static final int FRAME_MS = 40;
+	/** About 18 frames per second */
+	private static final int FRAME_MS = 55;
+	/** Movements were tuned at one frame every 40 ms: what changes at each frame is scaled to keep the same speed */
+	private static final float PACE = FRAME_MS / 40f;
+	/** Linux queues the drawing requests towards the screen: they are flushed at each frame so they cannot pile up */
+	private static final boolean SYNC_SCREEN = System.getProperty("os.name", "").toLowerCase(Locale.ROOT).contains("linux");
 	private static final long REVEAL_MS = 5000;
 	private static final long FADE_MS = 2500;
 	private static final long IDLE_FLICKER_MS = 400;
@@ -75,6 +83,8 @@ public class MatrixHomePanel extends JPanel {
 	private BufferedImage fittedImage; // source fitted and centered on black, panel sized
 	private BufferedImage glyphLayer; // revealed glyphs, transparent elsewhere
 	private BufferedImage frameBase; // fittedImage + glyphLayer, rebuilt only when dirty
+	private BufferedImage scene; // the whole frame (base, rain, terminal) at screen resolution, drawn in one shot
+	private boolean sceneDirty;
 	private Graphics2D glyphGraphics;
 	private boolean baseDirty;
 
@@ -110,6 +120,12 @@ public class MatrixHomePanel extends JPanel {
 		timer.setCoalesce(true);
 
 		addMouseWheelListener(e -> terminal.onWheel(e.getWheelRotation()));
+		// a page that is not shown does not need the memory of its frame
+		addHierarchyListener(e -> {
+			if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0 && !isShowing()) {
+				scene = null;
+			}
+		});
 
 		// easter egg: after 30 seconds on the home page Feo and Nano come to play, then leave together
 		various.common.light.easteregg.cats.CatsVisit.attach(this, 10, terminal::promptBounds);
@@ -146,6 +162,12 @@ public class MatrixHomePanel extends JPanel {
 		repaint();
 	}
 
+	/** Consolas when the system has it, else the monospaced font of the system: the grid needs glyphs all of the same width */
+	private static Font glyphFont() {
+		Font consolas = new Font("Consolas", Font.BOLD, 12);
+		return "Consolas".equalsIgnoreCase(consolas.getFamily()) ? consolas : new Font(Font.MONOSPACED, Font.BOLD, 12);
+	}
+
 	////////// ANIMATION ////////////////
 
 	private void tick() {
@@ -159,7 +181,7 @@ public class MatrixHomePanel extends JPanel {
 
 		for (int c = 0; c < cols; c++) {
 			int before = (int) dropRow[c];
-			dropRow[c] += dropSpeed[c];
+			dropRow[c] += dropSpeed[c] * PACE;
 			int after = (int) dropRow[c];
 			for (int r = Math.max(0, before + 1); r <= after && r < rows; r++) {
 				revealCell(r * cols + c, false);
@@ -170,7 +192,7 @@ public class MatrixHomePanel extends JPanel {
 		}
 
 		// the rain glyphs mutate slowly, like a live terminal
-		for (int i = rainGlyphs.length / 200; i >= 0; i--) {
+		for (int i = (int) (rainGlyphs.length * PACE / 200); i >= 0; i--) {
 			rainGlyphs[random.nextInt(rainGlyphs.length)] = randomGlyph();
 		}
 
@@ -187,6 +209,10 @@ public class MatrixHomePanel extends JPanel {
 		}
 
 		terminal.tick();
+		sceneDirty = true;
+		if (SYNC_SCREEN) {
+			Toolkit.getDefaultToolkit().sync();
+		}
 		repaint();
 	}
 
@@ -228,7 +254,7 @@ public class MatrixHomePanel extends JPanel {
 	}
 
 	private void flickerRevealed() {
-		for (int i = revealedCount / 150; i > 0; i--) {
+		for (int i = (int) (revealedCount * PACE / 150); i > 0; i--) {
 			drawRevealedGlyph(revealedCells[random.nextInt(revealedCount)]);
 		}
 	}
@@ -301,6 +327,7 @@ public class MatrixHomePanel extends JPanel {
 			revealAll();
 		}
 		baseDirty = true;
+		scene = null;
 	}
 
 	/** Averages the fitted image under each cell; dark cells stay null and never get a glyph. */
@@ -346,12 +373,35 @@ public class MatrixHomePanel extends JPanel {
 		if (fittedImage == null || fittedImage.getWidth() != width || fittedImage.getHeight() != height) {
 			rebuild(width, height);
 		}
+		Graphics2D screen = (Graphics2D) g.create();
+		// screen pixels for each unit of the component (HiDPI): the frame is composed at that resolution, nothing gets blurred
+		double scale = Math.max(1d, screen.getTransform().getScaleX());
+		int frameWidth = (int) Math.ceil(width * scale), frameHeight = (int) Math.ceil(height * scale);
+		boolean newScene = scene == null || scene.getWidth() != frameWidth || scene.getHeight() != frameHeight;
+		if (newScene) {
+			scene = new BufferedImage(frameWidth, frameHeight, BufferedImage.TYPE_INT_RGB);
+		}
+		// composed once per frame: the repaints in between (the cats walking above, for instance) only copy it
+		if (newScene || sceneDirty) {
+			composeScene(screen, scale, width, height);
+		}
+		screen.scale(1 / scale, 1 / scale);
+		screen.drawImage(scene, 0, 0, null);
+		screen.dispose();
+	}
+
+	private void composeScene(Graphics2D screen, double scale, int width, int height) {
 		if (baseDirty) {
 			composeBase();
 		}
+		Graphics2D g = scene.createGraphics();
+		g.addRenderingHints(screen.getRenderingHints());
+		g.scale(scale, scale);
 		g.drawImage(frameBase, 0, 0, null);
-		paintRain((Graphics2D) g);
-		terminal.paint((Graphics2D) g, width, height);
+		paintRain(g);
+		terminal.paint(g, width, height);
+		g.dispose();
+		sceneDirty = false;
 	}
 
 	private void composeBase() {

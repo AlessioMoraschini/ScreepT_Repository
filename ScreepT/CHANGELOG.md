@@ -6,6 +6,23 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.95 - 2026-11-27
+> A smoother home page, desktop icon and Start menu or panel buttons in the launcher, and a better ScreepT on Linux
+
+### New
+- Launcher: "Desktop icon" and "Add to Start menu" (Windows) or "Pin to panel" (Linux: Cinnamon and GNOME; other desktops get the menu entry).
+- Linux launcher: "Add Open with" puts ScreepT among the applications that open your files, and in the right click menu of Nemo.
+
+### Improved
+- Home page: each frame is composed in memory and drawn in one shot, at the full resolution of the screen.
+- Linux: smoother animations (graphics pipeline chosen for them), monospaced font when Consolas is missing.
+- ScreepT.sh shows a window while it downloads Java, and shows its errors also on KDE and macOS.
+
+### Fixed
+- Feo and Nano no longer make the screen flicker while they visit the home page.
+- Linux: the interactive shell did not start because a library was missing.
+- Linux and macOS: file names with special characters could be run as commands when ScreepT was started with them.
+
 ## 0.9.94 - 2026-11-27
 > Change the encoding of a file from the footer, line endings that stay as they were, and fixes for the start on Linux
 

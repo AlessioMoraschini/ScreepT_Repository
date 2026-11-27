@@ -250,7 +250,7 @@
 					<li><span class="highlightBoldedGrey">You can find the launcher</span> inside main folder once it's extracted from 
 					the given .zip archive, just use the correct one for your OS (.exe on windows, .sh on linux/mac).
 					The only thing you need is a Java interpreter installed, AKA JVM/JRE/JDK (minimum version: 1.8).<br><br>
-					<span class="highlightBolded">Java missing?</span> The starters (ScreepT.exe, ScreepT_64.exe, ScreepT.bat, ScreepT.sh) look for Java 8 or newer (the "jre" folder next to them, JAVA_HOME, PATH, the Windows registry). If none is found they offer to download Eclipse Temurin 21 JRE (free, about 50 MB) into the "jre" folder, with no admin rights and nothing installed system wide, then start ScreepT. You can delete the "jre" folder at any time.<br><br>
+					<span class="highlightBolded">Java missing?</span> The starters (ScreepT.exe, ScreepT_64.exe, ScreepT.bat, ScreepT.sh) look for Java 8 or newer (the "jre" folder next to them, JAVA_HOME, PATH, the Windows registry). If none is found they offer to download Eclipse Temurin 21 JRE (free, about 50 MB) into the "jre" folder, with no admin rights and nothing installed system wide, then start ScreepT. You can delete the "jre" folder at any time. On Linux and macOS ScreepT.sh asks in a window when it is not started from a terminal, and shows that it is downloading.<br><br>
 					<span class="highlightBolded">Notice</span>: it's still possible to just launch the "ScreepT_Vxx.jar" that you find inside the "/application" folder, but remember: it's not designed to render and work the best this way... so you might have a non-optimal experience... it's better to use the launcher ;)
 					<br><br>
 					
@@ -274,6 +274,7 @@
 				<hr>
 				<image class="centerImg" src="Images/Launcher.jpg"/>
 				<p>
+					The launcher also puts ScreepT at hand, without administrator rights. <b>Desktop icon</b> creates an icon on your desktop. <b>Add to Start menu</b> (Windows) adds ScreepT to the Start menu, from which you can pin it to the taskbar with a right click (Windows does not let a program do it alone). <b>Pin to panel</b> (Linux) pins ScreepT to the panel of Cinnamon or GNOME; on other desktops it adds the menu entry and tells you how to finish. <b>Add "Open with"</b> (Linux) puts ScreepT among the applications that open your files, and adds "Open with ScreepT" to the right click menu of Nemo. They point to the folder ScreepT is in: use them again if you move it.<br><br>
 					As said before, you can customize settings of your launcher, by clicking "Customize launch parameters".
 					A new window will be opened: here you can set max and min ram memory allocated when using ScreepT. Also the stack size and LOGGING LEVEL and other options can be adjusted in this section. A profile (Light, Medium or Fast) sets the initial memory and the garbage collector at once; the garbage collector can also be chosen by hand, and its description changes with the selection.
 					The list of installed Javas shows readable names (a progressive number tells apart identical ones) and, under it, a box with the path, version, vendor, type, architecture, launch parameters in use and compatibility of the selected Java.
@@ -317,7 +318,7 @@
 				</p>
 				<ul>
 					<li><p><span class="subMenuthirdLevel"><strong>Windows: </strong></span>double click on <i>ScreepT.bat</i>, in the same folder as the exe. It finds Java (and offers to download it if it is missing) and starts the launcher.</p></li>
-					<li><p><span class="subMenuthirdLevel"><strong>Linux and macOS: </strong></span>use <i>ScreepT.sh</i>. If it does not start with a double click, open a terminal in the ScreepT folder and run <code>chmod +x ScreepT.sh</code> and then <code>./ScreepT.sh</code>.</p></li>
+					<li><p><span class="subMenuthirdLevel"><strong>Linux and macOS: </strong></span>use <i>ScreepT.sh</i>. If it does not start with a double click, open a terminal in the ScreepT folder and run <code>chmod +x ScreepT.sh</code> and then <code>./ScreepT.sh</code>. On macOS a double click does not run it: use the terminal.</p></li>
 					<li><p><span class="subMenuthirdLevel"><strong>Any system: </strong></span>go inside the <i>Application</i> folder and run <code>java -jar ScreepT_Launcher.jar</code> (on Windows <code>javaw</code> instead of <code>java</code> avoids the console window).</p></li>
 				</ul>
 				<p>

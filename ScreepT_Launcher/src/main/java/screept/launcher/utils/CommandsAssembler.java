@@ -75,6 +75,18 @@ public class CommandsAssembler {
 	}
 
 	/**
+	 * On Linux the default XRender pipeline of Java makes the animations slow and glitchy: it is switched off, unless the custom
+	 * settings already choose a pipeline.
+	 */
+	static String linuxGraphicsArgs(boolean linux, String customSettings) {
+		String custom = customSettings == null ? "" : customSettings;
+		if (!linux || custom.contains("sun.java2d.xrender") || custom.contains("sun.java2d.opengl")) {
+			return "";
+		}
+		return " -Dsun.java2d.xrender=false";
+	}
+
+	/**
 	 * add command to start main application jar with given JVM args
 	 */
 	public void addLaunchCommand(JvmArgumentsDTO dto, File[] argumentsFiles, boolean viewShell) {
@@ -90,7 +102,8 @@ public class CommandsAssembler {
 			   .append(" ").append(customSettingsWithoutGc())
 			   .append(" -Dsun.java2d.uiScale=")
 			   .append(dto.GUI_SCALE_ARG_VALUE)
-			   .append(dto.JVM_ARGS);
+			   .append(dto.JVM_ARGS)
+			   .append(linuxGraphicsArgs(SysUtils.getOsInfoLazy().isLinux(), GeneralConfig.JVM_CUSTOM_ADDED_SETTINGS));
 		
 		String complete_ARGS = builder.toString();
 

@@ -52,11 +52,11 @@ public final class HomeTerminalView {
 	private static final Color SYSTEM = new Color(0x7FB8B0);
 
 	private static final long HOLD_MS = 14000;
-	private static final float FADE_IN_STEP = 0.12f;
-	private static final float FADE_OUT_STEP = 0.025f;
+	private static final float FADE_IN_STEP = 0.165f;
+	private static final float FADE_OUT_STEP = 0.034f;
 	private static final int VEIL_ALPHA = 150;
 	private static final int BOX_ALPHA = 175;
-	private static final int REVEAL_CHARS_PER_TICK = 5;
+	private static final int REVEAL_CHARS_PER_TICK = 7;
 	private static final int FONT_SIZE = 15;
 
 	private static final class Row {
