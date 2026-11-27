@@ -72,7 +72,7 @@ public class FacadeLayerMatrixTest {
 					r = back.decrYpt(CryptoMode.ONLY_AES, produced[0], decDir, PSW.clone(), image, false);
 					assertTrue(where + ": " + back.getOutputStats(), r.resultOK);
 					File restored = new File(decDir, source.getName());
-					LayerMatrixRoundTripTest.assertSameTree(source, restored, mode == OutputMode.ZIP_OF_ENCRYPTED_FILES);
+					LayerMatrixRoundTripTest.assertSameTree(source, restored, false);
 					done++;
 				}
 			}

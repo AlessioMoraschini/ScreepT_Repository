@@ -22,10 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.crypto.AEADBadTagException;
-import javax.crypto.Cipher;
 import javax.crypto.Mac;
-import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -307,7 +304,11 @@ public final class CryptoEngine {
 			for (byte id : ids) {
 				layers.add(CipherAlgorithm.fromId(id & 0xff));
 			}
-			return new Header(new CryptoProfile(kdf, cost, chunkLog2, layers), salt, prefix);
+			try {
+				return new Header(new CryptoProfile(kdf, cost, chunkLog2, layers), salt, prefix);
+			} catch (IllegalArgumentException e) { // for example no authenticated layer: never a valid file
+				throw new CryptoException("Invalid or damaged file header", e);
+			}
 		}
 	}
 }

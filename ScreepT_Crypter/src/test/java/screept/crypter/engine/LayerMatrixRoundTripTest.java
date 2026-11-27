@@ -178,7 +178,7 @@ public class LayerMatrixRoundTripTest {
 				File dec = FileCrypter.decrypt(enc, decDir, keyFor(profile, keyImage));
 				File result = dec.getName().equals(src.getName()) ? dec : new File(decDir, src.getName());
 				try {
-					assertSameTree(src, result, mode == OutputMode.ZIP_OF_ENCRYPTED_FILES);
+					assertSameTree(src, result, false); // every mode keeps empty folders too
 				} catch (AssertionError e) {
 					throw new AssertionError(where + ": " + e.getMessage());
 				}

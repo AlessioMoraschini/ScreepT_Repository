@@ -35,14 +35,16 @@ public final class OptionDescriptions {
 	static Map<String, String> crypter() {
 		Map<String, String> m = new HashMap<String, String>();
 		m.put("Protection", "How files are protected. The Secure modes use authenticated encryption (AES-GCM): a wrong password, a damaged or modified file is always detected, "
-				+ "and the whole password counts. The Legacy modes are the old crypter: kept to open old files, with no tampering detection and the password limited to 16 characters.");
+				+ "and the whole password counts. Ultra stacks two cipher families (AES and ChaCha20) and uses Argon2id: slower to open, much harder to attack. The Legacy modes are the old crypter: kept to open old files, with no tampering detection and the password limited to 16 characters.");
 		m.put("AES-128", "AES with a 128 bit key in GCM mode. Fast and still very strong. Can be stacked with the other layers.");
 		m.put("AES-256", "AES with a 256 bit key in GCM mode: the recommended default.");
+		m.put("ChaCha20-Poly1305", "ChaCha20 with the Poly1305 authenticator (RFC 8439), 256 bit key. A different family from AES: stacked with an AES layer, "
+				+ "breaking one of the two ciphers is not enough to read the files.");
 		m.put("StegaCREEPT key image", "A secret picture becomes a second key: without the same picture the file cannot be decrypted, even with the right password. "
 				+ "Keep the image private and backed up: losing it means losing the files.");
 		m.put("Shuffle", "Scrambles the position of the bytes of the encrypted data with a key. It does not add strength by itself: the AES layers keep protecting and checking the data. "
 				+ "It only hides the structure of the encrypted file.");
-		m.put("Key derivation", "How the password becomes the encryption key. PBKDF2 is the standard and works everywhere. scrypt also needs memory, which makes password guessing on special hardware much more expensive.");
+		m.put("Key derivation", "How the password becomes the encryption key. PBKDF2 is the standard and works everywhere. scrypt and Argon2id (the modern standard, RFC 9106) also need a lot of memory, which makes password guessing on graphic cards and special hardware much more expensive.");
 		m.put("Folders", "How a folder is encrypted. One archive: a single file where names and structure are hidden too. File by file: the same folders with every file encrypted. "
 				+ "Zip: a normal zip that contains the encrypted files. Decryption recognises all of them by itself.");
 		m.put("Password", "The password is used in full (no length limit) and is never stored or written to the log. It is wiped from memory after every operation.");

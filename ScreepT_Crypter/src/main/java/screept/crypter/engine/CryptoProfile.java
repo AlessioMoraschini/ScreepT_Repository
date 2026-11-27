@@ -111,6 +111,15 @@ public final class CryptoProfile {
 				Arrays.asList(CipherAlgorithm.AES_128_GCM, CipherAlgorithm.AES_256_GCM));
 	}
 
+	/**
+	 * Ultra: Argon2id (256 MiB, memory-hard) and two authenticated ciphers of different families, each with its own key:
+	 * AES-256-GCM inside, ChaCha20-Poly1305 outside. Guessing a password costs much more and a break of one cipher is not enough.
+	 */
+	public static CryptoProfile ultra() {
+		return new CryptoProfile(KdfAlgorithm.ARGON2ID, KdfAlgorithm.ARGON2ID.defaultCost,
+				Arrays.asList(CipherAlgorithm.AES_256_GCM, CipherAlgorithm.CHACHA20_POLY1305));
+	}
+
 	public String describe() {
 		StringBuilder sb = new StringBuilder();
 		for (CipherLayer c : layers) {

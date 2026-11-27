@@ -138,7 +138,7 @@ public class FileCrypterE2ETest {
 			assertEquals("zipped.zip", zip.getName());
 			File decDir = tmp.newFolder();
 			FileCrypter.decrypt(zip, decDir, PSW);
-			new File(src, "emptyDir").delete(); // a zip of encrypted files carries files only
+			// empty folders are kept too (folder entries in the zip)
 			assertSameTree(src, new File(decDir, "zipped"));
 
 			File single = write(new File(tmp.newFolder(), "one.bin"), 5000, 9);

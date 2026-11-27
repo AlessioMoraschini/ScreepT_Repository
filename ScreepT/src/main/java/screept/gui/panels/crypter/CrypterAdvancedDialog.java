@@ -44,9 +44,9 @@ public final class CrypterAdvancedDialog {
 	/** @return true if the user confirmed (settings are updated), false if cancelled */
 	public static boolean show(Component parent, CrypterSettings settings) {
 
-		final CipherLayer[] order = { CipherAlgorithm.AES_128_GCM, CipherAlgorithm.AES_256_GCM, CipherAlgorithm.STEGA_CREEPT,
-				CipherAlgorithm.SHUFFLE };
-		final String[] names = { "AES-128", "AES-256", "StegaCREEPT key image", "Shuffle" };
+		final CipherLayer[] order = { CipherAlgorithm.AES_128_GCM, CipherAlgorithm.AES_256_GCM, CipherAlgorithm.CHACHA20_POLY1305,
+				CipherAlgorithm.STEGA_CREEPT, CipherAlgorithm.SHUFFLE };
+		final String[] names = { "AES-128", "AES-256", "ChaCha20-Poly1305", "StegaCREEPT key image", "Shuffle" };
 		final JCheckBox[] boxes = new JCheckBox[order.length];
 		for (int i = 0; i < order.length; i++) {
 			boxes[i] = new JCheckBox(names[i], settings.layers.contains(order[i]));
@@ -88,7 +88,7 @@ public final class CrypterAdvancedDialog {
 					summary.setText(html("Result: " + p.describe() + (p.needsKeyImage() ? " (a key image is needed)" : "")));
 				} catch (IllegalArgumentException ex) {
 					summary.setForeground(new Color(255, 140, 90));
-					summary.setText(html("Pick at least one AES layer: Shuffle alone does not protect anything."));
+					summary.setText(html("Pick at least one AES or ChaCha20 layer: Shuffle alone does not protect anything."));
 				}
 			}
 		};
@@ -129,7 +129,7 @@ public final class CrypterAdvancedDialog {
 				settings.outputMode = chosen.outputMode;
 				return true;
 			} catch (IllegalArgumentException ex) {
-				JOptionPane.showMessageDialog(parent, "Pick at least one AES layer: Shuffle alone does not protect anything.",
+				JOptionPane.showMessageDialog(parent, "Pick at least one AES or ChaCha20 layer: Shuffle alone does not protect anything.",
 						"Custom protection", JOptionPane.WARNING_MESSAGE);
 			}
 		}

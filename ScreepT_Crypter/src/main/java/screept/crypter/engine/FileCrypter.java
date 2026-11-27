@@ -141,6 +141,8 @@ public final class FileCrypter {
 
 	private static void zipEncryptedTree(ZipOutputStream zip, File dir, String prefix, CryptoKey password,
 			CryptoProfile profile) throws CryptoException, IOException {
+		zip.putNextEntry(new ZipEntry(prefix)); // folder entry: empty folders survive too
+		zip.closeEntry();
 		File[] children = dir.listFiles();
 		if (children == null) {
 			return;
@@ -346,6 +348,7 @@ public final class FileCrypter {
 			ZipEntry e;
 			while ((e = zip.getNextEntry()) != null) {
 				if (e.isDirectory()) {
+					safeTarget(destRoot, e.getName()).mkdirs();
 					continue;
 				}
 				File target = safeTarget(destRoot, originalName(e.getName()));
@@ -439,13 +442,19 @@ public final class FileCrypter {
 
 		try (InputStream is = new BufferedInputStream(new FileInputStream(archive))) {
 			CryptoEngine.decrypt(is, pipeOut, password);
-			pipeOut.close();
-			unzipper.join();
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw new CryptoException("Interrupted");
+		} catch (IOException e) {
+			if (unzipError.get() == null) {
+				throw e;
+			} // else the unzipper closed the pipe: report its error below
 		} finally {
 			pipeOut.close();
+			// always wait: the caller deletes the temporary folder and nothing must be written into it afterwards
+			try {
+				unzipper.join();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new CryptoException("Interrupted");
+			}
 		}
 		if (unzipError.get() != null) {
 			Throwable t = unzipError.get();

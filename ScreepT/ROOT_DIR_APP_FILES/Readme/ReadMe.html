@@ -502,10 +502,11 @@ $link.Save()</code></pre>
 					<h2 class="subList2">SECURE MODES (recommended)</h2>
 					<p>
 						<ul>
-							<li><span class="highlightBolded">Secure: AES-256-GCM, AES-128-GCM, Maximum, Secure + key image, Custom.</span>
+							<li><span class="highlightBolded">Secure: AES-256-GCM, AES-128-GCM, Maximum, Ultra, Secure + key image, Custom.</span>
 							Authenticated encryption: a wrong password, a damaged file or a file changed by someone else is always detected, and the <b>whole password counts</b> (no length limit). The password is never stored or written to the log, and is wiped from memory after each operation.
 							You only need the password to decrypt (and the key image, for the mode that uses one): the algorithms are written in the file header and recognised automatically, whatever mode is selected.<br>
-							<span class="highlightBoldedGrey">Layers:</span> AES-128, AES-256, StegaCREEPT (a secret key image becomes a second key) and Shuffle (scrambles the position of the encrypted bytes: an obfuscation, the AES layers keep protecting the data) can be combined with <b>Options...</b> (Custom). The key derivation can be PBKDF2-SHA256, PBKDF2-SHA512 or scrypt (more expensive to attack with special hardware).<br>
+							<span class="highlightBoldedGrey">Ultra:</span> Argon2id (256 MB of memory while deriving the key) and two ciphers of different families, AES-256-GCM and ChaCha20-Poly1305, each with its own key: password guessing costs much more and breaking one cipher is not enough. Opening needs a little more memory and time; files made with Ultra are not readable by older ScreepT versions.<br>
+							<span class="highlightBoldedGrey">Layers:</span> AES-128, AES-256, ChaCha20-Poly1305, StegaCREEPT (a secret key image becomes a second key) and Shuffle (scrambles the position of the encrypted bytes: an obfuscation, the other layers keep protecting the data) can be combined with <b>Options...</b> (Custom). The key derivation can be PBKDF2-SHA256, PBKDF2-SHA512, scrypt or Argon2id (the last two need memory: much more expensive to attack with graphic cards and special hardware).<br>
 							<span class="highlightBoldedGrey">Folders:</span> by default a folder becomes <b>one encrypted archive</b> (<i>name.dir.scpt</i>, names and structure are hidden too). In Options... you can choose file by file (structure kept) or a zip of encrypted files. A file becomes <i>name.scpt</i>. Decrypting recognises all of them, also zips.<br>
 							A line under the controls tells how the current choice protects your data and how good the password is.</li>
 						</ul>

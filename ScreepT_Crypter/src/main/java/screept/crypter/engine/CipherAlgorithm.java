@@ -29,6 +29,8 @@ public final class CipherAlgorithm {
 	public static final CipherLayer AES_256_GCM = new AesGcmLayer(2, "AES-256", 32);
 	/** StegaCREEPT: AES-256-GCM keyed also by a secret key image (second factor). */
 	public static final CipherLayer STEGA_CREEPT = new KeyImageLayer(3, "StegaCREEPT key image");
+	/** ChaCha20-Poly1305 (RFC 8439): a second cipher family, for stacking with AES. */
+	public static final CipherLayer CHACHA20_POLY1305 = new ChaCha20Poly1305Layer(4, "ChaCha20-Poly1305");
 	public static final CipherLayer SHUFFLE = new ShuffleLayer(16, "Shuffle");
 
 	private static final Map<Integer, CipherLayer> REGISTRY = new TreeMap<Integer, CipherLayer>();
@@ -37,6 +39,7 @@ public final class CipherAlgorithm {
 		register(AES_128_GCM);
 		register(AES_256_GCM);
 		register(STEGA_CREEPT);
+		register(CHACHA20_POLY1305);
 		register(SHUFFLE);
 	}
 

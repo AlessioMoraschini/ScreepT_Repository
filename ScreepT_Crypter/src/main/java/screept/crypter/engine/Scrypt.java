@@ -29,13 +29,15 @@ final class Scrypt {
 		int[] x = new int[len];
 		int[] v = new int[len * n];
 		int[] tmp = new int[len];
+		int[] x16 = new int[16];
+		int[] s16 = new int[16];
 		for (int i = 0; i < p; i++) {
 			int off = i * 128 * r;
 			for (int k = 0; k < len; k++) {
 				int o = off + k * 4;
 				x[k] = (b[o] & 0xff) | (b[o + 1] & 0xff) << 8 | (b[o + 2] & 0xff) << 16 | (b[o + 3] & 0xff) << 24;
 			}
-			roMix(x, v, tmp, n, r);
+			roMix(x, v, tmp, x16, s16, n, r);
 			for (int k = 0; k < len; k++) {
 				int o = off + k * 4;
 				b[o] = (byte) x[k];
@@ -45,6 +47,8 @@ final class Scrypt {
 			}
 		}
 		Arrays.fill(v, 0);
+		Arrays.fill(x, 0);
+		Arrays.fill(tmp, 0);
 		try {
 			return KdfAlgorithm.pbkdf2("PBKDF2WithHmacSHA256", password, b, 1, outBytes);
 		} finally {
@@ -52,11 +56,11 @@ final class Scrypt {
 		}
 	}
 
-	private static void roMix(int[] x, int[] v, int[] tmp, int n, int r) {
+	private static void roMix(int[] x, int[] v, int[] tmp, int[] x16, int[] s16, int n, int r) {
 		int len = 32 * r;
 		for (int i = 0; i < n; i++) {
 			System.arraycopy(x, 0, v, i * len, len);
-			blockMix(x, tmp, r);
+			blockMix(x, tmp, x16, s16, r);
 		}
 		for (int i = 0; i < n; i++) {
 			int j = x[(2 * r - 1) * 16] & (n - 1);
@@ -64,18 +68,17 @@ final class Scrypt {
 			for (int k = 0; k < len; k++) {
 				x[k] ^= v[base + k];
 			}
-			blockMix(x, tmp, r);
+			blockMix(x, tmp, x16, s16, r);
 		}
 	}
 
-	private static void blockMix(int[] b, int[] y, int r) {
-		int[] x = new int[16];
+	private static void blockMix(int[] b, int[] y, int[] x, int[] s16, int r) {
 		System.arraycopy(b, (2 * r - 1) * 16, x, 0, 16);
 		for (int i = 0; i < 2 * r; i++) {
 			for (int k = 0; k < 16; k++) {
 				x[k] ^= b[i * 16 + k];
 			}
-			salsa20_8(x);
+			salsa20_8(x, s16);
 			System.arraycopy(x, 0, y, i * 16, 16);
 		}
 		for (int i = 0; i < r; i++) {
@@ -84,8 +87,8 @@ final class Scrypt {
 		}
 	}
 
-	private static void salsa20_8(int[] b) {
-		int[] x = b.clone();
+	private static void salsa20_8(int[] b, int[] x) {
+		System.arraycopy(b, 0, x, 0, 16);
 		for (int i = 0; i < 8; i += 2) {
 			x[4] ^= Integer.rotateLeft(x[0] + x[12], 7);
 			x[8] ^= Integer.rotateLeft(x[4] + x[0], 9);
