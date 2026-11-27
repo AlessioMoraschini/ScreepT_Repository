@@ -1508,7 +1508,7 @@ public class TextEditor extends ModulePanel {
 							logger.error("Error refreshing current line in footer", e1);
 						}
 
-						footerPanel.dynLblEol.setText(EOL.defaultEol.name());
+						footerPanel.dynLblEol.setText(getCurrentTabEditor().eolFor(loadedTabObj).name());
 						footerPanel.dynLblCurrPos.setText(String.valueOf(loadedTabObj.textArea.getCaretPosition()));
 						footerPanel.dynLblSelLength.setText(String.valueOf(selectionLength));
 						footerPanel.dynLblTotChars.setText(String.valueOf(charTotNum));

@@ -120,7 +120,7 @@ public final class ExistingStarterReuse {
 				javaDir = line.substring("set JDK_PATH=".length()).trim();
 				javaDir = javaDir.endsWith(";") ? javaDir.substring(0, javaDir.length() - 1) : javaDir;
 			} else if (line.startsWith("PATH=") && line.contains(":$PATH")) {
-				javaDir = line.substring("PATH=".length(), line.lastIndexOf(":$PATH")).trim();
+				javaDir = line.substring("PATH=".length(), line.lastIndexOf(":$PATH")).replace("\"", "").trim();
 			}
 			if (javaDir == null) {
 				continue;

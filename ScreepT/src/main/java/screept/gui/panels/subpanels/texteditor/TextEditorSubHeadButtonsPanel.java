@@ -25,7 +25,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.UnaryOperator;
@@ -1508,7 +1507,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			return;
 		} else {
 			try {
-				String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), EOL.defaultEol);
+				String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), parent.getCurrentTabEditor().eolFor(loadedTabObj));
 
 				done = parent.getCurrentTabEditor().writeTabToFile(loadedTabObj, outString, loadedTabObj.loadedFile);
 			} catch (Exception e1) {
@@ -1580,19 +1579,15 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						selectedFile = textEditorUtils.adaptFileExt(selectedFile); // an encrypted file keeps the name chosen by the user
 					}
 
-					String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), lineSeparator == null ? EOL.defaultEol : lineSeparator);
+					String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), lineSeparator == null ? parent.getCurrentTabEditor().eolFor(loadedTabObj) : lineSeparator);
 
 					if (selectedFile.exists()) {
 						if (dialogHelper.yesOrNo(various.common.light.i18n.I18n.fmt("app.file_x_exists_overwrite_it", selectedFile.getName()), I18n.t("common.overwrite"))) {
 							done = parent.getCurrentTabEditor().writeTabToFile(loadedTabObj, outString, selectedFile);
 						}
-					} else if (loadedTabObj.isEncrypted()) {
-						done = parent.getCurrentTabEditor().writeTabToFile(loadedTabObj, outString, selectedFile); // encrypted again, never plain
 					} else {
-						done = selectedFile.createNewFile();
-						PrintWriter out = new PrintWriter(selectedFile.getAbsolutePath());
-						out.write(outString);
-						out.close();
+						// same writer of a normal save: encoding of the tab, encrypted again for an encrypted one
+						done = parent.getCurrentTabEditor().writeTabToFile(loadedTabObj, outString, selectedFile);
 					}
 					if (done) {
 						String msgOk = "File " + selectedFile.getName() + " succesfully saved!";

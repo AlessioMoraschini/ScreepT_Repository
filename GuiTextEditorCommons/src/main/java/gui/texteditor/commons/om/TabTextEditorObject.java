@@ -124,6 +124,12 @@ public class TabTextEditorObject {
 	public File loadedFile;
 	/** Encoding the text of this tab was read with (detected or fixed): the file is saved with it again; null = the default one */
 	public String encoding;
+	/** Encoding chosen by hand to read the file of this tab, null = the one given by the preferences */
+	public String forcedEncoding;
+	/** The encoding was converted and the file not read again since */
+	public boolean encodingConverted;
+	/** Line ending found in the file, null for a new text or a file without line breaks */
+	public EOL eol;
 	public File tempFile;
 	public RTextScrollPane currentScrollPane;
 	public ColumnTextArea textArea;
@@ -619,6 +625,25 @@ public class TabTextEditorObject {
 			}
 		});
 
+		// ENCODING (filled when opened: it depends on the state of the tab)
+		final JMenu encodingMenu = new JMenu(I18n.t("editor.encoding_menu"));
+		textArea.getPopupMenu().add(encodingMenu);
+		encodingMenu.addMenuListener(new javax.swing.event.MenuListener() {
+			@Override
+			public void menuSelected(javax.swing.event.MenuEvent e) {
+				encodingMenu.removeAll();
+				iTabsManager.fillEncodingMenu(encodingMenu, TabTextEditorObject.this);
+			}
+
+			@Override
+			public void menuDeselected(javax.swing.event.MenuEvent e) {
+			}
+
+			@Override
+			public void menuCanceled(javax.swing.event.MenuEvent e) {
+			}
+		});
+
 		// TEXT TRANSFORMATION
 		final JMenu menuStringActions = new JMenu(I18n.t("common.text_transformation"));
 
@@ -859,6 +884,7 @@ public class TabTextEditorObject {
 			public void actionPerformed(ActionEvent e) {
 
 				textArea.setText(StringWorker.normalizeStringToEol(textArea.getText(), eolType));
+				eol = eolType; // the next saves use it
 				if(saveToFile) {
 					shortcutsManager.saveAsShortcut(eolType);
 				}

@@ -216,6 +216,21 @@ public class TextEditorFooterPanel extends JPanel{
 	}
 
 	private void addHandlers() {
+		// click on the encoding: reopen the file with another one, or convert it
+		java.awt.event.MouseAdapter encodingClick = new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseReleased(java.awt.event.MouseEvent e) {
+				javax.swing.JPopupMenu menu = new javax.swing.JPopupMenu();
+				parent.getCurrentTabEditor().fillEncodingMenu(menu, parent.getCurrentTabEditor().loadedTabObj);
+				menu.show(e.getComponent(), 0, -menu.getPreferredSize().height);
+			}
+		};
+		for (JLabel label : new JLabel[] { labelCharset, dynLabelCharset }) {
+			label.setCursor(GuiUtils.CURSOR_HAND);
+			label.setToolTipText(various.common.light.i18n.I18n.t("editor.click_to_change_encoding"));
+			label.addMouseListener(encodingClick);
+		}
+
 		// FOOTER UI RADIOBOX COMPLETE PATH (current file)
 		rdbtnShowCompletePath.setForeground(Color.LIGHT_GRAY);
 		rdbtnShowCompletePath.addActionListener(new ActionListener() {

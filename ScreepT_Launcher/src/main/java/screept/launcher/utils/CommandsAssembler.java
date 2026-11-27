@@ -59,11 +59,11 @@ public class CommandsAssembler {
 
 			} else if (currentOS.isLinux()) {
 				pathEntry = (pathEntry != null && !pathEntry.equals(""))? pathEntry + ":" : "";
-				execCommand.add("PATH=" + pathEntry + "$PATH");
+				execCommand.add("PATH=\"" + pathEntry + "$PATH\""); // quoted: the Java folder can contain spaces
 			
 			} else if (currentOS.isMac()) {
 				pathEntry = (pathEntry != null && !pathEntry.equals(""))? pathEntry + ":" : "";
-				execCommand.add("PATH=" + pathEntry + "$PATH");
+				execCommand.add("PATH=\"" + pathEntry + "$PATH\""); // quoted: the Java folder can contain spaces
 			} 
 		}		
 	}
@@ -100,7 +100,7 @@ public class CommandsAssembler {
 		}else {
 			
 			String classPath = SysUtils.getOsInfoLazy().isWindows() ? 
-					GeneralConfig.MAIN_GENERAL_CLASSPATH_WIN : SysUtils.getClassPathFromAllJarsFoundInRoot(GeneralConfig.CURRENT_EXECUTION_DIR, true);
+					GeneralConfig.MAIN_GENERAL_CLASSPATH_WIN : GeneralConfig.MAIN_GENERAL_CLASSPATH_UNIX;
 			// THIS USES MAIN CLASS WITH CLASSPATH - USEFUL FOR FRAGMENTED BUILD JARS OR CLASSES
 			execCommand.add(SysUtils.startClassCommand(complete_ARGS, 
 					classPath, 

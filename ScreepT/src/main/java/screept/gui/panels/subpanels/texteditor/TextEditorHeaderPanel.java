@@ -53,7 +53,6 @@ import gui.texteditor.commons.om.SupportedFileTextEditor;
 import maingUI.MainGuiGeneralAppStarter;
 import various.common.light.files.FileVarious;
 import various.common.light.utility.string.StringWorker;
-import various.common.light.utility.string.StringWorker.EOL;
 import screept.gui.panels.TextEditor;
 import screept.gui.utils.texteditor.EncryptedFilesScreepT;
 import screept.gui.utils.texteditor.TextEditorUtils;
@@ -431,7 +430,7 @@ public class TextEditorHeaderPanel extends JPanel{
 			if (binding == null) {
 				return; // cancelled by user
 			}
-			String text = StringWorker.normalizeStringToEol(tab.textArea.getText(), EOL.defaultEol);
+			String text = StringWorker.normalizeStringToEol(tab.textArea.getText(), parent.getCurrentTabEditor().eolFor(tab));
 			tab.encrypted = binding;
 			if (!parent.getCurrentTabEditor().writeTabToFile(tab, text, target)) {
 				tab.closeEncrypted();

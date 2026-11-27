@@ -252,7 +252,7 @@ public class ScreepTLauncher {
 			startPendingPluginsCleanerThread();
 		}
 
-		JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR + "lib;\"";
+		JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR + "lib" + File.pathSeparator + "\"";
 
 		loaderGraphics.update(I18n.t("launcher.initializing_launcher"), 10);
 

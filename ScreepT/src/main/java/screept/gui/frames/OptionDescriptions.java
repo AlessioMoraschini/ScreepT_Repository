@@ -119,7 +119,9 @@ public final class OptionDescriptions {
 		m.put("Language", "Language of the application. Not implemented yet: for now ScreepT speaks English.");
 		m.put("Volume", "Volume of the application sounds (clicks, alerts). Move the slider to hear the difference; the number beside it is the current value.");
 		m.put("Exception advices", "Shows an advice window when an exception happens inside ScreepT, so you know that something went wrong.\n\nErrors are written to the log in any case.");
-		m.put("Default EOL", "Line ending used for new files: LF (Linux / macOS), CRLF (Windows) or CR.\n\nExisting files keep the line endings they already have unless you convert them.");
+		m.put("Default EOL", "Line ending used for new files: LF (Linux / macOS), CRLF (Windows) or CR.\n\nWith \"Keep original line endings\" on, existing files keep their own.");
+		m.put("Keep original line endings", "On: a file is saved with the line endings it already has (the most frequent ones, if mixed), and the default EOL is used only for new files. "
+				+ "Normalize End Of Line in the right click menu still converts a file.\n\nOff: every file you save is converted to the default EOL.");
 		m.put("Configuration autosave", "When checked, ScreepT writes its configuration to the ini file automatically every given number of seconds, "
 				+ "and also when it closes.\n\nWhen unchecked, the configuration is saved only when you ask for it with Save Values.");
 		m.put("Password security", "Security level used when ScreepT checks passwords (for example in the crypter).");

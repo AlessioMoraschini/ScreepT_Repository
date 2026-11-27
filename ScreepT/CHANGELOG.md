@@ -6,6 +6,24 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.94 - 2026-11-27
+> Change the encoding of a file from the footer, line endings that stay as they were, and fixes for the start on Linux
+
+### New
+- File editor: click the encoding in the footer, or right click > Encoding, to reopen the file with another encoding or to convert it (written when you save). The choice belongs to that tab, the encoding of the preferences does not change, and you are warned if the file would be read wrong the next time.
+- Generic Options > Keep original line endings (on by default): every file is saved with the line endings it already has, and the default EOL is used only for new files.
+
+### Improved
+- The footer shows the line ending of the file in front, not the default one.
+
+### Fixed
+- Linux: the launcher no longer hangs while looking for the installed Java versions when there is more than one.
+- Linux: fixed the generated start script (Java command, class path, folders with spaces); its output is kept in a ".out" file beside it.
+- Linux: Java 8 installed from the distribution packages is recognised.
+- Saving all files and "Save as" now apply the line ending and the encoding of the file, like a normal save.
+- The list of encodings no longer repeats its entries.
+- Crypter: the progress window could stay frozen on "Completed!" at the end of an operation.
+
 ## 0.9.93 - 2026-11-25
 > Reorder Quick notes by drag and drop, the right encoding for every file, plugins that become the viewer of their files, and Markdown viewer 1.6 (find and replace, document check, colored code, emoji)
 

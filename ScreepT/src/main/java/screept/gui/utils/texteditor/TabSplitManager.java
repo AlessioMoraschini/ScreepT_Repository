@@ -335,10 +335,15 @@ public class TabSplitManager {
 		if (copy == null) {
 			return false;
 		}
-		if (tab.unsaved || !fileOnDisk) {
-			// what is not on disk travels with the tab
+		boolean otherEncoding = tab.encoding != null && !tab.encoding.equals(copy.encoding);
+		copy.encoding = tab.encoding;
+		copy.forcedEncoding = tab.forcedEncoding;
+		copy.encodingConverted = tab.encodingConverted;
+		copy.eol = tab.eol;
+		if (tab.unsaved || !fileOnDisk || otherEncoding) {
+			// what is not on disk (or was read with a chosen encoding) travels with the tab
 			copy.textArea.setText(text);
-			copy.unsaved = tab.unsaved || !text.isEmpty();
+			copy.unsaved = tab.unsaved || (!fileOnDisk && !text.isEmpty());
 			destination.updateSavedLabelNTab(destination.geIndexOfTabObj(copy));
 		}
 		try {

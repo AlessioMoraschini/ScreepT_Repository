@@ -42,6 +42,7 @@ import org.junit.rules.TemporaryFolder;
 import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.texteditor.commons.encrypted.EncryptedFileSupport;
 import gui.texteditor.commons.om.TabTextEditorObject;
+import various.common.light.utility.string.StringWorker;
 import initializer.configs.impl.INItializer;
 
 /**
@@ -360,6 +361,51 @@ public class CustomTabbedEditorTest {
 		SwingUtilities.invokeAndWait(() -> editor.addTab(null));
 		SwingUtilities.invokeAndWait(() -> { });
 		assertEquals(null, editor.loadedTabObj.encoding);
+	}
+
+	@Test
+	public void saveAllKeepsTheLineEndingOfTheFileUnlessTheOptionIsOff() throws Exception {
+		editor.currentConfiguration.getTextEditorOpt().keepOriginalEol = true;
+		File f = writeBytes("unix.txt", "a\nb\n".getBytes(StandardCharsets.UTF_8));
+		TabTextEditorObject tab = open(f);
+		assertEquals(StringWorker.EOL.LF, tab.eol);
+		SwingUtilities.invokeAndWait(() -> tab.textArea.setText("a\r\nb\r\nc"));
+		tab.unsaved = true;
+		assertTrue(editor.saveAllUnsavedExisting());
+		assertArrayEquals("a\nb\nc".getBytes(StandardCharsets.UTF_8), Files.readAllBytes(f.toPath()));
+
+		editor.currentConfiguration.getTextEditorOpt().keepOriginalEol = false;
+		assertEquals(StringWorker.EOL.defaultEol, editor.eolFor(tab));
+	}
+
+	@Test
+	public void aNewFileKeepsTheLineEndingItWasCreatedWith() throws Exception {
+		editor.currentConfiguration.getTextEditorOpt().keepOriginalEol = true;
+		SwingUtilities.invokeAndWait(() -> editor.addTab(null));
+		TabTextEditorObject tab = editor.loadedTabObj;
+		File f = new File(tmp.newFolder(), "new.txt");
+		assertTrue(editor.writeTabToFile(tab, "a\rb\r", f));
+		assertEquals(StringWorker.EOL.CR, editor.eolFor(tab));
+		assertEquals(System.getProperty("file.encoding"), tab.encoding);
+	}
+
+	@Test
+	public void convertedAndReopenedEncodingsStayWithTheTab() throws Exception {
+		File f = writeBytes("convert.txt", ACCENTED.getBytes(StandardCharsets.UTF_8));
+		TabTextEditorObject tab = open(f);
+		SwingUtilities.invokeAndWait(() -> EncodingActions.convert(editor, tab, "windows-1252"));
+		assertTrue("the file changes only when saved", tab.unsaved);
+		assertArrayEquals(ACCENTED.getBytes(StandardCharsets.UTF_8), Files.readAllBytes(f.toPath()));
+		assertTrue(editor.writeTabToFile(tab, ACCENTED, f));
+		assertArrayEquals(ACCENTED.getBytes(java.nio.charset.Charset.forName("windows-1252")), Files.readAllBytes(f.toPath()));
+		assertEquals("windows-1252", tab.forcedEncoding);
+
+		tab.unsaved = false;
+		SwingUtilities.invokeAndWait(() -> EncodingActions.reopen(editor, tab, "ISO-8859-1"));
+		SwingUtilities.invokeAndWait(() -> { });
+		assertEquals("ISO-8859-1", tab.encoding);
+		assertFalse(tab.unsaved);
+		assertTrue("the encoding of the preferences never changes", "UTF-8".equals(editor.currentConfiguration.getGenOpt().getCharset()));
 	}
 
 	// ------------------------------------------------------------------ encrypted tabs

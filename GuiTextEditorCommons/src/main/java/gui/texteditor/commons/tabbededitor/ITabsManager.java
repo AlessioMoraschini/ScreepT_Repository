@@ -25,4 +25,8 @@ public interface ITabsManager {
 	public void loadFiles(final File[] fileToLoad);
 	
 	public void addToHystory(TabTextEditorObject loadedTabObj);
+
+	/** Adds to a menu the encoding actions of the tab */
+	public default void fillEncodingMenu(javax.swing.JComponent menu, TabTextEditorObject tab) {
+	}
 }

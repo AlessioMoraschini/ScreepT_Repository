@@ -74,6 +74,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import various.common.light.files.FileVarious;
 import various.common.light.files.EncodingDetector;
+import various.common.light.files.EolDetector;
 import various.common.light.utility.string.StringWorker.EOL;
 import various.common.light.files.FileWorker;
 import various.common.light.files.watcher.ChangeDTO;
@@ -523,6 +524,7 @@ public class CustomTabbedEditor implements ITabsManager {
 		alreadyLoading = true;
 		try {
 			tab.textArea.setText(opened.text);
+			tab.eol = EolDetector.detect(opened.text);
 			tab.textArea.discardAllEdits();
 			tab.textArea.setCaretPosition(0);
 			tab.loadedFile = file;
@@ -542,11 +544,28 @@ public class CustomTabbedEditor implements ITabsManager {
 	 * the fixed encoding when the file does not say), the fixed one of the preferences otherwise.
 	 */
 	public String encodingFor(File file) {
+		String fixed = fixedEncoding();
+		return isEncodingAutoDetected() ? EncodingDetector.detect(file, fixed) : fixed;
+	}
+
+	/** The encoding of the preferences */
+	String fixedEncoding() {
 		String fixed = currentConfiguration.getGenOpt().getCharset();
-		if (fixed == null || fixed.trim().isEmpty()) {
-			fixed = System.getProperty("file.encoding");
-		}
-		return currentConfiguration.getTextEditorOpt().autoDetectEncoding ? EncodingDetector.detect(file, fixed) : fixed;
+		return fixed == null || fixed.trim().isEmpty() ? System.getProperty("file.encoding") : fixed;
+	}
+
+	boolean isEncodingAutoDetected() {
+		return currentConfiguration.getTextEditorOpt().autoDetectEncoding;
+	}
+
+	@Override
+	public void fillEncodingMenu(javax.swing.JComponent menu, TabTextEditorObject tab) {
+		EncodingActions.fill(this, menu, tab);
+	}
+
+	/** Line ending the tab is saved with: the one of its file when the option keeps it, else the default one */
+	public EOL eolFor(TabTextEditorObject tab) {
+		return currentConfiguration.getTextEditorOpt().keepOriginalEol && tab.eol != null ? tab.eol : EOL.defaultEol;
 	}
 
 	/** Reads the file into the text area of the tab; the tab remembers the encoding, to save the file with the same one */
@@ -554,8 +573,10 @@ public class CustomTabbedEditor implements ITabsManager {
 		if (file == null) {
 			return; // a new empty tab: nothing to read, the default encoding is used when it is saved
 		}
-		String encoding = encodingFor(file);
+		String encoding = tab.forcedEncoding != null ? tab.forcedEncoding : encodingFor(file);
 		tab.encoding = encoding;
+		tab.encodingConverted = false;
+		tab.eol = EolDetector.detect(file, encoding);
 		logger.info("Reading " + file.getName() + " as " + encoding);
 		FileWorker.appendFileTxtArea(file, tab.textArea, goToStart, EOL.defaultEol, encoding);
 	}
@@ -570,7 +591,20 @@ public class CustomTabbedEditor implements ITabsManager {
 				tab.encrypted.write(text, target);
 				return true;
 			}
-			return FileWorker.writeStringToFileEncoded(text, target, true, tab.encoding);
+			boolean written = FileWorker.writeStringToFileEncoded(text, target, true, tab.encoding);
+			if (written && target.equals(tab.loadedFile) && (tab.encodingConverted || tab.forcedEncoding != null)) {
+				tab.forcedEncoding = tab.encoding; // chosen by hand: a reload of the file keeps it
+			}
+			if (written) {
+				// a new file keeps what it was created with, even if the defaults change later
+				if (tab.encoding == null) {
+					tab.encoding = System.getProperty("file.encoding");
+				}
+				if (tab.eol == null) {
+					tab.eol = EolDetector.detect(text);
+				}
+			}
+			return written;
 		} catch (Exception e) {
 			logger.error("Cannot save " + target + (tab.encrypted != null ? " (encrypted)" : ""), e);
 			return false;
@@ -1795,7 +1829,8 @@ public class CustomTabbedEditor implements ITabsManager {
 		boolean done = true;
 		for (TabTextEditorObject element : loadedList.getList()) {
 			if (element.unsaved && !element.isEmbeddedViewer() && element.loadedFile != null && element.loadedFile.exists()) {
-				if (!writeTabToFile(element, element.textArea.getText(), element.loadedFile)) {
+				String text = StringWorker.normalizeStringToEol(element.textArea.getText(), eolFor(element));
+				if (!writeTabToFile(element, text, element.loadedFile)) {
 					done = false;
 				} else {
 					element.unsaved = false;

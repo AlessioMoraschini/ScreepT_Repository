@@ -82,7 +82,7 @@ public class UpdateProgressPanelCrypter {
                 try {
 					doInBackground(pb);
 				} catch (Exception e) {
-		            dialog.dispose();
+		            disposeDialog();
 				}
                 
         	}
@@ -126,7 +126,7 @@ public class UpdateProgressPanelCrypter {
 		                	}
 		                	
 						} catch (Exception e) {
-				            dialog.dispose();
+				            disposeDialog();
 						}
 		                
 		        	}
@@ -230,7 +230,7 @@ public class UpdateProgressPanelCrypter {
 
 						if (forceDispose.get()) {
 							stopProcess.set(true);
-							dialog.dispose();
+							disposeDialog();
 						}
 					}
 				}).start();
@@ -302,7 +302,7 @@ public class UpdateProgressPanelCrypter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dialog.dispose();
+			disposeDialog();
 		}
     }
 
@@ -312,7 +312,7 @@ public class UpdateProgressPanelCrypter {
      */
     public void forceCloseNExceptionSignal() throws InterruptedException {
     	stopProcess.set(true);
-    	dialog.dispose();
+    	disposeDialog();
     	throw new InterruptedException("Forcing process stop: user called forceCloseNExceptionSignal()");
     }
 	
@@ -342,12 +342,24 @@ public class UpdateProgressPanelCrypter {
 		
 		try {
 			if (value >= 100) {
-				dialog.dispose();
+				disposeDialog();
 			} 
 		} catch (Exception e) {
 		}
 	}
 	
+	/**
+	 * Closes the window without ever waiting for the screen thread: dispose() from a work thread waits for it, and the work thread can
+	 * hold the lock of update() that the screen thread is waiting for (deadlock, window stuck on "Completed!").
+	 */
+	private void disposeDialog() {
+		if (SwingUtilities.isEventDispatchThread()) {
+			dialog.dispose();
+		} else {
+			SwingUtilities.invokeLater(() -> dialog.dispose());
+		}
+	}
+
 	public void toFront() {
 		dialog.setAlwaysOnTop(true);
 	}

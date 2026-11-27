@@ -92,6 +92,8 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private JTextField textFieldUname;
 	private JCheckBox chckbxAutosave;
 	private JComboBox<EOL> comboBoxDefEOL;
+	private JCheckBox chckbxKeepEol;
+	private boolean BACKUP_KEEP_EOL;
 	private JComboBox<SecurityLevel> comboSecurityLevels;
 	private JComboBox<Locale> comboLocale;
 
@@ -221,6 +223,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 
 		comboBoxDefEOL = new JComboBox<EOL>(EOL.values());
 		comboBoxDefEOL.setToolTipText(I18n.t("app.line_ending_used_for_new_files"));
+		chckbxKeepEol = newCheckBox(I18n.t("app.keep_original_eol"), I18n.t("app.keep_original_eol_tip"));
 
 		chckbxAutosave = newCheckBox(I18n.t("app.every"),
 				I18n.t("app.enable_disable_periodic_autosave_also_when"));
@@ -302,6 +305,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 				.addCheckBoxes(chckbxExceptionAdvicesEnabled);
 		optionsPanel.addSection(I18n.t("app.files"), I18n.t("app.line_endings_and_configuration_autosave"))
 				.addRow(I18n.t("app.default_eol"), comboBoxDefEOL)
+				.addCheckBoxes(chckbxKeepEol)
 				.addRow(I18n.t("app.configuration_autosave"), chckbxAutosave, spinnerInterval, new JLabel(I18n.t("app.seconds")), lblIntMinutes);
 		optionsPanel.addSection(I18n.t("app.security_and_network"), I18n.t("app.password_checks_and_proxy"))
 				.addRow(I18n.t("app.password_security"), comboSecurityLevels)
@@ -438,6 +442,8 @@ public class GeneralOptionsFrame extends ParentFrame{
 				logger.info("Default EOL changed: " + defaultEol);
 			}
 		});
+
+		chckbxKeepEol.addActionListener(e -> currentConfiguration.getTextEditorOpt().keepOriginalEol = chckbxKeepEol.isSelected());
 
 		// COMBO LOCALES HANDLER
 		comboLocale.addActionListener(new ActionListener() {
@@ -580,6 +586,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_CURRENT_USERNAME = new String(currentConfiguration.getGenOpt().getUserName());
 		BACKUP_SECURITY_LEVEL = currentConfiguration.getAesOpt().getSecurityLevel();
 		BACKUP_DEFAULT_EOL = currentConfiguration.getTextEditorOpt().getEol();
+		BACKUP_KEEP_EOL = currentConfiguration.getTextEditorOpt().keepOriginalEol;
 		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		BACKUP_LOCALE = currentConfiguration.getGenOpt().getLocale();
@@ -603,6 +610,7 @@ public class GeneralOptionsFrame extends ParentFrame{
     	chckbxAutomaticallyCheckPlugins.setSelected(currentConfiguration.getGenOpt().isAutomaticPluginUpdateOn());
     	comboSecurityLevels.setSelectedItem(currentConfiguration.getAesOpt().getSecurityLevel());
     	comboBoxDefEOL.setSelectedItem(currentConfiguration.getTextEditorOpt().getEol());
+		chckbxKeepEol.setSelected(currentConfiguration.getTextEditorOpt().keepOriginalEol);
 comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(currentConfiguration.getGenOpt().getLanguage())));
     	updateComboLocale();
     	Locale.setDefault(currentConfiguration.getGenOpt().getLocale());
@@ -641,6 +649,7 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 		currentConfiguration.getGenOpt().setUserName(BACKUP_CURRENT_USERNAME);
 		currentConfiguration.getAesOpt().setSecurityLevel(BACKUP_SECURITY_LEVEL);
 		currentConfiguration.getTextEditorOpt().setEol(BACKUP_DEFAULT_EOL);
+		currentConfiguration.getTextEditorOpt().keepOriginalEol = BACKUP_KEEP_EOL;
 		currentConfiguration.getGenOpt().setGeneralVolume(BACKUP_GENVOLUME);
 		currentConfiguration.getGenOpt().setExceptionAdvicesEnabled(BACKUP_EXCEPTION_ADVICES);
 		currentConfiguration.getGenOpt().setAutomaticUpdateOn(BACKUP_AUTOCHECK_UPDATES);
@@ -697,6 +706,7 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 		BACKUP_CURRENT_USERNAME = currentConfiguration.getGenOpt().getUserName();
 		BACKUP_SECURITY_LEVEL = currentConfiguration.getAesOpt().getSecurityLevel();
 		BACKUP_DEFAULT_EOL = currentConfiguration.getTextEditorOpt().getEol();
+		BACKUP_KEEP_EOL = currentConfiguration.getTextEditorOpt().keepOriginalEol;
 		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
@@ -721,6 +731,7 @@ comboLocale.setSelectedItem(new Locale(various.common.light.i18n.I18n.normalize(
 		currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "autosaveInterval", currentConfiguration.getFileOpt().autosaveInterval);
 		currentConfiguration.writeSingleValue(INItializer.AES_OPT, "securityLevel", currentConfiguration.getAesOpt().getSecurityLevel().name());
 		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "EOL", currentConfiguration.getTextEditorOpt().getEol().name());
+		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "keepOriginalEol", currentConfiguration.getTextEditorOpt().keepOriginalEol);
 
 		// write launcher configuration
 		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());
