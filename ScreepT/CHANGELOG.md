@@ -7,7 +7,7 @@
 -->
 
 ## 0.9.98 - 2026-11-27
-> Crypter: new Ultra mode (Argon2id, AES-256 + ChaCha20)
+> Crypter: public keys, hide in a picture, Ultra mode and Argon2id everywhere
 
 ### New
 - Crypter: "Ultra" mode. The password becomes the key with Argon2id (256 MB of memory, the modern standard) and the data is protected by two ciphers of different families, AES-256-GCM and ChaCha20-Poly1305, each with its own key.
@@ -26,6 +26,7 @@
 ### Fixed
 - Crypter: "Zip of encrypted files" now keeps empty folders.
 - Crypter: a damaged folder archive (.dir.scpt) shows the real error and never leaves files behind.
+- Crypter: on a new installation (no key image dictionary folder yet) an error was written to the log every second.
 
 ## 0.9.97 - 2026-11-27
 > PDF viewer: edit mode (texts, images, pages), merge and extract

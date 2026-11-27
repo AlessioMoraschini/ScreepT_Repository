@@ -290,6 +290,8 @@ public class CrypterPanel extends ModulePanel {
 	public CrypterPanel(INItializer currentConfiguration, MainGUI parent) {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 
+		// a new installation has no dictionary folder yet: without it the watcher fails and its loop logs an error every second
+		KEY_DICTIONARY_FILE.mkdirs();
 		dictionaryMonitor = new FileChangeMonitor(KEY_DICTIONARY_FILE, new ArrayList<>());
 		dictionaryMonitor.addFileToMonitorList(KEY_DICTIONARY_FILE);
 		dictionaryMonitor.setDEL_FLAG(true);
