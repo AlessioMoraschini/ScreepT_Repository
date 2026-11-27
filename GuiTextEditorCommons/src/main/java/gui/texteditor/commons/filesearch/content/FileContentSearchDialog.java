@@ -124,6 +124,8 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 
 	public List<File> selectedSearchFiles;
 	public JOptionHelper dialogHelper;
+	/** Runs the same search from the command line, in a terminal of ScreepT (full speed, no results tree) */
+	protected JButton terminalBtn;
 
 	protected Window owner;
 
@@ -299,9 +301,13 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		leftPanel.add(bottomPanel);
 
 		// Make a panel containing the action buttons.
+		terminalBtn = new JButton(I18n.t("fsearch.run_in_terminal"));
+		terminalBtn.setToolTipText(I18n.t("fsearch.run_in_terminal_tip"));
+		terminalBtn.setCursor(GuiUtils.CURSOR_HAND);
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new GridLayout(5,1, 5,5));
+		buttonPanel.setLayout(new GridLayout(6,1, 5,5));
 		buttonPanel.add(searchButton);
+		buttonPanel.add(terminalBtn);
 		buttonPanel.add(cancelButton);
 		buttonPanel.add(chooseFileBtn);
 		buttonPanel.add(addFileBtn);
@@ -372,6 +378,22 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 
 		clearFilesBtn.addActionListener((e) -> {
 			clearSelectedFiles();
+		});
+
+		terminalBtn.addActionListener((e) -> {
+			if(selectedSearchFiles == null || selectedSearchFiles.isEmpty()) {
+				dialogHelper.info(I18n.t("editor.select_source_before_to_search"), I18n.t("fsearch.missing_source_file_s"));
+				return;
+			}
+			FileContentSearchDTO dto = getSearchDTO();
+			if(dto.searchString == null || dto.searchString.isEmpty())
+				return;
+			if(options != null)
+				options.enrichFromDTO(dto);
+			SearchPerformance performance = SearchPerformance.values()[Math.max(0, perfCombo.getSelectedIndex())];
+			int threads = performance.threads(Runtime.getRuntime().availableProcessors());
+			gui.texteditor.commons.filesearch.cli.SearchTerminalFrame.open(thisDialog, dto.searchString,
+					gui.texteditor.commons.filesearch.cli.SearchCli.argsFor(dto, selectedSearchFiles, threads));
 		});
 
 		searchButton.addActionListener((e) -> {
@@ -497,6 +519,8 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		String selectedItem = findTextCombo.getSelectedString();
 		boolean nonEmpty = selectedItem!=null && !selectedItem.isEmpty();
 		searchButton.setEnabled(nonEmpty);
+		if(terminalBtn != null)
+			terminalBtn.setEnabled(nonEmpty);
 	}
 
 	private void addComboListener() {

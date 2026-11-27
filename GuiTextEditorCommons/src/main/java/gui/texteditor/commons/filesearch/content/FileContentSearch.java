@@ -72,7 +72,8 @@ public class FileContentSearch {
 
 	FileSearchResultViewer resultViewer;
 
-	JOptionHelper dialogHelper;
+	/** Lines found after which the search stops; -1 = the configured limit (the command line has none) */
+	private long resultLimit = -1;
 
 	String fileEncoding;
 	private Charset charset;
@@ -100,7 +101,6 @@ public class FileContentSearch {
 		this.totalSourcesScanned = new AtomicInteger(0);
 		this.searchDTO = searchDTO == null ? new FileContentSearchDTO(null) : searchDTO;
 		results = new ArrayList<SearchResult>();
-		dialogHelper = new JOptionHelper(resultViewer);
 
 		if(this.searchDTO.regex || this.searchDTO.wholeWord) {
 
@@ -149,6 +149,107 @@ public class FileContentSearch {
 
 	public void setPerformance(SearchPerformance performance) {
 		this.performance = performance != null ? performance : SearchPerformance.BALANCED;
+	}
+
+	/** Lines found after which the search stops: Long.MAX_VALUE = no limit (command line) */
+	public void setResultLimit(long limit) {
+		this.resultLimit = limit;
+	}
+
+	private long resultLimit() {
+		return resultLimit >= 0 ? resultLimit : GeneralConfig.MAX_RESULT_FILE_CONTENT_SEARCH;
+	}
+
+	/** Totals of a {@link #searchStreaming} run */
+	public static final class StreamStats {
+		public long filesScanned, filesWithMatches, matchingLines, occurrences, bytesScanned;
+		public int threads;
+	}
+
+	/**
+	 * Search without any window (command line, benchmarks): the folders are walked while their files are already searched,
+	 * every file with matches goes to the sink as soon as it is done (any order, called from the worker threads)
+	 * and nothing is kept in memory.
+	 * @param threads worker threads, 0 = the ones of the performance preset
+	 */
+	public StreamStats searchStreaming(final java.util.function.Consumer<SearchResult> sink, int threads) throws InterruptedException {
+		final StreamStats stats = new StreamStats();
+		stats.threads = threads > 0 ? threads : performance.threads(Runtime.getRuntime().availableProcessors());
+		final Pattern[] inclusion = compileWildcards(getInclusionFileFilters(searchDTO.fileFilters));
+		final Pattern[] exclusion = compileWildcards(getExclusionFileFilters(searchDTO.fileFilters));
+		final java.util.concurrent.atomic.AtomicLong files = new java.util.concurrent.atomic.AtomicLong();
+		final java.util.concurrent.atomic.AtomicLong bytes = new java.util.concurrent.atomic.AtomicLong();
+		final java.util.concurrent.atomic.AtomicLong withMatches = new java.util.concurrent.atomic.AtomicLong();
+		final java.util.concurrent.atomic.AtomicLong lines = new java.util.concurrent.atomic.AtomicLong();
+		final java.util.concurrent.atomic.AtomicLong occurrences = new java.util.concurrent.atomic.AtomicLong();
+		// the walk stays a little ahead of the workers: memory does not grow with the number of files
+		final java.util.concurrent.Semaphore inFlight = new java.util.concurrent.Semaphore(stats.threads * 64);
+		ExecutorService pool = Executors.newFixedThreadPool(stats.threads, r -> {
+			Thread t = new Thread(r, "ScreepT-FileContentSearch");
+			t.setDaemon(true);
+			return t;
+		});
+
+		try {
+			for(File root : rawSources) {
+				if(stopSearch.get())
+					break;
+				try {
+					Files.walkFileTree(root.toPath(), new SimpleFileVisitor<Path>() {
+						@Override
+						public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+							if(!(attrs.isRegularFile() || attrs.isSymbolicLink()))
+								return FileVisitResult.CONTINUE;
+							if(inclusion.length > 0 || exclusion.length > 0) {
+								String path = file.toString().replace(File.separatorChar, '/');
+								if((inclusion.length > 0 && !matchesAny(path, inclusion)) || (exclusion.length > 0 && matchesAny(path, exclusion)))
+									return FileVisitResult.CONTINUE;
+							}
+							final long size = attrs.size();
+							try {
+								inFlight.acquire();
+							} catch (InterruptedException e) {
+								Thread.currentThread().interrupt();
+								return FileVisitResult.TERMINATE;
+							}
+							pool.execute(() -> {
+								try {
+									SearchResult result = scanSource(file.toFile());
+									files.incrementAndGet();
+									bytes.addAndGet(size);
+									if(result != null && !result.resultLines.isEmpty()) {
+										withMatches.incrementAndGet();
+										lines.addAndGet(result.resultLines.size());
+										occurrences.addAndGet(result.getOccurrencesFound());
+										sink.accept(result);
+									}
+								} finally {
+									inFlight.release();
+								}
+							});
+							return stopSearch.get() ? FileVisitResult.TERMINATE : FileVisitResult.CONTINUE;
+						}
+
+						@Override
+						public FileVisitResult visitFileFailed(Path file, IOException e) {
+							return FileVisitResult.CONTINUE;
+						}
+					});
+				} catch (IOException e) {
+					logger.error("Cannot walk " + root, e);
+				}
+			}
+		} finally {
+			pool.shutdown();
+			pool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+		}
+
+		stats.filesScanned = files.get();
+		stats.bytesScanned = bytes.get();
+		stats.filesWithMatches = withMatches.get();
+		stats.matchingLines = lines.get();
+		stats.occurrences = occurrences.get();
+		return stats;
 	}
 
 	/**
@@ -255,7 +356,7 @@ public class FileContentSearch {
 
 		// the results window is already in front and shows the totals: a popup only when the results were cut
 		if(!limitedAdvice.isEmpty())
-			dialogHelper.info(GuiUtils.encapsulateInHtml(various.common.light.i18n.I18n.fmt("editor.search_completed_with_b_x_b", occurrencesFound, limitedAdvice)), various.common.light.i18n.I18n.fmt("editor.x_results_found", occurrencesFound));
+			new JOptionHelper(resultViewer).info(GuiUtils.encapsulateInHtml(various.common.light.i18n.I18n.fmt("editor.search_completed_with_b_x_b", occurrencesFound, limitedAdvice)), various.common.light.i18n.I18n.fmt("editor.x_results_found", occurrencesFound));
 
 		logger.info("Finished String search into files");
 		logger.debug("Search results: " + results.size());
@@ -840,7 +941,7 @@ public class FileContentSearch {
 				lineBase = searchBlock(bb, end, result, lineBase, eof);
 
 				int linesNow = result.resultLines.size();
-				if(linesFoundTotal.addAndGet(linesNow - prevLines) > GeneralConfig.MAX_RESULT_FILE_CONTENT_SEARCH)
+				if(linesFoundTotal.addAndGet(linesNow - prevLines) > resultLimit())
 					stopSearch.set(true);
 				prevLines = linesNow;
 

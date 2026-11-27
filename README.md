@@ -59,7 +59,7 @@ A dark look and feel with a dark title bar, interface size presets (Mini to XXL)
 ## Get it
 
 1. **[Download ScreepT](https://www.am-design-development.com/ScreepT/Release/ScreepT_Download.html)** and unzip it anywhere.
-2. Run `ScreepT.exe` (or `ScreepT_64.exe`) on Windows, `ScreepT.sh` on Linux and macOS. Accept the license on first start.
+2. Run `ScreepT.exe` (or `ScreepT_64.exe`) on Windows, `ScreepT.sh` on Linux and macOS. Accept the terms of use on first start.
 3. Not sure where to start? Type a question on the home page, or open *Help > Tutorial*.
 
 **If `ScreepT.exe` is blocked** (company PCs, antivirus false positives), you don't need it: run `ScreepT.bat` on Windows or `ScreepT.sh` on Linux and macOS (`chmod +x ScreepT.sh` first), or from the `Application` folder `java -jar ScreepT_Launcher.jar`. To get a desktop shortcut with the ScreepT icon (`Readme/Images/ScreepT.ico`) that you can pin to the taskbar, paste this in PowerShell, setting `$app` to your ScreepT folder:
@@ -77,6 +77,17 @@ $link.Save()
 ```
 
 The full guide (section 1.4, also in *Help > Tutorial*) explains how to pin it to the taskbar.
+
+### Search in files from the command line
+
+The engine of *Search in files* also runs without windows, at full speed, from the ScreepT folder:
+
+```
+screept-search.bat [options] TEXT [PATH...]      (Linux and macOS: ./screept-search.sh)
+screept-search.bat -i -g "*.java" repository C:\projects
+```
+
+Output is `path:line:column:text`, like ripgrep; `-i` ignore case, `-w` whole words, `-e` regular expression, `-g` file filter (`!` to exclude), `-c` count, `-l` file names only, `--sort`, `--stats`; `--help` lists them all. Exit code 0 found, 1 not found, 2 error. In the *Search in files* window, **Run in terminal** runs the same search in a terminal of ScreepT.
 
 Release notes: [`ScreepT/CHANGELOG.md`](ScreepT/CHANGELOG.md), also shown in the app under *Help > What's new*. News and articles: [am-design-development.com](https://www.am-design-development.com).
 
@@ -207,7 +218,9 @@ Bug reports are welcome too: please include the ScreepT version (*Help > About*)
 
 ## License
 
-ScreepT is distributed under the End User License Agreement in [`ScreepT/EULA_ScreepT_License.txt`](ScreepT/EULA_ScreepT_License.txt). Third-party libraries keep their own licenses (see `ScreepT/ROOT_DIR_APP_FILES/Libraries_licenses` in the application).
+ScreepT is open source under the [Apache License 2.0](LICENSE) (attributions in [`NOTICE`](NOTICE)); the common modules in [ScreepT-public](https://github.com/AlessioMoraschini/ScreepT-public) use the same license. The name "ScreepT" and its logo are not covered by the license: a modified version must use a different name.
+
+The software is provided "as is", without warranty, and you use it at your own risk: see the terms of use shown at the first start ([`ScreepT/ROOT_DIR_APP_FILES/License_ScreepT.html`](ScreepT/ROOT_DIR_APP_FILES/License_ScreepT.html)). Third-party libraries keep their own licenses (see `ScreepT/ROOT_DIR_APP_FILES/Libraries_licenses` in the application).
 
 ## Author
 

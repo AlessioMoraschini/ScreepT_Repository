@@ -42,7 +42,7 @@ public class AppStartTest {
 	/** Runtime files of the application, relative to the module folder: the working directory of a real start. */
 	private static final String[] RUNTIME = {
 			"Resources_ScreepT", "resourcesFilePathsMappings.properties", "LAUNCHER", "ROOT_DIR_APP_FILES", "UTILS_BUILD",
-			"PLUGINS", "UPDATES", "LOG", "EXTERNAL_PLUGINS", "Installed_plugins.properties", "EULA_ScreepT_License.txt",
+			"PLUGINS", "UPDATES", "LOG", "EXTERNAL_PLUGINS", "Installed_plugins.properties",
 			"CHANGELOG.md", "README.md", "manifest.properties", "buildNumber.properties" };
 
 	private static void copyTree(final Path from, final Path to) throws IOException {
@@ -117,7 +117,7 @@ public class AppStartTest {
 		assertTrue("the mapping file points to the real web site", mappingText.contains("www.am-design-development.com"));
 		Files.write(mapping.toPath(), mappingText.replace("https\\://www.am-design-development.com", "http\\://127.0.0.1:" + fakeWeb.getAddress().getPort())
 				.getBytes(StandardCharsets.ISO_8859_1));
-		// the license is accepted in the copy, a real start would stop at the EULA window
+		// the license is accepted in the copy, a real start would stop at the terms of use window
 		File license = new File(work, "Resources_ScreepT/license.properties");
 		Files.write(license.toPath(), "LICENSE_ACCEPTED=true\n".getBytes(StandardCharsets.UTF_8));
 

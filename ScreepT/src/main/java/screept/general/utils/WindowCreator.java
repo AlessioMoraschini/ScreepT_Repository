@@ -3,11 +3,18 @@
  * =========================================================================================
  *  Copyright (C) 2019-2020
  *
- *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
+ *  AM-Design-Development - (Alessio Moraschini)
  * =========================================================================================
  *
- * You should have received a copy of the license with this file.
- * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package screept.general.utils;
 
@@ -459,12 +466,12 @@ public class WindowCreator {
 			do{
 				licenseViewer = LightLicenseViewer.getInstance(
 						licenseHtml,
-						"You must accept this EULA before to start using ScreepT",
-						"License acceptance",
+						"You must accept the terms of use before you start using ScreepT",
+						"Terms of use acceptance",
 						visibleFlags);
 				choice = licenseViewer.userChoice;
 				if(choice.equals(UserLicenseChoice.REJECTED)) {
-					if (new JOptionHelper(null).yesOrNo("You cannot proceed without accepting this License, are you sure to stop this process?")) {
+					if (new JOptionHelper(null).yesOrNo("You cannot proceed without accepting the terms of use: do you want to stop?")) {
 						if (exitOnDecline) {
 							MainGuiManager.closeApplication(1);
 						} else {
@@ -479,7 +486,7 @@ public class WindowCreator {
 		} else {
 
 			LightLicenseViewer.mandatoryChoice = false;
-			licenseViewer = LightLicenseViewer.getInstance(GeneralConfig.LICENSE_FILE, "Here is the EULA (End User License Agreement)", "ScreepT - License (EULA)");
+			licenseViewer = LightLicenseViewer.getInstance(GeneralConfig.LICENSE_FILE, "Here are the license and the terms of use", "ScreepT - License and terms of use");
 		}
 
 		return licenseViewer;

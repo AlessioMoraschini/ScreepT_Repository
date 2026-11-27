@@ -3,11 +3,18 @@
  * =========================================================================================
  *  Copyright (C) 2019-2020
  *
- *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
+ *  AM-Design-Development - (Alessio Moraschini)
  * =========================================================================================
  *
- * You should have received a copy of the license with this file.
- * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package maingUI;
 
@@ -212,6 +219,7 @@ public class MainGuiGeneralAppStarter {
 		WindowIcons.register("SearchFrame", () -> IconsPathConfigurator.ICON_SEARCH);
 		WindowIcons.register("TreeFilterRulesDialog", () -> IconsPathConfigurator.ICON_SEARCH);
 		WindowIcons.register("LogSearchFrame", () -> IconsPathConfigurator.ICON_FILE_SEARCH);
+		WindowIcons.register("SearchTerminalFrame", () -> IconsPathConfigurator.ICON_FILE_SEARCH);
 		WindowIcons.register("SearchPerformanceDialog", () -> IconsPathConfigurator.ICON_FILE_SEARCH);
 		WindowIcons.register("UiScaleCustomDialog", () -> GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/graphics.png");
 		WindowIcons.register("JFontChooserExtended", () -> IconsPathConfigurator.ICON_TEXT_COLOR);
@@ -226,8 +234,8 @@ public class MainGuiGeneralAppStarter {
 		logger.info("Starting MainGuiGeneralAppStarter.main(" + Arrays.deepToString(args) + ")");
 		SCREEPT_BENCHMARKER.registerEvent("Main function entered");
 
-		SCREEPT_BENCHMARKER.registerEvent("Start EULA check");
-		checkEULAstatus();
+		SCREEPT_BENCHMARKER.registerEvent("Start terms of use check");
+		checkTermsOfUseStatus();
 
 		SCREEPT_BENCHMARKER.registerEvent("Loader graphics initialization");
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
@@ -628,7 +636,7 @@ public class MainGuiGeneralAppStarter {
 		}).start();
 	}
 
-	public static void checkEULAstatus() {
+	public static void checkTermsOfUseStatus() {
 		// SHOW LICENSE IF MARKED AS UNACCEPTED
 		if(!GeneralConfig.LICENSE_ACCEPTED) {
 
@@ -637,8 +645,8 @@ public class MainGuiGeneralAppStarter {
 			do{
 				licenseViewer = new LightLicenseViewer(
 						GeneralConfig.LICENSE_FILE,
-						"You must accept this EULA before to start using ScreepT",
-						"License acceptance",
+						"You must accept the terms of use before you start using ScreepT",
+						"Terms of use acceptance",
 						new boolean[] {true, false, false}
 						);
 				choice = licenseViewer.userChoice;
