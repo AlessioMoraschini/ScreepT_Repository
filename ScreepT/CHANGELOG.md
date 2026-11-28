@@ -6,6 +6,18 @@
   Newest version first. The raw git history stays in changelog.log.
 -->
 
+## 0.9.99 - 2026-11-28
+> ScreepT is open source (Apache License 2.0), and Search in files runs from the command line at full speed
+
+### New
+- ScreepT is open source under the Apache License 2.0: you can use, study, modify and share it. The texts are in LICENSE.txt and NOTICE.txt in the ScreepT folder; the name and the logo stay with the author.
+- Terms of use: at the first start of this version you accept the new "License and Terms of Use" (Help > License shows them again).
+- Search in files from the command line: screept-search.bat (Linux and macOS: screept-search.sh) in the ScreepT folder searches with every core and no limit on the results, printing file:line:column:text; -i, -w, -e (regular expression), -g (file filter), -c, -l, --sort and --stats, see --help.
+- Search in files: Run in terminal runs the same search from the command line in a terminal of ScreepT, with colours and the totals at the end; Enter runs it again.
+
+### Improved
+- The terminal can run a program in place of the shell, with its live output and colours.
+
 ## 0.9.98 - 2026-11-27
 > Crypter: public keys, hide in a picture, Ultra mode and Argon2id everywhere
 
